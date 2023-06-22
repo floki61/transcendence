@@ -7,3 +7,4 @@ Understand how TypeScript determines the return type of a function.
 Explicitly specify return types for functions, including for functions that don’t return anything.
 Use the above skills to diagnose and fix bugs in our code.
 Great job!
+
