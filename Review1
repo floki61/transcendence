@@ -11,3 +11,5 @@ When it isn’t able to infer a type, TypeScript will consider a variable to be 
 Type annotations are little pieces of code that indicate what type a variable is meant to be.
 let youAreAwesome: boolean;
 youAreAwesome = true;
+
+
