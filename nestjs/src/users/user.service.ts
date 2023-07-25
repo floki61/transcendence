@@ -18,12 +18,12 @@ private static instance: UsersService;
     return prisma.user.findMany();
   }
 
-  async createUser(Username: string): Promise<User>{
-    console.log('Input data:', Username);
+    async createUser(Username: string, Userpassword: string): Promise<User>{
     try {
       const newUser = await prisma.user.create({
         data: {
           name: Username,
+          password: Userpassword
         },
       });
       return newUser;
