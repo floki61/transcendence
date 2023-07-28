@@ -14,8 +14,8 @@ export class UsersController {
     try {
       console.log("name::", createUserDto.name,"\n");
       console.log("password::", createUserDto.password,"\n");
-      const newUser = await this.usersService.createUser(createUserDto.name, createUserDto.password);
-      return { message: 'Book created successfully', book: newUser };
+      // const newUser = await this.usersService.createUser(createUserDto.name, createUserDto.password);
+      // return { message: 'Book created successfully', book: newUser };
     } catch (error) {
       return { error: 'Failed to create book', message: error.message };
     }
