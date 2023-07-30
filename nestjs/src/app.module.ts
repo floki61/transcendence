@@ -1,23 +1,16 @@
-
-// import { Module } from '@nestjs/common';
-// import { UsersController } from './users/user.controller';
-// import { UsersService } from './users/user.service';
-
-// @Module({
-//   controllers: [UsersController],
-//   providers: [UsersService],
-// })
-// export class UsersModule {}
-
 import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
-import { GoogleStrategy } from './google.strategy';
+import { FortyTwoStrategy } from './FortyTwoStrategy';
 import { UsersService } from './users/user.service';
+import { PassportModule, PassportSerializer } from '@nestjs/passport';
+import { PrismaService } from './prisma.service';
 
 @Module({
-  imports: [],
+  imports: [
+    PassportModule.register({defaultStrategy: '42'})
+  ],
   controllers: [AppController],
-  providers: [AppService, GoogleStrategy, UsersService],
+  providers: [AppService, FortyTwoStrategy, UsersService, PrismaService],
 })
 export class AppModule { }

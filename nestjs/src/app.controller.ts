@@ -1,18 +1,19 @@
 import { Controller, Get, Req, UseGuards } from '@nestjs/common';
 import { AppService } from './app.service';
 import { AuthGuard } from '@nestjs/passport';
+import { FortyTwoGuard } from './Guards';
 
 @Controller()
 export class AppController {
   constructor(private readonly appService: AppService) {}
 
-  @Get()
-  @UseGuards(AuthGuard('google'))
-  async googleAuth(@Req() req) {}
+  @UseGuards(FortyTwoGuard)
+  @Get('login')
+  login(){}
 
-  @Get('auth/google/callback')
-  @UseGuards(AuthGuard('google'))
-  googleAuthRedirect(@Req() req) {
-    return this.appService.googleLogin(req)
+  @UseGuards(FortyTwoGuard)
+  @Get('callback')
+  AuthRedirect(@Req() req) {
+    return this.appService.validateuser(req)
   }
 }
