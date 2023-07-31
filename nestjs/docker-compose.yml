@@ -4,10 +4,10 @@ services:
     image: postgres:14.1-alpine
     restart: always
     environment:
-      - POSTGRES_USER=omar
+      - POSTGRES_USER=ali
       - POSTGRES_PASSWORD=admin
       - POSTGRES_DB=trandb
     ports:
       - '5432:5432'
     volumes: 
-      - /Users/omar/Desktop/nestjs/data:/var/lib/postgresql/data
+      - /Users/abayar/Desktop/transcendence/nestjs/data:/var/lib/postgresql/data
