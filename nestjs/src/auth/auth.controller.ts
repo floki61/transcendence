@@ -1,11 +1,10 @@
 import { Controller, Get, Req, UseGuards } from '@nestjs/common';
-import { AppService } from './app.service';
-import { AuthGuard } from '@nestjs/passport';
+import { AuthService } from './auth.service';
 import { FortyTwoGuard } from './Guards';
 
 @Controller()
-export class AppController {
-  constructor(private readonly appService: AppService) {}
+export class AuthController {
+  constructor(private readonly AuthService: AuthService) {}
 
   @UseGuards(FortyTwoGuard)
   @Get('login')
@@ -14,6 +13,6 @@ export class AppController {
   @UseGuards(FortyTwoGuard)
   @Get('callback')
   AuthRedirect(@Req() req) {
-    return this.appService.validateuser(req)
+    return this.AuthService.validateuser(req)
   }
 }
