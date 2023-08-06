@@ -1,59 +1,49 @@
-import { Injectable } from '@nestjs/common';
-// import { PrismaService } from '../prisma/prisma.service';
-import { PrismaClient, User } from '@prisma/client';
-
-const prisma = new PrismaClient();
+import { ForbiddenException, Injectable } from '@nestjs/common';
+import { Userdto, signindto } from './dto';
+import * as argon from 'argon2'
+import { PrismaService } from 'src/prisma/prisma.service';
+import { PrismaClientKnownRequestError } from '@prisma/client/runtime/library';
 
 @Injectable()
-export class UsersService
-{
-  // private static instance: UsersService;
-  // constructor()
-  // {
-  //   if (!UsersService.instance)
-  //     UsersService.instance = this;
-  //   return UsersService.instance;
-  // }
+export class UsersService {
+    constructor(private prisma: PrismaService) {}
+    async    signup(dto: Userdto) {
+        const hash = await argon.hash(dto.password);
+        
+        try {
+            const user = await this.prisma.user.create({
+                data: {
+                    email:  dto.email,
+                    password: hash,
+                    firstName: dto.firstName,
+                    lastName: dto.lastName,
+                },
+            });
 
-  // async findAllUsers()
-  // {
-  //   return prisma.user.findMany();
-  // }
+            delete user.password
 
-  // async createUser(req): Promise<User>
-  // {
-  //   try
-  //   {
-  //     const newUser = await prisma.user.create({
-  //       data: 
-  //       {
-  //         firstName: req.user.firstName,
-  //         lastName: req.user.lastName,
-  //         email: req.user.email,
-  //         picture: req.user.picture
-  //       },
-  //     });
-  //     return newUser;
-  //   }
-  //   catch (error)
-  //   {
-  //     console.error('Error creating user:', error);
-  //     throw error;
-  //   }
-  // }
-  // async getUserImage(req)
-  // {
-  //   try {
-  //     const user= await prisma.user.findFirst({
-  //     where:{
-  //       firstName: req.user.firstName,
-  //     },
-  //     })
-  //     return user.picture;
-  //   }
-  //   catch(error){
-  //     console.error('Error finding user:', error);
-  //     throw error;
-  //   }
-  // }
+            return user;
+        } catch (error) {
+            if (error instanceof PrismaClientKnownRequestError) {
+                if (error.code === 'P2002') // if this is an error of  duplicate a unique instance{
+                    throw new ForbiddenException('Credentials taken');
+                }
+                throw error;
+            }
+        }
+    async   signin(dto: signindto) {
+
+        const user = await this.prisma.user.findUnique({
+            where:{ email: dto.email }
+        });
+
+        const pwcomp = await argon.verify(user.password, dto.password);
+
+        if (!pwcomp) {
+            throw new ForbiddenException('UnMached Password');
+        }
+        
+        delete user.password;
+        return user;
+    }
 }

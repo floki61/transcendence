@@ -1,23 +1,22 @@
-import { Controller, Get, Post, Body } from '@nestjs/common';
-import { UsersService } from './user.service';
-
+import { Body, Controller, Post } from "@nestjs/common";
+import { PrismaService } from "src/prisma/prisma.service";
+import { UsersService } from "./user.service";
+import { Userdto, signindto } from "./dto";
 
 @Controller('users')
-export class UsersController {
-  // constructor(private readonly usersService: UsersService) {}
-  // @Get()
-  // async findAll() {
-  //   return this.usersService.findAllUsers();
-  // }
-  // @Post()
-  // async createUser(@Body() createUserDto: { name: string , password: string}) {
-  //   try {
-  //     console.log("name::", createUserDto.name,"\n");
-  //     console.log("password::", createUserDto.password,"\n");
-  //     // const newUser = await this.usersService.createUser(createUserDto.name, createUserDto.password);
-  //     // return { message: 'Book created successfully', book: newUser };
-  //   } catch (error) {
-  //     return { error: 'Failed to create book', message: error.message };
-  //   }
-  // }
+export class UserController {
+    constructor(private user : UsersService ,
+        private prisma : PrismaService) {}
+    
+    @Post('signup')
+    signup(@Body() data: Userdto){
+    return this.user.signup(data);
+    }
+    
+    
+    @Post('signin')
+    signin(@Body() data: signindto){
+    return this.user.signin(data);
+    }
+
 }
