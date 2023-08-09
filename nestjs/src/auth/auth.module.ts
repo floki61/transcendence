@@ -1,11 +1,12 @@
 import {  Module } from '@nestjs/common';
 import { AuthController } from './auth.controller';
 import { AuthService } from './auth.service';
-import { FortyTwoStrategy } from './FortyTwoStrategy';
+import { FortyTwoStrategy } from './tools/FortyTwoStrategy';
 import { PassportModule} from '@nestjs/passport';
 import { PrismaService } from '../prisma.service';
 import { ConfigModule } from '@nestjs/config';
 import { JwtModule } from '@nestjs/jwt';
+
 
 @Module({
   imports: [

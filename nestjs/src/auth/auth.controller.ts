@@ -1,31 +1,7 @@
-// import { Controller, Get, Req, UseGuards, Res } from '@nestjs/common';
-// import { AuthService } from './auth.service';
-// import { FortyTwoGuard } from './Guards';
-// import { Request, Response } from 'express';
-
-// @Controller()
-// export class AuthController {
-//   constructor(private readonly AuthService: AuthService) {}
-
-//   @UseGuards(FortyTwoGuard)
-//   @Get('login')
-//   login(){}
-
-//   @UseGuards(FortyTwoGuard)
-//   @Get('callback')
-//   async AuthRedirect(@Req() req: Request) {
-//     const result = await this.AuthService.validateuser(req);
-//     if(result === "already created")
-//       return "gg";
-//     else
-//       	req.res.cookie('access_token', result, { httpOnly: true, maxAge: 600000 });
-//   }
-// }
-
-import { Controller, Get, Req, UseGuards, Res } from '@nestjs/common';
+import { Controller, Get, Req, UseGuards} from '@nestjs/common';
 import { AuthService } from './auth.service';
-import { FortyTwoGuard } from './Guards';
-import { Request, Response } from 'express';
+import { FortyTwoGuard } from './tools/Guards';
+import { Request} from 'express';
 
 
 
@@ -49,11 +25,8 @@ export class AuthController {
       }
     } else {
       req.res.cookie('access_token', result, { httpOnly: true, maxAge: 600000 });
-      req.res.redirect('/');
+      // req.res.redirect('/home');
+      req.res.redirect('/home?token=' + encodeURIComponent(result));
     }
-  }
-  @Get('/')
-  hey(){
-    return 'User created and access token set';
   }
 }
