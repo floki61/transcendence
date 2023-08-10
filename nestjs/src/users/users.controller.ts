@@ -1,20 +1,16 @@
-import { Controller, Get, Query } from '@nestjs/common';
+import { Controller, Get, Query ,UnauthorizedException} from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
+import { promises } from 'dns';
+import { UsersService } from './users.service';
 
 @Controller('home')
 export class UsersController {
     constructor(private config: ConfigService,
-                private jwt: JwtService){}
+                private jwt: JwtService,
+                private userservice: UsersService) {}
     @Get()
-    homepage(@Query('token') token: string) {
-        // return token;
-        try {
-            const decodedToken = this.jwt.verify(token, this.config.get('secret'));
-            return decodedToken;
-            return `Welcome, ${decodedToken.email}`;
-        } catch (error) {
-            return 'Token validation failed';
-        }
+    async homepage(@Query('token') token: string) {
+        return this.userservice.checkjwt(token);
     }
 }
