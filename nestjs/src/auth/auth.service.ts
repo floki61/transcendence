@@ -24,10 +24,9 @@ export class AuthService{
 				secret: this.config.get('secret'),
 			},
 		);
-		// res.cookie('access_token', token, { httpOnly: true, maxAge: 600000 });
 		return token;
 	}
-
+	
 	async validateuser(req): Promise<string> {
 		const ifd = parseInt(req.user.id);
 		const user = await this.prisma.user.findUnique({
@@ -35,9 +34,14 @@ export class AuthService{
 				id: ifd,
 			},
 		});
-
+	
 		if(user)
-			return "already created";
+		{
+			if(req.cookie && req.cookie['access_token'])
+				return null;
+			else
+				return this.signToken(req.user.id, req.user.email);
+		}
 		const newUser = await this.prisma.user.create({
 			data: 
 			{
@@ -49,7 +53,6 @@ export class AuthService{
 			},
 		});
 		return this.signToken(req.user.id, req.user.email);
-		return "user created";
 	}
 
 
