@@ -1,4 +1,4 @@
-import { Controller, Get, Query ,Req,UnauthorizedException} from '@nestjs/common';
+import { Controller, Get, Body, Req ,UnauthorizedException} from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
 import { Request } from 'express'

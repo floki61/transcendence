@@ -1,7 +1,8 @@
-import { Controller, Get, Req, UseGuards} from '@nestjs/common';
+import { Controller, Get, Post, Body, Req, UseGuards} from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { FortyTwoGuard } from './tools/Guards';
-import { Request} from 'express';
+import { Request } from 'express';
+import { Userdto, signindto } from "../users/dto";
 
 
 
@@ -24,5 +25,16 @@ export class AuthController {
       req.res.cookie('access_token', result, { httpOnly: true, maxAge: 600000 });
       req.res.redirect('/home');
     }
+  }
+
+  @Post('signup')
+  signup(@Body() data: Userdto){
+  return this.authService.signup(data);
+  }
+  
+  
+  @Post('signin')
+  signin(@Body() data: signindto){
+  return this.authService.signin(data);
   }
 }
