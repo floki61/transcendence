@@ -15,18 +15,14 @@ export class AuthController {
 
   @UseGuards(FortyTwoGuard)
   @Get('callback')
-  async authRedirect(@Req() req: Request) {
+  async authRedirect(@Req() req: Request)  {
     const result = await this.authService.validateuser(req);
-    if (result === 'already created') {
-      if (req.cookies && req.cookies['access_token']) {
+    if (result === null) {
         return 'Access token cookie is present';
-      } else {
-        return 'Access token cookie is not present';
-      }
-    } else {
+    }
+    else {
       req.res.cookie('access_token', result, { httpOnly: true, maxAge: 600000 });
-      // req.res.redirect('/home');
-      req.res.redirect('/home?token=' + encodeURIComponent(result));
+      req.res.redirect('/home');
     }
   }
 }
