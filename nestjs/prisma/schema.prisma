@@ -18,4 +18,22 @@ model User {
   picture     String?   @default("")  // Use nullable (?) for optional fields
   accessToken String?   @default("")  // Use nullable (?) for optional fields
   password    String?   // Password should not have a default value
+
+}
+
+model Participant {
+  id           Int            @id @default(autoincrement())
+
+  rid          Int
+  room     ChatRoom @relation(fields: [rid], references: [id])
+  uid          Int
+  // user        User hhhkhkdfub
+  @@unique([uid, rid])  
+}
+
+model ChatRoom {
+  id        Int         @id @default(autoincrement())
+  name      String
+  message   String
+  participants  Participant[]
 }
