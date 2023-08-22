@@ -9,5 +9,5 @@ services:
       - POSTGRES_DB=trandb
     ports:
       - '5432:5432'
-    volumes: 
-      - /Users/abayar/Desktop/transcendence/nestjs/data:/var/lib/postgresql/data
+    # volumes:
+    #   - /nfs/homes/abayar/Desktop/transcendence/nestjs/data1:/var/lib/postgresql/data

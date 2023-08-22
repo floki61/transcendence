@@ -10,30 +10,74 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+enum Role {
+  USER
+  ADMIN
+  OWNER
+}
+
+enum Status {
+  PENDING
+  ACCEPTED
+  REJECTED
+}
+
 model User {
-  id          Int       @id @default(autoincrement())
+  id          Int          @id @default(autoincrement())
   firstName   String
   lastName    String
-  email       String?   @unique
-  picture     String?   @default("")  // Use nullable (?) for optional fields
-  accessToken String?   @default("")  // Use nullable (?) for optional fields
-  password    String?   // Password should not have a default value
-
+  email       String?      @unique
+  picture     String?      @default("") // Use nullable (?) for optional fields
+  accessToken String?      @default("") // Use nullable (?) for optional fields
+  password    String? // Password should not have a default value
+  membership  Participant?
+  messages    Message[]
+  senders     FriendShip[] @relation("sender")
+  receivers   FriendShip[] @relation("receiver")
+  // lastSeen    DateTime?    @default(now())
 }
 
 model Participant {
-  id           Int            @id @default(autoincrement())
+  id Int @id @default(autoincrement())
 
-  rid          Int
-  room     ChatRoom @relation(fields: [rid], references: [id])
-  uid          Int
-  // user        User hhhkhkdfub
-  @@unique([uid, rid])  
+  rid  Int
+  room ChatRoom @relation(fields: [rid], references: [id])
+
+  uid  Int  @unique
+  user User @relation(fields: [uid], references: [id])
+
+  @@unique([uid, rid])
 }
 
 model ChatRoom {
-  id        Int         @id @default(autoincrement())
-  name      String
-  message   String
-  participants  Participant[]
+  id           Int           @id @default(autoincrement())
+  name         String
+  message      String
+  participants Participant[]
+  messages     Message[]
+}
+
+model FriendShip {
+  id Int @id @default(autoincrement())
+
+  user   User @relation(name: "sender", fields: [userId], references: [id])
+  userId Int
+
+  friend   User @relation(name: "receiver", fields: [friendId], references: [id])
+  friendId Int
+
+  status Status @default(PENDING)
+
+  @@unique([userId, friendId])
+}
+
+model Message {
+  id  Int    @id @default(autoincrement())
+  msg String
+
+  userId Int? // This field refers to the sender of the message
+  user   User? @relation(fields: [userId], references: [id])
+
+  rid  Int?
+  room ChatRoom? @relation(fields: [rid], references: [id])
 }
