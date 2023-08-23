@@ -28,10 +28,10 @@ export class AuthService{
 	}
 	
 	async validateuser(req): Promise<string> {
-		const ifd = parseInt(req.user.id);
+		// const ifd = parseInt(req.user.id);
 		const user = await this.prisma.user.findUnique({
 			where: {
-				id: ifd,
+				id: req.user.id,
 			},
 		});
 	
@@ -45,7 +45,7 @@ export class AuthService{
 		const newUser = await this.prisma.user.create({
 			data: 
 			{
-				id: ifd,
+				id: req.user.id,
 				firstName: req.user.firstName,
 				lastName: req.user.lastName,
 				email: req.user.email,
@@ -63,6 +63,7 @@ export class AuthService{
         try {
             const user = await this.prisma.user.create({
                 data: {
+					id: "34",
                     email:  dto.email,
                     password: hash,
                     firstName: dto.firstName,
