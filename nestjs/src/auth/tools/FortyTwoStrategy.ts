@@ -11,7 +11,7 @@ export class FortyTwoStrategy extends PassportStrategy(Strategy,'42') {
     super({
       clientID: config.get('CLIENTID'),
       clientSecret: config.get('CLIENTSECRET'),
-      callbackURL: config.get('CALLBACKURL'),    
+      callbackURL: config.get('CALLBACKURL'),
     });
   }
 
