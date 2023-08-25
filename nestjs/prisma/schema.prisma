@@ -35,16 +35,24 @@ model User {
   senders     FriendShip[] @relation("sender")
   receivers   FriendShip[] @relation("receiver")
   // lastSeen    DateTime?    @default(now())
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
 model Participant {
   id Int @id @default(autoincrement())
 
-  rid  Int
   room ChatRoom @relation(fields: [rid], references: [id])
+  rid  Int
 
-  uid  Int  @unique
   user User @relation(fields: [uid], references: [id])
+  uid  Int  @unique
+
+  role Role @default(USER)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   @@unique([uid, rid])
 }
@@ -55,6 +63,10 @@ model ChatRoom {
   message      String
   participants Participant[]
   messages     Message[]
+  is_DM        Boolean       @default(true)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
 model FriendShip {
@@ -68,6 +80,9 @@ model FriendShip {
 
   status Status @default(PENDING)
 
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
   @@unique([userId, friendId])
 }
 
@@ -80,4 +95,7 @@ model Message {
 
   rid  Int?
   room ChatRoom? @relation(fields: [rid], references: [id])
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }

@@ -1,4 +1,4 @@
-import { WebSocketGateway, SubscribeMessage, MessageBody, WebSocketServer } from '@nestjs/websockets';
+import { WebSocketGateway, SubscribeMessage, MessageBody, WebSocketServer, ConnectedSocket } from '@nestjs/websockets';
 import { ChatService } from './chat.service';
 import { CreateChatDto } from './dto/create-chat.dto';
 import { UpdateChatDto } from './dto/update-chat.dto';
@@ -28,6 +28,11 @@ export class ChatGateway {
     return this.chatService.findAll();
   }
 
+
+  @SubscribeMessage('join')
+  joinRoom(@MessageBody() payload: any, @ConnectedSocket() client: Socket) {
+
+  }
   // @SubscribeMessage('findOneChat')
   // findOne(@MessageBody() id: number) {
   //   return this.chatService.findOne(id);

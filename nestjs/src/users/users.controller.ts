@@ -23,9 +23,22 @@ export class UsersController {
                 secret: this.config.get('secret')
             }
         );
-        // console.log({ body, req: req.cookies['access_token'] });
         const user = await this.userservice.getuser(parseInt(payload.sub));
         const friendrequest = await this.userservice.sendFriendRequest(user.id, body.friendId);
+        return friendrequest;
+    }
+
+    @Post('acc')
+    async acceptFrienRequest(@Body() body: any, @Req() req: Request) {
+        const payload = await this.jwt.verifyAsync(
+            req.cookies['access_token'],
+            {
+                secret: this.config.get('secret')
+            });
+        console.log({ body, payload });
+        const user = await this.userservice.getuser(parseInt(payload.sub));
+
+        const friendrequest = await this.userservice.acceptFriendRequest(user.id, body.friendId); // mean
         return friendrequest;
     }
 

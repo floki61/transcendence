@@ -35,14 +35,41 @@ export class UsersService {
         return user;
     }
     async sendFriendRequest(userId: number, friendId: number) {
-        console.log({ userId, friendId });
+        // console.log({ userId, friendId });
         const friendrequest = await this.prisma.friendShip.create({
             data: {
                 userId,
                 friendId,
             }
-
         });
         return friendrequest;
     }
+    async acceptFriendRequest(userId: number, friendId: number) {
+        const friendrequest = await this.prisma.friendShip.update({
+            where: {
+                userId_friendId: {
+                    userId: friendId,
+                    friendId: userId,
+                }
+            },
+            data: {
+                status: 'ACCEPTED'
+            }
+        });
+        // const chatRoom = await this.prisma.chatRoom.create({
+        //     data: {
+        //         id: friendrequest.id,
+        //         name: 'Chat between ' + userId + ' and ' + friendId,
+        //         participants: {
+        //             connect: [
+        //                 { uid: userId },
+        //                 { uid: friendId },
+        //             ]
+        //         }
+        //     }
+        // });
+        // return { friendrequest, chatRoom };
+
+    }
+
 }
