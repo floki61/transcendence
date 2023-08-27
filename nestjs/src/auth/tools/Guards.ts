@@ -7,3 +7,9 @@ export class FortyTwoGuard extends AuthGuard('42') {
     super();
   }
 }
+@Injectable()
+export class GoogleGuard extends AuthGuard('google') {
+  constructor() {
+    super ();
+  }
+}

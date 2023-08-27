@@ -23,7 +23,7 @@ enum Status {
 }
 
 model User {
-  id          Int          @id @default(autoincrement())
+  id          String       @id @default(cuid())
   firstName   String
   lastName    String
   email       String?      @unique
@@ -41,13 +41,13 @@ model User {
 }
 
 model Participant {
-  id Int @id @default(autoincrement())
+  id String @id @default(cuid())
 
   room ChatRoom @relation(fields: [rid], references: [id])
-  rid  Int
+  rid  String
 
-  user User @relation(fields: [uid], references: [id])
-  uid  Int  @unique
+  user User   @relation(fields: [uid], references: [id])
+  uid  String @unique
 
   role Role @default(USER)
 
@@ -58,7 +58,7 @@ model Participant {
 }
 
 model ChatRoom {
-  id           Int           @id @default(autoincrement())
+  id           String        @id @default(cuid())
   name         String
   message      String
   participants Participant[]
@@ -70,13 +70,13 @@ model ChatRoom {
 }
 
 model FriendShip {
-  id Int @id @default(autoincrement())
+  id String @id @default(cuid())
 
-  user   User @relation(name: "sender", fields: [userId], references: [id])
-  userId Int
+  user   User   @relation(name: "sender", fields: [userId], references: [id])
+  userId String
 
-  friend   User @relation(name: "receiver", fields: [friendId], references: [id])
-  friendId Int
+  friend   User   @relation(name: "receiver", fields: [friendId], references: [id])
+  friendId String
 
   status Status @default(PENDING)
 
@@ -87,13 +87,13 @@ model FriendShip {
 }
 
 model Message {
-  id  Int    @id @default(autoincrement())
+  id  String @id @default(cuid())
   msg String
 
-  userId Int? // This field refers to the sender of the message
-  user   User? @relation(fields: [userId], references: [id])
+  userId String? // This field refers to the sender of the message
+  user   User?   @relation(fields: [userId], references: [id])
 
-  rid  Int?
+  rid  String?
   room ChatRoom? @relation(fields: [rid], references: [id])
 
   createdAt DateTime @default(now())

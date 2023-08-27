@@ -36,7 +36,7 @@ CREATE TABLE "ChatRoom" (
     "id" SERIAL NOT NULL,
     "name" TEXT NOT NULL,
     "message" TEXT NOT NULL,
-    "is_DM" BOOLEAN NOT NULL,
+    "is_DM" BOOLEAN NOT NULL DEFAULT true,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
 

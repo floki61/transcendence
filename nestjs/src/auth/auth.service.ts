@@ -9,14 +9,13 @@ import { PrismaClientKnownRequestError } from "@prisma/client/runtime/library";
 
 @Injectable()
 
-export class AuthService{
+export class AuthService {
 	constructor(private prisma: PrismaService,
-                private jwtService: JwtService,
-				private config: ConfigService) {}
+		private jwtService: JwtService,
+		private config: ConfigService) { }
 
-	async signToken(userId: number, email: string): Promise<string>
-	{
-		const payload = {sub: userId, email};
+	async signToken(userId: number, email: string): Promise<string> {
+		const payload = { sub: userId, email };
 		const token = await this.jwtService.signAsync(
 			payload,
 			{
@@ -26,26 +25,25 @@ export class AuthService{
 		);
 		return token;
 	}
-	
+
 	async validateuser(req): Promise<string> {
-		const ifd = parseInt(req.user.id);
+		// const ifd = parseInt(req.user.id);
 		const user = await this.prisma.user.findUnique({
 			where: {
-				id: ifd,
+				id: req.user.id,
 			},
 		});
-	
-		if(user)
-		{
-			if(req.cookie && req.cookie['access_token'])
+
+		if (user) {
+			if (req.cookie && req.cookie['access_token'])
 				return null;
 			else
 				return this.signToken(req.user.id, req.user.email);
 		}
 		const newUser = await this.prisma.user.create({
-			data: 
+			data:
 			{
-				id: ifd,
+				id: req.user.id,
 				firstName: req.user.firstName,
 				lastName: req.user.lastName,
 				email: req.user.email,
@@ -57,45 +55,46 @@ export class AuthService{
 
 
 
-	async    signup(dto: Userdto) {
-        const hash = await argon.hash(dto.password);
-        
-        try {
-            const user = await this.prisma.user.create({
-                data: {
-                    email:  dto.email,
-                    password: hash,
-                    firstName: dto.firstName,
-                    lastName: dto.lastName,
-                },
-            });
+	async signup(dto: Userdto) {
+		const hash = await argon.hash(dto.password);
 
-            delete user.password
+		try {
+			const user = await this.prisma.user.create({
+				data: {
+					// id: "34",
+					email: dto.email,
+					password: hash,
+					firstName: dto.firstName,
+					lastName: dto.lastName,
+				},
+			});
 
-            return user;
-        } catch (error) {
-            if (error instanceof PrismaClientKnownRequestError) {
-                if (error.code === 'P2002') // if this is an error of  duplicate a unique instance{
-                    throw new ForbiddenException('Credentials taken');
-                }
-                throw error;
-            }
-        }
-    async   signin(dto: signindto) {
+			delete user.password
 
-        const user = await this.prisma.user.findUnique({
-            where:{ email: dto.email }
-        });
+			return user;
+		} catch (error) {
+			if (error instanceof PrismaClientKnownRequestError) {
+				if (error.code === 'P2002') // if this is an error of  duplicate a unique instance{
+					throw new ForbiddenException('Credentials taken');
+			}
+			throw error;
+		}
+	}
+	async signin(dto: signindto) {
 
-        const pwcomp = await argon.verify(user.password, dto.password);
+		const user = await this.prisma.user.findUnique({
+			where: { email: dto.email }
+		});
 
-        if (!pwcomp) {
-            throw new ForbiddenException('UnMached Password');
-        }
-        
-        delete user.password;
-        return user;
-    }
+		const pwcomp = await argon.verify(user.password, dto.password);
+
+		if (!pwcomp) {
+			throw new ForbiddenException('UnMached Password');
+		}
+
+		delete user.password;
+		return user;
+	}
 }
 
 

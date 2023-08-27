@@ -18,7 +18,7 @@ export class UsersService {
                 }
             );
             console.log({ payload });
-            const user = (await this.getuser(parseInt(payload.sub)));
+            const user = (await this.getuser(payload.sub));
             return 'Welcome ' + user.firstName + ' ' + user.lastName;
         }
         catch (e) {
@@ -26,7 +26,7 @@ export class UsersService {
             throw new UnauthorizedException();
         }
     }
-    async getuser(id: number) {
+    async getuser(id: string) {
         const user = await this.prisma.user.findUnique({
             where: {
                 id,
@@ -34,7 +34,8 @@ export class UsersService {
         });
         return user;
     }
-    async sendFriendRequest(userId: number, friendId: number) {
+
+    async sendFriendRequest(userId: string, friendId: string) {
         // console.log({ userId, friendId });
         const friendrequest = await this.prisma.friendShip.create({
             data: {
@@ -44,7 +45,21 @@ export class UsersService {
         });
         return friendrequest;
     }
-    async acceptFriendRequest(userId: number, friendId: number) {
+
+    async cancelFriendRequest(userId: string, friendId: string) {
+        // console.log({ userId, friendId });
+        const friendrequest = await this.prisma.friendShip.delete({
+            where: {
+                userId_friendId: {
+                    userId,
+                    friendId,
+                }
+            }
+        });
+        return friendrequest;
+    }
+
+    async acceptFriendRequest(userId: string, friendId: string) {
         const friendrequest = await this.prisma.friendShip.update({
             where: {
                 userId_friendId: {
@@ -70,6 +85,20 @@ export class UsersService {
         // });
         // return { friendrequest, chatRoom };
 
+    }
+
+    async rejectFriendRequest(userId: string, friendId: string) {
+        const friendrequest = await this.prisma.friendShip.update({
+            where: {
+                userId_friendId: {
+                    userId: friendId,
+                    friendId: userId,
+                }
+            },
+            data: {
+                status: 'REJECTED'
+            }
+        });
     }
 
 }
