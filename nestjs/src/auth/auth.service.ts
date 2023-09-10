@@ -19,7 +19,7 @@ export class AuthService {
 		const token = await this.jwtService.signAsync(
 			payload,
 			{
-				expiresIn: '10m',
+				expiresIn: '2000m',
 				secret: this.config.get('secret'),
 			},
 		);
@@ -91,7 +91,7 @@ export class AuthService {
 		if (!pwcomp) {
 			throw new ForbiddenException('UnMached Password');
 		}
-
+		// this.signToken(user.id, user.email);
 		delete user.password;
 		return user;
 	}
