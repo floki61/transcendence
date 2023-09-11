@@ -1,4 +1,4 @@
-import { Controller, Get, Body, Req, UnauthorizedException, Post } from '@nestjs/common';
+import { Controller, Get, Body, Req, UnauthorizedException, Post,} from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
 import { Request } from 'express';
@@ -11,7 +11,7 @@ export class UsersController {
         private jwt: JwtService,
         private userservice: UsersService) { }
     @Get('home')
-    async homepage(@Req() req: Request) {
+    async homepage(req: Request) {
         return this.userservice.checkjwt(req.cookies['access_token']);
     }
     @Post('sendFriendRequest')

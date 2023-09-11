@@ -17,7 +17,7 @@ export class UsersService {
                     secret: this.config.get('secret')
                 }
             );
-            console.log({ payload });
+            console.log({ payload , token});
             const user = (await this.getuser(payload.sub));
             return 'Welcome ' + user.firstName + ' ' + user.lastName;
         }

@@ -1,6 +1,6 @@
 import { ForbiddenException, Injectable } from "@nestjs/common";
 import { JwtService } from "@nestjs/jwt";
-import { Response } from 'express';
+import { Request } from 'express';
 import { ConfigService } from '@nestjs/config';
 import { PrismaService } from "src/prisma/prisma.service";
 import { Userdto, signindto } from "src/users/dto";
@@ -27,15 +27,14 @@ export class AuthService {
 	}
 
 	async validateuser(req): Promise<string> {
-		// const ifd = parseInt(req.user.id);
 		const user = await this.prisma.user.findUnique({
 			where: {
 				id: req.user.id,
 			},
 		});
-
 		if (user) {
-			if (req.cookie && req.cookie['access_token'])
+			console.log('cookies:', req.cookies);
+			if (req.cookies && req.cookies['access_token'])
 				return null;
 			else
 				return this.signToken(req.user.id, req.user.email);
@@ -61,7 +60,6 @@ export class AuthService {
 		try {
 			const user = await this.prisma.user.create({
 				data: {
-					// id: "34",
 					email: dto.email,
 					password: hash,
 					firstName: dto.firstName,
