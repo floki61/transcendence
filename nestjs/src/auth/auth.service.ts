@@ -12,10 +12,15 @@ import { PrismaClientKnownRequestError } from "@prisma/client/runtime/library";
 export class AuthService {
 	constructor(private prisma: PrismaService,
 		private jwtService: JwtService,
-		private config: ConfigService) { }
+		private config: ConfigService) {}
 
-	async signToken(userId: number, email: string): Promise<string> {
-		const payload = { sub: userId, email };
+	async generateToken(req): Promise<string> {
+		const user = await this.prisma.user.findUnique({
+			where: {
+				id: req.user.id,
+			},
+		});
+		const payload = { id: user.id, email: user.email };
 		const token = await this.jwtService.signAsync(
 			payload,
 			{
@@ -23,10 +28,10 @@ export class AuthService {
 				secret: this.config.get('secret'),
 			},
 		);
+		console.log(token);
 		return token;
 	}
-
-	async validateuser(req): Promise<string> {
+	async validateUser(req): Promise<boolean> {
 		const user = await this.prisma.user.findUnique({
 			where: {
 				id: req.user.id,
@@ -35,9 +40,9 @@ export class AuthService {
 		if (user) {
 			console.log('cookies:', req.cookies);
 			if (req.cookies && req.cookies['access_token'])
-				return null;
+				return true;
 			else
-				return this.signToken(req.user.id, req.user.email);
+				return false;
 		}
 		const newUser = await this.prisma.user.create({
 			data:
@@ -49,14 +54,11 @@ export class AuthService {
 				picture: req.user.picture
 			},
 		});
-		return this.signToken(req.user.id, req.user.email);
+		return false;
 	}
-
-
 
 	async signup(dto: Userdto) {
 		const hash = await argon.hash(dto.password);
-
 		try {
 			const user = await this.prisma.user.create({
 				data: {
@@ -66,9 +68,7 @@ export class AuthService {
 					lastName: dto.lastName,
 				},
 			});
-
 			delete user.password
-
 			return user;
 		} catch (error) {
 			if (error instanceof PrismaClientKnownRequestError) {
@@ -79,13 +79,10 @@ export class AuthService {
 		}
 	}
 	async signin(dto: signindto) {
-
 		const user = await this.prisma.user.findUnique({
 			where: { email: dto.email }
 		});
-
 		const pwcomp = await argon.verify(user.password, dto.password);
-
 		if (!pwcomp) {
 			throw new ForbiddenException('UnMached Password');
 		}
