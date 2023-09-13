@@ -26,6 +26,6 @@ import { UsersModule } from 'src/users/users.module';
     UsersModule
   ],
   controllers: [AppController, AuthController],
-  providers: [AppService, FortyTwoStrategy, PrismaService, AuthService],
+  providers: [AppService, FortyTwoStrategy, PrismaService, AuthService, UsersService],
 })
 export class AppModule { }

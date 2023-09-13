@@ -1,11 +1,10 @@
 import { Controller, Get, Post, Body, Req, UseGuards, Res} from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { FortyTwoGuard, GoogleGuard } from './tools/Guards';
-import { Request, Response} from 'express';
+import { Request, Response, response} from 'express';
 import { Userdto, signindto } from "../users/dto";
 import { generate } from 'rxjs';
-
-
+import { AuthenticationMiddleware } from './tools/authenticatinMiddleware';
 
 @Controller()
 export class AuthController {
@@ -26,17 +25,17 @@ export class AuthController {
 			res.redirect('/');
 		}
 	}
-
+	
 	@UseGuards(FortyTwoGuard)
 	@Get('login')
 	login() {}
-
+	
 	@UseGuards(FortyTwoGuard)
 	@Get('callback')
 	async authRedirect(@Req() req: Request, @Res() res: Response) {
 		if (await this.authService.validateUser(req))
-			req.res.redirect('/');
-	  	else {
+		req.res.redirect('/');
+		else {
 			const token = await this.authService.generateToken(req);
 			res.cookie('access_token', token, { httpOnly: true, maxAge: 600000});
 			res.redirect('/');
@@ -55,4 +54,13 @@ export class AuthController {
 	signin(@Body() data: signindto){
 	return this.authService.signin(data);
 	}
-}
+
+	@Post('2fa/generate')
+	@UseGuards(AuthenticationMiddleware)
+	async register(@Req() req, @Res() res: Response){
+		const {otpauthUrl} = await this.authService.generateTwoFactorAuthenticationSecret(req.user.id, req.user.email);
+		const qrCodeUrl = await this.authService.generateQrCodeDataURL(otpauthUrl);
+		return res.json(`<img src=${qrCodeUrl}>`);
+		// return res.json(await this.authService.generateQrCodeDataURL(otpauthUrl));
+	}
+}	

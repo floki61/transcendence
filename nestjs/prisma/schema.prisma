@@ -30,6 +30,7 @@ model User {
   picture     String?      @default("") // Use nullable (?) for optional fields
   accessToken String?      @default("") // Use nullable (?) for optional fields
   password    String? // Password should not have a default value
+  twoFactorAuthenticationSecret String?
   membership  Participant?
   messages    Message[]
   senders     FriendShip[] @relation("sender")
