@@ -1,6 +1,5 @@
 import { ForbiddenException, Injectable } from "@nestjs/common";
 import { JwtService } from "@nestjs/jwt";
-import { Request } from 'express';
 import { ConfigService } from '@nestjs/config';
 import { PrismaService } from "src/prisma/prisma.service";
 import { Userdto, signindto } from "src/users/dto";
@@ -91,7 +90,4 @@ export class AuthService {
 		return user;
 	}
 }
-
-
-
 

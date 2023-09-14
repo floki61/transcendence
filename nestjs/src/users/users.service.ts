@@ -19,7 +19,8 @@ export class UsersService {
                 }
             );
             console.log({ payload , token});
-            const user = (await this.getuser(payload.sub));
+            const user = (await this.getuser(payload.id));
+            return user;
             return 'Welcome ' + user.firstName + ' ' + user.lastName;
         }
         catch (e) {
@@ -27,12 +28,11 @@ export class UsersService {
             throw new UnauthorizedException();
         }
     }
-    async getuser(id: string) {
-        console.log({ id });
+    async getuser(ifd: string) {
         const user = await this.prisma.user.findUnique({
             where: {
-                id,
-            }
+                id: ifd,
+            },
         });
         if (!user) {
             throw new UnauthorizedException();
@@ -41,7 +41,7 @@ export class UsersService {
     }
 
     async sendFriendRequest(userId: string, friendId: string) {
-        // console.log({ userId, friendId });
+        console.log({ userId, friendId });
         const friendrequest = await this.prisma.friendShip.create({
             data: {
                 userId,
@@ -117,5 +117,4 @@ export class UsersService {
             }
         });
     }
-
 }

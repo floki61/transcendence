@@ -6,27 +6,26 @@ import { ConfigService } from '@nestjs/config';
 
 @Injectable()
 export class FortyTwoStrategy extends PassportStrategy(Strategy,'42') {
+    constructor(private readonly config: ConfigService) {
+        super({
+            clientID: config.get('CLIENTID'),
+            clientSecret: config.get('CLIENTSECRET'),
+            callbackURL: config.get('CALLBACKURL'),
+        });
+    }
 
-  constructor(private readonly config: ConfigService) {
-    super({
-      clientID: config.get('CLIENTID'),
-      clientSecret: config.get('CLIENTSECRET'),
-      callbackURL: config.get('CALLBACKURL'),
-    });
-  }
-
-  async validate (accessToken: string, refreshToken: string, profile: Profile, done: any): Promise<any> {
-    const user = {
-      id: profile.id,
-      email: profile.emails[0].value,
-      firstName: profile.name.givenName,
-      lastName: profile.name.familyName,
-      picture: profile._json.image.link,
-      accessToken
-    };
-    if(user)
-      done(null, user);
-    else
-      done(null, false);
-  }
+    async validate (accessToken: string, refreshToken: string, profile: Profile, done: any): Promise<any> {
+        const user = {
+            id: profile.id,
+            email: profile.emails[0].value,
+            firstName: profile.name.givenName,
+            lastName: profile.name.familyName,
+            picture: profile._json.image.link,
+            accessToken
+        };
+        if(user)
+            done(null, user);
+        else
+            done(null, false);
+    }
 }
