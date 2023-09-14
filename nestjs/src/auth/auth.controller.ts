@@ -3,8 +3,6 @@ import { AuthService } from './auth.service';
 import { FortyTwoGuard, GoogleGuard } from './tools/Guards';
 import { Request, Response, response} from 'express';
 import { Userdto, signindto } from "../users/dto";
-import { generate } from 'rxjs';
-import { AuthenticationMiddleware } from './tools/authenticatinMiddleware';
 
 @Controller()
 export class AuthController {
@@ -53,14 +51,5 @@ export class AuthController {
 	@Post('signin')
 	signin(@Body() data: signindto){
 	return this.authService.signin(data);
-	}
-
-	@Post('2fa/generate')
-	@UseGuards(AuthenticationMiddleware)
-	async register(@Req() req, @Res() res: Response){
-		const {otpauthUrl} = await this.authService.generateTwoFactorAuthenticationSecret(req.user.id, req.user.email);
-		const qrCodeUrl = await this.authService.generateQrCodeDataURL(otpauthUrl);
-		return res.json(`<img src=${qrCodeUrl}>`);
-		// return res.json(await this.authService.generateQrCodeDataURL(otpauthUrl));
 	}
 }	

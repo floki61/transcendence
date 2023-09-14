@@ -1,15 +1,10 @@
 import { ForbiddenException, Injectable } from "@nestjs/common";
 import { JwtService } from "@nestjs/jwt";
-import { Request } from 'express';
 import { ConfigService } from '@nestjs/config';
 import { PrismaService } from "src/prisma/prisma.service";
 import { Userdto, signindto } from "src/users/dto";
 import * as argon from 'argon2'
 import { PrismaClientKnownRequestError } from "@prisma/client/runtime/library";
-import { authenticator } from "otplib";
-import { User } from "@prisma/client";
-// import { UsersService } from "src/users/users.service";
-import { toDataURL } from 'qrcode';
 
 @Injectable()
 
@@ -94,37 +89,5 @@ export class AuthService {
 		delete user.password;
 		return user;
 	}
-
-	isTwoFactorAuthenticationCodeValid(twoFactorAuthenticationCode: string, user: User) {
-		return authenticator.verify({
-		  token: twoFactorAuthenticationCode,
-		  secret: user.twoFactorAuthenticationSecret,
-		});
-	  }
-
-	async generateQrCodeDataURL(otpAuthUrl: string) {
-		return toDataURL(otpAuthUrl);
-	  }
-
-	async setTwoFactorAuthenticationSecret(secret: string, userId: string) {
-	  const user = await this.prisma.user.update({
-		  where: {
-			  id: userId,
-		  },
-		  data:{
-			  twoFactorAuthenticationSecret: secret
-		  }
-	  });
-	}
-
-	async generateTwoFactorAuthenticationSecret(userid, email) {
-		const secret = authenticator.generateSecret();
-		const otpauthUrl = authenticator.keyuri(email, 'transcendence', secret);
-		await this.setTwoFactorAuthenticationSecret(secret, userid);
-		return {
-			secret,
-			otpauthUrl
-		}
-	  }
 }
 

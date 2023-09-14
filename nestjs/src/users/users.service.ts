@@ -19,6 +19,7 @@ export class UsersService {
             );
             console.log({ payload , token});
             const user = (await this.getuser(payload.id));
+            return user;
             return 'Welcome ' + user.firstName + ' ' + user.lastName;
         }
         catch (e) {
