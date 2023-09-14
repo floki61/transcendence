@@ -13,6 +13,8 @@ import { AuthController } from 'src/auth/auth.controller';
 import { UsersService } from 'src/users/users.service';
 import { UsersController } from 'src/users/users.controller';
 import { UsersModule } from 'src/users/users.module';
+import { ChatGateway } from 'src/chat/chat.gateway';
+import { ChatModule } from 'src/chat/chat.module';
 
 @Module({
   imports: [
@@ -23,9 +25,10 @@ import { UsersModule } from 'src/users/users.module';
     PassportModule.register({defaultStrategy: '42'}),
     PrismaModule,
     AuthModule,
-    UsersModule
+    UsersModule,
+    ChatModule,
   ],
   controllers: [AppController, AuthController],
-  providers: [AppService, FortyTwoStrategy, PrismaService, AuthService],
+  providers: [AppService, FortyTwoStrategy, PrismaService, AuthService ],
 })
 export class AppModule { }

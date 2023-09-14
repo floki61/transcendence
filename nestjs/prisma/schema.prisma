@@ -31,7 +31,6 @@ model User {
   accessToken String?      @default("") // Use nullable (?) for optional fields
   password    String? // Password should not have a default value
   membership  Participant?
-  messages    Message[]
   senders     FriendShip[] @relation("sender")
   receivers   FriendShip[] @relation("receiver")
   // lastSeen    DateTime?    @default(now())
@@ -49,6 +48,8 @@ model Participant {
   user User   @relation(fields: [uid], references: [id])
   uid  String @unique
 
+  messages    Message[]
+
   role Role @default(USER)
 
   createdAt DateTime @default(now())
@@ -60,7 +61,7 @@ model Participant {
 model ChatRoom {
   id           String        @id @default(cuid())
   name         String
-  message      String
+  // message      String
   participants Participant[]
   messages     Message[]
   is_DM        Boolean       @default(true)
@@ -91,7 +92,7 @@ model Message {
   msg String
 
   userId String? // This field refers to the sender of the message
-  user   User?   @relation(fields: [userId], references: [id])
+  user   Participant?   @relation(fields: [userId], references: [id])
 
   rid  String?
   room ChatRoom? @relation(fields: [rid], references: [id])

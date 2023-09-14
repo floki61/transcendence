@@ -1,4 +1,5 @@
 export class Chat {
-    name: string;
-    message: string;
+    id: string;
+    msg: string;
+    rid: string;
 }

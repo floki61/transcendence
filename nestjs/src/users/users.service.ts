@@ -1,5 +1,6 @@
 import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
+// import { MESSAGES } from '@nestjs/core/constants';
 import { JwtService } from '@nestjs/jwt';
 import { PrismaService } from 'src/prisma/prisma.service';
 
@@ -27,11 +28,15 @@ export class UsersService {
         }
     }
     async getuser(id: string) {
+        console.log({ id });
         const user = await this.prisma.user.findUnique({
             where: {
                 id,
-            },
+            }
         });
+        if (!user) {
+            throw new UnauthorizedException();
+        }
         return user;
     }
 
@@ -71,20 +76,32 @@ export class UsersService {
                 status: 'ACCEPTED'
             }
         });
-        // const chatRoom = await this.prisma.chatRoom.create({
-        //     data: {
-        //         id: friendrequest.id,
-        //         name: 'Chat between ' + userId + ' and ' + friendId,
-        //         participants: {
-        //             connect: [
-        //                 { uid: userId },
-        //                 { uid: friendId },
-        //             ]
-        //         }
-        //     }
-        // });
-        // return { friendrequest, chatRoom };
+        
+        const chatRoom = this.creatChatRoom(userId, friendId);
+        return { friendrequest, chatRoom };
+    }
 
+    async   creatChatRoom(userId: string, friendId: string) {
+        const chatRoom = await this.prisma.chatRoom.create({
+            data: {
+                name: 'Chat between ' + (await this.prisma.user.findUnique({where: {id: userId}})).firstName 
+                + ' and ' + (await this.prisma.user.findUnique({where: {id: friendId}})).firstName,
+            }
+        });
+        const participant1 = await this.prisma.participant.create({
+            data: {
+                uid: userId,
+                rid: chatRoom.id,
+            }
+        });
+        const participant2 = await this.prisma.participant.create({
+            data: {
+                uid: friendId,
+                rid: chatRoom.id,
+            }
+        });
+        // console.log({ userId, friendId });
+        return chatRoom;
     }
 
     async rejectFriendRequest(userId: string, friendId: string) {
