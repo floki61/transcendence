@@ -30,30 +30,32 @@ export class AuthService {
 		console.log(token);
 		return token;
 	}
-	async validateUser(req): Promise<boolean> {
+	async validateUser(req, res) {
 		const user = await this.prisma.user.findUnique({
 			where: {
 				id: req.user.id,
 			},
 		});
-		if (user) {
-			console.log('cookies:', req.cookies);
-			if (req.cookies && req.cookies['access_token'])
-				return true;
-			else
-				return false;
+		if (!user) {
+			console.log("new user");
+			const newUser = await this.prisma.user.create({
+				data:
+				{
+					id: req.user.id,
+					firstName: req.user.firstName,
+					lastName: req.user.lastName,
+					email: req.user.email,
+					picture: req.user.picture
+				},
+			});
+			req.user = newUser;
 		}
-		const newUser = await this.prisma.user.create({
-			data:
-			{
-				id: req.user.id,
-				firstName: req.user.firstName,
-				lastName: req.user.lastName,
-				email: req.user.email,
-				picture: req.user.picture
-			},
-		});
-		return false;
+		else{
+			console.log("old user");
+			req.user = user;
+		}
+		const token = await this.generateToken(req);
+		res.cookie('access_token', token, { httpOnly: true, maxAge: 600000});
 	}
 
 	async signup(dto: Userdto) {

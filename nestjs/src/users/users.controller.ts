@@ -1,8 +1,9 @@
-import { Controller, Get, Body, Req, UnauthorizedException, Post,} from '@nestjs/common';
+import { Controller, Get, Body, Req, UnauthorizedException, Post, UseGuards,} from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
 import { Request } from 'express';
 import { UsersService } from './users.service';
+import { JwtAuthGuard } from 'src/auth/jwt/jwt.guard';
 // import { clearConfigCache } from 'prettier';
 
 @Controller()
@@ -10,10 +11,13 @@ export class UsersController {
     constructor(private config: ConfigService,
         private jwt: JwtService,
         private userservice: UsersService) { }
-    @Get('home')
-    async homepage(req: Request) {
-        return this.userservice.checkjwt(req.cookies['access_token']);
-    }
+    
+    @UseGuards(JwtAuthGuard)
+	@Get('/')
+	async home(@Req() req) {
+		return ({user: req.user, cookies: req.cookies});
+	}
+
     @Post('sendFriendRequest')
     async sendFriendRequest(@Body() body: any, @Req() req: Request) {
         const payload = await this.jwt.verifyAsync(

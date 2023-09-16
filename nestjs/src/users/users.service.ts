@@ -9,26 +9,9 @@ import { PrismaService } from 'src/prisma/prisma.service';
 export class UsersService {
     constructor(private jwt: JwtService,
         private config: ConfigService,
-        private prisma: PrismaService) { }
-    async checkjwt(token: string) {
-        try {
-            const payload = await this.jwt.verifyAsync(
-                token,
-                {
-                    secret: this.config.get('secret')
-                }
-            );
-            console.log({ payload , token});
-            const user = (await this.getuser(payload.id));
-            return user;
-            return 'Welcome ' + user.firstName + ' ' + user.lastName;
-        }
-        catch (e) {
-            console.log(e);
-            throw new UnauthorizedException();
-        }
-    }
-    async getuser(ifd: string) {
+        private prisma: PrismaService) {}
+
+        async getuser(ifd: string) {
         const user = await this.prisma.user.findUnique({
             where: {
                 id: ifd,
