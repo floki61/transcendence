@@ -11,16 +11,25 @@ export class UsersService {
         private config: ConfigService,
         private prisma: PrismaService) {}
 
-        async getuser(ifd: string) {
-        const user = await this.prisma.user.findUnique({
+    async getUser(idu: string) {
+        return await this.prisma.user.findUnique({
             where: {
-                id: ifd,
+                id: idu,
             },
         });
-        if (!user) {
-            throw new UnauthorizedException();
-        }
-        return user;
+    }
+
+    async createUser(req) {
+        return await this.prisma.user.create({
+            data:
+            {
+                id: req.user.id,
+                firstName: req.user.firstName,
+                lastName: req.user.lastName,
+                email: req.user.email,
+                picture: req.user.picture
+            },
+        });
     }
 
     async sendFriendRequest(userId: string, friendId: string) {

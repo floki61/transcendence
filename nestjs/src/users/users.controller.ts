@@ -26,7 +26,7 @@ export class UsersController {
                 secret: this.config.get('secret')
             }
         );
-        const user = await this.userservice.getuser(payload.id);
+        const user = await this.userservice.getUser(payload.id);
         const friendrequest = await this.userservice.sendFriendRequest(user.id, body.friendId);
         return friendrequest;
     }
@@ -39,7 +39,7 @@ export class UsersController {
                 secret: this.config.get('secret')
             }
         );
-        const user = await this.userservice.getuser(payload.id);
+        const user = await this.userservice.getUser(payload.id);
         const friendrequest = await this.userservice.cancelFriendRequest(user.id, body.friendId);
         return friendrequest;
     }
@@ -52,7 +52,7 @@ export class UsersController {
                 secret: this.config.get('secret')
             });
         // console.log({ body, payload });
-        const user = await this.userservice.getuser(payload.id);
+        const user = await this.userservice.getUser(payload.id);
 
         // console.log({ user });
 
@@ -68,7 +68,7 @@ export class UsersController {
                 secret: this.config.get('secret')
             });
         // console.log({ body, payload });
-        const user = await this.userservice.getuser(payload.id);
+        const user = await this.userservice.getUser(payload.id);
 
         // console.log({ user });
 

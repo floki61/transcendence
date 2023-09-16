@@ -12,6 +12,7 @@ import { AuthService } from 'src/auth/auth.service';
 import { AppController } from './app.controller';
 import { AuthController } from 'src/auth/auth.controller';
 import { ChatModule } from 'src/chat/chat.module';
+import { UsersService } from 'src/users/users.service';
 
 @Module({
   imports: [
@@ -24,6 +25,6 @@ import { ChatModule } from 'src/chat/chat.module';
     ChatModule,
   ],
   controllers: [AppController, AuthController],
-  providers: [JwtService, AppService, FortyTwoStrategy, PrismaService, AuthService],
+  providers: [JwtService, AppService, FortyTwoStrategy, PrismaService, AuthService, UsersService],
 })
 export class AppModule { }
