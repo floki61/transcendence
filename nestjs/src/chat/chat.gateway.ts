@@ -5,6 +5,8 @@ import { UpdateChatDto } from './dto/update-chat.dto';
 import { Server, Socket } from 'socket.io';
 import { JwtService } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
+import { Req, UseGuards } from '@nestjs/common';
+import { JwtAuthGuard } from 'src/auth/jwt/jwt.guard';
 // import { request } from 'express';
 // import { Client } from 'socket.io/dist/client';
 
@@ -22,7 +24,7 @@ export class ChatGateway implements OnGatewayConnection {
 							private config: ConfigService ) { }
 
 	async handleConnection(client: Socket) {
-		// console.log(client.handshake.headers);
+		console.log(client.handshake.headers);
 		const cookie = await this.parseCookies(client.request.headers.cookie);
 		const payload = await this.jwt.verifyAsync(
 				cookie,
@@ -53,24 +55,28 @@ export class ChatGateway implements OnGatewayConnection {
 		return cookies['access_token'];
 	}
 	
+
+	// @UseGuards(JwtAuthGuard)
 	@SubscribeMessage('createChat')
 	async create(@MessageBody() createChatDto: CreateChatDto, client: Socket) {
 		const message = await this.chatService.create(createChatDto);
 		// console.log('message', message);
-		this.server.emit('message', message);
-		// this.server.to(createChatDto.rid).emit('message', message);
+		// this.server.to(message.rid).emit('message', message.msg);
+		this.server.to(createChatDto.rid).emit('message', { userid: message.id, msg: message.msg });
 		return message;
 	}
-
+	
+	// @UseGuards(JwtAuthGuard)
 	@SubscribeMessage('findAllChat')
 	findAll() {
 		return this.chatService.findAll();
 	}
-
+	
+	// @UseGuards(JwtAuthGuard)
 	@SubscribeMessage('join')
-	joinRoom(@MessageBody() payload: any, @ConnectedSocket() client: Socket) {
-		console.log('payload', payload);
-		return this.chatService.joinRoom(payload, client);
+	joinRoom(@MessageBody() payload: any, @ConnectedSocket() client: Socket, @Req() req) {
+		// console.log('payload', payload);
+		return this.chatService.joinRoom(payload, client, req.user);
 	}
 	// @SubscribeMessage('findOneChat')
 	// findOne(@MessageBody() id: number) {

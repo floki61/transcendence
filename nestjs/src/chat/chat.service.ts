@@ -3,6 +3,7 @@ import { CreateChatDto } from './dto/create-chat.dto';
 import { UpdateChatDto } from './dto/update-chat.dto';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { JwtService } from '@nestjs/jwt';
+import { Socket } from 'socket.io';
 
 @Injectable()
 export class ChatService {
@@ -34,6 +35,7 @@ export class ChatService {
         rid: createChatDto.rid,
       }
     });
+
     return message;
   }
 
@@ -41,11 +43,12 @@ export class ChatService {
     return this.prisma.message.findMany();
   }
 
-  joinRoom(payload: any, client: any) {
+  joinRoom(payload: any, client: Socket, user: any) {
+    // console.log(payload.rid);
     client.join(payload.rid);
-    // client.emit('joined', payload);
-    client.to(payload.rid).emit('joined', payload);
-    return "Hello world";
+    client.to(payload.rid).emit('message', { name: user.firstName ,msg : 'joined', room: payload.rid });
+    // client.to(payload.rid).emit('joined', payload);
+    return 'Joined room';
   }
 
 

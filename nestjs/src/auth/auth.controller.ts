@@ -3,6 +3,7 @@ import { AuthService } from './auth.service';
 import { FortyTwoGuard, GoogleGuard } from './tools/Guards';
 import { Request, Response, response} from 'express';
 import { Userdto, signindto } from "../users/dto";
+import { JwtAuthGuard } from './jwt/jwt.guard';
 
 @Controller()
 export class AuthController {
@@ -39,15 +40,27 @@ export class AuthController {
 			res.redirect('/');
 		}
 	}
+
+	@UseGuards(JwtAuthGuard)
 	@Get('/')
 	async home(@Req() req: Request) {
 		return (req.cookies);
 	}
-	@Post('signup')
-	signup(@Body() data: Userdto) {
-	return this.authService.signup(data);
-	}
 
+	// @UseGuards(JwtAuthGuard)
+	@Post('signup')
+	async signup(@Body() data: Userdto, @Req() req: Request, @Res() res: Response) {
+		if (await this.authService.validateUser(req))
+			req.res.redirect('/');
+		else {
+			const token = await this.authService.generateToken(req);
+			res.cookie('access_token', token, { httpOnly: true, maxAge: 600000});
+			res.redirect('/');
+		}
+		return this.authService.signup(data);
+	}
+	
+	@UseGuards(JwtAuthGuard)
 	@Post('signin')
 	signin(@Body() data: signindto){
 	return this.authService.signin(data);

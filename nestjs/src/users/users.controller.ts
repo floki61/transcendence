@@ -1,8 +1,9 @@
-import { Controller, Get, Body, Req, UnauthorizedException, Post,} from '@nestjs/common';
+import { Controller, Get, Body, Req, UnauthorizedException, Post, UseGuards,} from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
 import { Request } from 'express';
 import { UsersService } from './users.service';
+import { JwtAuthGuard } from 'src/auth/jwt/jwt.guard';
 // import { clearConfigCache } from 'prettier';
 
 @Controller()
@@ -10,65 +11,38 @@ export class UsersController {
     constructor(private config: ConfigService,
         private jwt: JwtService,
         private userservice: UsersService) { }
+
+    @UseGuards(JwtAuthGuard)
     @Get('home')
-    async homepage(req: Request) {
-        return this.userservice.checkjwt(req.cookies['access_token']);
+    async homepage(req) {
+        return 'hello world'+ req.user.firstName;
     }
+
+    @UseGuards(JwtAuthGuard)
     @Post('sendFriendRequest')
-    async sendFriendRequest(@Body() body: any, @Req() req: Request) {
-        const payload = await this.jwt.verifyAsync(
-            req.cookies['access_token'],
-            {
-                secret: this.config.get('secret')
-            }
-        );
-        const user = await this.userservice.getuser(payload.id);
-        const friendrequest = await this.userservice.sendFriendRequest(user.id, body.friendId);
+    async sendFriendRequest(@Body() body: any, @Req() req) {
+        const friendrequest = await this.userservice.sendFriendRequest(req.user.id, req.body.friendId);
         return friendrequest;
     }
-
+    
+    @UseGuards(JwtAuthGuard)
     @Post('cancelFriendRequest')
-    async cancelFriendRequest(@Body() body: any, @Req() req: Request) {
-        const payload = await this.jwt.verifyAsync(
-            req.cookies['access_token'],
-            {
-                secret: this.config.get('secret')
-            }
-        );
-        const user = await this.userservice.getuser(payload.id);
-        const friendrequest = await this.userservice.cancelFriendRequest(user.id, body.friendId);
+    async cancelFriendRequest(@Body() body: any, @Req() req) {
+        const friendrequest = await this.userservice.cancelFriendRequest(req.user.id, req.body.friendId);
         return friendrequest;
     }
-
+        
+    @UseGuards(JwtAuthGuard)
     @Post('acc')
-    async acceptFrienRequest(@Body() body: any, @Req() req: Request) {
-        const payload = await this.jwt.verifyAsync(
-            req.cookies['access_token'],
-            {
-                secret: this.config.get('secret')
-            });
-        // console.log({ body, payload });
-        const user = await this.userservice.getuser(payload.id);
-
-        // console.log({ user });
-
-        const friendrequest = await this.userservice.acceptFriendRequest(user.id, body.friendId); // mean
+    async acceptFrienRequest(@Body() body: any, @Req() req) {
+        const friendrequest = await this.userservice.acceptFriendRequest(req.user.id, req.body.friendId); // mean
         return {friendrequest};
     }
 
+    @UseGuards(JwtAuthGuard)
     @Post('rejecte')
-    async rejectFrienRequest(@Body() body: any, @Req() req: Request) {
-        const payload = await this.jwt.verifyAsync(
-            req.cookies['access_token'],
-            {
-                secret: this.config.get('secret')
-            });
-        // console.log({ body, payload });
-        const user = await this.userservice.getuser(payload.id);
-
-        // console.log({ user });
-
-        const friendrequest = await this.userservice.rejectFriendRequest(user.id, body.friendId); // mean
+    async rejectFrienRequest(@Body() body: any, @Req() req) {
+        const friendrequest = await this.userservice.rejectFriendRequest(req.user.id, req.body.friendId);
         return friendrequest;
     }
 }
