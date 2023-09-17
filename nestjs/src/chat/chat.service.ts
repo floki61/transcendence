@@ -35,7 +35,6 @@ export class ChatService {
         rid: createChatDto.rid,
       }
     });
-
     return message;
   }
 
@@ -43,10 +42,10 @@ export class ChatService {
     return this.prisma.message.findMany();
   }
 
-  joinRoom(payload: any, client: Socket, user: any) {
+  joinRoom(payload: any, client: Socket) {
     // console.log(payload.rid);
     client.join(payload.rid);
-    client.to(payload.rid).emit('message', { name: user.firstName ,msg : 'joined', room: payload.rid });
+    client.to(payload.rid).emit('message', { msg : 'joined', room: payload.rid });
     // client.to(payload.rid).emit('joined', payload);
     return 'Joined room';
   }

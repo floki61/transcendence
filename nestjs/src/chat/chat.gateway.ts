@@ -24,17 +24,17 @@ export class ChatGateway implements OnGatewayConnection {
 							private config: ConfigService ) { }
 
 	async handleConnection(client: Socket) {
-		console.log(client.handshake.headers);
-		const cookie = await this.parseCookies(client.request.headers.cookie);
-		const payload = await this.jwt.verifyAsync(
-				cookie,
-			{
-					secret: this.config.get('secret')
-			}
-		);
-		if (payload.sub) {
-			this.map[payload.sub] = client;
-		}
+		// console.log(client.handshake.headers);
+		// const cookie = await this.parseCookies(client.request.headers.cookie);
+		// const payload = await this.jwt.verifyAsync(
+		// 		cookie,
+		// 	{
+		// 			secret: this.config.get('secret')
+		// 	}
+		// );
+		// if (payload.sub) {
+		// 	this.map[payload.sub] = client;
+		// }
 	}
 
 	private parseCookies(cookieHeader: string | undefined): string {
@@ -74,9 +74,9 @@ export class ChatGateway implements OnGatewayConnection {
 	
 	// @UseGuards(JwtAuthGuard)
 	@SubscribeMessage('join')
-	joinRoom(@MessageBody() payload: any, @ConnectedSocket() client: Socket, @Req() req) {
+	joinRoom(@MessageBody() payload: any, @ConnectedSocket() client: Socket) {
 		// console.log('payload', payload);
-		return this.chatService.joinRoom(payload, client, req.user);
+		return this.chatService.joinRoom(payload, client);
 	}
 	// @SubscribeMessage('findOneChat')
 	// findOne(@MessageBody() id: number) {
