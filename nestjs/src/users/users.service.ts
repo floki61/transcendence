@@ -34,9 +34,9 @@ export class UsersService {
                 id: ifd,
             },
         });
-        if (!user) {
-            throw new UnauthorizedException();
-        }
+        // if (!user) {
+        //     throw new UnauthorizedException();
+        // }
         return user;
     }
 

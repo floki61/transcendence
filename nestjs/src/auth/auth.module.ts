@@ -16,7 +16,7 @@ import { JwtStrategy } from './jwt/jwt.strategy';
     JwtModule.register({}),
   ],
   controllers: [AuthController],
-  providers: [AuthService, JwtStrategy, FortyTwoStrategy, UsersService],
+  providers: [AuthService, JwtStrategy, FortyTwoStrategy, UsersService, ],
 })
 export class AuthModule {
   // configure(consumer: MiddlewareConsumer) {

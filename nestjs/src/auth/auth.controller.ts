@@ -47,16 +47,17 @@ export class AuthController {
 		return (req.cookies);
 	}
 
+
 	// @UseGuards(JwtAuthGuard)
 	@Post('signup')
 	async signup(@Body() data: Userdto, @Req() req: Request, @Res() res: Response) {
-		if (await this.authService.validateUser(req))
-			req.res.redirect('/');
-		else {
-			const token = await this.authService.generateToken(req);
-			res.cookie('access_token', token, { httpOnly: true, maxAge: 600000});
-			res.redirect('/');
-		}
+		// if (await this.authService.validateUser(req))
+		// 	req.res.redirect('/');
+		// else {
+		// 	const token = await this.authService.generateToken(req);
+		// 	res.cookie('access_token', token, { httpOnly: true, maxAge: 600000});
+		// 	res.redirect('/');
+		// }
 		return this.authService.signup(data);
 	}
 	
