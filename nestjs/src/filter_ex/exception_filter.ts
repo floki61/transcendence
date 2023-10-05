@@ -5,7 +5,7 @@ import { Response } from 'express';
 @Catch()
 export class ExceptionsFilter implements ExceptionFilter {
   catch(exception: any, host: ArgumentsHost) {
-    console.error(exception);
+    // console.error(exception);
 
     if (exception instanceof Prisma.PrismaClientKnownRequestError) {
       const ctx = host.switchToHttp();
@@ -55,7 +55,7 @@ export class ExceptionsFilter implements ExceptionFilter {
         message: exception.message,
         error: exception.response.error,
         statusCode: status,
-      });;
+      });
     }
   }
 }

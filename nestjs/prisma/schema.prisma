@@ -30,6 +30,7 @@ enum Status {
 
 model User {
   id          String       @id @default(cuid())
+  userName    String?       @unique
   firstName   String
   lastName    String
   email       String?      @unique
@@ -73,6 +74,7 @@ model ChatRoom {
   id           String        @id @default(cuid())
   name         String
   visibility   Visibility    @default(PUBLIC)
+  password     String?
   // message      String
   participants Participant[]
   messages     Message[]

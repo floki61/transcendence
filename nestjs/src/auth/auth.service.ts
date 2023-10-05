@@ -38,6 +38,7 @@ export class AuthService {
 		});
 		if (user) {
 			console.log('cookies:', req.cookies);
+			console.log('user:', user);
 			if (req.cookies && req.cookies['access_token'])
 				return true;
 			else
@@ -50,7 +51,8 @@ export class AuthService {
 				firstName: req.user.firstName,
 				lastName: req.user.lastName,
 				email: req.user.email,
-				picture: req.user.picture
+				picture: req.user.picture,
+				userName: req.user.login,
 			},
 		});
 		return false;

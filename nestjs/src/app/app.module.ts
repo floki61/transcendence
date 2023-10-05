@@ -15,6 +15,9 @@ import { ChatModule } from 'src/chat/chat.module';
 import { APP_FILTER } from '@nestjs/core';
 import { ExceptionsFilter } from 'src/filter_ex/exception_filter';
 import { config } from 'dotenv';
+import { MulterModule } from '@nestjs/platform-express';
+import { UsersController } from 'src/users/users.controller';
+import { UsersService } from 'src/users/users.service';
 
 @Module({
   imports: [
@@ -22,12 +25,13 @@ import { config } from 'dotenv';
     UsersModule,
     AuthModule,
     twoFactorAuthModule,
+    MulterModule.register({ dest: './uploads' }),
     PrismaModule,
     JwtModule.register({}),
     ChatModule,
   ],
-  controllers: [AppController, AuthController],
-  providers: [JwtService, AppService, FortyTwoStrategy, PrismaService, AuthService, ConfigService,
+  controllers: [AppController, AuthController, UsersController],
+  providers: [JwtService, AppService, FortyTwoStrategy, PrismaService, AuthService, ConfigService, UsersService,
     {
       provide: APP_FILTER,
       useClass: ExceptionsFilter,

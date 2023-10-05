@@ -117,4 +117,15 @@ export class UsersService {
             }
         });
     }
+
+    async unfriend(userId: string, friendId: string) {
+        const friendrequest = await this.prisma.friendShip.delete({
+            where: {
+                userId_friendId: {
+                    userId,
+                    friendId,
+                }
+            }
+        });
+    }
 }

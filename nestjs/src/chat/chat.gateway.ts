@@ -8,10 +8,9 @@ import { ConfigService } from '@nestjs/config';
 import { Req, UseGuards } from '@nestjs/common';
 import { JwtAuthGuard } from 'src/auth/jwt/jwt.guard';
 import { WsGuard } from 'src/auth/tools/ws.guard';
-// import { request } from 'express';
-// import { Client } from 'socket.io/dist/client';
 
-@WebSocketGateway({
+
+@WebSocketGateway({ namespace: 'chat',
 	// cors: { origin: 'http://localhost:3000', credentials: true },
 })
 export class ChatGateway implements OnGatewayConnection {
@@ -77,27 +76,27 @@ export class ChatGateway implements OnGatewayConnection {
 	joinRoom(@MessageBody() payload: any, @ConnectedSocket() client: Socket) {
 		// console.log('payload', payload);
 		this.chatService.map.get(payload.id).join(payload.rid);
-		return this.chatService.joinRoom(payload, client);
+		return this.chatService.joinRoom(payload);
 	}
 
 	@SubscribeMessage('kickUser')
 	kickUser(@MessageBody() payload: any, @ConnectedSocket() client: Socket) {
 		// console.log('payload', payload);
 		// this.chatService .map.get(payload.uid).leave(payload.rid);
-		return this.chatService.kickUser(payload, client);
+		return this.chatService.kickUser(payload);
 	}
 
 
 	@SubscribeMessage('banUser')
 	banUser(@MessageBody() payload: any, @ConnectedSocket() client: Socket) {
 		// console.log('payload', payload);
-		return this.chatService.banUser(payload, client);
+		return this.chatService.banUser(payload);
 	}
 
 	@SubscribeMessage('unbanUser')
 	unbanUser(@MessageBody() payload: any, @ConnectedSocket() client: Socket) {
 		// console.log('payload', payload);
-		return this.chatService.unbanUser(payload, client);
+		return this.chatService.unbanUser(payload);
 	}
 
 	@SubscribeMessage('leave')
@@ -108,27 +107,27 @@ export class ChatGateway implements OnGatewayConnection {
 
 	@SubscribeMessage('createRoom')
     async createRoom(@MessageBody() payload: any, @ConnectedSocket() client: Socket) {
-		console.log('payload', payload);
-		const room = await this.chatService.createRoom(payload, client);
+		// console.log('payload', payload);
+		const room = await this.chatService.createRoom(payload);
         return room;
     }
 
 	@SubscribeMessage('deleteRoom')
 	async deleteRoom(@MessageBody() payload: any, @ConnectedSocket() client: Socket) {
-		const room = await this.chatService.deleteRoom(payload, client);
+		const room = await this.chatService.deleteRoom(payload);
 		return room;
 	}
 
 	@SubscribeMessage('muteUser')
 	muteUser(@MessageBody() payload: any, @ConnectedSocket() client: Socket) {
 		// console.log('payload', payload);
-		return this.chatService.muteUser(payload, client);
+		return this.chatService.muteUser(payload);
 	}
 
 	@SubscribeMessage('unmuteUser')
 	unmuteUser(@MessageBody() payload: any, @ConnectedSocket() client: Socket) {
 		// console.log('payload', payload);
-		return this.chatService.unmuteUser(payload, client);
+		return this.chatService.unmuteUser(payload);
 	}
 	// @SubscribeMessage('findOneChat')
 	// findOne(@MessageBody() id: number) {
