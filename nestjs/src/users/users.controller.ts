@@ -1,4 +1,4 @@
-import { Controller, Get, Body, Req, UnauthorizedException, Post, UseGuards, UseInterceptors, UploadedFiles, UploadedFile, ParseFilePipeBuilder, HttpStatus, ParseFilePipe, MaxFileSizeValidator, FileTypeValidator, HttpException,} from '@nestjs/common';
+import { Controller, Get, Body, Req, UnauthorizedException, Post, UseGuards, UseInterceptors, UploadedFiles, UploadedFile, ParseFilePipeBuilder, HttpStatus, ParseFilePipe, MaxFileSizeValidator, FileTypeValidator, HttpException, Delete,} from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
 import { Request } from 'express';
@@ -8,13 +8,16 @@ import { FileInterceptor } from '@nestjs/platform-express';
 import { diskStorage } from 'multer';
 import { extname } from 'path';
 import { max } from 'class-validator';
+import { UsersGateway } from './users.gateway';
 // import { clearConfigCache } from 'prettier';
 
 @Controller()
 export class UsersController {
     constructor(private config: ConfigService,
         private jwt: JwtService,
-        private userservice: UsersService) { }
+        private userservice: UsersService,
+        private usergtw: UsersGateway,
+        ) { }
 
     @UseGuards(JwtAuthGuard)
     @Get('home')
@@ -25,14 +28,22 @@ export class UsersController {
     @UseGuards(JwtAuthGuard)
     @Post('sendFriendRequest')
     async sendFriendRequest(@Body() body: any, @Req() req) {
+        if (req.user.id == req.body.friendId)
+            throw new HttpException('You can\'t send friend request to yourself', HttpStatus.BAD_REQUEST);
+        if (await this.userservice.checkFriendship(req.user.id, req.body.friendId))
+            throw new HttpException('You are already friends', HttpStatus.BAD_REQUEST);
         const friendrequest = await this.userservice.sendFriendRequest(req.user.id, req.body.friendId);
+        this.usergtw.server.to(req.body.friendId).emit('friendRequest', friendrequest);
         return friendrequest;
     }
     
     @UseGuards(JwtAuthGuard)
     @Post('cancelFriendRequest')
     async cancelFriendRequest(@Body() body: any, @Req() req) {
+        if( await this.userservice.checkFriendship(req.user.id, req.body.friendId))
+            throw new HttpException('You are already friends', HttpStatus.BAD_REQUEST);
         const friendrequest = await this.userservice.cancelFriendRequest(req.user.id, req.body.friendId);
+        
         return friendrequest;
     }
         
@@ -51,8 +62,9 @@ export class UsersController {
     }
 
     @UseGuards(JwtAuthGuard)
-    @Post('unfriend')
+    @Delete('unfriend')
     async unfriend(@Body() body: any, @Req() req) {
+        console.log('unfriend', req.body.friendId, req.user.id);
         const friendrequest = await this.userservice.unfriend(req.user.id, req.body.friendId);
         return friendrequest;
     }
@@ -78,6 +90,4 @@ export class UsersController {
     ) file: Express.Multer.File, @Req() req) {
         return file;
     }
-
-    
 }

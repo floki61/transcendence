@@ -18,6 +18,8 @@ import { config } from 'dotenv';
 import { MulterModule } from '@nestjs/platform-express';
 import { UsersController } from 'src/users/users.controller';
 import { UsersService } from 'src/users/users.service';
+import { UsersGateway } from 'src/users/users.gateway';
+import { EventEmitterModule } from '@nestjs/event-emitter';
 
 @Module({
   imports: [
@@ -29,6 +31,7 @@ import { UsersService } from 'src/users/users.service';
     PrismaModule,
     JwtModule.register({}),
     ChatModule,
+    EventEmitterModule.forRoot(),
   ],
   controllers: [AppController, AuthController, UsersController],
   providers: [JwtService, AppService, FortyTwoStrategy, PrismaService, AuthService, ConfigService, UsersService,
@@ -36,6 +39,7 @@ import { UsersService } from 'src/users/users.service';
       provide: APP_FILTER,
       useClass: ExceptionsFilter,
     },
+    UsersGateway,
   ],
 })
 export class AppModule { }

@@ -1,20 +1,26 @@
-import { MessageBody, OnGatewayConnection, SubscribeMessage, WebSocketGateway } from "@nestjs/websockets";
+import { MessageBody, OnGatewayConnection, SubscribeMessage, WebSocketGateway, WebSocketServer } from "@nestjs/websockets";
 import { UsersService } from "./users.service";
 import { JwtService } from "@nestjs/jwt";
 import { ConfigService } from "@nestjs/config";
 import e from "express";
 import { subscribe } from "diagnostics_channel";
 import { Req } from "@nestjs/common";
-import { Socket } from "socket.io";
+import { Server, Socket } from "socket.io";
 
-@WebSocketGateway({ namespace: 'user' })
+@WebSocketGateway({ namespace: 'users' ,
+// cors: { origin: 'http://localhost:3000', credentials: true },
+})
 export class UsersGateway implements OnGatewayConnection {
     constructor(private readonly chatService: UsersService,
         private jwt: JwtService,
         private config: ConfigService,
         private usr: UsersService) { }
+	@WebSocketServer()
+	server: Server
 
     async handleConnection(client: any, ...args: any[]) {
+		console.log('client 1', client.id);
+
         let cookie: string;
 		let payload: any;
 		if (client.request.headers.cookie) {
@@ -28,7 +34,7 @@ export class UsersGateway implements OnGatewayConnection {
 				if (payload.id) {
                     client.join(payload.id);
 					// this.chatService.map.set(payload.id, client);
-				// console.log('payload.sub', this.map)
+				console.log('payload.sub', payload.id)
 			}
 		}
 		else {
@@ -53,11 +59,4 @@ export class UsersGateway implements OnGatewayConnection {
 		}
 		return cookies['access_token'];
 	}
-
-    @SubscribeMessage('sendFriendRequest')
-    async sendFriendRequest(@MessageBody() body: any, @Req() req, client: Socket) {
-        const friendrequest = await this.usr.sendFriendRequest(req.user.id, req.body.friendId);
-        client.to(req.user.id).emit('friendRequest', friendrequest);
-        return friendrequest;
-    }
 }

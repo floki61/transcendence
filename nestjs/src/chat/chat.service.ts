@@ -8,20 +8,38 @@ import e from 'express';
 import { subscribe } from 'diagnostics_channel';
 import { ChatGateway } from './chat.gateway';
 import * as argon from 'argon2'
+import { EventEmitter2 } from '@nestjs/event-emitter';
 
 @Injectable()
 export class ChatService {
-	constructor(private prisma: PrismaService, private jwt: JwtService) { }
+	constructor(private prisma: PrismaService, private jwt: JwtService, private eventEmitter: EventEmitter2) { }
 
 	map = new Map();
 
 	async create(createChatDto: CreateChatDto, client: Socket) {
 		const message = { ...createChatDto };
 		// console.log( createChatDto );
+
+		const participant = await this.prisma.participant.findUnique({
+			where: {
+				uid_rid: {
+					uid: createChatDto.id,
+					rid: createChatDto.rid,
+				},
+			},
+		});
+
+		if (!participant) {
+			throw new NotFoundException('User not found in chat room');
+		}
+		if (participant.isBanned === true || participant.isMuted === true) {
+			throw new UnauthorizedException('User cannot send message');
+		}
+
 		try {
 		await this.prisma.message.create({
 			data: {
-			userId: createChatDto.id,
+			userId: participant.id,
 			msg: createChatDto.msg,
 			rid: createChatDto.rid,
 			}
@@ -33,10 +51,8 @@ export class ChatService {
 		return message;
 	}
 
-
-	//payload depan user_id, room_id
+	//payload depan uid, rid and password?
 	async joinRoom(payload: any) {
-		// console.log(payload);
 		const room = await this.prisma.chatRoom.findUnique({
 			where: {
 				id: payload.rid,
@@ -45,6 +61,9 @@ export class ChatService {
 		if (!room) {
 			throw new NotFoundException('Chat room not found');
 		}
+		if (room.is_DM === true)
+			throw new NotFoundException('Chat room is DM');
+		// console.log(payload, room);
 		if (room.visibility === 'PROTECTED') {
 			if (!payload.password) {
 				throw new NotFoundException('Password is required in protected room');
@@ -73,6 +92,7 @@ export class ChatService {
 				role: 'USER',
 			},
 		});
+		this.eventEmitter.emit('joinRoom', { uid: payload.uid, rid: payload.rid });
 		return 'Joined room';
 	}
 
@@ -91,7 +111,7 @@ export class ChatService {
 		const participant = await this.prisma.participant.findUnique({
 			where: {
 				uid_rid: {
-				uid: payload.uid,
+				uid: payload.id,
 				rid: payload.rid,
 				},
 			},
@@ -106,24 +126,31 @@ export class ChatService {
 		await this.prisma.participant.delete({
 			where: {
 				uid_rid: {
-					uid: payload.uid,
+					uid: payload.id,
 					rid: payload.rid,
 				},
 			},
 		});
-		if (this.map.get(payload.uid)) {
-			this.map.get(payload.uid).leave(payload.rid);
+		console.log((await this.map.size));
+		if (this.map.get(payload.id)) {
+			this.map.get(payload.id).leave(payload.rid);
 		}
-
-		// this.map.get(payload.id).leave(payload.rid);
-		// client.to(payload.rid).emit('message', { msg : 'kicked', room: payload.rid });
+		this.eventEmitter.emit('kickUser', payload);
 		return 'Kicked user';
 	}
 
 	// payload depan user_id, room_name, visibility, password if protected
 	async createRoom(payload: any) {
 		// console.log(payload);
-		const room = await this.prisma.chatRoom.create({
+		const user = await this.prisma.user.findUnique({
+			where: {
+				id: payload.id,
+			},
+		});
+		if (!user) {
+			throw new NotFoundException('User not found');
+		}
+		var room = await this.prisma.chatRoom.create({
 			data: {
 				name: payload.name,
 				is_DM: false,
@@ -141,7 +168,7 @@ export class ChatService {
 				throw new NotFoundException('Password is required in protected room');
 			}
 			const hash = await argon.hash(payload.password);
-			await this.prisma.chatRoom.update({
+			room = await this.prisma.chatRoom.update({
 				where: {
 					id: room.id,
 				},
@@ -151,7 +178,7 @@ export class ChatService {
 				},
 			});
 		} else if (payload.visibility === 'PRIVATE') {	
-			await this.prisma.chatRoom.update({
+			room = await this.prisma.chatRoom.update({
 				where: {
 					id: room.id,
 				},
@@ -160,6 +187,8 @@ export class ChatService {
 				},
 			});
 		}
+		delete room.password;
+		// console.log('room', room);
 		return room;
 	}
 
@@ -192,11 +221,10 @@ export class ChatService {
 				isBanned: true,
 			},
 		});
-		// console.log('parti', participant);
-		// this.map.get(payload.uid).leave(payload.rid);
-		// client.to(payload.rid).emit('message', { msg : 'banned', room: payload.rid });
+		this.eventEmitter.emit('banUser', payload);
 		return 'Banned user';
 	}
+	
 
 	async unbanUser(payload: any) {
 		// console.log(payload.rid);
@@ -222,8 +250,7 @@ export class ChatService {
 				isBanned: false,
 			},
 		});
-		// this.map.get(payload.id).join(payload.rid);
-		// client.to(payload.rid).emit('message', { msg : 'unbanned', room: payload.rid });
+		this.eventEmitter.emit('unbanUser', payload);
 		return 'Unbanned user';
 	}
 
@@ -260,8 +287,7 @@ export class ChatService {
 				},
 			},
 		});
-		client.to(payload.rid).emit('message', { msg : 'left', room: payload.rid });
-		client.leave(payload.rid);
+		this.eventEmitter.emit('leaveRoom', payload);
 		return 'Left room';
 	}
 
@@ -314,7 +340,6 @@ export class ChatService {
 				isMuted: true,
 			},
 		});
-		// client.to(payload.rid).emit('message', { msg : 'muted', room: payload.rid });
 		return 'Muted user';
 	}
 
@@ -342,7 +367,6 @@ export class ChatService {
 				isMuted: false,
 			},
 		});
-		// client.to(payload.rid).emit('message', { msg : 'unmuted', room: payload.rid });
 		return 'Unmuted user';
 	}
 
@@ -354,6 +378,25 @@ export class ChatService {
 		});
 		return room;
 	}
+
+	async getMyRooms(payload: any) {
+		const room = await this.prisma.chatRoom.findMany({
+			where: {
+				participants: {
+					some: {
+						uid: payload.id,
+						isBanned: false,
+					},
+				},
+			},
+			include: {
+				participants: true,
+			},
+		});
+		// console.log({ room });
+		return room;
+	}
+
 
 	async getMessages(payload: any) {
 		const message = await this.prisma.message.findMany({
@@ -458,5 +501,45 @@ export class ChatService {
 			},
 		});
 		return 'Changed password';
+	}
+
+	async giveAdmin(payload: any) {
+		const room = await this.prisma.chatRoom.findUnique({
+			where: {
+				id: payload.rid,
+			},
+		});
+		if (!room) {
+			throw new NotFoundException('Chat room not found');
+		}
+		const participant = await this.prisma.participant.findUnique({
+			where: {
+				uid_rid: {
+				uid: payload.uid,
+				rid: payload.rid,
+				},
+			},
+		});
+		if (!participant) {
+			throw new NotFoundException('User not found in chat room');
+		}
+		if (participant.role === 'OWNER') {
+			throw new UnauthorizedException('Cannot give admin to owner');
+		}
+		if (room.is_DM === true) {
+			throw new UnauthorizedException('Cannot give admin to DM');
+		}
+		await this.prisma.participant.update({
+			where: {
+				uid_rid: {
+				uid: payload.uid,
+				rid: payload.rid,
+				},
+			},
+			data: {
+				role: 'ADMIN',
+			},
+		});
+		return 'Gave admin';
 	}
 }
