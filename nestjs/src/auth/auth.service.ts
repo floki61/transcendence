@@ -5,15 +5,18 @@ import { PrismaService } from "src/prisma/prisma.service";
 import { Userdto, signindto } from "src/users/dto";
 import * as argon from 'argon2'
 import { PrismaClientKnownRequestError } from "@prisma/client/runtime/library";
+import { UsersService } from "src/users/users.service";
 
 @Injectable()
 
 export class AuthService {
 	constructor(private prisma: PrismaService,
 		private jwtService: JwtService,
-		private config: ConfigService) {}
+		private config: ConfigService,
+		private userservice: UsersService) {}
 
 	async generateToken(req): Promise<string> {
+
 		const user = await this.prisma.user.findUnique({
 			where: {
 				id: req.user.id,
@@ -30,34 +33,13 @@ export class AuthService {
 		console.log(token);
 		return token;
 	}
-	async validateUser(req): Promise<boolean> {
-		const user = await this.prisma.user.findUnique({
-			where: {
-				id: req.user.id,
-			},
-		});
-		if (user) {
-			console.log('cookies:', req.cookies);
-			console.log('user:', user);
-			if (req.cookies && req.cookies['access_token'])
-				return true;
-			else
-				return false;
-		}
-		const newUser = await this.prisma.user.create({
-			data:
-			{
-				id: req.user.id,
-				firstName: req.user.firstName,
-				lastName: req.user.lastName,
-				email: req.user.email,
-				picture: req.user.picture,
-				userName: req.user.login,
-			},
-		});
-		return false;
+	async validateUser(req, res) {
+		const user = await this.userservice.getUser(req.user.id);
+		if (!user)
+			await this.userservice.createUser(req);
+		const token = await this.generateToken(req);
+		res.cookie('access_token', token, { httpOnly: true, maxAge: 600000});
 	}
-
 	async signup(dto: Userdto) {
 		const hash = await argon.hash(dto.password);
 		try {

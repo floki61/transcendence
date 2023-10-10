@@ -40,4 +40,14 @@ export class TwoFactorAuthService {
             otpauthUrl
         }
     }
+    async turnOnTwoFactorAuthentication(userId: string) {
+        const user = await this.prisma.user.update({
+            where: {
+                id: userId,
+            },
+            data:{
+                isTwoFactorAuthenticationEnabled: true
+            }
+        });
+    }
 }

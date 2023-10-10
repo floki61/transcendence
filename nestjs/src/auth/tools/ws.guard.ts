@@ -16,7 +16,7 @@ export class WsGuard implements CanActivate {
         try {
             const decoded = this.jwt.verify(bearerToken, this.config.get("secret")) as any;
             return new Promise((resolve, reject) => {
-                return this.userService.getuser(decoded.id).then(user => {
+                return this.userService.getUser(decoded.id).then(user => {
                     if (user) {
                         resolve(user);
                     } else {

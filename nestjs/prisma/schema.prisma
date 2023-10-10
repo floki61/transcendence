@@ -39,6 +39,7 @@ model User {
   password    String? // Password should not have a default value
   twoFactorAuthenticationSecret String?
   membership  Participant[]
+  isTwoFactorAuthenticationEnabled Boolean @default(false)
   senders     FriendShip[] @relation("sender")
   receivers   FriendShip[] @relation("receiver")
   // lastSeen    DateTime?    @default(now())

@@ -8,38 +8,30 @@ import { PrismaService } from 'src/prisma/prisma.service';
 
 @Injectable()
 export class UsersService {
-	constructor(private jwt: JwtService,
-		private config: ConfigService,
-		private prisma: PrismaService) { }
-	async checkjwt(token: string) {
-		try {
-			const payload = await this.jwt.verifyAsync(
-				token,
-				{
-					secret: this.config.get('secret')
-				}
-			);
-			console.log({ payload , token});
-			const user = (await this.getuser(payload.id));
-			return user;
-			// return 'Welcome ' + user.firstName + ' ' + user.lastName;
-		}
-		catch (e) {
-			console.log(e);
-			throw new UnauthorizedException();
-		}
-	}
-	async getuser(ifd: string) {
-		const user = await this.prisma.user.findUnique({
-			where: {
-				id: ifd,
-			},
-		});
-		// if (!user) {
-		//     throw new UnauthorizedException();
-		// }
-		return user;
-	}
+    constructor(private jwt: JwtService,
+        private config: ConfigService,
+        private prisma: PrismaService) {}
+
+    async getUser(idu: string) {
+        return await this.prisma.user.findUnique({
+            where: {
+                id: idu,
+            },
+        });
+    }
+
+    async createUser(req) {
+        return await this.prisma.user.create({
+            data:
+            {
+                id: req.user.id,
+                firstName: req.user.firstName,
+                lastName: req.user.lastName,
+                email: req.user.email,
+                picture: req.user.picture
+            },
+        });
+    }
 
 	async sendFriendRequest(userId: string, friendId: string) {
 		console.log({ userId, friendId });
