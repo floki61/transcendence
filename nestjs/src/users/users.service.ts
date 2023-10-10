@@ -21,9 +21,11 @@ export class UsersService {
     }
 
     async createUser(req) {
+		console.log(req.user);
         return await this.prisma.user.create({
             data:
             {
+				userName: req.user.login,
                 id: req.user.id,
                 firstName: req.user.firstName,
                 lastName: req.user.lastName,
