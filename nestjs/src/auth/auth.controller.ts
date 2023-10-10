@@ -37,8 +37,8 @@ export class AuthController {
 
 	@UseGuards(JwtAuthGuard)
 	@Get('/')
-	async home(@Req() req: Request) {
-		return (req.cookies);
+	async home(@Req() req) {
+		return ({user: req.user, cookies: req.cookies});
 	}
 
 	// @UseGuards(JwtAuthGuard)

@@ -20,9 +20,9 @@ export class UsersController {
         ) { }
 
     @UseGuards(JwtAuthGuard)
-    @Get('home')
-    async homepage(req) {
-        return 'hello world'+ req.user.firstName;
+    @Get('/')
+    async home(@Req() req) {
+        return ({user: req.user, cookies: req.cookies});
     }
 
     @UseGuards(JwtAuthGuard)
