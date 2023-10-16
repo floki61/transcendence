@@ -19,10 +19,10 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
             x: 850 / 2,
             y: 400 / 2,
             radius: 10,
-            xSpeed: 5 * Math.cos(angle),
-            ySpeed: 5 * Math.sin(angle),
-            // xSpeed: 3,
-            // ySpeed: 1,
+            xSpeed: 3,
+            ySpeed: 0,
+            // xSpeed: 5 * Math.cos(angle),
+            // ySpeed: 5 * Math.sin(angle),
         },
         leftPaddle: {
             x: 15,
@@ -84,8 +84,9 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
                 }
                 if (ballHitsPaddle(this.gameData.ball, this.gameData.rightPaddle)) {
                     const diff = this.gameData.ball.y - (this.gameData.rightPaddle.y - this.gameData.rightPaddle.height / 2);
-                    const rad = 135 * Math.PI / 180;
-                    const angle = this.map(diff, 0, this.gameData.rightPaddle.height, -rad, rad);
+                    const rad =  225 * (Math.PI / 180);
+                    const radd =  135 * (Math.PI / 180);
+                    const angle = this.map(diff, 0, this.gameData.rightPaddle.height, rad, radd);
                     this.gameData.ball.xSpeed = 5 * Math.cos(angle);
                     this.gameData.ball.ySpeed = 5 * Math.sin(angle);
                     // this.gameData.ball.xSpeed *= -1;
