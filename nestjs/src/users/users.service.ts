@@ -175,4 +175,56 @@ export class UsersService {
 			return true;
 		return false;
 	}
+
+	async blockUser(userId: string, friendId: string) {
+		
+		const check = await this.prisma.block.findFirst({
+			where: {
+				AND: [
+					{
+						uid: userId,
+					},
+					{
+						fid: friendId,
+					},
+				],
+			},
+		});
+		if (check)
+			return;
+
+		const block = await this.prisma.block.create({
+			data: {
+				uid: userId,
+				fid: friendId,
+			}
+		});
+		return block;
+	}
+
+	async unblockUser(userId: string, friendId: string) {
+		const check = await this.prisma.block.findFirst({
+			where: {
+				AND: [
+					{
+						uid: userId,
+					},
+					{
+						fid: friendId,
+					},
+				],
+			},
+		});
+		if (!check)
+			throw new UnauthorizedException('You are not allowed to do this');
+		const block = await this.prisma.block.delete({
+			where: {
+				uid_fid: {
+					uid: userId,
+					fid: friendId,
+				}
+			}
+		});
+		return block;
+	}
 }

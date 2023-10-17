@@ -90,4 +90,18 @@ export class UsersController {
     ) file: Express.Multer.File, @Req() req) {
         return file;
     }
+
+    @UseGuards(JwtAuthGuard)
+    @Post('blockUser')
+    async blockUser(@Body() body: any, @Req() req) {
+        const user = await this.userservice.blockUser(req.user.id, req.body.friendId);
+        return user;
+    }
+
+    @UseGuards(JwtAuthGuard)
+    @Post('unblockUser')
+    async unblockUser(@Body() body: any, @Req() req) {
+        const user = await this.userservice.unblockUser(req.user.id, req.body.friendId);
+        return user;
+    }
 }

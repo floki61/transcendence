@@ -54,7 +54,7 @@ export class AuthController {
 		return this.authService.signup(data);
 	}
 	
-	@UseGuards(JwtAuthGuard)
+	// @UseGuards(JwtAuthGuard)
 	@Post('signin')
 	signin(@Body() data: signindto){
 	return this.authService.signin(data);
