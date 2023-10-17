@@ -2,7 +2,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import p5 from 'p5';
 import { useSocket } from './SocketContext';
-import { data } from 'autoprefixer';
 
 let leftPaddleX = null, leftPaddleY = null, leftPaddleWidth = null, leftPaddleHeight = null;
 let rightPaddleX = null, rightPaddleY = null, rightPaddleWidth = null, rightPaddleHeight = null;
@@ -10,7 +9,6 @@ let ballX = null, ballY = null, radius = null;
 const GamePage = () => {
     const p5Ref = useRef();
     const socket = useSocket();
-    const [gameData, setGameData] = useState(null);
     const gameDataRef = useRef(null);
     const [count, setCount] = useState(false);
 
@@ -27,10 +25,10 @@ const GamePage = () => {
 
     }
     function updateBall(p, data) {
-        if(gameData) {
-            ballX  = (data.x * (p.windowWidth / 2)) / gameData.canvasWidth;
-            ballY  = (data.y * (p.windowHeight / 2)) / gameData.canvasHeight;
-            radius  = (data.radius * (p.windowHeight / 2)) / gameData.canvasHeight;
+        if(data.ball) {
+            ballX  = (data.ball.x * (p.windowWidth / 2)) / data.canvasWidth;
+            ballY  = (data.ball.y * (p.windowHeight / 2)) / data.canvasHeight;
+            radius  = (data.ball.radius * (p.windowHeight / 2)) / data.canvasHeight;
         }
     }
     useEffect(() => {
@@ -53,9 +51,8 @@ const GamePage = () => {
                 canvas.position((p.windowWidth - p.width) / 2, (p.windowHeight - p.height) / 2);
             };
             socket.on('startGame', (data) => {
-                setGameData(data);
                 updatePaddle(p, data);
-                updateBall(p, data.ball);
+                updateBall(p, data);
                 setCount(true);
             });
             socket.on('paddlesUpdate', (data) => {
