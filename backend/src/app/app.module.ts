@@ -16,6 +16,7 @@ import { UsersService } from 'src/users/users.service';
 import { GameController } from 'src/game/game.controller';
 import { GameModule } from 'src/game/game.module';
 import { GameGateway } from 'src/game/game.gateway';
+import { GameService } from 'src/game/game.service';
 
 @Module({
   imports: [
@@ -29,6 +30,6 @@ import { GameGateway } from 'src/game/game.gateway';
     GameModule,
   ],
   controllers: [AppController, AuthController, GameController],
-  providers: [JwtService, AppService, FortyTwoStrategy, PrismaService, AuthService, UsersService, GameGateway],
+  providers: [JwtService, AppService, FortyTwoStrategy, PrismaService, AuthService, UsersService, GameGateway, GameService],
 })
 export class AppModule { }
