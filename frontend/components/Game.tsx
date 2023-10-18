@@ -6,11 +6,13 @@ import { useSocket } from './SocketContext';
 let leftPaddleX = null, leftPaddleY = null, leftPaddleWidth = null, leftPaddleHeight = null;
 let rightPaddleX = null, rightPaddleY = null, rightPaddleWidth = null, rightPaddleHeight = null;
 let ballX = null, ballY = null, radius = null;
+let leftScore = 0, rightScore = 0;
 const GamePage = () => {
     const p5Ref = useRef();
     const socket = useSocket();
     const gameDataRef = useRef(null);
     const [count, setCount] = useState(false);
+    const [gameResult, setGameResult] = useState(null);
 
     function updatePaddle(p, data) {
         leftPaddleX = (data.leftPaddle.x * (p.windowWidth / 2)) / data.canvasWidth;
@@ -59,12 +61,24 @@ const GamePage = () => {
                 gameDataRef.current = data;
                 updatePaddle(p, data);
             });
-             socket.on('updateBall', (data) => {
+            socket.on('updateBall', (data) => {
                  updateBall(p, data);
+            });
+            socket.on('score', (data) => {
+                leftScore = data.left;
+                rightScore = data.right;
+            });
+            socket.on('gameResult', (data) => {
+                setGameResult(data);
+                setCount(false);
             });
             p.draw = () => {
                 if(count) {
                     p.background(0);
+                    p.textSize(128);
+                    p.textAlign(p.CENTER, p.CENTER);
+                    p.text(leftScore, p.width / 4, p.height / 2);
+                    p.text(rightScore, (p.width / 4) * 3, p.height / 2);
                     if (leftPaddleX && rightPaddleX) {
                         p.fill(255);
                         p.rectMode(p.CENTER);
@@ -73,6 +87,13 @@ const GamePage = () => {
                     }
                     p.fill(255);
                     p.ellipse(ballX, ballY, radius * 2);
+                }
+                else if (gameResult) {
+                    p.background(0);
+                    p.fill(255);
+                    p.textSize(34);
+                    p.textAlign(p.CENTER, p.CENTER);
+                    p.text(gameResult, p.width / 2, p.height / 2);
                 }
                 else {
                     p.background(0);

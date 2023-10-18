@@ -24,14 +24,32 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
         this.checkStartGame();
     }
 
+    private determineGameResult() {
+        const clientIds = Array.from(this.connectedClients.keys());
+        if (this.gameService.score.left === 5) {
+            this.connectedClients.get(clientIds[0]).emit('gameResult', 'YOU WIN');
+            this.connectedClients.get(clientIds[1]).emit('gameResult', 'YOU LOSE');
+        } else if (this.gameService.score.right === 5) {
+            this.connectedClients.get(clientIds[0]).emit('gameResult', 'YOU LOSE');
+            this.connectedClients.get(clientIds[1]).emit('gameResult', 'YOU WIN');
+        }
+    }
+    
     private async moveBall() {
         while(this.gameStarted) {
             const data = await this.gameService.moveBall();
             if(data === 'reset') {
                 const data = await this.gameService.resetGame();
                 this.connectedClients.forEach((connectedClient) => {
-                  connectedClient.emit('paddlesUpdate', data);
+                    connectedClient.emit('paddlesUpdate', data);
+                    connectedClient.emit('score', this.gameService.score);
                 });
+                if(this.gameService.score.left === 5 || this.gameService.score.right === 5) {
+                    this.determineGameResult();
+                    this.gameService.resetScore();
+                    this.gameStarted = false;
+                    break;
+                }
             }
             this.connectedClients.forEach((connectedClient) => {
               connectedClient.emit('updateBall', data);

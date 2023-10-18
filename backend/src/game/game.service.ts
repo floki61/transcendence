@@ -31,6 +31,10 @@ export class GameService
             speed: 5,
         },
     };
+    score = {
+        left: 0,
+        right: 0,
+    }
 
 
     private deepCopy(obj: any): any {
@@ -41,13 +45,13 @@ export class GameService
 
     resetGame() {
         this.gameData = this.deepCopy(this.initialGameData);
-        this.gameData.ball.xSpeed = 5 * Math.cos(Math.random() * (2 * Math.PI));
-        this.gameData.ball.ySpeed = 5 * Math.sin(Math.random() * (2 * Math.PI));
         return this.gameData;
 
     }
-
-
+    resetScore() {
+        this.score.left = 0;
+        this.score.right = 0;
+    }
     async updatePaddle(event: string, targetPaddle: string) {
         if (event === 'UP') {
             if (this.gameData[targetPaddle].y > this.gameData[targetPaddle].height / 2) {
@@ -81,8 +85,13 @@ export class GameService
     async moveBall() {
         if (this.gameData.ball.y < 0 || this.gameData.ball.y > this.gameData.canvasHeight - this.gameData.ball.radius)
             this.gameData.ball.ySpeed *= -1;
-        else if (this.gameData.ball.x < 0 || this.gameData.ball.x > this.gameData.canvasWidth)
+        else if (this.gameData.ball.x < 0 || this.gameData.ball.x > this.gameData.canvasWidth){
+            if(this.gameData.ball.x < 0)
+                this.score.right++;
+            else
+                this.score.left++;
             return 'reset';
+        }
         else {
             if (this.ballHitsPaddle(this.gameData.ball, this.gameData.leftPaddle)) {
                 const diff = this.gameData.ball.y - (this.gameData.leftPaddle.y - this.gameData.leftPaddle.height / 2);
