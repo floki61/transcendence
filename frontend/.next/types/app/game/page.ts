@@ -1,8 +1,8 @@
-// File: /Users/omar/Documents/transcendence/frontend/app/game/page.tsx
-import * as entry from '../../../../app/game/page.js'
+// File: /Users/saadennour/Desktop/transcendence/my-app/src/app/game/page.tsx
+import * as entry from '../../../../src/app/game/page.js'
 import type { ResolvingMetadata } from 'next/dist/lib/metadata/types/metadata-interface.js'
 
-type TEntry = typeof import('../../../../app/game/page.js')
+type TEntry = typeof import('../../../../src/app/game/page.js')
 
 // Check that the entry is a valid entry
 checkFields<Diff<{
