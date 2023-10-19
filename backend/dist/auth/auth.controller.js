@@ -25,12 +25,12 @@ let AuthController = exports.AuthController = class AuthController {
     googlelogin() { }
     async googleAuthRedirect(req, res) {
         await this.authService.validateUser(req, res);
-        res.redirect('/');
+        res.redirect('http://localhost:3000/settings');
     }
     login() { }
     async authRedirect(req, res) {
         await this.authService.validateUser(req, res);
-        res.redirect('/');
+        res.redirect('http://localhost:3000/settings');
     }
     async home(req) {
         return ({ user: req.user, cookies: req.cookies });
