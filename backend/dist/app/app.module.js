@@ -31,6 +31,7 @@ const game_controller_1 = require("../game/game.controller");
 const game_module_1 = require("../game/game.module");
 const game_gateway_1 = require("../game/game.gateway");
 const exception_filter_1 = require("../filter_ex/exception_filter");
+const game_service_1 = require("../game/game.service");
 let AppModule = exports.AppModule = class AppModule {
 };
 exports.AppModule = AppModule = __decorate([
@@ -55,6 +56,7 @@ exports.AppModule = AppModule = __decorate([
             },
             users_gateway_1.UsersGateway,
             game_gateway_1.GameGateway,
+            game_service_1.GameService,
         ],
     })
 ], AppModule);

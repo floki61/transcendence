@@ -1,18 +1,17 @@
 import { OnGatewayConnection, OnGatewayDisconnect } from '@nestjs/websockets';
 import { Socket } from 'socket.io';
+import { GameService } from './game.service';
 export declare class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
+    private readonly gameService;
+    constructor(gameService: GameService);
     private server;
     private gameStarted;
-    private gameData;
     private connectedClients;
-    mapValue(value: number, start1: number, stop1: number, start2: number, stop2: number): number;
-    map: (n: number, start1: number, stop1: number, start2: number, stop2: number, withinBounds?: boolean) => any;
-    private moveBall;
-    private handlePaddleUpdate;
     handleConnection(client: Socket): void;
     handleDisconnect(client: Socket): void;
-    handleUpdatePaddle(client: Socket, event: any): void;
+    private determineGameResult;
+    private moveBall;
+    handleUpdatePaddle(client: Socket, event: any): Promise<void>;
     private checkStartGame;
-    private updateGameData;
     private broadcastGameData;
 }

@@ -19,7 +19,7 @@ export class AuthController {
 		await this.authService.validateUser(req, res);
 		// if(req.user.isTwoFactorAuthenticationCodeValid)
 			// res.redirect('2fa/generate');
-		res.redirect('/');
+		res.redirect('http://localhost:3000/settings');
 	}
 	
 	@UseGuards(FortyTwoGuard)
@@ -32,7 +32,7 @@ export class AuthController {
 		await this.authService.validateUser(req, res)
 		// if(req.user.isTwoFactorAuthenticationEnabled)
 			// res.redirect('2fa/generate');
-		res.redirect('/');
+		res.redirect('http://localhost:3000/settings');
 	}
 
 	@UseGuards(JwtAuthGuard)
