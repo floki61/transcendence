@@ -25,6 +25,7 @@ import { GameModule } from 'src/game/game.module';
 import { GameGateway } from 'src/game/game.gateway';
 import { ExceptionsFilter } from 'src/filter_ex/exception_filter';
 import { GameService } from 'src/game/game.service';
+import { ChatController } from 'src/chat/chat.controller';
 
 @Module({
   imports: [

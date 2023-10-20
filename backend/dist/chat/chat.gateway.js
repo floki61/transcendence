@@ -163,6 +163,7 @@ __decorate([
 ], ChatGateway.prototype, "leaveRoom", null);
 exports.ChatGateway = ChatGateway = __decorate([
     (0, websockets_1.WebSocketGateway)({ namespace: 'chat',
+        cors: { origin: 'http://localhost:3000', credentials: true },
     }),
     __metadata("design:paramtypes", [chat_service_1.ChatService,
         jwt_1.JwtService,

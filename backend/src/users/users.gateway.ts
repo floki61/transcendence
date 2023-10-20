@@ -8,7 +8,7 @@ import { Req } from "@nestjs/common";
 import { Server, Socket } from "socket.io";
 
 @WebSocketGateway({ namespace: 'users' ,
-// cors: { origin: 'http://localhost:3000', credentials: true },
+cors: { origin: 'http://localhost:3000', credentials: true },
 })
 export class UsersGateway implements OnGatewayConnection {
     constructor(private readonly chatService: UsersService,

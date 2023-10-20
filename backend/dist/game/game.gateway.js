@@ -97,7 +97,7 @@ __decorate([
     __metadata("design:returntype", Promise)
 ], GameGateway.prototype, "handleUpdatePaddle", null);
 exports.GameGateway = GameGateway = __decorate([
-    (0, websockets_1.WebSocketGateway)({ cors: true }),
+    (0, websockets_1.WebSocketGateway)({ namespace: 'game', cors: true, origin: ['http://localhost:3000'] }),
     __metadata("design:paramtypes", [game_service_1.GameService])
 ], GameGateway);
 //# sourceMappingURL=game.gateway.js.map

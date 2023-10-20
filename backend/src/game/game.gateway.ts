@@ -4,7 +4,7 @@ import { GameService } from './game.service';
 
 
 
-@WebSocketGateway({ cors: true })
+@WebSocketGateway({ namespace: 'game', cors: true, origin: ['http://localhost:3000']})
 export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
     constructor(private readonly gameService: GameService) {}
     @WebSocketServer()

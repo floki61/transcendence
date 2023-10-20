@@ -64,6 +64,7 @@ __decorate([
 ], UsersGateway.prototype, "server", void 0);
 exports.UsersGateway = UsersGateway = __decorate([
     (0, websockets_1.WebSocketGateway)({ namespace: 'users',
+        cors: { origin: 'http://localhost:3000', credentials: true },
     }),
     __metadata("design:paramtypes", [users_service_1.UsersService,
         jwt_1.JwtService,
