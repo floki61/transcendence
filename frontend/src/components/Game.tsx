@@ -1,20 +1,22 @@
 "use client"
 import React, { useEffect, useRef, useState } from 'react';
 import p5 from 'p5';
-import { useSocket } from './SocketContext';
+import { useGame } from '@/context/gameSocket';
 
-let leftPaddleX = null, leftPaddleY = null, leftPaddleWidth = null, leftPaddleHeight = null;
-let rightPaddleX = null, rightPaddleY = null, rightPaddleWidth = null, rightPaddleHeight = null;
-let ballX = null, ballY = null, radius = null;
+let leftPaddleX: any = null, leftPaddleY: any  = null, leftPaddleWidth: any  = null, leftPaddleHeight: any  = null;
+let rightPaddleX: any  = null, rightPaddleY: any  = null, rightPaddleWidth: any  = null, rightPaddleHeight: any  = null;
+let ballX: any  = null, ballY: any  = null, radius: any  = null;
 let leftScore = 0, rightScore = 0;
+
+
 const GamePage = () => {
     const p5Ref = useRef();
-    const socket = useSocket();
+    const {socket} = useGame();
     const gameDataRef = useRef(null);
     const [count, setCount] = useState(false);
     const [gameResult, setGameResult] = useState(null);
 
-    function updatePaddle(p, data) {
+    function updatePaddle(p: p5, data: any) {
         leftPaddleX = (data.leftPaddle.x * (p.windowWidth / 2)) / data.canvasWidth;
         leftPaddleY = (data.leftPaddle.y * (p.windowHeight / 2)) / data.canvasHeight;    
         leftPaddleWidth = (data.leftPaddle.width / data.canvasWidth) * p.width;
@@ -26,7 +28,7 @@ const GamePage = () => {
         rightPaddleHeight = (data.rightPaddle.height / data.canvasHeight) * p.height;
 
     }
-    function updateBall(p, data) {
+    function updateBall(p: p5, data: any) {
         if(data.ball) {
             ballX  = (data.ball.x * (p.windowWidth / 2)) / data.canvasWidth;
             ballY  = (data.ball.y * (p.windowHeight / 2)) / data.canvasHeight;
@@ -34,9 +36,9 @@ const GamePage = () => {
         }
     }
     useEffect(() => {
-        let canvas;
-        const sketch = (p) => {
-            
+        if (!socket) return;
+        let canvas: any;
+        const sketch = (p: p5) => {
             p.setup = () => {
                 canvas = p.createCanvas(p.windowWidth / 2, p.windowHeight / 2);
                 canvas.position((p.windowWidth - canvas.width) / 2, (p.windowHeight - canvas.height) / 2);
