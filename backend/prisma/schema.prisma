@@ -29,21 +29,25 @@ enum Status {
 }
 
 model User {
-	id                            String       @id @default(cuid())
-	userName                      String?       @unique
-	firstName                     String
-	lastName                      String
-	email                         String?      @unique
-	picture                       String?      @default("") // Use nullable (?) for optional fields
-	accessToken                   String?      @default("") // Use nullable (?) for optional fields
-	password                      String? // Password should not have a default value
-	twoFactorAuthenticationSecret String?
-	membership                    Participant[]
-	isTwoFactorAuthenticationEnabled Boolean @default(false)
-	senders                       FriendShip[] @relation("sender")
-	receivers                     FriendShip[] @relation("receiver")
-	blockSenders                  Block[] @relation("sender")
-	blockReceivers                Block[] @relation("receiver")
+	id                            		String       @id @default(cuid())
+	userName                      		String?       @unique
+	firstName                     		String
+	lastName                      		String
+	email                         		String?      @unique
+	picture                       		String?      @default("") // Use nullable (?) for optional fields
+	accessToken                   		String?      @default("") // Use nullable (?) for optional fields
+	password                      		String? // Password should not have a default value
+	twoFactorAuthenticationSecret 		String?
+	membership                    		Participant[]
+	isTwoFactorAuthenticationEnabled 	Boolean @default(false)
+	senders                       		FriendShip[] @relation("sender")
+	receivers                     		FriendShip[] @relation("receiver")
+	wins                       			Game[] @relation("winner")
+	loses                     			Game[] @relation("loser")
+	blockSenders                  		Block[] @relation("sender")
+	blockReceivers                		Block[] @relation("receiver")
+	achivements							Achivement[]
+	notifications						Notification[]
 	// lastSeen    DateTime?    @default(now())
 
 	createdAt DateTime @default(now())
@@ -131,4 +135,54 @@ model Message {
 
 	createdAt DateTime @default(now())
 	updatedAt DateTime @updatedAt
+}
+
+model Game {
+	id String @id @default(cuid())
+
+	winner   User   @relation(name: "winner", fields: [winnerId], references: [id])
+	winnerId String
+
+	loser   User   @relation(name: "loser", fields: [loserId], references: [id])
+	loserId String
+
+	winnerScore Int
+
+	loserScore Int
+
+	createdAt DateTime @default(now())
+	updatedAt DateTime @updatedAt
+
+	@@unique([winnerId, loserId])
+}
+
+model Achivement {
+	id String @id @default(cuid())
+
+	user   User   @relation(fields: [uid], references: [id])
+	uid String
+
+	achivementName String
+
+	alreadyAchieved Boolean @default(false)
+
+	createdAt DateTime @default(now())
+	updatedAt DateTime @updatedAt
+
+	@@unique([uid, achivementName])
+}
+
+model Notification {
+	id String @id @default(cuid())
+
+	user   User   @relation(fields: [uid], references: [id])
+	uid String
+
+	notificationName String
+
+
+	createdAt DateTime @default(now())
+	updatedAt DateTime @updatedAt
+
+	@@unique([uid, notificationName])
 }
