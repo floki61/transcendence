@@ -33,6 +33,7 @@ export class AuthService {
 		console.log(token);
 		return token;
 	}
+
 	async validateUser(req, res) {
 		const user = await this.userservice.getUser(req.user.id);
 		if (!user)
@@ -40,6 +41,10 @@ export class AuthService {
 		const token = await this.generateToken(req);
 		res.cookie('access_token', token, { httpOnly: true, maxAge: 600000});
 	}
+	async logout (req, res) {
+		res.clearCookie('access_token');
+	}
+
 	async signup(dto: Userdto) {
 		const hash = await argon.hash(dto.password);
 		try {

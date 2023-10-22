@@ -32,12 +32,12 @@ let GameGateway = exports.GameGateway = class GameGateway {
     determineGameResult() {
         const clientIds = Array.from(this.connectedClients.keys());
         if (this.gameService.score.left === 5) {
-            this.connectedClients.get(clientIds[0]).emit('gameResult', 'YOU WIN');
-            this.connectedClients.get(clientIds[1]).emit('gameResult', 'YOU LOSE');
+            this.connectedClients.get(clientIds[0]).emit('gameResult', 'Winner');
+            this.connectedClients.get(clientIds[1]).emit('gameResult', 'Loser');
         }
         else if (this.gameService.score.right === 5) {
-            this.connectedClients.get(clientIds[0]).emit('gameResult', 'YOU LOSE');
-            this.connectedClients.get(clientIds[1]).emit('gameResult', 'YOU WIN');
+            this.connectedClients.get(clientIds[0]).emit('gameResult', 'Loser');
+            this.connectedClients.get(clientIds[1]).emit('gameResult', 'Winner');
         }
     }
     async moveBall() {
@@ -97,7 +97,7 @@ __decorate([
     __metadata("design:returntype", Promise)
 ], GameGateway.prototype, "handleUpdatePaddle", null);
 exports.GameGateway = GameGateway = __decorate([
-    (0, websockets_1.WebSocketGateway)({ namespace: 'game', cors: true, origin: ['http://localhost:3000'] }),
+    (0, websockets_1.WebSocketGateway)({ namespace: 'game', cors: true, origin: ['http://localhost:3000/game'] }),
     __metadata("design:paramtypes", [game_service_1.GameService])
 ], GameGateway);
 //# sourceMappingURL=game.gateway.js.map

@@ -4,7 +4,7 @@ import { GameService } from './game.service';
 
 
 
-@WebSocketGateway({ namespace: 'game', cors: true, origin: ['http://localhost:3000']})
+@WebSocketGateway({ namespace: 'game', cors: true, origin: ['http://localhost:3000/game']})
 export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
     constructor(private readonly gameService: GameService) {}
     @WebSocketServer()
@@ -27,11 +27,11 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
     private determineGameResult() {
         const clientIds = Array.from(this.connectedClients.keys());
         if (this.gameService.score.left === 5) {
-            this.connectedClients.get(clientIds[0]).emit('gameResult', 'YOU WIN');
-            this.connectedClients.get(clientIds[1]).emit('gameResult', 'YOU LOSE');
+            this.connectedClients.get(clientIds[0]).emit('gameResult', 'Winner');
+            this.connectedClients.get(clientIds[1]).emit('gameResult', 'Loser');
         } else if (this.gameService.score.right === 5) {
-            this.connectedClients.get(clientIds[0]).emit('gameResult', 'YOU LOSE');
-            this.connectedClients.get(clientIds[1]).emit('gameResult', 'YOU WIN');
+            this.connectedClients.get(clientIds[0]).emit('gameResult', 'Loser');
+            this.connectedClients.get(clientIds[1]).emit('gameResult', 'Winner');
         }
     }
     
@@ -67,6 +67,12 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
 
         this.connectedClients.forEach((connectedClient) => {
             connectedClient.emit('paddlesUpdate', gameData);
+        });
+    }
+    @SubscribeMessage('botMode')
+    async botMode(client: Socket) {
+        this.connectedClients.forEach((connectedClient) => {
+            connectedClient.emit('startGame', this.gameService.gameData);
         });
     }
 
