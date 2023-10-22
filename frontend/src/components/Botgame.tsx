@@ -30,30 +30,12 @@ let ball = {
 };
 let leftScore = 0, rightScore = 0;
 
-// let leftPaddleX: any = null, leftPaddleY: any  = null, leftPaddleWidth: any  = null, leftPaddleHeight: any  = null;
-// let rightPaddleX: any  = null, rightPaddleY: any  = null, rightPaddleWidth: any  = null, rightPaddleHeight: any  = null;
-// let ballX: any  = null, ballY: any  = null, radius: any  = null, xSpeed: any  = null, ySpeed: any  = null;
-
-
 const GamePage = () => {
     const p5Ref = useRef();
     const {socket} = useGame();
     const gameDataRef = useRef(null);
     const [count, setCount] = useState(false);
     const [gameResult, setGameResult] = useState(null);
-
-    // function updatePaddle(p: p5, data: any) {
-    //     leftPaddleX = (data.leftPaddle.x * (p.windowWidth / 2)) / data.canvasWidth;
-    //     leftPaddleY = (data.leftPaddle.y * (p.windowHeight / 2)) / data.canvasHeight;    
-    //     leftPaddleWidth = (data.leftPaddle.width / data.canvasWidth) * p.width;
-    //     leftPaddleHeight = (data.leftPaddle.height / data.canvasHeight) * p.height;
-
-    //     rightPaddleX = (data.rightPaddle.x / data.canvasWidth) * p.width;
-    //     rightPaddleY = (data.rightPaddle.y / data.canvasHeight) * p.height;                
-    //     rightPaddleWidth = (data.rightPaddle.width / data.canvasWidth) * p.width;
-    //     rightPaddleHeight = (data.rightPaddle.height / data.canvasHeight) * p.height;
-
-    // }
 
     function initGame(p: p5) {
         leftPaddle.width = 10;
@@ -71,7 +53,7 @@ const GamePage = () => {
         ball.x = p.width / 2;
         ball.y = p.height / 2;
         ball.radius = 15;
-        ball.speed = 3;
+        ball.speed = 5;
         ball.xSpeed =  ball.speed * Math.cos(Math.random() * (2 * Math.PI));
         ball.ySpeed =  ball.speed * Math.sin(Math.random() * (2 * Math.PI));
     }
@@ -111,7 +93,7 @@ const GamePage = () => {
                 rightScore++;
             else
                 leftScore++;
-            ball.speed = 3;
+            ball.speed = 5;
             ball.xSpeed =  ball.speed * Math.cos(Math.random() * (2 * Math.PI));
             ball.ySpeed =  ball.speed * Math.sin(Math.random() * (2 * Math.PI));
             ball.x = p.width / 2;
@@ -125,9 +107,7 @@ const GamePage = () => {
                 ball.speed += 0.5;
                 ball.xSpeed = ball.speed * Math.cos(angle);
                 ball.ySpeed = ball.speed * Math.sin(angle);
-                ball.x = leftPaddle.x + leftPaddle.width / 2 + ball.radius;
-                // ball.xSpeed *= ball.speed; 
-                // ball.ySpeed *= ball.speed; 
+                ball.x = leftPaddle.x + leftPaddle.width / 2 + ball.radius; 
             }
             if(ballHitsPaddle(rightPaddle)) {
                 const diff = ball.y - (rightPaddle.y - rightPaddle.height / 2);
@@ -136,7 +116,6 @@ const GamePage = () => {
                 ball.xSpeed = ball.speed * Math.cos(angle);
                 ball.ySpeed = ball.speed * Math.sin(angle);
                 ball.x = rightPaddle.x - rightPaddle.width / 2 - ball.radius;
-                // ball.speed += 0.4;
             }
         }
         ball.x += ball.xSpeed ;
@@ -145,9 +124,12 @@ const GamePage = () => {
     }
 
     function moveRightPaddle(p: p5) {
-        if(ball.xSpeed < 0)
-            return;
-        rightPaddle.y = ball.y;
+        if(ball.xSpeed < 0 || ball.x < p.width / 2)
+            return ;
+        if(rightPaddle.y > ball.y && rightPaddle.y - rightPaddle.height / 2 > ball.y && rightPaddle.y > rightPaddle.height / 2)
+            rightPaddle.y -= rightPaddle.speed;
+        else if(rightPaddle.y < ball.y && rightPaddle.y + rightPaddle.height / 2 < ball.y && rightPaddle.y < p.height - rightPaddle.height / 2)
+            rightPaddle.y += rightPaddle.speed;
     }
 
 
@@ -162,8 +144,6 @@ const GamePage = () => {
             };    
             p.windowResized = () => {
                 p.resizeCanvas(p.windowWidth / 2, p.windowHeight / 2);
-                // if(gameDataRef.current)
-                //     updatePaddles(p, gameDataRef.current);
                 centerCanvas();
             };
 
@@ -186,13 +166,6 @@ const GamePage = () => {
                 p.ellipse(ball.x, ball.y, ball.radius * 2);
                 updateBall(p);
                 moveRightPaddle(p);
-                // if (gameResult) {
-                //     p.background(0);
-                //     p.fill(255);
-                //     p.textSize(34);
-                //     p.textAlign(p.CENTER, p.CENTER);
-                //     p.text(gameResult, p.width / 2, p.height / 2);
-                // }
                 if (p.keyIsDown(p.UP_ARROW))
                     updatePaddle(p, "up");
                 else if(p.keyIsDown(p.DOWN_ARROW))
