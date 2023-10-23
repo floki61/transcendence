@@ -33,12 +33,12 @@ let GameGateway = exports.GameGateway = class GameGateway {
             });
             if (payload.id) {
                 console.log(`Client connected: ${payload.id} Socket: ${client.id}`);
+                this.connectedClients.set(payload.id, client);
             }
         }
         else {
             client.disconnect();
         }
-        this.connectedClients.set(payload.id, client);
         this.checkStartGame();
     }
     async handleDisconnect(client) {
@@ -50,10 +50,10 @@ let GameGateway = exports.GameGateway = class GameGateway {
                 secret: this.config.get('secret')
             });
             if (payload.id) {
+                console.log(`Client disconnected: ${payload.id} Socket: ${client.id}`);
                 this.connectedClients.delete(payload.id);
             }
         }
-        console.log(`Client disconnected: ${payload.id} Socket: ${client.id}`);
         this.checkStartGame();
     }
     parseCookies(cookieHeader) {
