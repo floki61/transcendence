@@ -4,7 +4,7 @@ import { Server } from 'socket.io';
 @Controller()
 export class GameController {
 	constructor() {}
-	// @Get('/pong')
+	// @Get('/waitingforplayers')
 	// async game(@Req() req) {
     //     return "hey";
 	// }
