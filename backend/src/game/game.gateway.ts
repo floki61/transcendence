@@ -1,28 +1,78 @@
 import { WebSocketGateway, WebSocketServer, OnGatewayConnection, OnGatewayDisconnect, SubscribeMessage } from '@nestjs/websockets';
 import { Server, Socket } from 'socket.io';
 import { GameService } from './game.service';
+import { JwtService } from '@nestjs/jwt';
+import { ConfigService } from '@nestjs/config';
 
 
 
 @WebSocketGateway({ namespace: 'game', cors: true, origin: ['http://localhost:3000/game']})
 export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
-    constructor(private readonly gameService: GameService) {}
+    constructor(private readonly gameService: GameService,
+        private jwt: JwtService,
+        private config: ConfigService) {}
     @WebSocketServer()
     private server: Server;
     private gameStarted = false;
     private connectedClients: Map<string, Socket> = new Map<string, Socket>();
     
-    handleConnection(client: Socket) {
-        console.log(`Client connected: ${client.id}`);
-        this.connectedClients.set(client.id, client);
+    async handleConnection(client: Socket) {
+        let cookie: string;
+        let payload: any;
+        if (client.request.headers.cookie) {
+			cookie = await this.parseCookies(client.request.headers.cookie);
+			payload = await this.jwt.verifyAsync(
+				cookie,
+				{
+					secret: this.config.get('secret')
+				});
+			if (payload.id) {
+                console.log(`Client connected: ${payload.id} Socket: ${client.id}`);
+			}
+		}
+		else {
+			client.disconnect();
+		}
+        this.connectedClients.set(payload.id, client);
         this.checkStartGame();
     }
     
-    handleDisconnect(client: Socket) {
-        console.log(`Client disconnected: ${client.id}`);
-        this.connectedClients.delete(client.id);
+    async handleDisconnect(client: Socket) {
+        let cookie: string;
+		let payload: any;
+		if (client.request.headers.cookie) {
+			cookie = await this.parseCookies(client.request.headers.cookie);
+			payload = await this.jwt.verifyAsync(
+				cookie,
+				{
+					secret: this.config.get('secret')
+				}
+				);
+				if (payload.id) {
+                    this.connectedClients.delete(payload.id);
+				}
+		}
+        console.log(`Client disconnected: ${payload.id} Socket: ${client.id}`);
         this.checkStartGame();
     }
+
+    private parseCookies(cookieHeader: string | undefined): string {
+		const cookies: Record<string, string> = {};
+		if (cookieHeader) {
+			cookieHeader.split(';').forEach((cookie) => {
+				const parts = cookie.split('=');
+				const name = parts.shift()?.trim();
+				let value = decodeURI(parts.join('='));
+				if (value.startsWith('"') && value.endsWith('"')) {
+					value = value.slice(1, -1);
+				}
+				if (name) {
+					cookies[name] = value;
+				}
+			});
+		}
+		return cookies['access_token'];
+	}
 
     private determineGameResult() {
         const clientIds = Array.from(this.connectedClients.keys());

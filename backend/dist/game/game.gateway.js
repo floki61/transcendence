@@ -13,21 +13,65 @@ exports.GameGateway = void 0;
 const websockets_1 = require("@nestjs/websockets");
 const socket_io_1 = require("socket.io");
 const game_service_1 = require("./game.service");
+const jwt_1 = require("@nestjs/jwt");
+const config_1 = require("@nestjs/config");
 let GameGateway = exports.GameGateway = class GameGateway {
-    constructor(gameService) {
+    constructor(gameService, jwt, config) {
         this.gameService = gameService;
+        this.jwt = jwt;
+        this.config = config;
         this.gameStarted = false;
         this.connectedClients = new Map();
     }
-    handleConnection(client) {
-        console.log(`Client connected: ${client.id}`);
-        this.connectedClients.set(client.id, client);
+    async handleConnection(client) {
+        let cookie;
+        let payload;
+        if (client.request.headers.cookie) {
+            cookie = await this.parseCookies(client.request.headers.cookie);
+            payload = await this.jwt.verifyAsync(cookie, {
+                secret: this.config.get('secret')
+            });
+            if (payload.id) {
+                console.log(`Client connected: ${payload.id} Socket: ${client.id}`);
+            }
+        }
+        else {
+            client.disconnect();
+        }
+        this.connectedClients.set(payload.id, client);
         this.checkStartGame();
     }
-    handleDisconnect(client) {
-        console.log(`Client disconnected: ${client.id}`);
-        this.connectedClients.delete(client.id);
+    async handleDisconnect(client) {
+        let cookie;
+        let payload;
+        if (client.request.headers.cookie) {
+            cookie = await this.parseCookies(client.request.headers.cookie);
+            payload = await this.jwt.verifyAsync(cookie, {
+                secret: this.config.get('secret')
+            });
+            if (payload.id) {
+                this.connectedClients.delete(payload.id);
+            }
+        }
+        console.log(`Client disconnected: ${payload.id} Socket: ${client.id}`);
         this.checkStartGame();
+    }
+    parseCookies(cookieHeader) {
+        const cookies = {};
+        if (cookieHeader) {
+            cookieHeader.split(';').forEach((cookie) => {
+                const parts = cookie.split('=');
+                const name = parts.shift()?.trim();
+                let value = decodeURI(parts.join('='));
+                if (value.startsWith('"') && value.endsWith('"')) {
+                    value = value.slice(1, -1);
+                }
+                if (name) {
+                    cookies[name] = value;
+                }
+            });
+        }
+        return cookies['access_token'];
     }
     determineGameResult() {
         const clientIds = Array.from(this.connectedClients.keys());
@@ -70,6 +114,11 @@ let GameGateway = exports.GameGateway = class GameGateway {
             connectedClient.emit('paddlesUpdate', gameData);
         });
     }
+    async botMode(client) {
+        this.connectedClients.forEach((connectedClient) => {
+            connectedClient.emit('startGame', this.gameService.gameData);
+        });
+    }
     checkStartGame() {
         if (this.connectedClients.size < 2 && this.gameStarted) {
             this.gameStarted = false;
@@ -96,8 +145,16 @@ __decorate([
     __metadata("design:paramtypes", [socket_io_1.Socket, Object]),
     __metadata("design:returntype", Promise)
 ], GameGateway.prototype, "handleUpdatePaddle", null);
+__decorate([
+    (0, websockets_1.SubscribeMessage)('botMode'),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [socket_io_1.Socket]),
+    __metadata("design:returntype", Promise)
+], GameGateway.prototype, "botMode", null);
 exports.GameGateway = GameGateway = __decorate([
     (0, websockets_1.WebSocketGateway)({ namespace: 'game', cors: true, origin: ['http://localhost:3000/game'] }),
-    __metadata("design:paramtypes", [game_service_1.GameService])
+    __metadata("design:paramtypes", [game_service_1.GameService,
+        jwt_1.JwtService,
+        config_1.ConfigService])
 ], GameGateway);
 //# sourceMappingURL=game.gateway.js.map
