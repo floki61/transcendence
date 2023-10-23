@@ -45,6 +45,9 @@ let AuthService = exports.AuthService = class AuthService {
         const token = await this.generateToken(req);
         res.cookie('access_token', token, { httpOnly: true, maxAge: 600000 });
     }
+    async logout(req, res) {
+        res.clearCookie('access_token');
+    }
     async signup(dto) {
         const hash = await argon.hash(dto.password);
         try {

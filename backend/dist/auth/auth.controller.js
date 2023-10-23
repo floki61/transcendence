@@ -18,24 +18,27 @@ const auth_service_1 = require("./auth.service");
 const Guards_1 = require("./tools/Guards");
 const dto_1 = require("../users/dto");
 const jwt_guard_1 = require("./jwt/jwt.guard");
+const config_1 = require("@nestjs/config");
 let AuthController = exports.AuthController = class AuthController {
-    constructor(authService) {
+    constructor(authService, config) {
         this.authService = authService;
+        this.config = config;
     }
     googlelogin() { }
     async googleAuthRedirect(req, res) {
         await this.authService.validateUser(req, res);
-        res.redirect('http://localhost:3000/settings');
+        res.redirect(this.config.get('SETTINGS_URL'));
     }
     login() { }
     async authRedirect(req, res) {
         await this.authService.validateUser(req, res);
-        res.redirect('http://localhost:3000/settings');
+        res.redirect(this.config.get('SETTINGS_URL'));
     }
-    async home(req) {
-        return ({ user: req.user, cookies: req.cookies });
+    async logout(req, res) {
+        await this.authService.logout(req, res);
+        res.redirect(this.config.get('LOGIN_URL'));
     }
-    async signup(data, req, res) {
+    signup(data) {
         return this.authService.signup(data);
     }
     signin(data) {
@@ -76,20 +79,19 @@ __decorate([
 ], AuthController.prototype, "authRedirect", null);
 __decorate([
     (0, common_1.UseGuards)(jwt_guard_1.JwtAuthGuard),
-    (0, common_1.Get)('/'),
+    (0, common_1.Get)('logout'),
     __param(0, (0, common_1.Req)()),
+    __param(1, (0, common_1.Res)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Object]),
+    __metadata("design:paramtypes", [Object, Object]),
     __metadata("design:returntype", Promise)
-], AuthController.prototype, "home", null);
+], AuthController.prototype, "logout", null);
 __decorate([
     (0, common_1.Post)('signup'),
     __param(0, (0, common_1.Body)()),
-    __param(1, (0, common_1.Req)()),
-    __param(2, (0, common_1.Res)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [dto_1.Userdto, Object, Object]),
-    __metadata("design:returntype", Promise)
+    __metadata("design:paramtypes", [dto_1.Userdto]),
+    __metadata("design:returntype", void 0)
 ], AuthController.prototype, "signup", null);
 __decorate([
     (0, common_1.Post)('signin'),
@@ -100,6 +102,7 @@ __decorate([
 ], AuthController.prototype, "signin", null);
 exports.AuthController = AuthController = __decorate([
     (0, common_1.Controller)(),
-    __metadata("design:paramtypes", [auth_service_1.AuthService])
+    __metadata("design:paramtypes", [auth_service_1.AuthService,
+        config_1.ConfigService])
 ], AuthController);
 //# sourceMappingURL=auth.controller.js.map

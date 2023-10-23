@@ -11,6 +11,7 @@ export declare class AuthService {
     constructor(prisma: PrismaService, jwtService: JwtService, config: ConfigService, userservice: UsersService);
     generateToken(req: any): Promise<string>;
     validateUser(req: any, res: any): Promise<void>;
+    logout(req: any, res: any): Promise<void>;
     signup(dto: Userdto): Promise<{
         id: string;
         userName: string;

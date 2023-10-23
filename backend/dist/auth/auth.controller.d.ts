@@ -1,18 +1,17 @@
 import { AuthService } from './auth.service';
-import { Request, Response } from 'express';
+import { Response } from 'express';
 import { Userdto, signindto } from "../users/dto";
+import { ConfigService } from '@nestjs/config';
 export declare class AuthController {
     private readonly authService;
-    constructor(authService: AuthService);
+    private readonly config;
+    constructor(authService: AuthService, config: ConfigService);
     googlelogin(): void;
     googleAuthRedirect(req: any, res: Response): Promise<void>;
     login(): void;
     authRedirect(req: any, res: Response): Promise<void>;
-    home(req: any): Promise<{
-        user: any;
-        cookies: any;
-    }>;
-    signup(data: Userdto, req: Request, res: Response): Promise<{
+    logout(req: any, res: Response): Promise<void>;
+    signup(data: Userdto): Promise<{
         id: string;
         userName: string;
         firstName: string;
