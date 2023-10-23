@@ -3,6 +3,8 @@
 import { faEye, faEyeDropper } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Image from "next/image";
+import { useEffect, useState, useRef } from "react";
+
 
 interface SettinputProps {
   holder: string;
@@ -17,11 +19,18 @@ const Settinput: React.FC<SettinputProps> = ({
   value,
   className = "",
 }) => {
+
+  const [inputValue, setinputValue] = useState(value);
+
+  function handleValue(e:any) {
+    setinputValue(e.target.value)
+    holder = e.target.value;
+  }
   return (
       <input
         className="p-3 pl-4 rounded-xl bg-primecl placeholder:text-white text-lg outline-none font-light w-full"
         placeholder={holder}
-        value={value}
+        onChange={handleValue}
       />
   );
 };

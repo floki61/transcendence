@@ -3,7 +3,7 @@ import Settinput from "@/components/SettInput";
 import Button from "@/components/Button";
 import Image from "next/image";
 import axios from "axios";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import Link from "next/link";
 
 interface userType {
@@ -35,7 +35,7 @@ export default function page() {
   }, []);
   
   return (
-    <div>
+    <div className="h-full">
     {user && (
       <div className="flex rounded-2xl bg-segundcl h-[90%] m-8">
           <div className="flex flex-col w-1/2 border-r-4 border-primecl justify-center items-center my-6 gap-6">
@@ -75,15 +75,18 @@ export default function page() {
             </div>
           </div>
           <div className="flex flex-col w-1/2 items-center gap-6 mt-16 px-10">
-            <Settinput holder="Full Name" type="text" value={user.firstName + " " + user.lastName}  />
-            <Settinput holder="Username" type="text" value={user.firstName} />
-            <Settinput holder="Email" type="text" value={user.email} />
+            <Settinput holder={user.firstName + " " + user.lastName} type="text" />
+            <Settinput holder={user.firstName} type="text" />
+            <Settinput holder={user.email} type="text" />
             <Settinput holder="Country" type="text" />
             <Settinput holder="Phone Number" type="text" />
-            <Button
-              text="Save"
-              className="border border-white rounded-3xl w-[25%] h-12 my-auto opacity-95 cursor-pointer justify-self-end self-end bg-primecl shadow-[0px 4px 4px 0px rgba(0, 0, 0, 0.25)]"
-            />
+            <Link
+              href={process.env.NEXT_PUBLIC_SERVER_URL + "/getUser"}
+              className="border border-white text-center py-3 rounded-3xl w-[25%] h-12 my-auto opacity-95 cursor-pointer justify-self-end self-end bg-primecl shadow-[0px 4px 4px 0px rgba(0, 0, 0, 0.25)]"
+            >
+              Save
+            </Link>
+            
           </div>
       </div>
     )}
