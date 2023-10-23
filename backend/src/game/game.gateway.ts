@@ -28,12 +28,12 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
 				});
 			if (payload.id) {
                 console.log(`Client connected: ${payload.id} Socket: ${client.id}`);
+                this.connectedClients.set(payload.id, client);
 			}
 		}
 		else {
 			client.disconnect();
 		}
-        this.connectedClients.set(payload.id, client);
         this.checkStartGame();
     }
     
@@ -49,10 +49,10 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
 				}
 				);
 				if (payload.id) {
+                    console.log(`Client disconnected: ${payload.id} Socket: ${client.id}`);
                     this.connectedClients.delete(payload.id);
 				}
 		}
-        console.log(`Client disconnected: ${payload.id} Socket: ${client.id}`);
         this.checkStartGame();
     }
 
