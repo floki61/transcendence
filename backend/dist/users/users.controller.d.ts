@@ -13,6 +13,7 @@ export declare class UsersController {
         user: any;
         cookies: any;
     }>;
+    getUser(req: any): Promise<any>;
     sendFriendRequest(body: any, req: any): Promise<{
         id: string;
         userId: string;
