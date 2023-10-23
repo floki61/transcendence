@@ -34,7 +34,7 @@ const GamePage = () => {
     const p5Ref = useRef();
     const {socket} = useGame();
     const gameDataRef = useRef(null);
-    const [count, setCount] = useState(false);
+    const [count, setCount] = useState(true);
     const [gameResult, setGameResult] = useState(null);
 
     function initGame(p: p5) {
@@ -151,25 +151,37 @@ const GamePage = () => {
                 canvas.position((p.windowWidth - p.width) / 2, (p.windowHeight - p.height) / 2);
             };
             p.draw = () => {
-                p.background("#223d46");
-                p.textSize(128);
-                p.textAlign(p.CENTER, p.CENTER);
-                p.text(leftScore, p.width / 4, p.height / 2);
-                p.text(rightScore, (p.width / 4) * 3, p.height / 2);
-    
-                p.fill(255);
-                p.rectMode(p.CENTER);
-                p.rect(leftPaddle.x, leftPaddle.y, leftPaddle.width, leftPaddle.height);
-                p.rect(rightPaddle.x, rightPaddle.y, rightPaddle.width, rightPaddle.height);
-                
-                p.fill(255);
-                p.ellipse(ball.x, ball.y, ball.radius * 2);
-                updateBall(p);
-                moveRightPaddle(p);
-                if (p.keyIsDown(p.UP_ARROW))
-                    updatePaddle(p, "up");
-                else if(p.keyIsDown(p.DOWN_ARROW))
-                    updatePaddle(p, "down");
+                if(count) {
+                    p.background("#223d46");
+                    p.textSize(128);
+                    p.textAlign(p.CENTER, p.CENTER);
+                    p.text(leftScore, p.width / 4, p.height / 2);
+                    p.text(rightScore, (p.width / 4) * 3, p.height / 2);
+        
+                    p.fill(255);
+                    p.rectMode(p.CENTER);
+                    p.rect(leftPaddle.x, leftPaddle.y, leftPaddle.width, leftPaddle.height);
+                    p.rect(rightPaddle.x, rightPaddle.y, rightPaddle.width, rightPaddle.height);
+                    
+                    p.fill(255);
+                    p.ellipse(ball.x, ball.y, ball.radius * 2);
+                    updateBall(p);
+                    moveRightPaddle(p);
+                    if (p.keyIsDown(p.UP_ARROW))
+                        updatePaddle(p, "up");
+                    else if(p.keyIsDown(p.DOWN_ARROW))
+                        updatePaddle(p, "down");
+                }
+                if(leftScore == 5 || rightScore == 5){
+                    p.fill(255);
+                    p.textSize(34);
+                    p.textAlign(p.CENTER, p.CENTER);
+                    if(leftScore == 5)
+                        p.text("WAAA3R", p.width / 2, p.height / 2);
+                    else
+                        p.text("D3iiiF", p.width / 2, p.height / 2);
+                    setCount(false);
+                }
             };
         };
         const mp5 = new p5(sketch, p5Ref.current);
