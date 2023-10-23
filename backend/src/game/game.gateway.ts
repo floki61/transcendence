@@ -28,6 +28,8 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
 				});
 			if (payload.id) {
                 console.log(`Client connected: ${payload.id} Socket: ${client.id}`);
+                if(this.connectedClients.has(payload.id))
+                    client.disconnect();
                 this.connectedClients.set(payload.id, client);
 			}
 		}
@@ -111,7 +113,7 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
 
     @SubscribeMessage('paddlesUpdate')
     async handleUpdatePaddle(client: Socket, event) {
-        const [clientId1, clientId2] = Array.from(this.connectedClients.keys());
+        const [clientId1, clientId2] = Array.from(this.connectedClients.values()).map((client) => client.id);
         const targetPaddle = client.id === clientId1 ? 'leftPaddle' : 'rightPaddle';
         const gameData = await this.gameService.updatePaddle(event, targetPaddle);
 
@@ -130,7 +132,7 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
         if(this.connectedClients.size < 2 && this.gameStarted) {
             this.gameStarted = false;
         }
-        if (this.connectedClients.size === 2) {
+        if (this.connectedClients.size === 2 && !this.gameStarted) {
             this.gameStarted = true;
             this.broadcastGameData();
             this.moveBall();

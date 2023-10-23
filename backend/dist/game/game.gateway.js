@@ -33,6 +33,8 @@ let GameGateway = exports.GameGateway = class GameGateway {
             });
             if (payload.id) {
                 console.log(`Client connected: ${payload.id} Socket: ${client.id}`);
+                if (this.connectedClients.has(payload.id))
+                    client.disconnect();
                 this.connectedClients.set(payload.id, client);
             }
         }
@@ -107,7 +109,7 @@ let GameGateway = exports.GameGateway = class GameGateway {
         }
     }
     async handleUpdatePaddle(client, event) {
-        const [clientId1, clientId2] = Array.from(this.connectedClients.keys());
+        const [clientId1, clientId2] = Array.from(this.connectedClients.values()).map((client) => client.id);
         const targetPaddle = client.id === clientId1 ? 'leftPaddle' : 'rightPaddle';
         const gameData = await this.gameService.updatePaddle(event, targetPaddle);
         this.connectedClients.forEach((connectedClient) => {
@@ -123,7 +125,7 @@ let GameGateway = exports.GameGateway = class GameGateway {
         if (this.connectedClients.size < 2 && this.gameStarted) {
             this.gameStarted = false;
         }
-        if (this.connectedClients.size === 2) {
+        if (this.connectedClients.size === 2 && !this.gameStarted) {
             this.gameStarted = true;
             this.broadcastGameData();
             this.moveBall();
