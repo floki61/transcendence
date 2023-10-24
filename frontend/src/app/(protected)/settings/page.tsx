@@ -6,18 +6,21 @@ import axios from "axios";
 import { useEffect, useState, useRef } from "react";
 import Link from "next/link";
 
-interface userType {
+export interface userType {
   id: string;
   email: string;
   picture: string;
   firstName: string;
   lastName: string;
+  userName: string;
+  phoneNumber: string;
+  country: string;
 }
 
 export default function page() {
 
   const [user, setUser] = useState<userType>();
-
+  
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -30,10 +33,43 @@ export default function page() {
         console.error(error);
       }
     }
-
+    
     fetchData();
   }, []);
   
+  function ImageUpload() {
+    const handleFileUpload = (e:any) => {
+      const file = e.target.files[0];
+      // Perform operations with the selected file
+      if (user) {
+        user.picture = file;
+        console.log(user.picture);
+      }
+      // You can also upload the file to the server at this point
+    };
+  }
+  
+  const imagePut = useRef<HTMLInputElement>(null);
+  const handlePicButton = () => {
+    if (imagePut.current) {
+      imagePut.current.click();
+    }
+  };
+
+  const updateUser = async () => {
+    try {
+      await axios.post('http://localhost:4000/userSettings', user, {
+        withCredentials: true,
+      }
+       ); // Replace with your backend API endpoint
+      // Optionally, handle success or display a success message
+      console.log(user);
+    } catch (error) {
+      console.error(error);
+      // Optionally, handle errors or display an error message
+    }
+  };
+
   return (
     <div className="h-full">
     {user && (
@@ -52,10 +88,14 @@ export default function page() {
                   text="CHOOSE AN AVATAR"
                   className="border border-white rounded-3xl w-2/5 p-2 h-12 opacity-80 cursor-pointer bg-primecl shadow-[0px 4px 4px 0px rgba(0, 0, 0, 0.25)]"
                 />
-                <Button
-                  text="UPLOAD A PHOTO"
+                <button
+                  type="submit"
                   className="border border-white rounded-3xl w-2/5 p-2 h-12 opacity-80 cursor-pointer bg-primecl shadow-[0px 4px 4px 0px rgba(0, 0, 0, 0.25)]"
-                />
+                  onClick={handlePicButton}
+                >
+                  UPLOAD A PICTURE
+                  <input type="file" onChange={ImageUpload} placeholder="UPLOAD A PHOTO" className=" left-0 top-0 opacity-0 w-full h-full"/>
+                </button>
               </div>
             </div>
             <div className="w-2/3 border-t-4 border-primecl mt-4">
@@ -75,15 +115,17 @@ export default function page() {
             </div>
           </div>
           <div className="flex flex-col w-1/2 items-center gap-6 mt-16 px-10">
-            <Settinput holder="Full Name" type="text" value={user.firstName + " " + user.lastName}/>
-            <Settinput holder="Username" type="text" value={user.firstName}/>
-            <Settinput holder="Email" type="text" value={user.email}/>
-            <Settinput holder="Country" type="text"/>
-            <Settinput holder="Phone Number" type="text"/>
-            <Button
-              text="Save"
+            <Settinput holder="Full Name" type="text" user={user} value={user.firstName + " " + user.lastName}/>
+            <Settinput holder="Username" type="text" user={user} value={user.userName}/>
+            <Settinput holder="Email" type="text" user={user} value={user.email}/>
+            <Settinput holder="Country" type="text" user={user} value={user.country}/>
+            <Settinput holder="Phone Number" type="text" user={user} value={user.phoneNumber}/>
+            <button
               className="border border-white text-center rounded-3xl w-[25%] h-12 my-auto opacity-95 cursor-pointer justify-self-end self-end bg-primecl shadow-[0px 4px 4px 0px rgba(0, 0, 0, 0.25)]"
-            />            
+              onClick={updateUser}
+            >
+              Save
+            </button>       
           </div>
       </div>
     )}
