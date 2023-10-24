@@ -24,12 +24,12 @@ const Settinput: React.FC<SettinputProps> = ({
 
   function handleValue(e:any) {
     setinputValue(e.target.value)
-    holder = e.target.value;
   }
   return (
       <input
         className="p-3 pl-4 rounded-xl bg-primecl placeholder:text-white text-lg outline-none font-light w-full"
         placeholder={holder}
+        value={inputValue !== null ? inputValue : value || ""}
         onChange={handleValue}
       />
   );
