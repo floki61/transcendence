@@ -40,6 +40,7 @@ export class AuthService {
 			await this.userservice.createUser(req);
 		const token = await this.generateToken(req);
 		res.cookie('access_token', token, { httpOnly: true, maxAge: 600000});
+		return user ? true : false;
 	}
 	async logout (req, res) {
 		res.clearCookie('access_token');

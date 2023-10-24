@@ -10,7 +10,7 @@ export declare class AuthService {
     private userservice;
     constructor(prisma: PrismaService, jwtService: JwtService, config: ConfigService, userservice: UsersService);
     generateToken(req: any): Promise<string>;
-    validateUser(req: any, res: any): Promise<void>;
+    validateUser(req: any, res: any): Promise<boolean>;
     logout(req: any, res: any): Promise<void>;
     signup(dto: Userdto): Promise<{
         id: string;

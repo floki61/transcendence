@@ -35,7 +35,7 @@ let UsersController = exports.UsersController = class UsersController {
     async getUser(req) {
         return (req.user);
     }
-    signup(req, data) {
+    userSettings(req, data) {
         return this.userservice.updateUser(req, data);
     }
     async sendFriendRequest(body, req) {
@@ -102,7 +102,7 @@ __decorate([
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Object, Object]),
     __metadata("design:returntype", void 0)
-], UsersController.prototype, "signup", null);
+], UsersController.prototype, "userSettings", null);
 __decorate([
     (0, common_1.UseGuards)(jwt_guard_1.JwtAuthGuard),
     (0, common_1.Post)('sendFriendRequest'),
