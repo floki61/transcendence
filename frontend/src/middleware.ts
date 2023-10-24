@@ -18,7 +18,8 @@ export async function middleware(request: NextRequest) {
       }
     }
   }
-  if (request.nextUrl.pathname === "/") {
+  if (request.nextUrl.pathname === "/" || request.nextUrl.pathname === "/settings" || request.nextUrl.pathname === "/profile"
+      || request.nextUrl.pathname === "/chat" || request.nextUrl.pathname === "/leaderboard") {
     if (jwt === undefined)
       return NextResponse.redirect(
         `${process.env.NEXT_PUBLIC_CLIENT_URL}/login`

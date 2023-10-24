@@ -75,18 +75,15 @@ export default function page() {
             </div>
           </div>
           <div className="flex flex-col w-1/2 items-center gap-6 mt-16 px-10">
-            <Settinput holder={user.firstName + " " + user.lastName} type="text" />
-            <Settinput holder={user.firstName} type="text" />
-            <Settinput holder={user.email} type="text" />
-            <Settinput holder="Country" type="text" />
-            <Settinput holder="Phone Number" type="text" />
-            <Link
-              href={process.env.NEXT_PUBLIC_SERVER_URL + "/getUser"}
-              className="border border-white text-center py-3 rounded-3xl w-[25%] h-12 my-auto opacity-95 cursor-pointer justify-self-end self-end bg-primecl shadow-[0px 4px 4px 0px rgba(0, 0, 0, 0.25)]"
-            >
-              Save
-            </Link>
-            
+            <Settinput holder="Full Name" type="text" value={user.firstName + " " + user.lastName}/>
+            <Settinput holder="Username" type="text" value={user.firstName}/>
+            <Settinput holder="Email" type="text" value={user.email}/>
+            <Settinput holder="Country" type="text"/>
+            <Settinput holder="Phone Number" type="text"/>
+            <Button
+              text="Save"
+              className="border border-white text-center rounded-3xl w-[25%] h-12 my-auto opacity-95 cursor-pointer justify-self-end self-end bg-primecl shadow-[0px 4px 4px 0px rgba(0, 0, 0, 0.25)]"
+            />            
           </div>
       </div>
     )}
