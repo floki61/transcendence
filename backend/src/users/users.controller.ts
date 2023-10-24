@@ -33,9 +33,8 @@ export class UsersController {
 
     @UseGuards(JwtAuthGuard)
     @Post('userSettings')
-	signup(@Req() req ,@Body() data) {
+	userSettings(@Req() req ,@Body() data) {
         return this.userservice.updateUser(req, data);
-	// return this.authService.signup(data);
 	}
 
     @UseGuards(JwtAuthGuard)
