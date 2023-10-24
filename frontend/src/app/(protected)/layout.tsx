@@ -9,6 +9,7 @@ interface userType {
   picture: string;
   firstName: string;
   lastName: string;
+  userName: string;
 }
 
 

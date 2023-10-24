@@ -35,7 +35,7 @@ export class UsersService {
 		if(data.userName)
 			this.updateUserName(req, data);
 		if(data.phoneNumber)
-			this.updateUserName(req, data);
+			this.updateUserPhoneNumber(req, data);
 		if(data.country)
 			this.updateUserCountry(req, data);
 	}
@@ -51,8 +51,8 @@ export class UsersService {
 		});
 	}
 	async updateUserName(req, data: any) {
-		if (await this.checkIfnameExists(data))
-			throw new UnauthorizedException('Username already exists');
+		// if (await this.checkIfnameExists(data))
+			// throw new UnauthorizedException('Username already exists');«
 		return await this.prisma.user.update({
 			where: {
 				id: req.user.id,

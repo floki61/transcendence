@@ -11,6 +11,7 @@ interface userType {
 	picture: string;
 	firstName: string;
 	lastName: string;
+	userName: string;
   }
 
 export default function Navbar() {
