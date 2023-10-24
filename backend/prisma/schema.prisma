@@ -35,6 +35,8 @@ model User {
 	lastName                      		String
 	email                         		String?      @unique
 	picture                       		String?      @default("") // Use nullable (?) for optional fields
+	country                       		String?      @default("") // Use nullable (?) for optional fields
+	phoneNumber							String?      @default("") // Use nullable (?) for optional fields
 	accessToken                   		String?      @default("") // Use nullable (?) for optional fields
 	password                      		String? // Password should not have a default value
 	twoFactorAuthenticationSecret 		String?

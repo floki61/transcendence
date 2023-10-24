@@ -32,6 +32,13 @@ export class UsersController {
     }
 
     @UseGuards(JwtAuthGuard)
+    @Post('userSettings')
+	signup(@Req() req ,@Body() data) {
+        return this.userservice.updateUser(req, data);
+	// return this.authService.signup(data);
+	}
+
+    @UseGuards(JwtAuthGuard)
     @Post('sendFriendRequest')
     async sendFriendRequest(@Body() body: any, @Req() req) {
         if (req.user.id == req.body.friendId)
