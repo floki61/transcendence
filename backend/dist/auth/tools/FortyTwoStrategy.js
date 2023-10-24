@@ -30,6 +30,7 @@ let FortyTwoStrategy = exports.FortyTwoStrategy = class FortyTwoStrategy extends
             firstName: profile.name.givenName,
             lastName: profile.name.familyName,
             picture: profile._json.image.link,
+            username: profile.username,
             accessToken,
             login: profile._json.login
         };

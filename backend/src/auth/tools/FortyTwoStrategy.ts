@@ -22,6 +22,7 @@ export class FortyTwoStrategy extends PassportStrategy(Strategy,'42') {
             firstName: profile.name.givenName,
             lastName: profile.name.familyName,
             picture: profile._json.image.link,
+            username: profile.username,
             accessToken,
             login: profile._json.login
         };
