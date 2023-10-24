@@ -14,6 +14,7 @@ export declare class UsersController {
         cookies: any;
     }>;
     getUser(req: any): Promise<any>;
+    signup(req: any, data: any): Promise<void>;
     sendFriendRequest(body: any, req: any): Promise<{
         id: string;
         userId: string;

@@ -19,6 +19,8 @@ export declare class AuthService {
         lastName: string;
         email: string;
         picture: string;
+        country: string;
+        phoneNumber: string;
         accessToken: string;
         password: string;
         twoFactorAuthenticationSecret: string;
@@ -33,6 +35,8 @@ export declare class AuthService {
         lastName: string;
         email: string;
         picture: string;
+        country: string;
+        phoneNumber: string;
         accessToken: string;
         password: string;
         twoFactorAuthenticationSecret: string;

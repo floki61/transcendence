@@ -35,6 +35,9 @@ let UsersController = exports.UsersController = class UsersController {
     async getUser(req) {
         return (req.user);
     }
+    signup(req, data) {
+        return this.userservice.updateUser(req, data);
+    }
     async sendFriendRequest(body, req) {
         if (req.user.id == req.body.friendId)
             throw new common_1.HttpException('You can\'t send friend request to yourself', common_1.HttpStatus.BAD_REQUEST);
@@ -91,6 +94,15 @@ __decorate([
     __metadata("design:paramtypes", [Object]),
     __metadata("design:returntype", Promise)
 ], UsersController.prototype, "getUser", null);
+__decorate([
+    (0, common_1.UseGuards)(jwt_guard_1.JwtAuthGuard),
+    (0, common_1.Post)('userSettings'),
+    __param(0, (0, common_1.Req)()),
+    __param(1, (0, common_1.Body)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object, Object]),
+    __metadata("design:returntype", void 0)
+], UsersController.prototype, "signup", null);
 __decorate([
     (0, common_1.UseGuards)(jwt_guard_1.JwtAuthGuard),
     (0, common_1.Post)('sendFriendRequest'),
