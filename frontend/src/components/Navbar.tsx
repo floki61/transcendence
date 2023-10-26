@@ -54,7 +54,7 @@ export default function Navbar() {
 				  </Link>
 				  <div className="flex justify-evenly items-center gap-2 p-2">
 					  <Link href={"/profile"}>
-						  <div>{user.firstName}</div>
+						  <div>{user.userName}</div>
 					  </Link>
 					  <Link href="/profile" className="rounded-full flex justify-center items-center overflow-hidden">
 						  <Image
