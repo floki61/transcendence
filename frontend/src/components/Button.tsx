@@ -6,16 +6,17 @@ interface StylingProps {
 
 interface ButtonProps extends StylingProps {
   // Other props specific to your component
-  text: string;
-    children?: React.ReactNode
+	text: string;
+	children?: React.ReactNode
+	onClick?(e:any) : any,
 
 }
 
-const Button: React.FC<ButtonProps> = ({ text, className ,children }) => {
+const Button: React.FC<ButtonProps> = ({ text, className ,children, onClick }) => {
 	const classes = `${className}`;
 
 	return (
-		<button type="submit" className={classes}>
+		<button type="submit" className={classes} onClick={onClick}>
 			{children}
 			{text}</button>
 	);
