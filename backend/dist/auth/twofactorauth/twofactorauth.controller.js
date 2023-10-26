@@ -23,14 +23,19 @@ let TwoFactorAuthController = exports.TwoFactorAuthController = class TwoFactorA
     async register(req, res) {
         const { otpauthUrl } = await this.twoFactorAuth.generateTwoFactorAuthenticationSecret(req.user.id, req.user.email);
         const qrCodeUrl = await this.twoFactorAuth.generateQrCodeDataURL(otpauthUrl);
-        res.send(`<img src=${qrCodeUrl}>`);
+        res.send(`${qrCodeUrl}`);
     }
     async turnOnTwoFactorAuthentication(req, body) {
-        const isCodeValid = this.twoFactorAuth.isTwoFactorAuthenticationCodeValid(body.twoFactorAuthenticationCode, req.user);
-        if (!isCodeValid)
+        console.log(body.twoFactorAuthenticationCode);
+        const isCodeValid = await this.twoFactorAuth.isTwoFactorAuthenticationCodeValid(body.twoFactorAuthenticationCode, req.user);
+        if (!isCodeValid) {
+            console.log("wal3alam2");
             throw new common_1.UnauthorizedException('Wrong authentication code');
+            console.log("wal3alam3");
+        }
         else
             console.log("code is valide");
+        console.log("walzabi");
         await this.twoFactorAuth.turnOnTwoFactorAuthentication(req.user.id);
     }
     async authenticate(req, body) {

@@ -18,7 +18,7 @@ let TwoFactorAuthService = exports.TwoFactorAuthService = class TwoFactorAuthSer
     constructor(prisma) {
         this.prisma = prisma;
     }
-    isTwoFactorAuthenticationCodeValid(twoFactorAuthenticationCode, user) {
+    async isTwoFactorAuthenticationCodeValid(twoFactorAuthenticationCode, user) {
         return otplib_1.authenticator.verify({
             token: twoFactorAuthenticationCode,
             secret: user.twoFactorAuthenticationSecret,
