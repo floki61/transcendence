@@ -65,13 +65,42 @@ export default function page() {
       hiddenFileInput.current.click();
   };
 
+
+  const [showDiv, setShowDiv] = useState(false);
+
+  const handleQrCode = () => {
+    console.log("first")
+    setShowDiv(!showDiv);
+  };
+
+  let classes = "";
+
   if (user)
     user.fullName = user.firstName + " " + user.lastName;
+
+  if (showDiv) {
+    classes = "blur";
+    console.log("blur-sm");
+  }
+  else {
+    console.log("not blur");
+    classes = "";
+  }
+
+  const [input, setInput] = useState('');
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    // Ensure that the value is a 6-digit number
+    if (/^\d{0,9}$/.(value)) {
+      setInput(value);
+    }
+  };
 
   return (
     <div className="h-full">
       {user && (
-        <div className="flex rounded-2xl bg-segundcl h-[90%] m-8">
+        <div className={`${classes} flex rounded-2xl bg-segundcl h-[90%] m-8`}>
           <div className="flex flex-col w-1/2 border-r-4 border-primecl justify-center items-center my-6 gap-6">
             <div className="flex flex-col items-center gap-3 h-1/2 w-full mt-4">
               <Image
@@ -107,12 +136,11 @@ export default function page() {
               <h3 className="my-4 text-lg">SECURITY</h3>
             </div>
             <div className="flex flex-col items-center gap-8 h-1/2 w-full">
-              <Link
-                href={process.env.NEXT_PUBLIC_CLIENT_URL + "/changeps"}
+              <Button
+                text="ENABLE 2FA"
                 className="border border-white rounded-3xl w-2/5 p-3 text-center h-12 opacity-80 cursor-pointer bg-primecl shadow-[0px 4px 4px 0px rgba(0, 0, 0, 0.25)] transition ease-in-out delay-150 hover:scale-105 duration-300"
-              >
-                ENABLE 2FA
-              </Link>
+                onClick={handleQrCode}
+              />
               <Button
                 text="DELETE THE ACCOUNT"
                 className="rounded-3xl w-2/5 p-2 h-12 opacity-80 cursor-pointer bg-red-700  transition ease-in-out delay-150 hover:scale-105 duration-300"
@@ -165,6 +193,19 @@ export default function page() {
             </button>
           </div>
         </div>
+      )}
+      {showDiv && (
+          <div className="flex debug flex-col justify-around items-center border-2 border-quatrocl absolute top-[20%] left-1/3 w-1/3 h-2/3 bg-segundcl rounded-lg text-primecl">
+            <div>QR CODE</div>
+            <div className="flex gap-2 justify-center items-center">
+              <input className="text-center w-10 h-16 rounded-md" type="text" maxLength={1} onChange={handleInputChange}/>
+              <input className="text-center w-10 h-16 rounded-md" type="text" maxLength={1} onChange={handleInputChange}/>
+              <input className="text-center w-10 h-16 rounded-md" type="text" maxLength={1} onChange={handleInputChange}/>
+              <input className="text-center w-10 h-16 rounded-md" type="text" maxLength={1} onChange={handleInputChange}/>
+              <input className="text-center w-10 h-16 rounded-md" type="text" maxLength={1} onChange={handleInputChange}/>
+              <input className="text-center w-10 h-16 rounded-md" type="text" maxLength={1} onChange={handleInputChange}/>
+            </div>
+          </div>
       )}
     </div>
   );
