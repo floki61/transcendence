@@ -9,9 +9,10 @@ import { userType } from "@/app/(protected)/settings/page";
 interface SettinputProps {
   holder: string;
   type: string;
-  value?: string;
+  value: string;
   className?: string;
-  user: userType;
+  name: string;
+  onChange(e: any): any;
 }
 
 const Settinput: React.FC<SettinputProps> = ({
@@ -19,39 +20,20 @@ const Settinput: React.FC<SettinputProps> = ({
   type,
   value,
   className = "",
-  user,
-
+  onChange,
+  name,
 }) => {
 
-  const [inputValue, setinputValue] = useState(value);
-
-  function handleValue(e:any) {
-
-    if (holder === "Username") {
-      setinputValue(e.target.value)
-      user.userName = e.target.value;
-    }
-    if (holder === "Country") {
-      setinputValue(e.target.value);
-      user.country = e.target.value;
-    }
-    if (holder === "Phone Number") {
-      const value = e.target.value;
-      const regex = /^[0-9\b]+$/;
-
-      if (value === '' || regex.test(value)) {
-        setinputValue(value);
-        user.phoneNumber = value;
-      }
-    }
-  }
   return (
       <input
-        className="p-3 pl-4 rounded-xl bg-primecl placeholder:text-white text-lg outline-none font-light w-full"
+        className={`${className} p-3 pl-4 rounded-xl bg-primecl placeholder-slate-400 text-lg outline-none font-light w-full`}
         placeholder={holder}
-        value={inputValue !== null ? inputValue : value || ""}
-        onChange={handleValue}
+        value={value}
+        onChange={(e) => {
+          onChange(e);
+        }}
         type={type}
+        name={name}
       />
     );
 };
