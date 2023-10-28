@@ -24,14 +24,9 @@ export class TwoFactorAuthController {
 		console.log(body.twoFactorAuthenticationCode);
 		const isCodeValid = await this.twoFactorAuth.isTwoFactorAuthenticationCodeValid(body.twoFactorAuthenticationCode, req.user);
 		if (!isCodeValid)
-		{
-			console.log("wal3alam2");
 			throw new UnauthorizedException('Wrong authentication code');
-			console.log("wal3alam3");
-		}
 		else
 			console.log("code is valide");
-		console.log("walzabi")
 	  	await this.twoFactorAuth.turnOnTwoFactorAuthentication(req.user.id);
 	}
 
