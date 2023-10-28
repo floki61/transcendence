@@ -1,9 +1,23 @@
+"use client"
+
 import Image from "next/image";
 import Link from "next/link";
 import Button from "@/components/Button";
 import Loginput from "@/components/Loginput";
+import { useState } from "react";
 
 export default function Forgotps() {
+
+	const [input, setInput] = useState('');
+
+	const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+	  const value = e.target.value;
+	  // Ensure that the value is a 6-digit number
+	  if (Number(value) || value === "" || value === '0') {
+		setInput(value);
+	  }
+	};
+
 	return (
 		<div className="flex h-screen bg-white text-black">
 			<Image
@@ -13,7 +27,7 @@ export default function Forgotps() {
 				height={400}
 				className="object-cover max-md:hidden"
 			/>
-			<form className="flex flex-1 py-8 px-40 flex-col items-center gap-8 overflow-hidden max-xl:px-4 max-xl:gap-4">
+			<form className="flex flex-1 py-8 px-40 flex-col items-center gap-6 overflow-hidden max-xl:px-4 max-xl:gap-4">
 				<svg
           xmlns="http://www.w3.org/2000/svg"
           width="48"
@@ -26,11 +40,12 @@ export default function Forgotps() {
             fill="black"
           />
         		</svg>
-				<h1 className="text-5xl font-bold my-2 max-xl:text-3xl">FORGOT PASSWORD ?</h1>
+				<h1 className="text-4xl text-center font-bold my-2 max-xl:text-3xl">TWO FACTOR AUTHENTICATION</h1>
 				<div className="text-2xl flex flex-col items-center justify-center gap-20 my-16 w-4/6 max-xl:text-xl">
-					<p className="font-light w-full">Enter the email address you used when you joined and we'll send you instructions to reset your password.</p>
-					<Loginput holder="Email" type="text" className="w-full"/>
-					<Button text="Send" className="bg-black text-white rounded-3xl w-96 max-xl:w-[70%]  h-14 cursor-pointer" />
+					<p className="font-light w-full">Please confirm your account by entering the authorization code sent to you.</p>
+					{/* <Loginput holder="Email" type="text" className="w-full"/> */}
+					<input className="text-center py-3 w-full h-12 rounded-md bg-slate-100 outline-quatrocl" type="text" maxLength={6} onChange={handleInputChange} value={input}/>
+					<Button text="Send" className="bg-black text-white rounded-3xl w-3/4 max-xl:w-[70%]  h-14 cursor-pointer" />
 				</div>
 				<div className="text-xl">
 					<p>Don't you have an account ? 

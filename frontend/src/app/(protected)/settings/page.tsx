@@ -70,6 +70,19 @@ export default function page() {
         console.error(error);
     }
   };
+
+  const updateProfilePic = async () => {
+    try {
+      if (user) {
+        console.log(user.picture);
+        await axios.post("http://localhost:4000/upload", user.picture, {
+          withCredentials: true,
+        }); // backend API endpoint
+      }
+    } catch (error) {
+        console.error(error);
+    }
+  };
   
   const sendQrCode = async () => {
 
@@ -98,10 +111,23 @@ export default function page() {
     setUser(newUser as userType);
   };
 
+  const [image, setImage] = useState<File | null>(null);
+  const [imageUrl, setImageUrl] = useState<string>('');
+
+
+  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files && e.target.files.length > 0 && user) {
+      setImage(e.target.files[0]);
+      setImageUrl(URL.createObjectURL(e.target.files[0]));
+      user.picture = imageUrl;
+    }
+  };
+
   const hiddenFileInput = useRef<HTMLInputElement>(null);
   const handleClick = (e:any) => {
     if (hiddenFileInput.current)
       hiddenFileInput.current.click();
+    updateProfilePic();
   };
 
 
@@ -160,7 +186,7 @@ export default function page() {
                   UPLOAD A PICTURE
                   <input
                     type="file"
-                    onChange={hnadleChange}
+                    onChange={handleImageChange}
                     ref={hiddenFileInput}
                     name="picture"
                     placeholder="UPLOAD A PHOTO"
@@ -242,7 +268,7 @@ export default function page() {
                 />
              </div>
             <div className="flex flex-col justify-center items-center w-1/2">
-              <input className="text-center py-2 w-full h-10 rounded-md" type="text" maxLength={6} onChange={handleInputChange} value={input}/>
+              <input className="text-center py-2 w-full h-10 rounded-md outline-quatrocl" type="text" maxLength={6} onChange={handleInputChange} value={input}/>
             </div>
             <div className="flex justify-center items-center gap-4 w-full">
               <Button

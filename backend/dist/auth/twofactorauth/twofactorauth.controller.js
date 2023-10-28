@@ -35,7 +35,6 @@ let TwoFactorAuthController = exports.TwoFactorAuthController = class TwoFactorA
         }
         else
             console.log("code is valide");
-        console.log("walzabi");
         await this.twoFactorAuth.turnOnTwoFactorAuthentication(req.user.id);
     }
     async authenticate(req, body) {
