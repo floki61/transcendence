@@ -47,8 +47,8 @@ function updateBallData(p: p5, data: any) {
 }
 
 function updateScore(data: any) {
-    leftScore = data.left;
-    rightScore = data.right;
+    leftScore = data.score.left;
+    rightScore = data.score.right;
 }
 
 //bot game

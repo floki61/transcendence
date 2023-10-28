@@ -17,7 +17,6 @@ export declare class GameGateway implements OnGatewayConnection, OnGatewayDiscon
     private determineGameResult;
     private moveBall;
     handleUpdatePaddle(client: Socket, event: any): Promise<void>;
-    botMode(client: Socket): Promise<void>;
     private checkStartGame;
     private broadcastGameData;
 }

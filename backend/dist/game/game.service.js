@@ -36,10 +36,10 @@ let GameService = exports.GameService = class GameService {
                 height: 80,
                 speed: 5,
             },
-        };
-        this.score = {
-            left: 0,
-            right: 0,
+            score: {
+                left: 0,
+                right: 0,
+            }
         };
         this.gameData = this.deepCopy(this.initialGameData);
     }
@@ -47,12 +47,15 @@ let GameService = exports.GameService = class GameService {
         return JSON.parse(JSON.stringify(obj));
     }
     resetGame() {
-        this.gameData = this.deepCopy(this.initialGameData);
+        this.gameData.ball.x = 850 / 2;
+        this.gameData.ball.y = 400 / 2;
+        this.gameData.ball.xSpeed = 5 * Math.random() < 0.5 ? 1 : -1;
+        this.gameData.ball.ySpeed = 5 * Math.random() < 0.5 ? 1 : -1;
         return this.gameData;
     }
     resetScore() {
-        this.score.left = 0;
-        this.score.right = 0;
+        this.gameData.score.left = 0;
+        this.gameData.score.right = 0;
     }
     async updatePaddle(event, targetPaddle) {
         if (event === 'UP') {
@@ -85,9 +88,9 @@ let GameService = exports.GameService = class GameService {
             this.gameData.ball.ySpeed *= -1;
         else if (this.gameData.ball.x < 0 || this.gameData.ball.x > this.gameData.canvasWidth) {
             if (this.gameData.ball.x < 0)
-                this.score.right++;
+                this.gameData.score.right++;
             else
-                this.score.left++;
+                this.gameData.score.left++;
             return 'reset';
         }
         else {
@@ -110,6 +113,14 @@ let GameService = exports.GameService = class GameService {
         this.gameData.ball.x += this.gameData.ball.xSpeed;
         this.gameData.ball.y += this.gameData.ball.ySpeed;
         return this.gameData;
+    }
+    async moveBot() {
+        if (this.gameData.ball.xSpeed < 0 || this.gameData.ball.x < this.gameData.canvasWidth / 2)
+            return;
+        if (this.gameData.rightPaddle.y > this.gameData.ball.y && this.gameData.rightPaddle.y - this.gameData.rightPaddle.height / 2 > this.gameData.ball.y && this.gameData.rightPaddle.y > this.gameData.rightPaddle.height / 2)
+            this.gameData.rightPaddle.y -= this.gameData.rightPaddle.speed;
+        else if (this.gameData.rightPaddle.y < this.gameData.ball.y && this.gameData.rightPaddle.y + this.gameData.rightPaddle.height / 2 < this.gameData.ball.y && this.gameData.rightPaddle.y < this.gameData.canvasHeight - this.gameData.rightPaddle.height / 2)
+            this.gameData.rightPaddle.y += this.gameData.rightPaddle.speed;
     }
 };
 exports.GameService = GameService = __decorate([

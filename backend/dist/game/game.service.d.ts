@@ -1,9 +1,5 @@
 export declare class GameService {
     private initialGameData;
-    score: {
-        left: number;
-        right: number;
-    };
     private deepCopy;
     gameData: any;
     resetGame(): any;
@@ -13,4 +9,5 @@ export declare class GameService {
     private ballHitsPaddle;
     private radians;
     moveBall(): Promise<any>;
+    moveBot(): Promise<void>;
 }
