@@ -36,7 +36,7 @@ const Standing: React.FC<StandingProps> = ({
 
 	return (
 	  <div className='h-[10%] flex items-center border-t-2 border-primecl'>
-		  <div className='flex w-1/4 items-center justify-around pl-4 h-full'>
+		  <div className='flex w-1/4 items-center justify-around pl-6 h-full'>
 			  <div className={`${color} rounded-lg w-8 text-center flex items-center justify-center h-10`}>{place}</div>
 			  <Image
 				  src="/oel-berh.jpeg"
