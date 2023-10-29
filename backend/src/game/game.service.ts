@@ -30,12 +30,11 @@ export class GameService
             height: 80,
             speed: 5,
         },
+        score: {
+            left: 0,
+            right: 0,
+        }
     };
-    score = {
-        left: 0,
-        right: 0,
-    }
-
 
     private deepCopy(obj: any): any {
         return JSON.parse(JSON.stringify(obj));
@@ -44,13 +43,20 @@ export class GameService
     public gameData = this.deepCopy(this.initialGameData);
 
     resetGame() {
-        this.gameData = this.deepCopy(this.initialGameData);
+        // this.gameData = this.deepCopy(this.initialGameData);
+        this.gameData.ball.x = 850 / 2;
+        this.gameData.ball.y = 400 / 2;
+        // this.gameData.ball.xSpeed = 5 * Math.cos(Math.random() * (2 * Math.PI));
+        // this.gameData.ball.ySpeed = 5 * Math.sin(Math.random() * (2 * Math.PI));
+        this.gameData.ball.xSpeed = 5 *  Math.random() < 0.5 ? 1 : -1;
+        this.gameData.ball.ySpeed = 5 *  Math.random() < 0.5 ? 1 : -1;
+
         return this.gameData;
 
     }
     resetScore() {
-        this.score.left = 0;
-        this.score.right = 0;
+        this.gameData.score.left = 0;
+        this.gameData.score.right = 0;
     }
     async updatePaddle(event: string, targetPaddle: string) {
         if (event === 'UP') {
@@ -87,9 +93,9 @@ export class GameService
             this.gameData.ball.ySpeed *= -1;
         else if (this.gameData.ball.x < 0 || this.gameData.ball.x > this.gameData.canvasWidth){
             if(this.gameData.ball.x < 0)
-                this.score.right++;
+                this.gameData.score.right++;
             else
-                this.score.left++;
+                this.gameData.score.left++;
             return 'reset';
         }
         else {
@@ -113,4 +119,20 @@ export class GameService
         this.gameData.ball.y += this.gameData.ball.ySpeed;
         return this.gameData;
     }
+    async moveBot() {
+        if(this.gameData.ball.xSpeed < 0 || this.gameData.ball.x < this.gameData.canvasWidth / 2)
+            return ;
+        if(this.gameData.rightPaddle.y > this.gameData.ball.y && this.gameData.rightPaddle.y - this.gameData.rightPaddle.height / 2 > this.gameData.ball.y && this.gameData.rightPaddle.y > this.gameData.rightPaddle.height / 2)
+            this.gameData.rightPaddle.y -= this.gameData.rightPaddle.speed;
+        else if(this.gameData.rightPaddle.y < this.gameData.ball.y && this.gameData.rightPaddle.y + this.gameData.rightPaddle.height / 2 < this.gameData.ball.y && this.gameData.rightPaddle.y < this.gameData.canvasHeight - this.gameData.rightPaddle.height / 2)
+            this.gameData.rightPaddle.y += this.gameData.rightPaddle.speed;
+    }
+    // async moveBot() {
+    //     if(ball.xSpeed < 0 || ball.x < p.width / 2)
+    //         return ;
+    //     if(rightPaddle.y > ball.y && rightPaddle.y - rightPaddle.height / 2 > ball.y && rightPaddle.y > rightPaddle.height / 2)
+    //         rightPaddle.y -= rightPaddle.speed;
+    //     else if(rightPaddle.y < ball.y && rightPaddle.y + rightPaddle.height / 2 < ball.y && rightPaddle.y < p.height - rightPaddle.height / 2)
+    //         rightPaddle.y += rightPaddle.speed;
+    // }
 }

@@ -15,6 +15,7 @@ const socket_io_1 = require("socket.io");
 const game_service_1 = require("./game.service");
 const jwt_1 = require("@nestjs/jwt");
 const config_1 = require("@nestjs/config");
+let gameMode = 'live';
 let GameGateway = exports.GameGateway = class GameGateway {
     constructor(gameService, jwt, config) {
         this.gameService = gameService;
@@ -76,26 +77,32 @@ let GameGateway = exports.GameGateway = class GameGateway {
         return cookies['access_token'];
     }
     determineGameResult() {
-        const clientIds = Array.from(this.connectedClients.keys());
-        if (this.gameService.score.left === 5) {
-            this.connectedClients.get(clientIds[0]).emit('gameResult', 'Winner');
-            this.connectedClients.get(clientIds[1]).emit('gameResult', 'Loser');
+        if (gameMode === 'Bot') {
+            if (this.gameService.gameData.score.left === 5)
+                this.connectedClients.get(Array.from(this.connectedClients.keys())[0]).emit('gameResult', 'Winner');
+            else
+                this.connectedClients.get(Array.from(this.connectedClients.keys())[0]).emit('gameResult', 'Loser');
         }
-        else if (this.gameService.score.right === 5) {
-            this.connectedClients.get(clientIds[0]).emit('gameResult', 'Loser');
-            this.connectedClients.get(clientIds[1]).emit('gameResult', 'Winner');
+        else {
+            const clientIds = Array.from(this.connectedClients.keys());
+            if (this.gameService.gameData.score.left === 5) {
+                this.connectedClients.get(clientIds[0]).emit('gameResult', 'Winner');
+                this.connectedClients.get(clientIds[1]).emit('gameResult', 'Loser');
+            }
+            else if (this.gameService.gameData.score.right === 5) {
+                this.connectedClients.get(clientIds[0]).emit('gameResult', 'Loser');
+                this.connectedClients.get(clientIds[1]).emit('gameResult', 'Winner');
+            }
         }
     }
     async moveBall() {
         while (this.gameStarted) {
             const data = await this.gameService.moveBall();
+            if (gameMode === 'Bot')
+                await this.gameService.moveBot();
             if (data === 'reset') {
                 const data = await this.gameService.resetGame();
-                this.connectedClients.forEach((connectedClient) => {
-                    connectedClient.emit('paddlesUpdate', data);
-                    connectedClient.emit('score', this.gameService.score);
-                });
-                if (this.gameService.score.left === 5 || this.gameService.score.right === 5) {
+                if (this.gameService.gameData.score.left === 5 || this.gameService.gameData.score.right === 5) {
                     this.determineGameResult();
                     this.gameService.resetScore();
                     this.gameStarted = false;
@@ -103,7 +110,7 @@ let GameGateway = exports.GameGateway = class GameGateway {
                 }
             }
             this.connectedClients.forEach((connectedClient) => {
-                connectedClient.emit('updateBall', data);
+                connectedClient.emit('updateBall', this.gameService.gameData);
             });
             await new Promise((resolve) => setTimeout(resolve, 1000 / 60));
         }
@@ -116,14 +123,15 @@ let GameGateway = exports.GameGateway = class GameGateway {
             connectedClient.emit('paddlesUpdate', gameData);
         });
     }
-    async botMode(client) {
-        this.connectedClients.forEach((connectedClient) => {
-            connectedClient.emit('startGame', this.gameService.gameData);
-        });
-    }
     checkStartGame() {
-        if (this.connectedClients.size < 2 && this.gameStarted) {
+        if (gameMode === 'Bot' && this.connectedClients.size === 1 && !this.gameStarted)
             this.gameStarted = false;
+        if (gameMode === 'Bot' && !this.gameStarted) {
+            this.gameStarted = true;
+            this.connectedClients.forEach((connectedClient) => {
+                connectedClient.emit('startBotGame', this.gameService.gameData);
+            });
+            this.moveBall();
         }
         if (this.connectedClients.size === 2 && !this.gameStarted) {
             this.gameStarted = true;
@@ -147,12 +155,6 @@ __decorate([
     __metadata("design:paramtypes", [socket_io_1.Socket, Object]),
     __metadata("design:returntype", Promise)
 ], GameGateway.prototype, "handleUpdatePaddle", null);
-__decorate([
-    (0, websockets_1.SubscribeMessage)('botMode'),
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", [socket_io_1.Socket]),
-    __metadata("design:returntype", Promise)
-], GameGateway.prototype, "botMode", null);
 exports.GameGateway = GameGateway = __decorate([
     (0, websockets_1.WebSocketGateway)({ namespace: 'game', cors: true, origin: ['http://localhost:3000/game'] }),
     __metadata("design:paramtypes", [game_service_1.GameService,

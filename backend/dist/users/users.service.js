@@ -28,14 +28,12 @@ let UsersService = exports.UsersService = class UsersService {
         });
     }
     async checkIfnameExists(data) {
-        const user = this.prisma.user.findUnique({
+        const user = await this.prisma.user.findUnique({
             where: {
                 userName: data.userName,
             },
         });
-        if (user)
-            return true;
-        return false;
+        return user ? true : false;
     }
     async updateUser(req, data) {
         if (data.userName)
