@@ -5,13 +5,14 @@ import Link from "next/link";
 
 export default function Login() {
   return (
-    <div className="flex h-screen overflow-hidden bg-white">
+    <div className="flex h-full overflow-hidden bg-white">
       <Image
         src={"/login.gif"}
         alt={"loginpage"}
         width={500}
         height={400}
         className="object-cover max-md:hidden"
+        priority={true}
       />
       <form className="flex py-12 max-md:py-3  max-md:px-3 flex-col flex-1 h-full items-center gap-5 ">
         <svg
