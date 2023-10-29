@@ -32,6 +32,7 @@ const game_module_1 = require("../game/game.module");
 const game_gateway_1 = require("../game/game.gateway");
 const exception_filter_1 = require("../filter_ex/exception_filter");
 const game_service_1 = require("../game/game.service");
+const twofactorauth_service_1 = require("../auth/twofactorauth/twofactorauth.service");
 let AppModule = exports.AppModule = class AppModule {
 };
 exports.AppModule = AppModule = __decorate([
@@ -49,7 +50,7 @@ exports.AppModule = AppModule = __decorate([
             game_module_1.GameModule,
         ],
         controllers: [app_controller_1.AppController, auth_controller_1.AuthController, game_controller_1.GameController, users_controller_1.UsersController],
-        providers: [jwt_1.JwtService, app_service_1.AppService, FortyTwoStrategy_1.FortyTwoStrategy, prisma_service_1.PrismaService, auth_service_1.AuthService, config_1.ConfigService, users_service_1.UsersService,
+        providers: [jwt_1.JwtService, app_service_1.AppService, FortyTwoStrategy_1.FortyTwoStrategy, prisma_service_1.PrismaService, auth_service_1.AuthService, config_1.ConfigService, users_service_1.UsersService, twofactorauth_service_1.TwoFactorAuthService,
             {
                 provide: core_1.APP_FILTER,
                 useClass: exception_filter_1.ExceptionsFilter,

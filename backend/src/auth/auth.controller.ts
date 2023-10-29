@@ -7,11 +7,14 @@ import { JwtAuthGuard } from './jwt/jwt.guard';
 import { get } from 'http';
 import { ConfigService } from '@nestjs/config';
 import { clearConfigCache } from 'prettier';
+import { UsersService } from 'src/users/users.service';
 
 @Controller()
 export class AuthController {
 	constructor(private readonly authService: AuthService,
-				private readonly config: ConfigService) {}
+				private readonly config: ConfigService,
+				private readonly userService: UsersService,
+				) {}
 
 	@UseGuards(GoogleGuard)
 	@Get('login/google')
@@ -37,9 +40,11 @@ export class AuthController {
 	@Get('callback')
 	async authRedirect(@Req() req, @Res() res: Response) {
 		if(await this.authService.validateUser(req, res)) {
-			// if(req.user.isTwoFactorAuthenticationEnabled)
-				// res.redirect('2fa/generate');
-			res.redirect(this.config.get('HOME_URL'));
+			const user = await this.userService.getUser(req.user.id);
+			if(user.isTwoFactorAuthenticationEnabled)
+				res.redirect(this.config.get('2FA_URL'));
+			else
+				res.redirect(this.config.get('HOME_URL'));
 		}
 		else
 			res.redirect(this.config.get('SETTINGS_URL'));

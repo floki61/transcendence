@@ -9,7 +9,7 @@ export declare class AuthService {
     private config;
     private userservice;
     constructor(prisma: PrismaService, jwtService: JwtService, config: ConfigService, userservice: UsersService);
-    generateToken(req: any): Promise<string>;
+    generateToken(req: any, tokenName: string): Promise<string>;
     validateUser(req: any, res: any): Promise<boolean>;
     logout(req: any, res: any): Promise<void>;
     signup(dto: Userdto): Promise<{

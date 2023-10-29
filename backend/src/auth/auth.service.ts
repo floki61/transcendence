@@ -15,7 +15,7 @@ export class AuthService {
 		private config: ConfigService,
 		private userservice: UsersService) {}
 
-	async generateToken(req): Promise<string> {
+	async generateToken(req, tokenName: string): Promise<string> {
 
 		const user = await this.prisma.user.findUnique({
 			where: {
@@ -23,11 +23,16 @@ export class AuthService {
 			},
 		});
 		const payload = { id: user.id, email: user.email };
+		let secretValue;
+		if(tokenName == 'jwt')
+			secretValue = this.config.get('secret');
+		else if(tokenName == '2fa')
+			secretValue = '2fasecretcode';
 		const token = await this.jwtService.signAsync(
 			payload,
 			{
-				expiresIn: '2000m',
-				secret: this.config.get('secret'),
+				expiresIn: '7d',
+				secret: secretValue,
 			},
 		);
 		console.log(token);
@@ -38,8 +43,14 @@ export class AuthService {
 		const user = await this.userservice.getUser(req.user.id);
 		if (!user)
 			await this.userservice.createUser(req);
-		const token = await this.generateToken(req);
-		res.cookie('access_token', token, { httpOnly: true, maxAge: 600000});
+		else if(user && user.isTwoFactorAuthenticationEnabled) {
+			const token = await this.generateToken(req, '2fa');
+			res.cookie('2fa', token, { httpOnly: true, maxAge: 30 * 60 * 1000});
+			return true;
+		}
+		const token = await this.generateToken(req, 'jwt');
+		// const sevenDaysInMilliseconds = 7 * 24 * 60 * 60 * 1000;
+		res.cookie('access_token', token, { httpOnly: true, maxAge: 604800000});
 		return user ? true : false;
 	}
 	async logout (req, res) {

@@ -4,19 +4,30 @@ import Image from "next/image";
 import Link from "next/link";
 import Button from "@/components/Button";
 import Loginput from "@/components/Loginput";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import axios from "axios";
 
 export default function Forgotps() {
 
+	
 	const [input, setInput] = useState('');
-
+	
 	const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-	  const value = e.target.value;
-	  // Ensure that the value is a 6-digit number
-	  if (Number(value) || value === "" || value === '0') {
-		setInput(value);
-	  }
+		const value = e.target.value;
+		// Ensure that the value is a 6-digit number
+		if (Number(value) || value === "" || value === '0') {
+			setInput(value);
+		}
 	};
+
+	const send2fa = async () => {
+		const twoFactorAuthenticationCode = input;
+		try {
+		  await axios.post("http://localhost:4000/2fa/authenticate", twoFactorAuthenticationCode); // backend API endpoint
+		} catch (error) {
+			console.error(error);
+		}
+	  };
 
 	return (
 		<div className="flex h-screen bg-white text-black">
@@ -45,7 +56,7 @@ export default function Forgotps() {
 					<p className="font-light w-full">Please confirm your account by entering the authorization code sent to you.</p>
 					{/* <Loginput holder="Email" type="text" className="w-full"/> */}
 					<input className="text-center py-3 w-full h-12 rounded-md bg-slate-100 outline-quatrocl" type="text" maxLength={6} onChange={handleInputChange} value={input}/>
-					<Button text="Send" className="bg-black text-white rounded-3xl w-3/4 max-xl:w-[70%]  h-14 cursor-pointer" />
+					<Button text="Send" className="bg-black text-white rounded-3xl w-3/4 max-xl:w-[70%]  h-14 cursor-pointer" onClick={send2fa}/>
 				</div>
 				<div className="text-xl">
 					<p>Don't you have an account ? 

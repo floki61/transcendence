@@ -26,6 +26,7 @@ import { GameGateway } from 'src/game/game.gateway';
 import { ExceptionsFilter } from 'src/filter_ex/exception_filter';
 import { GameService } from 'src/game/game.service';
 import { ChatController } from 'src/chat/chat.controller';
+import { TwoFactorAuthService } from 'src/auth/twofactorauth/twofactorauth.service';
 
 @Module({
   imports: [
@@ -41,7 +42,7 @@ import { ChatController } from 'src/chat/chat.controller';
     GameModule,
   ],
   controllers: [AppController, AuthController, GameController, UsersController],
-  providers: [JwtService, AppService, FortyTwoStrategy, PrismaService, AuthService, ConfigService, UsersService,
+  providers: [JwtService, AppService, FortyTwoStrategy, PrismaService, AuthService, ConfigService, UsersService, TwoFactorAuthService,
     {
       provide: APP_FILTER,
       useClass: ExceptionsFilter,

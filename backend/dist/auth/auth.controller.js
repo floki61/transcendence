@@ -19,10 +19,12 @@ const Guards_1 = require("./tools/Guards");
 const dto_1 = require("../users/dto");
 const jwt_guard_1 = require("./jwt/jwt.guard");
 const config_1 = require("@nestjs/config");
+const users_service_1 = require("../users/users.service");
 let AuthController = exports.AuthController = class AuthController {
-    constructor(authService, config) {
+    constructor(authService, config, userService) {
         this.authService = authService;
         this.config = config;
+        this.userService = userService;
     }
     googlelogin() { }
     async googleAuthRedirect(req, res) {
@@ -35,7 +37,11 @@ let AuthController = exports.AuthController = class AuthController {
     login() { }
     async authRedirect(req, res) {
         if (await this.authService.validateUser(req, res)) {
-            res.redirect(this.config.get('HOME_URL'));
+            const user = await this.userService.getUser(req.user.id);
+            if (user.isTwoFactorAuthenticationEnabled)
+                res.redirect(this.config.get('2FA_URL'));
+            else
+                res.redirect(this.config.get('HOME_URL'));
         }
         else
             res.redirect(this.config.get('SETTINGS_URL'));
@@ -109,6 +115,7 @@ __decorate([
 exports.AuthController = AuthController = __decorate([
     (0, common_1.Controller)(),
     __metadata("design:paramtypes", [auth_service_1.AuthService,
-        config_1.ConfigService])
+        config_1.ConfigService,
+        users_service_1.UsersService])
 ], AuthController);
 //# sourceMappingURL=auth.controller.js.map

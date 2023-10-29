@@ -16,9 +16,14 @@ exports.TwoFactorAuthController = void 0;
 const common_1 = require("@nestjs/common");
 const twofactorauth_service_1 = require("./twofactorauth.service");
 const jwt_guard_1 = require("../jwt/jwt.guard");
+const auth_service_1 = require("../auth.service");
+const config_1 = require("@nestjs/config");
+const _2fa_guard_1 = require("./guard/2fa.guard");
 let TwoFactorAuthController = exports.TwoFactorAuthController = class TwoFactorAuthController {
-    constructor(twoFactorAuth) {
+    constructor(twoFactorAuth, authService, configService) {
         this.twoFactorAuth = twoFactorAuth;
+        this.authService = authService;
+        this.configService = configService;
     }
     async register(req, res) {
         const { otpauthUrl } = await this.twoFactorAuth.generateTwoFactorAuthenticationSecret(req.user.id, req.user.email);
@@ -34,10 +39,15 @@ let TwoFactorAuthController = exports.TwoFactorAuthController = class TwoFactorA
             console.log("code is valide");
         await this.twoFactorAuth.turnOnTwoFactorAuthentication(req.user.id);
     }
-    async authenticate(req, body) {
+    async authenticate(req, res, body) {
+        console.log('wwwww');
+        console.log(req.user);
         const isCodeValid = this.twoFactorAuth.isTwoFactorAuthenticationCodeValid(body.twoFactorAuthenticationCode, req.user);
         if (!isCodeValid)
             throw new common_1.UnauthorizedException('Wrong authentication code');
+        const token = await this.authService.generateToken(req, 'jwt');
+        res.cookie('access_token', token, { httpOnly: true, maxAge: 600000 });
+        res.redirect(this.configService.get('HOME_URL'));
     }
 };
 __decorate([
@@ -50,8 +60,8 @@ __decorate([
     __metadata("design:returntype", Promise)
 ], TwoFactorAuthController.prototype, "register", null);
 __decorate([
-    (0, common_1.Post)('2fa/turn-on'),
     (0, common_1.UseGuards)(jwt_guard_1.JwtAuthGuard),
+    (0, common_1.Post)('2fa/turn-on'),
     __param(0, (0, common_1.Req)()),
     __param(1, (0, common_1.Body)()),
     __metadata("design:type", Function),
@@ -59,17 +69,20 @@ __decorate([
     __metadata("design:returntype", Promise)
 ], TwoFactorAuthController.prototype, "turnOnTwoFactorAuthentication", null);
 __decorate([
+    (0, common_1.UseGuards)(_2fa_guard_1.TwoFaAuthGuard),
     (0, common_1.Post)('2fa/authenticate'),
     (0, common_1.HttpCode)(200),
-    (0, common_1.UseGuards)(jwt_guard_1.JwtAuthGuard),
     __param(0, (0, common_1.Req)()),
-    __param(1, (0, common_1.Body)()),
+    __param(1, (0, common_1.Res)()),
+    __param(2, (0, common_1.Body)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Object, Object]),
+    __metadata("design:paramtypes", [Object, Object, Object]),
     __metadata("design:returntype", Promise)
 ], TwoFactorAuthController.prototype, "authenticate", null);
 exports.TwoFactorAuthController = TwoFactorAuthController = __decorate([
     (0, common_1.Controller)(),
-    __metadata("design:paramtypes", [twofactorauth_service_1.TwoFactorAuthService])
+    __metadata("design:paramtypes", [twofactorauth_service_1.TwoFactorAuthService,
+        auth_service_1.AuthService,
+        config_1.ConfigService])
 ], TwoFactorAuthController);
 //# sourceMappingURL=twofactorauth.controller.js.map

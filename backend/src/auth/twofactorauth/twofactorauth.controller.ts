@@ -2,10 +2,15 @@ import { Controller, Get, Post, Body, Req, UseGuards, Res, UnauthorizedException
 import { Request, Response, response} from 'express';
 import { TwoFactorAuthService } from './twofactorauth.service';
 import { JwtAuthGuard } from '../jwt/jwt.guard';
+import { AuthService } from '../auth.service';
+import { ConfigService } from '@nestjs/config';
+import { TwoFaAuthGuard } from './guard/2fa.guard';
 
 @Controller()
 export class TwoFactorAuthController {
-	constructor(private readonly twoFactorAuth: TwoFactorAuthService) {}
+	constructor(private readonly twoFactorAuth: TwoFactorAuthService,
+				private readonly authService: AuthService,
+				private readonly configService: ConfigService) {}
 
 	
 	@UseGuards(JwtAuthGuard)
@@ -18,8 +23,8 @@ export class TwoFactorAuthController {
 		res.send(`${qrCodeUrl}`);
 	}
 	
-	@Post('2fa/turn-on')
 	@UseGuards(JwtAuthGuard)
+	@Post('2fa/turn-on')
 	async turnOnTwoFactorAuthentication(@Req() req, @Body() body) {
 		console.log(body.twoFactorAuthenticationCode);
 		const isCodeValid = await this.twoFactorAuth.isTwoFactorAuthenticationCodeValid(body.twoFactorAuthenticationCode, req.user);
@@ -30,13 +35,17 @@ export class TwoFactorAuthController {
 	  	await this.twoFactorAuth.turnOnTwoFactorAuthentication(req.user.id);
 	}
 
+	@UseGuards(TwoFaAuthGuard)
 	@Post('2fa/authenticate')
 	@HttpCode(200)
-	@UseGuards(JwtAuthGuard)
-	async authenticate(@Req() req, @Body() body) {
+	async authenticate(@Req() req, @Res() res,@Body() body) {
+		console.log('wwwww');
+		console.log(req.user);
 		const isCodeValid = this.twoFactorAuth.isTwoFactorAuthenticationCodeValid(body.twoFactorAuthenticationCode, req.user);	
 		if (!isCodeValid)
 			throw new UnauthorizedException('Wrong authentication code');
-		// return this.authenticationService.loginWith2fa(req.user);
+		const token = await this.authService.generateToken(req, 'jwt');
+		res.cookie('access_token', token, { httpOnly: true, maxAge: 600000});
+		res.redirect(this.configService.get('HOME_URL'));
 	}
 }
