@@ -15,6 +15,7 @@ const socket_io_1 = require("socket.io");
 const game_service_1 = require("./game.service");
 const jwt_1 = require("@nestjs/jwt");
 const config_1 = require("@nestjs/config");
+const event_emitter_1 = require("@nestjs/event-emitter");
 let gameMode = 'live';
 let GameGateway = exports.GameGateway = class GameGateway {
     constructor(gameService, jwt, config) {
@@ -144,6 +145,17 @@ let GameGateway = exports.GameGateway = class GameGateway {
             connectedClient.emit('startGame', this.gameService.gameData);
         });
     }
+    async quee(id) {
+        const client = this.connectedClients.get(id);
+        if (!client)
+            return;
+        this.Quee.set(id, client);
+    }
+    async Botgame(id) {
+        const client = this.connectedClients.get(id);
+        if (!client)
+            return;
+    }
 };
 __decorate([
     (0, websockets_1.WebSocketServer)(),
@@ -155,6 +167,18 @@ __decorate([
     __metadata("design:paramtypes", [socket_io_1.Socket, Object]),
     __metadata("design:returntype", Promise)
 ], GameGateway.prototype, "handleUpdatePaddle", null);
+__decorate([
+    (0, event_emitter_1.OnEvent)('quee'),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object]),
+    __metadata("design:returntype", Promise)
+], GameGateway.prototype, "quee", null);
+__decorate([
+    (0, event_emitter_1.OnEvent)('Botgame'),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object]),
+    __metadata("design:returntype", Promise)
+], GameGateway.prototype, "Botgame", null);
 exports.GameGateway = GameGateway = __decorate([
     (0, websockets_1.WebSocketGateway)({ namespace: 'game', cors: true, origin: ['http://localhost:3000/game'] }),
     __metadata("design:paramtypes", [game_service_1.GameService,

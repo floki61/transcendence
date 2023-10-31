@@ -3,6 +3,7 @@ import { Server, Socket } from 'socket.io';
 import { GameService } from './game.service';
 import { JwtService } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
+import { OnEvent } from '@nestjs/event-emitter';
 
 let gameMode = 'live';
 
@@ -15,6 +16,8 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
     private server: Server;
     private gameStarted = false;
     private connectedClients: Map<string, Socket> = new Map<string, Socket>();
+    Quee: Map<string, Socket>;
+
     
     async handleConnection(client: Socket) {
         let cookie: string;
@@ -153,6 +156,23 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
         this.connectedClients.forEach((connectedClient) => {
             connectedClient.emit('startGame', this.gameService.gameData);
         });
+    }
+
+    @OnEvent('quee')
+    async quee(id: any) {
+        const client = this.connectedClients.get(id);
+        if (!client)
+            return;
+        this.Quee.set(id, client);
+    }
+
+    @OnEvent('Botgame')
+    async Botgame(id: any) {
+        const client = this.connectedClients.get(id);
+        if (!client)
+            return;
+        // here you can lance the game with bot
+        
     }
 }
 
