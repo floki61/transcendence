@@ -1,8 +1,10 @@
 import { User } from "@prisma/client";
 import { PrismaService } from "src/prisma/prisma.service";
+import { AuthService } from "../auth.service";
 export declare class TwoFactorAuthService {
     private prisma;
-    constructor(prisma: PrismaService);
+    private authService;
+    constructor(prisma: PrismaService, authService: AuthService);
     isTwoFactorAuthenticationCodeValid(twoFactorAuthenticationCode: string, user: User): Promise<boolean>;
     generateQrCodeDataURL(otpAuthUrl: string): Promise<any>;
     setTwoFactorAuthenticationSecret(secret: string, userId: string): Promise<void>;

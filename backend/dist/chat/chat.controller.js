@@ -21,12 +21,14 @@ const jwt_guard_1 = require("../auth/jwt/jwt.guard");
 const chat_gateway_1 = require("./chat.gateway");
 const role_decorator_1 = require("../decorators/role.decorator");
 const roles_guard_1 = require("../decorators/roles.guard");
+const prisma_service_1 = require("../prisma/prisma.service");
 let ChatController = exports.ChatController = class ChatController {
-    constructor(config, jwt, userservice, chatgtw) {
+    constructor(config, jwt, userservice, chatgtw, prisma) {
         this.config = config;
         this.jwt = jwt;
         this.userservice = userservice;
         this.chatgtw = chatgtw;
+        this.prisma = prisma;
     }
     async createRoom(body, req) {
         const user = await this.userservice.createRoom(body);
@@ -83,6 +85,17 @@ let ChatController = exports.ChatController = class ChatController {
     async giveAdmin(body, req) {
         const room = await this.userservice.giveAdmin(body);
         return room;
+    }
+    async getMyRooms(req) {
+        const rooms = await this.userservice.getMyRooms({ id: req.user.id });
+        for (var room of rooms) {
+            if (room.is_DM) {
+                room.picture = await this.userservice.getUserPicture(req.user.id === room.participants[0].uid ? room.participants[1].uid : room.participants[0].uid);
+            }
+            delete room.participants;
+        }
+        console.log(rooms);
+        return rooms;
     }
 };
 __decorate([
@@ -222,11 +235,20 @@ __decorate([
     __metadata("design:paramtypes", [Object, Object]),
     __metadata("design:returntype", Promise)
 ], ChatController.prototype, "giveAdmin", null);
+__decorate([
+    (0, common_1.UseGuards)(jwt_guard_1.JwtAuthGuard),
+    (0, common_1.Get)('myRooms'),
+    __param(0, (0, common_1.Req)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object]),
+    __metadata("design:returntype", Promise)
+], ChatController.prototype, "getMyRooms", null);
 exports.ChatController = ChatController = __decorate([
     (0, common_1.Controller)('chat'),
     __metadata("design:paramtypes", [config_1.ConfigService,
         jwt_1.JwtService,
         chat_service_1.ChatService,
-        chat_gateway_1.ChatGateway])
+        chat_gateway_1.ChatGateway,
+        prisma_service_1.PrismaService])
 ], ChatController);
 //# sourceMappingURL=chat.controller.js.map

@@ -2,17 +2,22 @@ import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
 import { ChatService } from './chat.service';
 import { ChatGateway } from './chat.gateway';
+import { PrismaService } from 'src/prisma/prisma.service';
 export declare class ChatController {
     private config;
     private jwt;
     private userservice;
     private chatgtw;
-    constructor(config: ConfigService, jwt: JwtService, userservice: ChatService, chatgtw: ChatGateway);
+    private prisma;
+    constructor(config: ConfigService, jwt: JwtService, userservice: ChatService, chatgtw: ChatGateway, prisma: PrismaService);
     createRoom(body: any, req: any): Promise<{
         id: string;
         name: string;
+        picture: string;
+        lastMessageDate: Date;
         visibility: import(".prisma/client").$Enums.Visibility;
         password: string;
+        lastMessage: string;
         is_DM: boolean;
         createdAt: Date;
         updatedAt: Date;
@@ -36,8 +41,11 @@ export declare class ChatController {
     } & {
         id: string;
         name: string;
+        picture: string;
+        lastMessageDate: Date;
         visibility: import(".prisma/client").$Enums.Visibility;
         password: string;
+        lastMessage: string;
         is_DM: boolean;
         createdAt: Date;
         updatedAt: Date;
@@ -57,6 +65,7 @@ export declare class ChatController {
     } & {
         id: string;
         msg: string;
+        msgTime: Date;
         userId: string;
         rid: string;
         createdAt: Date;
@@ -69,4 +78,37 @@ export declare class ChatController {
     unmuteUser(body: any, req: any): Promise<string>;
     changePassword(body: any, req: any): Promise<string>;
     giveAdmin(body: any, req: any): Promise<string>;
+    getMyRooms(req: any): Promise<({
+        participants: {
+            id: string;
+            rid: string;
+            uid: string;
+            role: import(".prisma/client").$Enums.Role;
+            isOnline: boolean;
+            isMuted: boolean;
+            isBanned: boolean;
+            createdAt: Date;
+            updatedAt: Date;
+        }[];
+        messages: {
+            id: string;
+            msg: string;
+            msgTime: Date;
+            userId: string;
+            rid: string;
+            createdAt: Date;
+            updatedAt: Date;
+        }[];
+    } & {
+        id: string;
+        name: string;
+        picture: string;
+        lastMessageDate: Date;
+        visibility: import(".prisma/client").$Enums.Visibility;
+        password: string;
+        lastMessage: string;
+        is_DM: boolean;
+        createdAt: Date;
+        updatedAt: Date;
+    })[]>;
 }

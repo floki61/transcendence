@@ -4,6 +4,7 @@ import { Injectable } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { Request } from 'express';
 import { ConfigService } from '@nestjs/config';
+import { clearConfigCache } from 'prettier';
 
 @Injectable()
 export class TwoFaStrategy extends PassportStrategy(Strategy, '2fa') {
@@ -13,7 +14,8 @@ export class TwoFaStrategy extends PassportStrategy(Strategy, '2fa') {
     ) {
         super({
             jwtFromRequest: ExtractJwt.fromExtractors([
-            (req: Request) => {
+                (req: Request) => {
+                console.log({cokiya: req.cookies});
                 if(req.cookies && req.cookies['2fa'])
                     return req.cookies['2fa'];
                 else

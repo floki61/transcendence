@@ -5,6 +5,7 @@ import { JwtAuthGuard } from '../jwt/jwt.guard';
 import { AuthService } from '../auth.service';
 import { ConfigService } from '@nestjs/config';
 import { TwoFaAuthGuard } from './guard/2fa.guard';
+import { clearConfigCache } from 'prettier';
 
 @Controller()
 export class TwoFactorAuthController {
@@ -26,26 +27,31 @@ export class TwoFactorAuthController {
 	@UseGuards(JwtAuthGuard)
 	@Post('2fa/turn-on')
 	async turnOnTwoFactorAuthentication(@Req() req, @Body() body) {
-		console.log(body.twoFactorAuthenticationCode);
 		const isCodeValid = await this.twoFactorAuth.isTwoFactorAuthenticationCodeValid(body.twoFactorAuthenticationCode, req.user);
 		if (!isCodeValid)
 			throw new UnauthorizedException('Wrong authentication code');
 		else
-			console.log("code is valide");
-	  	await this.twoFactorAuth.turnOnTwoFactorAuthentication(req.user.id);
+      console.log("code is valide");
+	  await this.twoFactorAuth.turnOnTwoFactorAuthentication(req.user.id);
 	}
 
 	@UseGuards(TwoFaAuthGuard)
 	@Post('2fa/authenticate')
 	@HttpCode(200)
-	async authenticate(@Req() req, @Res() res,@Body() body) {
-		console.log('wwwww');
-		console.log(req.user);
-		const isCodeValid = this.twoFactorAuth.isTwoFactorAuthenticationCodeValid(body.twoFactorAuthenticationCode, req.user);	
-		if (!isCodeValid)
-			throw new UnauthorizedException('Wrong authentication code');
-		const token = await this.authService.generateToken(req, 'jwt');
-		res.cookie('access_token', token, { httpOnly: true, maxAge: 600000});
-		res.redirect(this.configService.get('HOME_URL'));
+	async authenticate(@Req() req, @Res() res, @Body() body) {
+	    try {
+	        const isCodeValid = await this.twoFactorAuth.isTwoFactorAuthenticationCodeValid(body.twoFactorAuthenticationCode, req.user);
+	        if (!isCodeValid)
+	            throw new UnauthorizedException('Wrong authentication code');
+	        const token = await this.authService.generateToken(req, 'jwt');
+			return { statusCode: 200, message: 'Authenticated', jwt:  token};
+			// res.clearCookie('2fa');
+			// res.cookie('access_token', token, { httpOnly: true, maxAge: 604800000});
+	        // res.redirect(this.configService.get('HOME_URL'));
+	    }
+		catch (error) {
+	        console.error("Error validating 2FA code222:", error);
+	        throw new UnauthorizedException('Error validating 2FA code');
+	    }
 	}
 }

@@ -40,7 +40,6 @@ let AuthService = exports.AuthService = class AuthService {
             expiresIn: '7d',
             secret: secretValue,
         });
-        console.log(token);
         return token;
     }
     async validateUser(req, res) {
