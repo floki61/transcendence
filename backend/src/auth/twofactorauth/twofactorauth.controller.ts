@@ -31,8 +31,8 @@ export class TwoFactorAuthController {
 		if (!isCodeValid)
 			throw new UnauthorizedException('Wrong authentication code');
 		else
-			console.log("code is valide");
-	  	await this.twoFactorAuth.turnOnTwoFactorAuthentication(req.user.id);
+      console.log("code is valide");
+	  await this.twoFactorAuth.turnOnTwoFactorAuthentication(req.user.id);
 	}
 
 	@UseGuards(TwoFaAuthGuard)

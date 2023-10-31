@@ -54,8 +54,11 @@ export declare class UsersController {
             chatRoom: Promise<{
                 id: string;
                 name: string;
+                picture: string;
+                lastMessageDate: Date;
                 visibility: import(".prisma/client").$Enums.Visibility;
                 password: string;
+                lastMessage: string;
                 is_DM: boolean;
                 createdAt: Date;
                 updatedAt: Date;

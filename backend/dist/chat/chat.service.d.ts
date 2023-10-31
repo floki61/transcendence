@@ -19,8 +19,11 @@ export declare class ChatService {
     createRoom(payload: any): Promise<{
         id: string;
         name: string;
+        picture: string;
+        lastMessageDate: Date;
         visibility: import(".prisma/client").$Enums.Visibility;
         password: string;
+        lastMessage: string;
         is_DM: boolean;
         createdAt: Date;
         updatedAt: Date;
@@ -46,13 +49,25 @@ export declare class ChatService {
     } & {
         id: string;
         name: string;
+        picture: string;
+        lastMessageDate: Date;
         visibility: import(".prisma/client").$Enums.Visibility;
         password: string;
+        lastMessage: string;
         is_DM: boolean;
         createdAt: Date;
         updatedAt: Date;
     })[]>;
     getMyRooms(payload: any): Promise<({
+        messages: {
+            id: string;
+            msg: string;
+            msgTime: Date;
+            userId: string;
+            rid: string;
+            createdAt: Date;
+            updatedAt: Date;
+        }[];
         participants: {
             id: string;
             rid: string;
@@ -67,8 +82,11 @@ export declare class ChatService {
     } & {
         id: string;
         name: string;
+        picture: string;
+        lastMessageDate: Date;
         visibility: import(".prisma/client").$Enums.Visibility;
         password: string;
+        lastMessage: string;
         is_DM: boolean;
         createdAt: Date;
         updatedAt: Date;
@@ -88,6 +106,7 @@ export declare class ChatService {
     } & {
         id: string;
         msg: string;
+        msgTime: Date;
         userId: string;
         rid: string;
         createdAt: Date;
@@ -97,4 +116,5 @@ export declare class ChatService {
     changeRoomName(payload: any): Promise<string>;
     changePassword(payload: any): Promise<string>;
     giveAdmin(payload: any): Promise<string>;
+    getUserPicture(uid: any): Promise<string>;
 }

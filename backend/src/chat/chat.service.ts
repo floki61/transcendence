@@ -380,7 +380,7 @@ export class ChatService {
 	}
 
 	async getMyRooms(payload: any) {
-		const room = await this.prisma.chatRoom.findMany({
+		const rooms = await this.prisma.chatRoom.findMany({
 			where: {
 				participants: {
 					some: {
@@ -390,11 +390,20 @@ export class ChatService {
 				},
 			},
 			include: {
+				messages: true,
 				participants: true,
 			},
 		});
-		// console.log({ room });
-		return room;
+		for (var room of rooms)
+		{
+			if (room.messages.length > 0)
+			{
+				room.lastMessage = room.messages[room.messages.length - 1].msg;
+				room.lastMessageDate = room.messages[room.messages.length - 1].msgTime;
+				delete room.messages;
+			}
+		}
+		return rooms;
 	}
 
 
@@ -542,4 +551,17 @@ export class ChatService {
 		});
 		return 'Gave admin';
 	}
+
+	async getUserPicture(uid: any) {
+		const user = await this.prisma.user.findUnique({
+			where: {
+				id: uid,
+			},
+		});
+		if (!user) {
+			throw new NotFoundException('User not found');
+		}
+		return (await user.picture);
+	}
+
 }
