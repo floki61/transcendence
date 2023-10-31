@@ -15,7 +15,7 @@ const socket_io_1 = require("socket.io");
 const game_service_1 = require("./game.service");
 const jwt_1 = require("@nestjs/jwt");
 const config_1 = require("@nestjs/config");
-let gameMode = 'live';
+let gameMode = 'Bot';
 let GameGateway = exports.GameGateway = class GameGateway {
     constructor(gameService, jwt, config) {
         this.gameService = gameService;

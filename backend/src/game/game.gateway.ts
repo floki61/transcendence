@@ -4,7 +4,7 @@ import { GameService } from './game.service';
 import { JwtService } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
 
-let gameMode = 'live';
+let gameMode = 'Bot';
 
 @WebSocketGateway({ namespace: 'game', cors: true, origin: ['http://localhost:3000/game']})
 export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
