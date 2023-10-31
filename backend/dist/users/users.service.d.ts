@@ -13,6 +13,74 @@ export declare class UsersService {
         lastName: string;
         email: string;
         picture: string;
+        country: string;
+        phoneNumber: string;
+        accessToken: string;
+        password: string;
+        twoFactorAuthenticationSecret: string;
+        isTwoFactorAuthenticationEnabled: boolean;
+        createdAt: Date;
+        updatedAt: Date;
+    }>;
+    checkIfnameExists(data: any): Promise<boolean>;
+    updateUser(req: any, data: any): Promise<void>;
+    updateUserPicture(req: any, data: any): Promise<{
+        id: string;
+        userName: string;
+        firstName: string;
+        lastName: string;
+        email: string;
+        picture: string;
+        country: string;
+        phoneNumber: string;
+        accessToken: string;
+        password: string;
+        twoFactorAuthenticationSecret: string;
+        isTwoFactorAuthenticationEnabled: boolean;
+        createdAt: Date;
+        updatedAt: Date;
+    }>;
+    updateUserName(req: any, data: any): Promise<{
+        id: string;
+        userName: string;
+        firstName: string;
+        lastName: string;
+        email: string;
+        picture: string;
+        country: string;
+        phoneNumber: string;
+        accessToken: string;
+        password: string;
+        twoFactorAuthenticationSecret: string;
+        isTwoFactorAuthenticationEnabled: boolean;
+        createdAt: Date;
+        updatedAt: Date;
+    }>;
+    updateUserPhoneNumber(req: any, data: any): Promise<{
+        id: string;
+        userName: string;
+        firstName: string;
+        lastName: string;
+        email: string;
+        picture: string;
+        country: string;
+        phoneNumber: string;
+        accessToken: string;
+        password: string;
+        twoFactorAuthenticationSecret: string;
+        isTwoFactorAuthenticationEnabled: boolean;
+        createdAt: Date;
+        updatedAt: Date;
+    }>;
+    updateUserCountry(req: any, data: any): Promise<{
+        id: string;
+        userName: string;
+        firstName: string;
+        lastName: string;
+        email: string;
+        picture: string;
+        country: string;
+        phoneNumber: string;
         accessToken: string;
         password: string;
         twoFactorAuthenticationSecret: string;
@@ -27,6 +95,8 @@ export declare class UsersService {
         lastName: string;
         email: string;
         picture: string;
+        country: string;
+        phoneNumber: string;
         accessToken: string;
         password: string;
         twoFactorAuthenticationSecret: string;
@@ -72,8 +142,11 @@ export declare class UsersService {
         chatRoom: Promise<{
             id: string;
             name: string;
+            picture: string;
+            lastMessageDate: Date;
             visibility: import(".prisma/client").$Enums.Visibility;
             password: string;
+            lastMessage: string;
             is_DM: boolean;
             createdAt: Date;
             updatedAt: Date;
@@ -82,8 +155,11 @@ export declare class UsersService {
     creatChatRoom(userId: string, friendId: string): Promise<{
         id: string;
         name: string;
+        picture: string;
+        lastMessageDate: Date;
         visibility: import(".prisma/client").$Enums.Visibility;
         password: string;
+        lastMessage: string;
         is_DM: boolean;
         createdAt: Date;
         updatedAt: Date;

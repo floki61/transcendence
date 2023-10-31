@@ -11,6 +11,7 @@ const common_1 = require("@nestjs/common");
 const client_1 = require("@prisma/client");
 let ExceptionsFilter = exports.ExceptionsFilter = class ExceptionsFilter {
     catch(exception, host) {
+        console.error(exception);
         if (exception instanceof client_1.Prisma.PrismaClientKnownRequestError) {
             const ctx = host.switchToHttp();
             const response = ctx.getResponse();

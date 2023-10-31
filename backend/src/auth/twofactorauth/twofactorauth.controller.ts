@@ -7,22 +7,31 @@ import { JwtAuthGuard } from '../jwt/jwt.guard';
 export class TwoFactorAuthController {
 	constructor(private readonly twoFactorAuth: TwoFactorAuthService) {}
 
+	
 	@UseGuards(JwtAuthGuard)
 	@Get('2fa/generate')
 	async register(@Req() req, @Res() res: Response){
 		const {otpauthUrl} = await this.twoFactorAuth.generateTwoFactorAuthenticationSecret(req.user.id, req.user.email);
 		const qrCodeUrl = await this.twoFactorAuth.generateQrCodeDataURL(otpauthUrl);
-		res.send(`<img src=${qrCodeUrl}>`);
+		// res.sendFile(qrCodeUrl);
+		// return `<img src=${qrCodeUrl}>`
+		res.send(`${qrCodeUrl}`);
 	}
 	
 	@Post('2fa/turn-on')
 	@UseGuards(JwtAuthGuard)
 	async turnOnTwoFactorAuthentication(@Req() req, @Body() body) {
-		const isCodeValid = this.twoFactorAuth.isTwoFactorAuthenticationCodeValid(body.twoFactorAuthenticationCode, req.user);
+		console.log(body.twoFactorAuthenticationCode);
+		const isCodeValid = await this.twoFactorAuth.isTwoFactorAuthenticationCodeValid(body.twoFactorAuthenticationCode, req.user);
 		if (!isCodeValid)
+		{
+			console.log("wal3alam2");
 			throw new UnauthorizedException('Wrong authentication code');
+			console.log("wal3alam3");
+		}
 		else
 			console.log("code is valide");
+		// console.log("walzabi")
 	  	await this.twoFactorAuth.turnOnTwoFactorAuthentication(req.user.id);
 	}
 

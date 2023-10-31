@@ -13,7 +13,10 @@ export default function page() {
 				<h2 className="text-center text-2xl w-1/2 h-full py-2">Friends</h2>
 			</div>
 		</div>
-		<div className="debug flex-1">standings</div>
+		<div className="debug flex-1">
+			<div></div>
+			<div></div>
+		</div>
 	  </div>
 	)
   }

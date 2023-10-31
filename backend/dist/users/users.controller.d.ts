@@ -14,6 +14,7 @@ export declare class UsersController {
         cookies: any;
     }>;
     getUser(req: any): Promise<any>;
+    userSettings(req: any, data: any): Promise<void>;
     sendFriendRequest(body: any, req: any): Promise<{
         id: string;
         userId: string;
@@ -53,8 +54,11 @@ export declare class UsersController {
             chatRoom: Promise<{
                 id: string;
                 name: string;
+                picture: string;
+                lastMessageDate: Date;
                 visibility: import(".prisma/client").$Enums.Visibility;
                 password: string;
+                lastMessage: string;
                 is_DM: boolean;
                 createdAt: Date;
                 updatedAt: Date;

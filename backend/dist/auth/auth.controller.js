@@ -26,13 +26,19 @@ let AuthController = exports.AuthController = class AuthController {
     }
     googlelogin() { }
     async googleAuthRedirect(req, res) {
-        await this.authService.validateUser(req, res);
-        res.redirect(this.config.get('SETTINGS_URL'));
+        if (await this.authService.validateUser(req, res)) {
+            res.redirect(this.config.get('HOME_URL'));
+        }
+        else
+            res.redirect(this.config.get('SETTINGS_URL'));
     }
     login() { }
     async authRedirect(req, res) {
-        await this.authService.validateUser(req, res);
-        res.redirect(this.config.get('SETTINGS_URL'));
+        if (await this.authService.validateUser(req, res)) {
+            res.redirect(this.config.get('HOME_URL'));
+        }
+        else
+            res.redirect(this.config.get('SETTINGS_URL'));
     }
     async logout(req, res) {
         await this.authService.logout(req, res);

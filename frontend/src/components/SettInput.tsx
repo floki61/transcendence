@@ -4,13 +4,15 @@ import { faEye, faEyeDropper } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Image from "next/image";
 import { useEffect, useState, useRef } from "react";
-
+import { userType } from "@/app/(protected)/settings/page";
 
 interface SettinputProps {
   holder: string;
   type: string;
-  value?: string;
+  value: string;
   className?: string;
+  name: string;
+  onChange(e: any): any;
 }
 
 const Settinput: React.FC<SettinputProps> = ({
@@ -18,21 +20,22 @@ const Settinput: React.FC<SettinputProps> = ({
   type,
   value,
   className = "",
+  onChange,
+  name,
 }) => {
 
-  const [inputValue, setinputValue] = useState(value);
-
-  function handleValue(e:any) {
-    setinputValue(e.target.value)
-    holder = e.target.value;
-  }
   return (
       <input
-        className="p-3 pl-4 rounded-xl bg-primecl placeholder:text-white text-lg outline-none font-light w-full"
+        className={`${className} p-3 pl-4 rounded-xl bg-primecl placeholder-slate-400 text-lg outline-none font-light w-full`}
         placeholder={holder}
-        onChange={handleValue}
+        value={value}
+        onChange={(e) => {
+          onChange(e);
+        }}
+        type={type}
+        name={name}
       />
-  );
+    );
 };
 
 export default Settinput;

@@ -354,7 +354,7 @@ let ChatService = exports.ChatService = class ChatService {
         return room;
     }
     async getMyRooms(payload) {
-        const room = await this.prisma.chatRoom.findMany({
+        const rooms = await this.prisma.chatRoom.findMany({
             where: {
                 participants: {
                     some: {
@@ -364,10 +364,18 @@ let ChatService = exports.ChatService = class ChatService {
                 },
             },
             include: {
+                messages: true,
                 participants: true,
             },
         });
-        return room;
+        for (var room of rooms) {
+            if (room.messages.length > 0) {
+                room.lastMessage = room.messages[room.messages.length - 1].msg;
+                room.lastMessageDate = room.messages[room.messages.length - 1].msgTime;
+                delete room.messages;
+            }
+        }
+        return rooms;
     }
     async getMessages(payload) {
         const message = await this.prisma.message.findMany({
@@ -508,6 +516,17 @@ let ChatService = exports.ChatService = class ChatService {
             },
         });
         return 'Gave admin';
+    }
+    async getUserPicture(uid) {
+        const user = await this.prisma.user.findUnique({
+            where: {
+                id: uid,
+            },
+        });
+        if (!user) {
+            throw new common_1.NotFoundException('User not found');
+        }
+        return (await user.picture);
     }
 };
 exports.ChatService = ChatService = __decorate([

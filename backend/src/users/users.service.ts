@@ -20,6 +20,70 @@ export class UsersService {
         });
     }
 
+	async checkIfnameExists(data: any) {
+		const user = this.prisma.user.findUnique({
+			where: {
+				userName: data.userName,
+			},
+		});
+		if (user)
+			return true;
+		return false;
+	}
+
+	async updateUser(req, data: any) {
+		if(data.userName)
+			this.updateUserName(req, data);
+		if(data.phoneNumber)
+			this.updateUserPhoneNumber(req, data);
+		if(data.country)
+			this.updateUserCountry(req, data);
+	}
+
+	async updateUserPicture(req, data: any) {
+		return await this.prisma.user.update({
+			where: {
+				id: req.user.id,
+			},
+			data: {
+				picture: data.picture,
+			},
+		});
+	}
+	async updateUserName(req, data: any) {
+		// if (await this.checkIfnameExists(data))
+			// throw new UnauthorizedException('Username already exists');«
+		return await this.prisma.user.update({
+			where: {
+				id: req.user.id,
+			},
+			data: {
+				userName: data.userName,
+			},
+		});
+	}
+	async updateUserPhoneNumber(req, data: any) {
+		return await this.prisma.user.update({
+			where: {
+				id: req.user.id,
+			},
+			data: {
+				phoneNumber: data.phoneNumber,
+			},
+		});
+	}
+
+	async updateUserCountry(req, data: any) {
+		return await this.prisma.user.update({
+			where: {
+				id: req.user.id,
+			},
+			data: {
+				country: data.country,
+			},
+		});
+	}
+
     async createUser(req) {
 		console.log(req.user);
         return await this.prisma.user.create({

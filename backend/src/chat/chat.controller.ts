@@ -1,4 +1,4 @@
-import { Body, Controller, Param, Post, Req, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post, Req, UseGuards } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
 import { UsersService } from 'src/users/users.service';
@@ -7,6 +7,7 @@ import { JwtAuthGuard } from 'src/auth/jwt/jwt.guard';
 import { ChatGateway } from './chat.gateway';
 import { Roles } from 'src/decorators/role.decorator';
 import { RolesGuard } from 'src/decorators/roles.guard';
+import { PrismaService } from 'src/prisma/prisma.service';
 
 
 @Controller('chat')
@@ -14,7 +15,8 @@ export class ChatController {
     constructor(private config: ConfigService,
         private jwt: JwtService,
         private userservice: ChatService,
-        private chatgtw: ChatGateway) { }
+        private chatgtw: ChatGateway,
+        private prisma: PrismaService) { }
 
     // body: { friendId: string, roomId: string }
     @UseGuards(JwtAuthGuard)
@@ -127,5 +129,21 @@ export class ChatController {
     async giveAdmin(@Body() body: any, @Req() req: any) {
         const room = await this.userservice.giveAdmin(body);
         return room;
+    }
+
+    // @Roles('OWNER', 'ADMIN', 'USER')
+    @UseGuards(JwtAuthGuard)
+    @Get('myRooms')
+    async getMyRooms(@Req() req: any) {
+        const rooms = await this.userservice.getMyRooms({id: req.user.id});
+        for (var room of rooms) {
+            if (room.is_DM)
+            {
+                room.picture = await this.userservice.getUserPicture(req.user.id === room.participants[0].uid ? room.participants[1].uid : room.participants[0].uid);
+            }
+            delete room.participants;
+        }
+        console.log(rooms);
+        return rooms;
     }
 }

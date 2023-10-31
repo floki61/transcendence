@@ -9,7 +9,7 @@ import { PrismaService } from "src/prisma/prisma.service";
 export class TwoFactorAuthService {
     constructor(private prisma: PrismaService) {}
 
-    isTwoFactorAuthenticationCodeValid(twoFactorAuthenticationCode: string, user: User) {
+    async isTwoFactorAuthenticationCodeValid(twoFactorAuthenticationCode: string, user: User) {
         return authenticator.verify({
             token: twoFactorAuthenticationCode,
             secret: user.twoFactorAuthenticationSecret,
