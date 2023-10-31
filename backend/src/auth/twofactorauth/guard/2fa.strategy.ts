@@ -15,7 +15,7 @@ export class TwoFaStrategy extends PassportStrategy(Strategy, '2fa') {
         super({
             jwtFromRequest: ExtractJwt.fromExtractors([
                 (req: Request) => {
-                console.log({cokiya: req.cookies});
+                // console.log({cokiya: req.cookies});
                 if(req.cookies && req.cookies['2fa'])
                     return req.cookies['2fa'];
                 else
