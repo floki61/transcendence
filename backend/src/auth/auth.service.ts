@@ -35,7 +35,6 @@ export class AuthService {
 				secret: secretValue,
 			},
 		);
-		console.log(token);
 		return token;
 	}
 

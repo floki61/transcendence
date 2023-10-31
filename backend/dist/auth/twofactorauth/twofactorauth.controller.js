@@ -31,7 +31,6 @@ let TwoFactorAuthController = exports.TwoFactorAuthController = class TwoFactorA
         res.send(`${qrCodeUrl}`);
     }
     async turnOnTwoFactorAuthentication(req, body) {
-        console.log(body.twoFactorAuthenticationCode);
         const isCodeValid = await this.twoFactorAuth.isTwoFactorAuthenticationCodeValid(body.twoFactorAuthenticationCode, req.user);
         if (!isCodeValid)
             throw new common_1.UnauthorizedException('Wrong authentication code');
@@ -40,14 +39,17 @@ let TwoFactorAuthController = exports.TwoFactorAuthController = class TwoFactorA
         await this.twoFactorAuth.turnOnTwoFactorAuthentication(req.user.id);
     }
     async authenticate(req, res, body) {
-        console.log('wwwww');
-        console.log(req.user);
-        const isCodeValid = this.twoFactorAuth.isTwoFactorAuthenticationCodeValid(body.twoFactorAuthenticationCode, req.user);
-        if (!isCodeValid)
-            throw new common_1.UnauthorizedException('Wrong authentication code');
-        const token = await this.authService.generateToken(req, 'jwt');
-        res.cookie('access_token', token, { httpOnly: true, maxAge: 600000 });
-        res.redirect(this.configService.get('HOME_URL'));
+        try {
+            const isCodeValid = await this.twoFactorAuth.isTwoFactorAuthenticationCodeValid(body.twoFactorAuthenticationCode, req.user);
+            if (!isCodeValid)
+                throw new common_1.UnauthorizedException('Wrong authentication code');
+            const token = await this.authService.generateToken(req, 'jwt');
+            return { statusCode: 200, message: 'Authenticated', jwt: token };
+        }
+        catch (error) {
+            console.error("Error validating 2FA code222:", error);
+            throw new common_1.UnauthorizedException('Error validating 2FA code');
+        }
     }
 };
 __decorate([

@@ -21,9 +21,12 @@ export default function Forgotps() {
 	};
 
 	const send2fa = async () => {
-		const twoFactorAuthenticationCode = input;
+		// const twoFactorAuthenticationCode = input;
 		try {
-		  await axios.post("http://localhost:4000/2fa/authenticate", twoFactorAuthenticationCode); // backend API endpoint
+		  await axios.post("http://localhost:4000/2fa/authenticate",
+		  	{twoFactorAuthenticationCode: input}, {
+			withCredentials: true,
+			}); // backend API endpoint
 		} catch (error) {
 			console.error(error);
 		}

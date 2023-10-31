@@ -6,12 +6,17 @@ import { JwtService } from '@nestjs/jwt';
 import { AuthService } from '../auth.service';
 import { UsersService } from 'src/users/users.service';
 import { TwoFaStrategy } from './guard/2fa.strategy';
+import { PassportModule } from '@nestjs/passport';
+import { TwoFaAuthGuard } from './guard/2fa.guard';
 
 
 
 @Module({
-  imports: [UsersModule],
+  imports: [UsersModule,
+      PassportModule.register({ defaultStrategy: '2fa' }),
+    ],
   controllers: [TwoFactorAuthController],
-  providers: [TwoFactorAuthService, JwtService, AuthService, UsersService, TwoFaStrategy],
+  providers: [TwoFactorAuthService, JwtService, AuthService, UsersService, TwoFaStrategy, TwoFaAuthGuard],
+  // providers: [TwoFactorAuthService, JwtService, AuthService, UsersService, TwoFaStrategy],
 })
 export class twoFactorAuthModule {}
