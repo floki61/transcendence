@@ -1,3 +1,7 @@
+import { GameService } from './game.service';
 export declare class GameController {
-    constructor();
+    private gameService;
+    constructor(gameService: GameService);
+    Quee(req: any): Promise<void>;
+    Botgame(req: any): Promise<void>;
 }
