@@ -14,15 +14,31 @@ const common_1 = require("@nestjs/common");
 const otplib_1 = require("otplib");
 const qrcode_1 = require("qrcode");
 const prisma_service_1 = require("../../prisma/prisma.service");
+const auth_service_1 = require("../auth.service");
 let TwoFactorAuthService = exports.TwoFactorAuthService = class TwoFactorAuthService {
-    constructor(prisma) {
+    constructor(prisma, authService) {
         this.prisma = prisma;
+        this.authService = authService;
     }
     async isTwoFactorAuthenticationCodeValid(twoFactorAuthenticationCode, user) {
-        return otplib_1.authenticator.verify({
-            token: twoFactorAuthenticationCode,
-            secret: user.twoFactorAuthenticationSecret,
-        });
+        try {
+            const isValid = await otplib_1.authenticator.verify({
+                token: twoFactorAuthenticationCode,
+                secret: user.twoFactorAuthenticationSecret,
+            });
+            if (isValid) {
+                console.log('2FA code is valid.');
+                return true;
+            }
+            else {
+                console.log('2FA code is not valid.');
+                return false;
+            }
+        }
+        catch (error) {
+            console.error('Error validating 2FA code:', error);
+            return false;
+        }
     }
     async generateQrCodeDataURL(otpAuthUrl) {
         return (0, qrcode_1.toDataURL)(otpAuthUrl);
@@ -59,6 +75,7 @@ let TwoFactorAuthService = exports.TwoFactorAuthService = class TwoFactorAuthSer
 };
 exports.TwoFactorAuthService = TwoFactorAuthService = __decorate([
     (0, common_1.Injectable)(),
-    __metadata("design:paramtypes", [prisma_service_1.PrismaService])
+    __metadata("design:paramtypes", [prisma_service_1.PrismaService,
+        auth_service_1.AuthService])
 ], TwoFactorAuthService);
 //# sourceMappingURL=twofactorauth.service.js.map

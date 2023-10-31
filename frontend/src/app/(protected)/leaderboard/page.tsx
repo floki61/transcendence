@@ -1,6 +1,8 @@
+import Standing from "@/components/Standing"
+
 export default function page() {
 	return (
-	  <div className="flex flex-col p-8 py-16 h-full">
+	  <div className="flex flex-col p-8 py-16 h-full w-full">
 		<div className="flex justify-between h-12">
 			<div className="flex gap-3 items-center">
 				<svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 35 35" fill="none">
@@ -13,9 +15,32 @@ export default function page() {
 				<h2 className="text-center text-2xl w-1/2 h-full py-2">Friends</h2>
 			</div>
 		</div>
-		<div className="debug flex-1">
-			<div></div>
-			<div></div>
+		<div className="flex-1 flex flex-col w-full">
+			<div className="h-[7.5%] w-full rounded-tl-xl bg-primecl flex">
+				<div className="w-1/4 flex items-center justify-around gap-3">
+					<a>#</a>
+					<a>Playername</a>
+				</div>
+				<div className="w-1/2 flex items-center justify-evenly pl-10">
+					<a>MP</a>
+					<a>W</a>
+					<a>L</a>
+					<a>LV</a>
+				</div>
+				<a className="w-1/4 flex items-center justify-center">FORM</a>
+			</div>
+			<div className="flex-1 rounded-b-xl bg-segundcl">
+				<Standing place="1" color="bg-[#FFD700]"/>
+				<Standing place="2" color="bg-[#C0C0C0]"/>
+				<Standing place="3" color="bg-[#CD7F32]"/>
+				<Standing place="4" color="bg-[#6A6666]"/>
+				<Standing place="5" color="bg-[#6A6666]"/>
+				<Standing place="6" color="bg-[#6A6666]"/>
+				<Standing place="7" color="bg-[#6A6666]"/>
+				<Standing place="8" color="bg-[#6A6666]"/>
+				<Standing place="9" color="bg-[#6A6666]"/>
+				<Standing place="10" color="bg-[#6A6666]"/>
+			</div>
 		</div>
 	  </div>
 	)

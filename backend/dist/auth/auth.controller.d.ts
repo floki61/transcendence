@@ -2,10 +2,12 @@ import { AuthService } from './auth.service';
 import { Response } from 'express';
 import { Userdto, signindto } from "../users/dto";
 import { ConfigService } from '@nestjs/config';
+import { UsersService } from 'src/users/users.service';
 export declare class AuthController {
     private readonly authService;
     private readonly config;
-    constructor(authService: AuthService, config: ConfigService);
+    private readonly userService;
+    constructor(authService: AuthService, config: ConfigService, userService: UsersService);
     googlelogin(): void;
     googleAuthRedirect(req: any, res: Response): Promise<void>;
     login(): void;

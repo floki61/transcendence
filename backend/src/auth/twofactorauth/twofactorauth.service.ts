@@ -3,17 +3,31 @@ import { User } from "@prisma/client";
 import { authenticator } from "otplib";
 import { toDataURL } from 'qrcode';
 import { PrismaService } from "src/prisma/prisma.service";
+import { AuthService } from "../auth.service";
 
 @Injectable()
 
 export class TwoFactorAuthService {
-    constructor(private prisma: PrismaService) {}
+    constructor(private prisma: PrismaService,
+                private authService: AuthService) {}
 
     async isTwoFactorAuthenticationCodeValid(twoFactorAuthenticationCode: string, user: User) {
-        return authenticator.verify({
-            token: twoFactorAuthenticationCode,
-            secret: user.twoFactorAuthenticationSecret,
-        });
+        try {
+            const isValid = await authenticator.verify({
+                token: twoFactorAuthenticationCode,
+                secret: user.twoFactorAuthenticationSecret,
+            });
+            if (isValid) {
+                console.log('2FA code is valid.');
+                return true;
+            } else {
+                console.log('2FA code is not valid.');
+                return false;
+            }
+        } catch (error) {
+            console.error('Error validating 2FA code:', error);
+            return false;
+        }
     }
 
     async generateQrCodeDataURL(otpAuthUrl: string) {

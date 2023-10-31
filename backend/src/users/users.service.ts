@@ -21,16 +21,13 @@ export class UsersService {
     }
 
 	async checkIfnameExists(data: any) {
-		const user = this.prisma.user.findUnique({
-			where: {
-				userName: data.userName,
-			},
-		});
-		if (user)
-			return true;
-		return false;
-	}
-
+    const user = await this.prisma.user.findUnique({
+        where: {
+            userName: data.userName,
+        },
+    });
+    return user ? true : false;
+}
 	async updateUser(req, data: any) {
 		if(data.userName)
 			this.updateUserName(req, data);
@@ -53,6 +50,7 @@ export class UsersService {
 	async updateUserName(req, data: any) {
 		// if (await this.checkIfnameExists(data))
 			// throw new UnauthorizedException('Username already exists');«
+		// throw new HttpException('Username already exists', HttpStatus.BAD_REQUEST);
 		return await this.prisma.user.update({
 			where: {
 				id: req.user.id,
@@ -62,6 +60,7 @@ export class UsersService {
 			},
 		});
 	}
+
 	async updateUserPhoneNumber(req, data: any) {
 		return await this.prisma.user.update({
 			where: {

@@ -12,13 +12,20 @@ const users_module_1 = require("../../users/users.module");
 const twofactorauth_service_1 = require("./twofactorauth.service");
 const twofactorauth_controller_1 = require("./twofactorauth.controller");
 const jwt_1 = require("@nestjs/jwt");
+const auth_service_1 = require("../auth.service");
+const users_service_1 = require("../../users/users.service");
+const _2fa_strategy_1 = require("./guard/2fa.strategy");
+const passport_1 = require("@nestjs/passport");
+const _2fa_guard_1 = require("./guard/2fa.guard");
 let twoFactorAuthModule = exports.twoFactorAuthModule = class twoFactorAuthModule {
 };
 exports.twoFactorAuthModule = twoFactorAuthModule = __decorate([
     (0, common_1.Module)({
-        imports: [users_module_1.UsersModule],
+        imports: [users_module_1.UsersModule,
+            passport_1.PassportModule.register({ defaultStrategy: '2fa' }),
+        ],
         controllers: [twofactorauth_controller_1.TwoFactorAuthController],
-        providers: [twofactorauth_service_1.TwoFactorAuthService, jwt_1.JwtService],
+        providers: [twofactorauth_service_1.TwoFactorAuthService, jwt_1.JwtService, auth_service_1.AuthService, users_service_1.UsersService, _2fa_strategy_1.TwoFaStrategy, _2fa_guard_1.TwoFaAuthGuard],
     })
 ], twoFactorAuthModule);
 //# sourceMappingURL=twofactorauth.module.js.map
