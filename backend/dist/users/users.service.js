@@ -42,6 +42,14 @@ let UsersService = exports.UsersService = class UsersService {
             this.updateUserPhoneNumber(req, data);
         if (data.country)
             this.updateUserCountry(req, data);
+        await this.prisma.user.update({
+            where: {
+                id: req.user.id,
+            },
+            data: {
+                picture: data.picture,
+            },
+        });
     }
     async updateUserPicture(req, data) {
         return await this.prisma.user.update({
