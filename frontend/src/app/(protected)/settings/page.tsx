@@ -49,6 +49,7 @@ export default function page() {
       await axios.post("http://localhost:4000/userSettings", user, {
         withCredentials: true,
       }); // backend API endpoint
+      console.log("saved with : ", user?.picture);
       handleSucces();
     } catch (error) {
         console.error(error);
@@ -58,7 +59,7 @@ export default function page() {
   const updateProfilePic = async () => {
     try {
       if (user) {
-        console.log(user.picture);
+        console.log("ha ach ansift : ", user.picture);
         await axios.post("http://localhost:4000/upload", user.picture, {
           withCredentials: true,
         }); // backend API endpoint
@@ -78,15 +79,17 @@ export default function page() {
     setUser(newUser as userType);
   };
 
-  const [image, setImage] = useState<File | null>(null);
-  const [imageUrl, setImageUrl] = useState<string>('');
-
+  // const [image, setImage] = useState<File | null>(null);
+  const [imageUrl, setImageUrl] = useState<string | undefined>(user?.picture);
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files && e.target.files.length > 0 && user) {
-      setImage(e.target.files[0]);
+    console.log("first");
+    if (e.target.files && e.target.files.length === 1 && user) {
+      // setImage(e.target.files[0]);
       setImageUrl(URL.createObjectURL(e.target.files[0]));
-      user.picture = imageUrl;
+      console.log("3chiri : " , URL.createObjectURL(e.target.files[0]));
+      user.picture = URL.createObjectURL(e.target.files[0]);
+      updateProfilePic();
     }
   };
 
@@ -94,7 +97,6 @@ export default function page() {
   const handleClick = (e:any) => {
     if (hiddenFileInput.current)
       hiddenFileInput.current.click();
-    updateProfilePic();
   };
 
 
@@ -139,14 +141,15 @@ export default function page() {
         <div className={`${classes} flex rounded-2xl bg-segundcl h-[90%] m-8`}>
           <div className="flex flex-col w-1/2 border-r-4 border-primecl justify-center items-center my-6 gap-6">
             <div className="flex flex-col items-center gap-3 h-1/2 w-full mt-4">
-              {/* <Image
+              <Image
                 src={user.picture}
                 alt={"profile pic"}
                 width={100}
                 height={100}
                 className="rounded-full"
-              /> */}
-              <img src={user.picture} alt="profile pic" width={100} height={100} className="rounded-full"></img>
+                priority
+              />
+              {/* <img src={user.picture} alt="profile pic" width={100} height={100} className="rounded-full"></img> */}
               <div className="flex flex-col h-full w-full items-center gap-8 justify-center mt-4">
                 <Button
                   text="CHOOSE AN AVATAR"
@@ -165,6 +168,7 @@ export default function page() {
                     name="picture"
                     placeholder="UPLOAD A PHOTO"
                     className="hidden"
+                    accept="image/png, image/jpg, image/jpeg, image/gif"
                   />
                 </button>
               </div>

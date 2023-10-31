@@ -34,6 +34,7 @@ export class UsersController {
     @UseGuards(JwtAuthGuard)
     @Post('userSettings')
 	userSettings(@Req() req ,@Body() data) {
+        console.log(data);
         return this.userservice.updateUser(req, data);
 	}
 
