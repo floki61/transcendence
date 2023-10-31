@@ -31,7 +31,7 @@ export class TwoFactorAuthController {
 		}
 		else
 			console.log("code is valide");
-		console.log("walzabi")
+		// console.log("walzabi")
 	  	await this.twoFactorAuth.turnOnTwoFactorAuthentication(req.user.id);
 	}
 

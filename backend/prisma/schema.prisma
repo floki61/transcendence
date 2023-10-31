@@ -80,14 +80,16 @@ model Participant {
 }
 
 model ChatRoom {
-	id           String        @id @default(cuid())
-	name         String
-	visibility   Visibility    @default(PUBLIC)
-	password     String?
-	// message      String
-	participants Participant[]
-	messages     Message[]
-	is_DM        Boolean       @default(true)
+	id           	String        @id @default(cuid())
+	name         	String
+	picture		 	String? @default("")
+	lastMessageDate DateTime?
+	visibility   	Visibility    @default(PUBLIC)
+	password     	String?
+	participants 	Participant[]
+	messages     	Message[]
+	lastMessage  	String?
+	is_DM        	Boolean       @default(true)
 
 	createdAt DateTime @default(now())
 	updatedAt DateTime @updatedAt
@@ -128,6 +130,8 @@ model Block {
 model Message {
 	id  String @id @default(cuid())
 	msg String
+
+	msgTime DateTime @default(now())
 
 	userId String? // This field refers to the sender of the message
 	user   Participant?   @relation(fields: [userId], references: [id])

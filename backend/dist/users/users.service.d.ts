@@ -142,8 +142,11 @@ export declare class UsersService {
         chatRoom: Promise<{
             id: string;
             name: string;
+            picture: string;
+            lastMessageDate: Date;
             visibility: import(".prisma/client").$Enums.Visibility;
             password: string;
+            lastMessage: string;
             is_DM: boolean;
             createdAt: Date;
             updatedAt: Date;
@@ -152,8 +155,11 @@ export declare class UsersService {
     creatChatRoom(userId: string, friendId: string): Promise<{
         id: string;
         name: string;
+        picture: string;
+        lastMessageDate: Date;
         visibility: import(".prisma/client").$Enums.Visibility;
         password: string;
+        lastMessage: string;
         is_DM: boolean;
         createdAt: Date;
         updatedAt: Date;
