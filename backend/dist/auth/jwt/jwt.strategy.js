@@ -20,7 +20,6 @@ let JwtStrategy = exports.JwtStrategy = class JwtStrategy extends (0, passport_1
         super({
             jwtFromRequest: passport_jwt_1.ExtractJwt.fromExtractors([
                 (req) => {
-                    console.log({ cokiya: req.cookies });
                     if (req.cookies && req.cookies['access_token'])
                         return req.cookies['access_token'];
                     else

@@ -14,7 +14,7 @@ export class JwtStrategy extends PassportStrategy(Strategy, 'jwt') {
         super({
             jwtFromRequest: ExtractJwt.fromExtractors([
             (req: Request) => {
-                console.log({cokiya: req.cookies});
+                // console.log({cokiya: req.cookies});
                 if(req.cookies && req.cookies['access_token'])
                     return req.cookies['access_token'];
                 else

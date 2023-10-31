@@ -5,11 +5,16 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
     else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
     return c > 3 && r && Object.defineProperty(target, key, r), r;
 };
+var __metadata = (this && this.__metadata) || function (k, v) {
+    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.GameService = void 0;
 const common_1 = require("@nestjs/common");
+const event_emitter_1 = require("@nestjs/event-emitter");
 let GameService = exports.GameService = class GameService {
-    constructor() {
+    constructor(eventEmitter) {
+        this.eventEmitter = eventEmitter;
         this.initialGameData = {
             canvasWidth: 850,
             canvasHeight: 400,
@@ -122,8 +127,15 @@ let GameService = exports.GameService = class GameService {
         else if (this.gameData.rightPaddle.y < this.gameData.ball.y && this.gameData.rightPaddle.y + this.gameData.rightPaddle.height / 2 < this.gameData.ball.y && this.gameData.rightPaddle.y < this.gameData.canvasHeight - this.gameData.rightPaddle.height / 2)
             this.gameData.rightPaddle.y += this.gameData.rightPaddle.speed;
     }
+    async Quee(id) {
+        this.eventEmitter.emit('quee', id);
+    }
+    async Botgame(id) {
+        this.eventEmitter.emit('Botgame', id);
+    }
 };
 exports.GameService = GameService = __decorate([
-    (0, common_1.Injectable)()
+    (0, common_1.Injectable)(),
+    __metadata("design:paramtypes", [event_emitter_1.EventEmitter2])
 ], GameService);
 //# sourceMappingURL=game.service.js.map

@@ -1,4 +1,7 @@
+import { EventEmitter2 } from '@nestjs/event-emitter';
 export declare class GameService {
+    private eventEmitter;
+    constructor(eventEmitter: EventEmitter2);
     private initialGameData;
     private deepCopy;
     gameData: any;
@@ -10,4 +13,6 @@ export declare class GameService {
     private radians;
     moveBall(): Promise<any>;
     moveBot(): Promise<void>;
+    Quee(id: any): Promise<void>;
+    Botgame(id: any): Promise<void>;
 }

@@ -45,9 +45,6 @@ export class TwoFactorAuthController {
 	            throw new UnauthorizedException('Wrong authentication code');
 	        const token = await this.authService.generateToken(req, 'jwt');
 			return { statusCode: 200, message: 'Authenticated', jwt:  token};
-			// res.clearCookie('2fa');
-			// res.cookie('access_token', token, { httpOnly: true, maxAge: 604800000});
-	        // res.redirect(this.configService.get('HOME_URL'));
 	    }
 		catch (error) {
 	        console.error("Error validating 2FA code222:", error);
