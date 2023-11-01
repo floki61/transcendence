@@ -254,7 +254,7 @@ export default function page() {
         <QrcodeDiv state={showDiv} OnClick={setShowDiv}/>
       )}
       {showDiv && user?.isTwoFactorAuthenticationEnabled === true && (
-          <Disable2fa state={showDiv} OnClick={setShowDiv} On_click={hnadleChange} isTwoFactorAuthenticationEnabled={user.isTwoFactorAuthenticationEnabled} name="isTwoFactorAuthenticationEnabled"/>
+          <Disable2fa state={showDiv} OnClick={setShowDiv}/>
       )}
     </div>
   );

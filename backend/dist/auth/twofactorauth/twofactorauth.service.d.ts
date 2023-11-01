@@ -13,4 +13,5 @@ export declare class TwoFactorAuthService {
         otpauthUrl: string;
     }>;
     turnOnTwoFactorAuthentication(userId: string): Promise<void>;
+    turnOffTwoFactorAuthentication(userId: string): Promise<void>;
 }

@@ -72,6 +72,16 @@ let TwoFactorAuthService = exports.TwoFactorAuthService = class TwoFactorAuthSer
             }
         });
     }
+    async turnOffTwoFactorAuthentication(userId) {
+        const user = await this.prisma.user.update({
+            where: {
+                id: userId,
+            },
+            data: {
+                isTwoFactorAuthenticationEnabled: false
+            }
+        });
+    }
 };
 exports.TwoFactorAuthService = TwoFactorAuthService = __decorate([
     (0, common_1.Injectable)(),

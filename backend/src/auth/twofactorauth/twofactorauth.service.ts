@@ -64,4 +64,14 @@ export class TwoFactorAuthService {
             }
         });
     }
+    async turnOffTwoFactorAuthentication(userId: string) {
+        const user = await this.prisma.user.update({
+            where: {
+                id: userId,
+            },
+            data:{
+                isTwoFactorAuthenticationEnabled: false
+            }
+        });
+    }
 }
