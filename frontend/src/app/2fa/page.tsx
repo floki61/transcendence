@@ -3,13 +3,14 @@
 import Image from "next/image";
 import Link from "next/link";
 import Button from "@/components/Button";
-import Loginput from "@/components/Loginput";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import axios from "axios";
+import { useRouter } from 'next/router';
 
 export default function Forgotps() {
 
-	
+	// const router = useRouter();
+
 	const [input, setInput] = useState('');
 	
 	const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -20,16 +21,30 @@ export default function Forgotps() {
 		}
 	};
 
-	const send2fa = async () => {
+	const send2fa = async (e: any) => {
 		// const twoFactorAuthenticationCode = input;
+		e.preventDefault();
 		try {
-		  await axios.post("http://localhost:4000/2fa/authenticate",
-		  	{twoFactorAuthenticationCode: input}, {
-			withCredentials: true,
+			const response = await axios.post("http://localhost:4000/2fa/authenticate",
+			{twoFactorAuthenticationCode: input}, {
+				withCredentials: true,
 			}); // backend API endpoint
+			if (response)
+				console.log("response.data");
+			else
+				console.log("wrong");
+			// const { jwt } = response.data;
+
+			// // Store the access token securely in the frontend (e.g., using cookies or local storage)
+			// // For example, you can use localStorage for simplicity (make sure to handle security properly in a real application)
+			// localStorage.setItem('access_token', jwt);
+	  
+			// // Redirect the user to the home page
+			// window.location.href = '/';
 		} catch (error) {
-			console.error(error);
+			console.error("Login failed", error);
 		}
+		console.log("eof");
 	  };
 
 	return (

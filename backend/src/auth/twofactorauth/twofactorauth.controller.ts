@@ -35,6 +35,18 @@ export class TwoFactorAuthController {
 	  await this.twoFactorAuth.turnOnTwoFactorAuthentication(req.user.id);
 	}
 
+	@UseGuards(JwtAuthGuard)
+	@Post('2fa/turn-off')
+	async turnOffTwoFactorAuthentication(@Req() req: any) {
+		// const isCodeValid = await this.twoFactorAuth.isTwoFactorAuthenticationCodeValid(body.twoFactorAuthenticationCode, req.user);
+	// 	if (!isCodeValid)
+	// 		throw new UnauthorizedException('Wrong authentication code');
+	// 	else
+      console.log("code is valide");
+	  await this.twoFactorAuth.turnOffTwoFactorAuthentication(req.user.id);
+	}
+
+
 	@UseGuards(TwoFaAuthGuard)
 	@Post('2fa/authenticate')
 	@HttpCode(200)
@@ -42,8 +54,9 @@ export class TwoFactorAuthController {
 	    try {
 	        const isCodeValid = await this.twoFactorAuth.isTwoFactorAuthenticationCodeValid(body.twoFactorAuthenticationCode, req.user);
 	        if (!isCodeValid)
-	            throw new UnauthorizedException('Wrong authentication code');
-	        const token = await this.authService.generateToken(req, 'jwt');
+				throw new UnauthorizedException('Wrong authentication code');
+			const token = await this.authService.generateToken(req, 'jwt');
+			console.log("token");
 			return { statusCode: 200, message: 'Authenticated', jwt:  token};
 	    }
 		catch (error) {

@@ -9,6 +9,7 @@ export declare class TwoFactorAuthController {
     constructor(twoFactorAuth: TwoFactorAuthService, authService: AuthService, configService: ConfigService);
     register(req: any, res: Response): Promise<void>;
     turnOnTwoFactorAuthentication(req: any, body: any): Promise<void>;
+    turnOffTwoFactorAuthentication(req: any): Promise<void>;
     authenticate(req: any, res: any, body: any): Promise<{
         statusCode: number;
         message: string;
