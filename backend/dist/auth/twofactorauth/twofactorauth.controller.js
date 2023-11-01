@@ -38,13 +38,18 @@ let TwoFactorAuthController = exports.TwoFactorAuthController = class TwoFactorA
             console.log("code is valide");
         await this.twoFactorAuth.turnOnTwoFactorAuthentication(req.user.id);
     }
-    async authenticate(req, res, body) {
+    async authenticate(req, body) {
         try {
             const isCodeValid = await this.twoFactorAuth.isTwoFactorAuthenticationCodeValid(body.twoFactorAuthenticationCode, req.user);
             if (!isCodeValid)
                 throw new common_1.UnauthorizedException('Wrong authentication code');
             const token = await this.authService.generateToken(req, 'jwt');
-            return { statusCode: 200, message: 'Authenticated', jwt: token };
+            req.res.setHeader('Set-Cookie', Object.keys(req.cookies).map(key => `${key}=; Path=/; Max-Age=0`));
+            req.res.cookie('access_token', token, {
+                httpOnly: true,
+                path: '/',
+            });
+            req.res.redirect(process.env.HOME_URL);
         }
         catch (error) {
             console.error("Error validating 2FA code222:", error);
@@ -75,10 +80,9 @@ __decorate([
     (0, common_1.Post)('2fa/authenticate'),
     (0, common_1.HttpCode)(200),
     __param(0, (0, common_1.Req)()),
-    __param(1, (0, common_1.Res)()),
-    __param(2, (0, common_1.Body)()),
+    __param(1, (0, common_1.Body)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Object, Object, Object]),
+    __metadata("design:paramtypes", [Object, Object]),
     __metadata("design:returntype", Promise)
 ], TwoFactorAuthController.prototype, "authenticate", null);
 exports.TwoFactorAuthController = TwoFactorAuthController = __decorate([

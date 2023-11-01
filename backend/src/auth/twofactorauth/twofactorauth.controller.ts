@@ -1,5 +1,5 @@
 import { Controller, Get, Post, Body, Req, UseGuards, Res, UnauthorizedException, HttpCode} from '@nestjs/common';
-import { Request, Response, response} from 'express';
+import { Response} from 'express';
 import { TwoFactorAuthService } from './twofactorauth.service';
 import { JwtAuthGuard } from '../jwt/jwt.guard';
 import { AuthService } from '../auth.service';
@@ -38,13 +38,24 @@ export class TwoFactorAuthController {
 	@UseGuards(TwoFaAuthGuard)
 	@Post('2fa/authenticate')
 	@HttpCode(200)
-	async authenticate(@Req() req, @Res() res, @Body() body) {
+	async authenticate(@Req() req, @Body() body) {
 	    try {
 	        const isCodeValid = await this.twoFactorAuth.isTwoFactorAuthenticationCodeValid(body.twoFactorAuthenticationCode, req.user);
 	        if (!isCodeValid)
 	            throw new UnauthorizedException('Wrong authentication code');
 	        const token = await this.authService.generateToken(req, 'jwt');
-			return { statusCode: 200, message: 'Authenticated', jwt:  token};
+			// return { statusCode: 200, message: 'Authenticated', jwt:  token};
+			req.res.setHeader(
+				'Set-Cookie',
+				Object.keys(req.cookies).map(key => `${key}=; Path=/; Max-Age=0`),
+			  );
+
+			  req.res.cookie('access_token', token, {
+				httpOnly: true,
+				path: '/',
+			  });
+			  req.res.redirect(process.env.HOME_URL);
+
 	    }
 		catch (error) {
 	        console.error("Error validating 2FA code222:", error);

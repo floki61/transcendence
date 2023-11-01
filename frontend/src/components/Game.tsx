@@ -100,9 +100,9 @@ const GamePage = () => {
                 }
                 else if(botGame && leftPaddle.x && rightPaddle.x) {
                     if (p.keyIsDown(p.UP_ARROW))
-                        socket.emit("paddlesUpdate", "UP");
+                        socket.emit("paddleBotUpdate", "UP");
                     else if(p.keyIsDown(p.DOWN_ARROW))
-                        socket.emit("paddlesUpdate", "DOWN");
+                        socket.emit("paddleBotUpdate", "DOWN");
                 }
             };
         };

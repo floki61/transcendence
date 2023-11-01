@@ -11,15 +11,22 @@ export declare class GameGateway implements OnGatewayConnection, OnGatewayDiscon
     private server;
     private gameStarted;
     private connectedClients;
-    Quee: Map<string, Socket>;
+    Quee: Map<string, {
+        Socket: Socket;
+        gameMode: string;
+        status: string;
+        gameData: any;
+    }>;
     handleConnection(client: Socket): Promise<void>;
     handleDisconnect(client: Socket): Promise<void>;
     private parseCookies;
     private determineGameResult;
-    private moveBall;
-    handleUpdatePaddle(client: Socket, event: any): Promise<void>;
+    private moveBotBall;
+    updateBotPaddle(client: Socket, event: any): Promise<void>;
     private checkStartGame;
+    private startBotGame;
+    private startLiveGame;
     private broadcastGameData;
-    quee(id: any): Promise<void>;
-    Botgame(id: any): Promise<void>;
+    getByValue(map: any, searchValue: any): any;
+    gameMode(client: Socket, mode: string): Promise<void>;
 }

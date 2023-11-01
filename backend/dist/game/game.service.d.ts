@@ -5,14 +5,14 @@ export declare class GameService {
     private initialGameData;
     private deepCopy;
     gameData: any;
-    resetGame(): any;
+    getGameData(): any;
+    resetBall(data: any): void;
     resetScore(): void;
     updatePaddle(event: string, targetPaddle: string): Promise<any>;
+    updateBotPaddle(event: string, data: any): Promise<any>;
     private map;
     private ballHitsPaddle;
     private radians;
-    moveBall(): Promise<any>;
-    moveBot(): Promise<void>;
-    Quee(id: any): Promise<void>;
-    Botgame(id: any): Promise<void>;
+    moveBall(data: any): Promise<string>;
+    moveBot(data: any): Promise<void>;
 }
