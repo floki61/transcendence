@@ -79,7 +79,7 @@ let GameGateway = exports.GameGateway = class GameGateway {
         }
         return cookies['access_token'];
     }
-    determineGameResult(id) {
+    async determineGameResult(id) {
         if (this.Quee.get(id).gameMode === 'Bot') {
             if (this.Quee.get(id).gameData.score.left === 5)
                 this.Quee.get(id).Socket.emit('gameResult', 'Winner');
@@ -104,7 +104,7 @@ let GameGateway = exports.GameGateway = class GameGateway {
                 await this.gameService.resetBall(this.Quee.get(id).gameData);
                 if (this.Quee.get(id).gameData.score.left === 5 || this.Quee.get(id).gameData.score.right === 5) {
                     console.log('game over');
-                    this.determineGameResult(id);
+                    await this.determineGameResult(id);
                     this.Quee.get(id).status = 'waiting';
                     break;
                 }

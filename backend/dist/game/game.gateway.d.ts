@@ -20,7 +20,7 @@ export declare class GameGateway implements OnGatewayConnection, OnGatewayDiscon
     handleConnection(client: Socket): Promise<void>;
     handleDisconnect(client: Socket): Promise<void>;
     private parseCookies;
-    private determineGameResult;
+    determineGameResult(id: any): Promise<void>;
     private moveBotBall;
     updateBotPaddle(client: Socket, event: any): Promise<void>;
     private checkStartGame;

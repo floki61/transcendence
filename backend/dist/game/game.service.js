@@ -24,15 +24,16 @@ let GameService = exports.GameService = class GameService {
                 x: 850 / 2,
                 y: 400 / 2,
                 radius: 10,
-                xSpeed: 5 * Math.random() < 0.5 ? 1 : -1,
-                ySpeed: 5 * Math.random() < 0.5 ? 1 : -1,
+                speed: 5,
+                xSpeed: 5 * (Math.random() < 0.5 ? 1 : -1),
+                ySpeed: 5 * (Math.random() < 0.5 ? 1 : -1),
             },
             leftPaddle: {
                 x: 15,
                 y: 200,
                 width: 15,
                 height: 80,
-                speed: 5,
+                speed: 10,
             },
             rightPaddle: {
                 x: 835,
@@ -57,8 +58,9 @@ let GameService = exports.GameService = class GameService {
     resetBall(data) {
         data.ball.x = 850 / 2;
         data.ball.y = 400 / 2;
-        data.ball.xSpeed = 5 * Math.random() < 0.5 ? 1 : -1;
-        data.ball.ySpeed = 5 * Math.random() < 0.5 ? 1 : -1;
+        data.ball.speed = 5;
+        data.ball.xSpeed = data.ball.speed * (Math.random() < 0.5 ? 1 : -1);
+        data.ball.ySpeed = data.ball.speed * (Math.random() < 0.5 ? 1 : -1);
         return;
     }
     resetScore() {
@@ -119,15 +121,17 @@ let GameService = exports.GameService = class GameService {
                 const diff = data.ball.y - (data.leftPaddle.y - data.leftPaddle.height / 2);
                 const rad = this.radians(45);
                 const angle = this.map(diff, 0, data.leftPaddle.height, -rad, rad);
-                data.ball.xSpeed = 5 * Math.cos(angle);
-                data.ball.ySpeed = 5 * Math.sin(angle);
+                data.ball.speed += 0.5;
+                data.ball.xSpeed = data.ball.speed * Math.cos(angle);
+                data.ball.ySpeed = data.ball.speed * Math.sin(angle);
                 data.ball.x = data.leftPaddle.x + data.leftPaddle.width / 2 + data.ball.radius;
             }
             if (this.ballHitsPaddle(data.ball, data.rightPaddle)) {
                 const diff = data.ball.y - (data.rightPaddle.y - data.rightPaddle.height / 2);
                 const angle = this.map(diff, 0, data.rightPaddle.height, this.radians(225), this.radians(135));
-                data.ball.xSpeed = 5 * Math.cos(angle);
-                data.ball.ySpeed = 5 * Math.sin(angle);
+                data.ball.speed += 0.5;
+                data.ball.xSpeed = data.ball.speed * Math.cos(angle);
+                data.ball.ySpeed = data.ball.speed * Math.sin(angle);
                 data.ball.x = data.rightPaddle.x - data.rightPaddle.width / 2 - data.ball.radius;
             }
         }

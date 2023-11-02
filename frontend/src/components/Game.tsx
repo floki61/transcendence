@@ -21,7 +21,9 @@ const GamePage = () => {
             p.setup = () => {
                 canvas = p.createCanvas(p.windowWidth / 2, p.windowHeight / 2);
                 canvas.position((p.windowWidth - canvas.width) / 2, (p.windowHeight - canvas.height) / 2);
-                p.background("black");
+                p.background('#151515'); 
+                canvas.addClass("border-4 rounded-md bg-gray-800");
+                canvas.style('border-color', '#213e46'); 
             };    
             p.windowResized = () => {
                 p.resizeCanvas(p.windowWidth / 2, p.windowHeight / 2);
@@ -53,6 +55,8 @@ const GamePage = () => {
             // });
             socket.on('gameResult', (data) => {
                 setGameResult(data);
+                console.log(data);
+                setBotGame(false);
                 setCount(false);
             });
             socket.on('startBotGame', (data) => {
@@ -64,7 +68,7 @@ const GamePage = () => {
             })
             p.draw = () => {
                 if(count || botGame) {
-                    p.background(0);
+                    p.background('#151515'); 
                     p.textSize(128);
                     p.textAlign(p.CENTER, p.CENTER);
                     p.text(leftScore, p.width / 4, p.height / 2);
@@ -79,14 +83,14 @@ const GamePage = () => {
                     p.ellipse(ball.x, ball.y, ball.radius * 2);
                 }
                 else if (gameResult) {
-                    p.background(0);
+                    p.background('#151515'); 
                     p.fill(255);
                     p.textSize(34);
                     p.textAlign(p.CENTER, p.CENTER);
                     p.text(gameResult, p.width / 2, p.height / 2);
                 }
                 else {
-                    p.background(0);
+                    p.background('#151515'); 
                     p.fill(255);
                     p.textSize(34);
                     p.textAlign(p.CENTER, p.CENTER);
