@@ -3,16 +3,25 @@
 import Image from "next/image"
 
 interface ChatProps {
-  // Other props specific to your component
   	name: string;
   	text: string;
 	time: string;
 	image: string;
+	OnClick(name: string, image: string, status: string): void;
 }
 
-const Chatbar:React.FC<ChatProps> = ({ name, text, time, image }) => {
+const Chatbar:React.FC<ChatProps> = ({ name, text, time, image, OnClick }) => {
+
+	const changeDisplay = () => {
+		OnClick(name, image, "online");
+		console.log(name);
+		console.log(image);
+	}
+
 	return (
-	  <div className="w-5/6 flex justify-between border-b-2 border-primecl">
+	  <div className="w-5/6 flex justify-between border-b-2 border-primecl"
+		onClick={changeDisplay}
+	  >
 		  <div className="flex items-center gap-4 p-2">
 			  <Image
 				  src={image}

@@ -3,53 +3,27 @@ import Settinput from "@/components/SettInput";
 import Button from "@/components/Button";
 import Image from "next/image";
 import axios from "axios";
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState, useRef, useContext } from "react";
 import Link from "next/link";
 import QrcodeDiv from "@/components/QrcodeDiv";
 import Disable2fa from "@/components/Disable2fa";
-
-export interface userType {
-  id: string;
-  email: string;
-  picture: string;
-  fullName: string;
-  userName: string;
-  firstName: string;
-  lastName: string;
-  phoneNumber: string;
-  country: string;
-  isTwoFactorAuthenticationEnabled: boolean;
-}
+import { UserContext } from "@/context/userContext";
+import { userType } from "@/context/userContext";
 
 export interface qrcodeType {
   url: string;
 }
 
 export default function page() {
-  const [user, setUser] = useState<userType>();
-
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const res = await axios.get("http://localhost:4000/getUser", {
-          withCredentials: true,
-        });
-        console.log(res.data);
-        setUser(res.data);
-      } catch (error) {
-        console.error(error);
-      }
-    };
-
-    fetchData();
-  }, []);
   
+  const user = useContext(UserContext);
+
   const updateUser = async () => {
     try {
       await axios.post("http://localhost:4000/userSettings", user, {
         withCredentials: true,
       }); // backend API endpoint
-      console.log("saved with : ", user?.picture);
+      console.log("saved with : ", user.user?.picture);
       handleSucces();
     } catch (error) {
         console.error(error);
@@ -59,8 +33,8 @@ export default function page() {
   const updateProfilePic = async () => {
     try {
       if (user) {
-        console.log("ha ach ansift : ", user.picture);
-        await axios.post("http://localhost:4000/upload", user.picture, {
+        console.log("ha ach ansift : ", user.user?.picture);
+        await axios.post("http://localhost:4000/upload", {avatar :user.user?.picture}, {
           withCredentials: true,
         }); // backend API endpoint
       }
@@ -75,20 +49,19 @@ export default function page() {
     if (name === "phoneNumber" && !Number(value) && value !== "" && value !== '0')
       return ;
   
-    const newUser = { ...user, [name]: value };
-    setUser(newUser as userType);
+    const newUser = { ...user.user, [name]: value };
+    user.setUser(newUser as userType);
   };
 
-  // const [image, setImage] = useState<File | null>(null);
-  const [imageUrl, setImageUrl] = useState<string | undefined>(user?.picture);
+  const [imageUrl, setImageUrl] = useState<string | undefined>(user.user?.picture);
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     console.log("first");
     if (e.target.files && e.target.files.length === 1 && user) {
-      // setImage(e.target.files[0]);
       setImageUrl(URL.createObjectURL(e.target.files[0]));
       console.log("3chiri : " , URL.createObjectURL(e.target.files[0]));
-      user.picture = URL.createObjectURL(e.target.files[0]);
+      if (user.user)
+        user.user.picture = URL.createObjectURL(e.target.files[0]);
       updateProfilePic();
     }
   };
@@ -118,9 +91,6 @@ export default function page() {
 
   let classes = "";
 
-  if (user)
-    user.fullName = user.firstName + " " + user.lastName;
-
   if (showDiv)
     classes = "blur pointer-events-none";
   else 
@@ -129,7 +99,7 @@ export default function page() {
   let butText = "";
 
   if (user) {
-    if (user.isTwoFactorAuthenticationEnabled === true)
+    if (user.user?.isTwoFactorAuthenticationEnabled === true)
       butText = "DISABLE 2FA";
     else
       butText = "ENABLE 2FA";
@@ -137,19 +107,18 @@ export default function page() {
 
   return (
     <div className="h-full">
-      {user && (
+      {user.user && (
         <div className={`${classes} flex rounded-2xl bg-segundcl h-[90%] m-8`}>
           <div className="flex flex-col w-1/2 border-r-4 border-primecl justify-center items-center my-6 gap-6">
             <div className="flex flex-col items-center gap-3 h-1/2 w-full mt-4">
               <Image
-                src={user.picture}
+                src={user.user.picture}
                 alt={"profile pic"}
                 width={100}
                 height={100}
                 className="rounded-full"
                 priority
               />
-              {/* <img src={user.picture} alt="profile pic" width={100} height={100} className="rounded-full"></img> */}
               <div className="flex flex-col h-full w-full items-center gap-8 justify-center mt-4">
                 <Button
                   text="CHOOSE AN AVATAR"
@@ -192,7 +161,7 @@ export default function page() {
             <Settinput
               holder="Full Name"
               type="text"
-              value={user.fullName}
+              value={user.user.fullName}
               name="fullName"
               onChange={hnadleChange}
               className="text-slate-400"
@@ -200,14 +169,14 @@ export default function page() {
             <Settinput
               holder="Username"
               type="text"
-              value={user.userName}
+              value={user.user.userName}
               name="userName"
               onChange={hnadleChange}
             />
             <Settinput
               holder="Email"
               type="text"
-              value={user.email}
+              value={user.user.email}
               name="Email"
               onChange={hnadleChange}
               className="text-slate-400"
@@ -215,14 +184,14 @@ export default function page() {
             <Settinput
               holder="Country"
               type="text"
-              value={user.country}
+              value={user.user.country}
               name="country"
               onChange={hnadleChange}
             />
             <Settinput
               holder="Phone Number"
               type="text"
-              value={user.phoneNumber}
+              value={user.user.phoneNumber}
               name="phoneNumber"
               onChange={hnadleChange}
             />
@@ -250,10 +219,10 @@ export default function page() {
           </div>
         </div>
       )}
-      {showDiv && user?.isTwoFactorAuthenticationEnabled === false && (
+      {showDiv && user.user?.isTwoFactorAuthenticationEnabled === false && (
         <QrcodeDiv state={showDiv} OnClick={setShowDiv}/>
       )}
-      {showDiv && user?.isTwoFactorAuthenticationEnabled === true && (
+      {showDiv && user.user?.isTwoFactorAuthenticationEnabled === true && (
           <Disable2fa state={showDiv} OnClick={setShowDiv}/>
       )}
     </div>
