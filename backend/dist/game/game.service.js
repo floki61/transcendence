@@ -67,18 +67,27 @@ let GameService = exports.GameService = class GameService {
         this.gameData.score.left = 0;
         this.gameData.score.right = 0;
     }
-    async updatePaddle(event, targetPaddle) {
+    async updatePaddles(event, data, targetPaddle) {
         if (event === 'UP') {
-            if (this.gameData[targetPaddle].y > this.gameData[targetPaddle].height / 2) {
-                this.gameData[targetPaddle].y -= this.gameData[targetPaddle].speed;
+            if (targetPaddle) {
+                if (data.leftPaddle.y > data.leftPaddle.height / 2)
+                    data.leftPaddle.y -= data.leftPaddle.speed;
+            }
+            else {
+                if (data.rightPaddle.y > data.rightPaddle.height / 2)
+                    data.rightPaddle.y -= data.rightPaddle.speed;
             }
         }
         else if (event === 'DOWN') {
-            if (this.gameData[targetPaddle].y < this.gameData.canvasHeight - this.gameData[targetPaddle].height / 2) {
-                this.gameData[targetPaddle].y += this.gameData[targetPaddle].speed;
+            if (targetPaddle) {
+                if (data.leftPaddle.y < data.canvasHeight - data.leftPaddle.height / 2)
+                    data.leftPaddle.y += data.leftPaddle.speed;
+            }
+            else {
+                if (data.rightPaddle.y < data.canvasHeight - data.rightPaddle.height / 2)
+                    data.rightPaddle.y += data.rightPaddle.speed;
             }
         }
-        return this.gameData;
     }
     async updateBotPaddle(event, data) {
         if (event === 'UP') {
@@ -91,7 +100,6 @@ let GameService = exports.GameService = class GameService {
                 data.leftPaddle.y += data.leftPaddle.speed;
             }
         }
-        return this.gameData;
     }
     map(value, start1, stop1, start2, stop2) {
         return start2 + (stop2 - start2) * ((value - start1) / (stop1 - start1));

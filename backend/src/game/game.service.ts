@@ -68,29 +68,39 @@ export class GameService
         this.gameData.score.left = 0;
         this.gameData.score.right = 0;
     }
-    async updatePaddle(event: string, targetPaddle: string) {
+    async updatePaddles(event: string, data, targetPaddle: boolean) {
         if (event === 'UP') {
-            if (this.gameData[targetPaddle].y > this.gameData[targetPaddle].height / 2) {
-                this.gameData[targetPaddle].y -= this.gameData[targetPaddle].speed;
+            if(targetPaddle) {
+                if (data.leftPaddle.y > data.leftPaddle.height / 2)
+                    data.leftPaddle.y -= data.leftPaddle.speed;
             }
-        } else if (event === 'DOWN') {
-            if (this.gameData[targetPaddle].y < this.gameData.canvasHeight - this.gameData[targetPaddle].height / 2) {
-                this.gameData[targetPaddle].y += this.gameData[targetPaddle].speed;
+            else {
+                if (data.rightPaddle.y > data.rightPaddle.height / 2)
+                    data.rightPaddle.y -= data.rightPaddle.speed;
             }
         }
-        return this.gameData;
+        else if (event === 'DOWN') {
+            if(targetPaddle) {
+                if (data.leftPaddle.y < data.canvasHeight - data.leftPaddle.height / 2)
+                    data.leftPaddle.y += data.leftPaddle.speed;
+            }
+            else {
+                if (data.rightPaddle.y < data.canvasHeight - data.rightPaddle.height / 2)
+                    data.rightPaddle.y += data.rightPaddle.speed;
+            }
+        }
     }
     async updateBotPaddle(event: string, data) {
         if (event === 'UP') {
             if (data.leftPaddle.y > data.leftPaddle.height / 2) {
                 data.leftPaddle.y -= data.leftPaddle.speed;
             }
-        } else if (event === 'DOWN') {
+        }
+        else if (event === 'DOWN') {
             if (data.leftPaddle.y < data.canvasHeight - data.leftPaddle.height / 2) {
                 data.leftPaddle.y += data.leftPaddle.speed;
             }
         }
-        return this.gameData;
     }
 
     private map(value: number, start1: number, stop1: number, start2: number, stop2: number): number {

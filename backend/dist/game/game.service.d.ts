@@ -8,8 +8,8 @@ export declare class GameService {
     getGameData(): any;
     resetBall(data: any): void;
     resetScore(): void;
-    updatePaddle(event: string, targetPaddle: string): Promise<any>;
-    updateBotPaddle(event: string, data: any): Promise<any>;
+    updatePaddles(event: string, data: any, targetPaddle: boolean): Promise<void>;
+    updateBotPaddle(event: string, data: any): Promise<void>;
     private map;
     private ballHitsPaddle;
     private radians;
