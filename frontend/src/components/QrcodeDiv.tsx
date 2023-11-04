@@ -62,9 +62,7 @@ const QrcodeDiv: React.FC<QrcodeProps> = ({
 
 	  const handleQrCode = () => {
 		OnClick(!state);
-	  } 
-
-        console.log("ach tma");
+	  }
 
 	return (
 		<div className='h-full'>

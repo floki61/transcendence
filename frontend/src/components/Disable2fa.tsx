@@ -7,28 +7,31 @@ import axios from 'axios';
 interface Disable2faProps {
 	state: boolean;
 	OnClick(e: boolean): any;
-	On_click(e: any): any;
-	isTwoFactorAuthenticationEnabled: boolean;
-	name: string;
 }
 
 const Disable2fa : React.FC<Disable2faProps> = ({
 	state,
 	OnClick,
-	On_click,
-	isTwoFactorAuthenticationEnabled,
-	name,
 }) => {
 
 	const handleQrCode = () => {
 		OnClick(!state);
 	}
 
-	const handleDisable = (e: any) => {
-		console.log("Disable : " ,isTwoFactorAuthenticationEnabled);
-		On_click(e);
+	const turnOff = async () => {
+		try {
+			await axios.post("http://localhost:4000/2fa/turn-off", 0, {
+					withCredentials: true,
+				}); // backend API endpoint
+			} catch (error) {
+				console.error("error a zbi");
+			}
+		};
+
+	const handleDisable = () => {
+		// handleQrCode();
+		turnOff();
 		handleQrCode();
-		console.log("Disable : " , isTwoFactorAuthenticationEnabled);
 	}
 
 	return (
@@ -47,7 +50,6 @@ const Disable2fa : React.FC<Disable2faProps> = ({
 				 		<button
 				 			className="text-white rounded-3xl w-1/3 p-2 h-12 opacity-80 cursor-pointer bg-red-700 shadow-[0px 4px 4px 0px rgba(0, 0, 0, 0.25)]  transition ease-in-out delay-150 hover:scale-105 duration-300"
 				 			onClick={handleDisable}
-							name={name}
 				 		> Disable </button>
 					</div>
 				</div>

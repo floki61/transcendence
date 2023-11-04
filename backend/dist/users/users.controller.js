@@ -36,6 +36,7 @@ let UsersController = exports.UsersController = class UsersController {
         return (req.user);
     }
     userSettings(req, data) {
+        console.log(data);
         return this.userservice.updateUser(req, data);
     }
     async sendFriendRequest(body, req) {

@@ -1,14 +1,17 @@
 "use client";
 
 import Image from "next/image";
-import Chatmsg from "@/components/Chatmsg";
-import Chatbar from "@/components/Chatbar";
-import Audio from "@/components/Audio";
-import { useSearchParams } from "next/navigation";
+import Chatmsg from "./Chatmsg";
+import Chatbar from "./Chatbar";
+import Audio from "./Audio";
 
-export default function page() {
-  const router = useSearchParams();
-  const id = router.get("users");
+export interface ConvoProps {
+  picture: string;
+  name: string;
+  status: string;
+}
+
+const Convo: React.FC<ConvoProps> = ({ picture, name, status }) => {
 
   return (
     <div className="h-full w-full flex">
@@ -16,15 +19,15 @@ export default function page() {
         <div className="px-4 py-2 flex items-center justify-between bg-primecl">
           <div className="flex items-center gap-4">
             <Image
-              src={"/oel-berh.jpeg"}
+              src={picture}
               alt={"friend pic"}
               width={40}
               height={40}
               className="rounded-full"
             />
             <div>
-              <h2 className="text-xl">Floki</h2>
-              <h3 className="text-sm font-light">offline</h3>
+              <h2 className="text-xl">{name}</h2>
+              <h3 className="text-sm font-light">{status}</h3>
             </div>
           </div>
           <div className="flex gap-8">
@@ -112,4 +115,6 @@ export default function page() {
       </div>
     </div>
   );
-}
+};
+
+export default Convo;
