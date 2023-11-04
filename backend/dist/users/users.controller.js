@@ -78,6 +78,10 @@ let UsersController = exports.UsersController = class UsersController {
         const user = await this.userservice.unblockUser(req.user.id, req.body.friendId);
         return user;
     }
+    async deleteAccount(req) {
+        const user = await this.userservice.deleteAccount(req.user.id);
+        return user;
+    }
 };
 __decorate([
     (0, common_1.UseGuards)(jwt_guard_1.JwtAuthGuard),
@@ -191,6 +195,14 @@ __decorate([
     __metadata("design:paramtypes", [Object, Object]),
     __metadata("design:returntype", Promise)
 ], UsersController.prototype, "unblockUser", null);
+__decorate([
+    (0, common_1.UseGuards)(jwt_guard_1.JwtAuthGuard),
+    (0, common_1.Delete)('deleteAccount'),
+    __param(0, (0, common_1.Req)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object]),
+    __metadata("design:returntype", Promise)
+], UsersController.prototype, "deleteAccount", null);
 exports.UsersController = UsersController = __decorate([
     (0, common_1.Controller)(),
     __metadata("design:paramtypes", [config_1.ConfigService,

@@ -82,4 +82,20 @@ export declare class UsersController {
         createdAt: Date;
         updatedAt: Date;
     }>;
+    deleteAccount(req: any): Promise<{
+        id: string;
+        userName: string;
+        firstName: string;
+        lastName: string;
+        email: string;
+        picture: string;
+        country: string;
+        phoneNumber: string;
+        accessToken: string;
+        password: string;
+        twoFactorAuthenticationSecret: string;
+        isTwoFactorAuthenticationEnabled: boolean;
+        createdAt: Date;
+        updatedAt: Date;
+    }>;
 }

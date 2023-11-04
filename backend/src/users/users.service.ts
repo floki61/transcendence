@@ -298,4 +298,22 @@ export class UsersService {
 		});
 		return block;
 	}
+
+	// async getBlockedUsers(userId: string) {
+	// 	const blockedUsers = await this.prisma.block.findMany({
+	// 		where: {
+	// 			uid: userId,
+	// 		},
+	// 	});
+	// 	return blockedUsers;
+	// }
+
+	async deleteAccount(userId: string) {
+		const user = await this.prisma.user.delete({
+			where: {
+				id: userId,
+			},
+		});
+		return user;
+	}
 }
