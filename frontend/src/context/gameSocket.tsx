@@ -28,7 +28,9 @@ export const GameProvider = ({ children }:{children: React.ReactNode}) => {
 
     useEffect(() => {
         if(!socket) return
-
+        socket.on('connect', () => {
+            socket.emit('gameMode', 'Live');
+        });
         return () => {
             socket.close()
         }

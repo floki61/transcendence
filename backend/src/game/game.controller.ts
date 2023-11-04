@@ -7,17 +7,17 @@ import { GameService } from './game.service';
 @Controller()
 export class GameController {
 	constructor(private gameService: GameService) {}
-	@UseGuards(JwtAuthGuard)
-	@Get('/Quee')
-	async Quee(@Req() req) {
-		this.gameService.Quee(req.user.id);
-	}
+	// @UseGuards(JwtAuthGuard)
+	// @Get('/Quee')
+	// async Quee(@Req() req) {
+	// 	this.gameService.Quee(req.user.id);
+	// }
 
-	@UseGuards(JwtAuthGuard)
-	@Get('/Botgame')
-	async Botgame(@Req() req) {
-		this.gameService.Botgame(req.user.id);
-	}
+	// @UseGuards(JwtAuthGuard)
+	// @Get('/Botgame')
+	// async Botgame(@Req() req) {
+	// 	this.gameService.Botgame(req.user.id);
+	// }
 	// @Post('updateGameState')
 	// async updateGameState(@Body() gameState: any) {
 	// 	const io = new Server({

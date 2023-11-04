@@ -56,7 +56,7 @@ export default function Forgotps() {
 				height={400}
 				className="object-cover max-md:hidden"
 			/>
-			<form className="flex flex-1 py-8 px-40 flex-col items-center gap-6 overflow-hidden max-xl:px-4 max-xl:gap-4">
+			<form className="flex flex-1 py-8 px-40 flex-col items-center gap-6 overflow-hidden max-xl:px-4 max-xl:gap-4" onSubmit={send2fa}>
 				<svg
           xmlns="http://www.w3.org/2000/svg"
           width="48"
@@ -74,7 +74,7 @@ export default function Forgotps() {
 					<p className="font-light w-full">Please confirm your account by entering the authorization code sent to you.</p>
 					{/* <Loginput holder="Email" type="text" className="w-full"/> */}
 					<input className="text-center py-3 w-full h-12 rounded-md bg-slate-100 outline-quatrocl" type="text" maxLength={6} onChange={handleInputChange} value={input}/>
-					<Button text="Send" className="bg-black text-white rounded-3xl w-3/4 max-xl:w-[70%]  h-14 cursor-pointer" onClick={send2fa}/>
+					<Button text="Send" className="bg-black text-white rounded-3xl w-3/4 max-xl:w-[70%]  h-14 cursor-pointer" />
 				</div>
 				<div className="text-xl">
 					<p>Don't you have an account ? 

@@ -15,8 +15,7 @@ const socket_io_1 = require("socket.io");
 const game_service_1 = require("./game.service");
 const jwt_1 = require("@nestjs/jwt");
 const config_1 = require("@nestjs/config");
-const event_emitter_1 = require("@nestjs/event-emitter");
-let gameMode = 'Bot';
+let gameMode = "";
 let GameGateway = exports.GameGateway = class GameGateway {
     constructor(gameService, jwt, config) {
         this.gameService = gameService;
@@ -24,6 +23,9 @@ let GameGateway = exports.GameGateway = class GameGateway {
         this.config = config;
         this.gameStarted = false;
         this.connectedClients = new Map();
+        this.Quee = new Map();
+        this.matchmakingQueue = [];
+        setInterval(() => this.matchPlayers(), 10000);
     }
     async handleConnection(client) {
         let cookie;
@@ -43,7 +45,6 @@ let GameGateway = exports.GameGateway = class GameGateway {
         else {
             client.disconnect();
         }
-        this.checkStartGame();
     }
     async handleDisconnect(client) {
         let cookie;
@@ -56,9 +57,12 @@ let GameGateway = exports.GameGateway = class GameGateway {
             if (payload.id) {
                 console.log(`Client disconnected: ${payload.id} Socket: ${client.id}`);
                 this.connectedClients.delete(payload.id);
+                if (this.Quee.has(payload.id))
+                    this.Quee.delete(payload.id);
+                if (this.matchmakingQueue.includes(payload.id))
+                    this.matchmakingQueue.splice(this.matchmakingQueue.indexOf(payload.id), 1);
             }
         }
-        this.checkStartGame();
     }
     parseCookies(cookieHeader) {
         const cookies = {};
@@ -77,67 +81,112 @@ let GameGateway = exports.GameGateway = class GameGateway {
         }
         return cookies['access_token'];
     }
-    determineGameResult() {
-        if (gameMode === 'Bot') {
-            if (this.gameService.gameData.score.left === 5)
-                this.connectedClients.get(Array.from(this.connectedClients.keys())[0]).emit('gameResult', 'Winner');
+    async determineGameResult(id, id2) {
+        if (this.Quee.get(id).gameMode === 'Bot') {
+            if (this.Quee.get(id).gameData.score.left === 5)
+                this.Quee.get(id).Socket.emit('gameResult', 'Winner');
             else
-                this.connectedClients.get(Array.from(this.connectedClients.keys())[0]).emit('gameResult', 'Loser');
+                this.Quee.get(id).Socket.emit('gameResult', 'Loser');
         }
-        else {
-            const clientIds = Array.from(this.connectedClients.keys());
-            if (this.gameService.gameData.score.left === 5) {
-                this.connectedClients.get(clientIds[0]).emit('gameResult', 'Winner');
-                this.connectedClients.get(clientIds[1]).emit('gameResult', 'Loser');
+        else if (this.Quee.get(id).gameMode === 'Live') {
+            if (this.Quee.get(id).gameData.score.left === 5) {
+                this.Quee.get(id).Socket.emit('gameResult', 'Winner');
+                this.Quee.get(id2).Socket.emit('gameResult', 'Loser');
             }
-            else if (this.gameService.gameData.score.right === 5) {
-                this.connectedClients.get(clientIds[0]).emit('gameResult', 'Loser');
-                this.connectedClients.get(clientIds[1]).emit('gameResult', 'Winner');
+            else {
+                this.Quee.get(id).Socket.emit('gameResult', 'Loser');
+                this.Quee.get(id2).Socket.emit('gameResult', 'Winner');
             }
         }
     }
-    async moveBall() {
-        while (this.gameStarted) {
-            const data = await this.gameService.moveBall();
-            if (gameMode === 'Bot')
-                await this.gameService.moveBot();
-            if (data === 'reset') {
-                const data = await this.gameService.resetGame();
-                if (this.gameService.gameData.score.left === 5 || this.gameService.gameData.score.right === 5) {
-                    this.determineGameResult();
-                    this.gameService.resetScore();
-                    this.gameStarted = false;
+    async moveBotBall(id) {
+        if (!this.Quee.get(id)) {
+            console.log('no game data');
+            return;
+        }
+        else
+            console.log('here', this.Quee.get(id).Socket.id);
+        while (this.Quee.has(id) && this.Quee.get(id).status === 'playing') {
+            let res = await this.gameService.moveBall(this.Quee.get(id).gameData);
+            await this.gameService.moveBot(this.Quee.get(id).gameData);
+            if (!this.Quee.has(id) || this.Quee.get(id).status !== 'playing')
+                break;
+            if (res === 'reset') {
+                res = "";
+                await this.gameService.resetBall(this.Quee.get(id).gameData);
+                if (this.Quee.get(id).gameData.score.left === 5 || this.Quee.get(id).gameData.score.right === 5) {
+                    console.log('game over');
+                    await this.determineGameResult(id);
+                    this.Quee.get(id).status = 'waiting';
                     break;
                 }
             }
-            this.connectedClients.forEach((connectedClient) => {
-                connectedClient.emit('updateBall', this.gameService.gameData);
-            });
+            this.Quee.get(id).Socket.emit('updateBall', this.Quee.get(id).gameData);
             await new Promise((resolve) => setTimeout(resolve, 1000 / 60));
         }
     }
-    async handleUpdatePaddle(client, event) {
-        const [clientId1, clientId2] = Array.from(this.connectedClients.values()).map((client) => client.id);
-        const targetPaddle = client.id === clientId1 ? 'leftPaddle' : 'rightPaddle';
-        const gameData = await this.gameService.updatePaddle(event, targetPaddle);
-        this.connectedClients.forEach((connectedClient) => {
-            connectedClient.emit('paddlesUpdate', gameData);
-        });
-    }
-    checkStartGame() {
-        if (gameMode === 'Bot' && this.connectedClients.size === 1 && !this.gameStarted)
-            this.gameStarted = false;
-        if (gameMode === 'Bot' && !this.gameStarted) {
-            this.gameStarted = true;
-            this.connectedClients.forEach((connectedClient) => {
-                connectedClient.emit('startBotGame', this.gameService.gameData);
-            });
-            this.moveBall();
+    async moveBall(player1, player2) {
+        if (!this.Quee.get(player1) || !this.Quee.get(player2)) {
+            console.log('no Live game data');
+            return;
         }
-        if (this.connectedClients.size === 2 && !this.gameStarted) {
-            this.gameStarted = true;
-            this.broadcastGameData();
-            this.moveBall();
+        while (this.Quee.has(player1) && this.Quee.has(player2) && this.Quee.get(player1).status === 'playing' && this.Quee.get(player2).status === 'playing') {
+            let res = await this.gameService.moveBall(this.Quee.get(player1).gameData);
+            if (!this.Quee.has(player1) || !this.Quee.has(player2) || this.Quee.get(player1).status !== 'playing' || this.Quee.get(player2).status !== 'playing')
+                break;
+            if (res === 'reset') {
+                await this.gameService.resetBall(this.Quee.get(player1).gameData);
+                if (this.Quee.get(player1).gameData.score.left === 5 || this.Quee.get(player1).gameData.score.right === 5) {
+                    console.log('game over');
+                    await this.determineGameResult(player1, player2);
+                    this.Quee.get(player1).status = 'waiting';
+                    this.Quee.get(player2).status = 'waiting';
+                    break;
+                }
+            }
+            this.Quee.get(player1).Socket.emit('updateBall', this.Quee.get(player1).gameData);
+            this.Quee.get(player2).Socket.emit('updateBall', this.Quee.get(player1).gameData);
+            await new Promise((resolve) => setTimeout(resolve, 1000 / 60));
+        }
+    }
+    async updateBotPaddle(client, event) {
+        const id = this.getByValue(this.connectedClients, client);
+        await this.gameService.updateBotPaddle(event, this.Quee.get(id).gameData);
+        this.Quee.get(id).Socket.emit('paddlesUpdate', this.Quee.get(id).gameData);
+    }
+    startBotGame(id) {
+        if (this.Quee.get(id).status === 'waiting') {
+            this.Quee.get(id).status = 'playing';
+            this.connectedClients.get(id).emit('startBotGame', this.Quee.get(id).gameData);
+            console.log('Bot game started');
+            this.moveBotBall(id);
+        }
+    }
+    async updatePaddle(client, event) {
+        const id = this.getByValue(this.connectedClients, client);
+        const targetPaddle = this.Quee.get(id).leader ? true : false;
+        const leaderid = targetPaddle ? id : this.Quee.get(id).playWith;
+        await this.gameService.updatePaddles(event, this.Quee.get(leaderid).gameData, targetPaddle);
+        this.Quee.get(id).Socket.emit('paddlesUpdate', this.Quee.get(leaderid).gameData);
+        this.Quee.get(this.Quee.get(id).playWith).Socket.emit('paddlesUpdate', this.Quee.get(leaderid).gameData);
+    }
+    startLiveGame(player1, player2) {
+        this.Quee.get(player1).status = 'playing';
+        this.Quee.get(player1).playWith = player2;
+        this.Quee.get(player1).leader = true;
+        this.Quee.get(player2).status = 'playing';
+        this.Quee.get(player2).playWith = player1;
+        console.log('Live game started');
+        this.Quee.get(player1).Socket.emit('startGame', this.Quee.get(player1).gameData);
+        this.Quee.get(player2).Socket.emit('startGame', this.Quee.get(player2).gameData);
+        this.moveBall(player1, player2);
+    }
+    matchPlayers() {
+        while (this.matchmakingQueue.length >= 2) {
+            const player1 = this.matchmakingQueue.shift();
+            const player2 = this.matchmakingQueue.shift();
+            console.log('Matching players', player1, player2);
+            this.startLiveGame(player1, player2);
         }
     }
     broadcastGameData() {
@@ -145,16 +194,27 @@ let GameGateway = exports.GameGateway = class GameGateway {
             connectedClient.emit('startGame', this.gameService.gameData);
         });
     }
-    async quee(id) {
-        const client = this.connectedClients.get(id);
-        if (!client)
-            return;
-        this.Quee.set(id, client);
+    getByValue(map, searchValue) {
+        for (let [key, value] of map.entries()) {
+            if (value === searchValue)
+                return key;
+        }
     }
-    async Botgame(id) {
-        const client = this.connectedClients.get(id);
-        if (!client)
-            return;
+    async gameMode(client, mode) {
+        const d = {
+            Socket: client,
+            gameMode: mode,
+            status: 'waiting',
+            gameData: this.gameService.getGameData(),
+            playWith: '',
+            leader: false,
+        };
+        const id = this.getByValue(this.connectedClients, client);
+        this.Quee.set(id, d);
+        if (mode === 'Bot')
+            this.startBotGame(id);
+        else if (mode === 'Live')
+            this.matchmakingQueue.push(id);
     }
 };
 __decorate([
@@ -162,23 +222,23 @@ __decorate([
     __metadata("design:type", socket_io_1.Server)
 ], GameGateway.prototype, "server", void 0);
 __decorate([
+    (0, websockets_1.SubscribeMessage)('paddleBotUpdate'),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [socket_io_1.Socket, Object]),
+    __metadata("design:returntype", Promise)
+], GameGateway.prototype, "updateBotPaddle", null);
+__decorate([
     (0, websockets_1.SubscribeMessage)('paddlesUpdate'),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [socket_io_1.Socket, Object]),
     __metadata("design:returntype", Promise)
-], GameGateway.prototype, "handleUpdatePaddle", null);
+], GameGateway.prototype, "updatePaddle", null);
 __decorate([
-    (0, event_emitter_1.OnEvent)('quee'),
+    (0, websockets_1.SubscribeMessage)('gameMode'),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Object]),
+    __metadata("design:paramtypes", [socket_io_1.Socket, String]),
     __metadata("design:returntype", Promise)
-], GameGateway.prototype, "quee", null);
-__decorate([
-    (0, event_emitter_1.OnEvent)('Botgame'),
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Object]),
-    __metadata("design:returntype", Promise)
-], GameGateway.prototype, "Botgame", null);
+], GameGateway.prototype, "gameMode", null);
 exports.GameGateway = GameGateway = __decorate([
     (0, websockets_1.WebSocketGateway)({ namespace: 'game', cors: true, origin: ['http://localhost:3000/game'] }),
     __metadata("design:paramtypes", [game_service_1.GameService,
