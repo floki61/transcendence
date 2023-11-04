@@ -117,4 +117,12 @@ export class UsersController {
         const user = await this.userservice.unblockUser(req.user.id, req.body.friendId);
         return user;
     }
+
+    @UseGuards(JwtAuthGuard)
+    @Delete('deleteAccount')
+    async deleteAccount(@Req() req) {
+        const user = await this.userservice.deleteAccount(req.user.id);
+        return user;
+    }
+
 }
