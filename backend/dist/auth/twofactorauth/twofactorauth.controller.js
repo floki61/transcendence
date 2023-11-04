@@ -38,18 +38,18 @@ let TwoFactorAuthController = exports.TwoFactorAuthController = class TwoFactorA
             console.log("code is valide");
         await this.twoFactorAuth.turnOnTwoFactorAuthentication(req.user.id);
     }
+    async turnOffTwoFactorAuthentication(req) {
+        console.log("code is valide");
+        await this.twoFactorAuth.turnOffTwoFactorAuthentication(req.user.id);
+    }
     async authenticate(req, body) {
         try {
             const isCodeValid = await this.twoFactorAuth.isTwoFactorAuthenticationCodeValid(body.twoFactorAuthenticationCode, req.user);
             if (!isCodeValid)
                 throw new common_1.UnauthorizedException('Wrong authentication code');
             const token = await this.authService.generateToken(req, 'jwt');
-            req.res.setHeader('Set-Cookie', Object.keys(req.cookies).map(key => `${key}=; Path=/; Max-Age=0`));
-            req.res.cookie('access_token', token, {
-                httpOnly: true,
-                path: '/',
-            });
-            req.res.redirect(process.env.HOME_URL);
+            console.log("token");
+            return { statusCode: 200, message: 'Authenticated', jwt: token };
         }
         catch (error) {
             console.error("Error validating 2FA code222:", error);
@@ -75,6 +75,14 @@ __decorate([
     __metadata("design:paramtypes", [Object, Object]),
     __metadata("design:returntype", Promise)
 ], TwoFactorAuthController.prototype, "turnOnTwoFactorAuthentication", null);
+__decorate([
+    (0, common_1.UseGuards)(jwt_guard_1.JwtAuthGuard),
+    (0, common_1.Post)('2fa/turn-off'),
+    __param(0, (0, common_1.Req)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object]),
+    __metadata("design:returntype", Promise)
+], TwoFactorAuthController.prototype, "turnOffTwoFactorAuthentication", null);
 __decorate([
     (0, common_1.UseGuards)(_2fa_guard_1.TwoFaAuthGuard),
     (0, common_1.Post)('2fa/authenticate'),
