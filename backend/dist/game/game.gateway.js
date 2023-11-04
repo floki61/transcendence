@@ -64,13 +64,19 @@ let GameGateway = exports.GameGateway = class GameGateway {
                     if (this.Quee.get(payload.id).leader) {
                         player1 = payload.id;
                         player2 = this.Quee.get(payload.id).playWith;
+                        if (this.Quee.get(player2))
+                            this.Quee.get(player2).Socket.emit('gameResult', 'Winner');
+                        this.Quee.get(player1).status = 'finished';
+                        this.Quee.get(player2).status = 'finished';
                     }
                     else {
                         player1 = this.Quee.get(payload.id).playWith;
                         player2 = payload.id;
+                        if (this.Quee.get(player1))
+                            this.Quee.get(player1).Socket.emit('gameResult', 'Winner');
+                        this.Quee.get(player2).status = 'finished';
+                        this.Quee.get(player1).status = 'finished';
                     }
-                    if (this.Quee.get(player2))
-                        this.Quee.get(player2).Socket.emit('gameResult', 'Winner');
                     await this.prisma.game.update({
                         where: {
                             id: this.Quee.get(payload.id).gameId,
