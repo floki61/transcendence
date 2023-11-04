@@ -4,6 +4,7 @@ import { GameService } from './game.service';
 import { JwtService } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
 import { OnEvent } from '@nestjs/event-emitter';
+import { PrismaService } from 'src/prisma/prisma.service';
 
 let gameMode = "";
 
@@ -11,14 +12,16 @@ let gameMode = "";
 export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
     constructor(private readonly gameService: GameService,
         private jwt: JwtService,
-        private config: ConfigService) {
+        private config: ConfigService,
+        private prisma: PrismaService) {
             setInterval(() => this.matchPlayers(), 10000);
         }
+
     @WebSocketServer()
     private server: Server;
     private gameStarted = false;
     private connectedClients: Map<string, Socket> = new Map<string, Socket>();
-    Quee: Map<string, {Socket: Socket, gameMode: string, status: string, gameData: any, playWith: string, leader: boolean,}> = new Map<string, {Socket: Socket, gameMode: string, status: string, gameData: any, playWith: string, leader: boolean,}>();
+    Quee: Map<string, {Socket: Socket, gameMode: string, status: string, gameData: any, playWith: string, leader: boolean, gameId: string}> = new Map<string, {Socket: Socket, gameMode: string, status: string, gameData: any, playWith: string, leader: boolean, gameId: string}>();
     private matchmakingQueue: string[] = [];
 
     async handleConnection(client: Socket) {
@@ -56,11 +59,43 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
 				);
 				if (payload.id) {
                     console.log(`Client disconnected: ${payload.id} Socket: ${client.id}`);
-                    this.connectedClients.delete(payload.id);
+                    if (this.Quee.get(payload.id) && this.Quee.get(payload.id).status === 'playing' && this.Quee.get(payload.id).gameMode === 'Live') {
+                        var player1;
+                        var player2;
+                        if (this.Quee.get(payload.id).leader) {
+                            player1 = payload.id;
+                            player2 = this.Quee.get(payload.id).playWith;
+                            if (this.Quee.get(player2))
+                                this.Quee.get(player2).Socket.emit('gameResult', 'Winner');
+                            this.Quee.get(player1).status = 'finished';
+                            this.Quee.get(player2).status = 'finished';
+                        }
+                        else {
+                            player1 = this.Quee.get(payload.id).playWith;
+                            player2 = payload.id;
+                            if (this.Quee.get(player1))
+                                this.Quee.get(player1).Socket.emit('gameResult', 'Winner');
+                            this.Quee.get(player2).status = 'finished';
+                            this.Quee.get(player1).status = 'finished';
+                        }
+                        await this.prisma.game.update({
+                            where:
+                            {
+                                id: this.Quee.get(payload.id).gameId,
+                            },
+                            data: {
+                                player1Score: this.Quee.get(payload.id).gameData.score.left,
+                                player2Score: this.Quee.get(payload.id).gameData.score.right,
+                                winnerId: player2,
+                                loserId: player1,
+                            }
+                        });
+                    }
                     if(this.Quee.has(payload.id))
                         this.Quee.delete(payload.id);
                     if(this.matchmakingQueue.includes(payload.id))
                         this.matchmakingQueue.splice(this.matchmakingQueue.indexOf(payload.id), 1);
+                    this.connectedClients.delete(payload.id);
 				}
 		}
     }
@@ -104,11 +139,9 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
     
     private async moveBotBall(id) {
         if(!this.Quee.get(id)) {
-            console.log('no game data');
+            console.log('no Live game data');
             return ;
         }
-        else
-            console.log('here',this.Quee.get(id).Socket.id);
         while (this.Quee.has(id) && this.Quee.get(id).status === 'playing') {
             let res = await this.gameService.moveBall(this.Quee.get(id).gameData);
             await this.gameService.moveBot(this.Quee.get(id).gameData);
@@ -138,8 +171,43 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
             if (!this.Quee.has(player1) || !this.Quee.has(player2) || this.Quee.get(player1).status !== 'playing' || this.Quee.get(player2).status !== 'playing')
                 break ;
             if(res === 'reset') {
+                await this.prisma.game.update({
+                    where:
+                    {
+                        id: this.Quee.get(player1).gameId,
+                    },
+                    data: {
+                        player1Score: this.Quee.get(player1).gameData.score.left,
+                        player2Score: this.Quee.get(player1).gameData.score.right,
+                    }
+                });
                 await this.gameService.resetBall(this.Quee.get(player1).gameData);
                 if(this.Quee.get(player1).gameData.score.left === 5 || this.Quee.get(player1).gameData.score.right === 5) {
+                    if (this.Quee.get(player1).gameData.score.left === 5) {
+                        await this.prisma.game.update({
+                            where:
+                            {
+                                id: this.Quee.get(player1).gameId,
+                            },
+                            data: {
+                                winnerId: player1,
+                                loserId: player2,
+                            }
+                        });
+                    }
+                    else
+                    {
+                        await this.prisma.game.update({
+                            where:
+                            {
+                                id: this.Quee.get(player1).gameId,
+                            },
+                            data: {
+                                winnerId: player2,
+                                loserId: player1,
+                            }
+                        });
+                    }
                     console.log('game over');
                     await this.determineGameResult(player1, player2);
                     this.Quee.get(player1).status = 'waiting';
@@ -161,6 +229,7 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
     }
 
     private startBotGame(id) {
+        console.log(id, this.Quee.get(id).status);
         if(this.Quee.get(id).status === 'waiting') {
             this.Quee.get(id).status = 'playing';
             this.connectedClients.get(id).emit('startBotGame', this.Quee.get(id).gameData);
@@ -205,12 +274,22 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
         this.moveBall(player1, player2);
     }
     
-    private matchPlayers() {
+    async matchPlayers() {
         while (this.matchmakingQueue.length >= 2) {
             const player1 = this.matchmakingQueue.shift();
             const player2 = this.matchmakingQueue.shift();
             console.log('Matching players', player1, player2);
             this.startLiveGame(player1, player2);
+            var game = await this.prisma.game.create({
+                data: {
+                    player1Id: player1,
+                    player2Id: player2,
+                    player1Score: 0,
+                    player2Score: 0,
+                }
+            })
+            this.Quee.get(player1).gameId = game.id;
+            this.Quee.get(player2).gameId = game.id;
         }
     }
 
@@ -236,6 +315,7 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
             gameData: this.gameService.getGameData(),
             playWith: '',
             leader: false,
+            gameId: '',
         }
         const id = this.getByValue(this.connectedClients, client);
         this.Quee.set(id, d);

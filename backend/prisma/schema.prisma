@@ -146,20 +146,21 @@ model Message {
 model Game {
 	id String @id @default(cuid())
 
-	winner   User   @relation(name: "winner", fields: [winnerId], references: [id])
-	winnerId String
+	player1   User   @relation(name: "winner", fields: [player1Id], references: [id])
+	player1Id String
 
-	loser   User   @relation(name: "loser", fields: [loserId], references: [id])
-	loserId String
+	player2   User   @relation(name: "loser", fields: [player2Id], references: [id])
+	player2Id String
 
-	winnerScore Int
+	player1Score Int
 
-	loserScore Int
+	player2Score Int
+
+	winnerId 		String?
+	loserId 		String?
 
 	createdAt DateTime @default(now())
 	updatedAt DateTime @updatedAt
-
-	@@unique([winnerId, loserId])
 }
 
 model Achivement {

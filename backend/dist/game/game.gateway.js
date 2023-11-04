@@ -15,12 +15,14 @@ const socket_io_1 = require("socket.io");
 const game_service_1 = require("./game.service");
 const jwt_1 = require("@nestjs/jwt");
 const config_1 = require("@nestjs/config");
+const prisma_service_1 = require("../prisma/prisma.service");
 let gameMode = "";
 let GameGateway = exports.GameGateway = class GameGateway {
-    constructor(gameService, jwt, config) {
+    constructor(gameService, jwt, config, prisma) {
         this.gameService = gameService;
         this.jwt = jwt;
         this.config = config;
+        this.prisma = prisma;
         this.gameStarted = false;
         this.connectedClients = new Map();
         this.Quee = new Map();
@@ -56,11 +58,42 @@ let GameGateway = exports.GameGateway = class GameGateway {
             });
             if (payload.id) {
                 console.log(`Client disconnected: ${payload.id} Socket: ${client.id}`);
-                this.connectedClients.delete(payload.id);
+                if (this.Quee.get(payload.id) && this.Quee.get(payload.id).status === 'playing' && this.Quee.get(payload.id).gameMode === 'Live') {
+                    var player1;
+                    var player2;
+                    if (this.Quee.get(payload.id).leader) {
+                        player1 = payload.id;
+                        player2 = this.Quee.get(payload.id).playWith;
+                        if (this.Quee.get(player2))
+                            this.Quee.get(player2).Socket.emit('gameResult', 'Winner');
+                        this.Quee.get(player1).status = 'finished';
+                        this.Quee.get(player2).status = 'finished';
+                    }
+                    else {
+                        player1 = this.Quee.get(payload.id).playWith;
+                        player2 = payload.id;
+                        if (this.Quee.get(player1))
+                            this.Quee.get(player1).Socket.emit('gameResult', 'Winner');
+                        this.Quee.get(player2).status = 'finished';
+                        this.Quee.get(player1).status = 'finished';
+                    }
+                    await this.prisma.game.update({
+                        where: {
+                            id: this.Quee.get(payload.id).gameId,
+                        },
+                        data: {
+                            player1Score: this.Quee.get(payload.id).gameData.score.left,
+                            player2Score: this.Quee.get(payload.id).gameData.score.right,
+                            winnerId: player2,
+                            loserId: player1,
+                        }
+                    });
+                }
                 if (this.Quee.has(payload.id))
                     this.Quee.delete(payload.id);
                 if (this.matchmakingQueue.includes(payload.id))
                     this.matchmakingQueue.splice(this.matchmakingQueue.indexOf(payload.id), 1);
+                this.connectedClients.delete(payload.id);
             }
         }
     }
@@ -101,11 +134,9 @@ let GameGateway = exports.GameGateway = class GameGateway {
     }
     async moveBotBall(id) {
         if (!this.Quee.get(id)) {
-            console.log('no game data');
+            console.log('no Live game data');
             return;
         }
-        else
-            console.log('here', this.Quee.get(id).Socket.id);
         while (this.Quee.has(id) && this.Quee.get(id).status === 'playing') {
             let res = await this.gameService.moveBall(this.Quee.get(id).gameData);
             await this.gameService.moveBot(this.Quee.get(id).gameData);
@@ -135,8 +166,39 @@ let GameGateway = exports.GameGateway = class GameGateway {
             if (!this.Quee.has(player1) || !this.Quee.has(player2) || this.Quee.get(player1).status !== 'playing' || this.Quee.get(player2).status !== 'playing')
                 break;
             if (res === 'reset') {
+                await this.prisma.game.update({
+                    where: {
+                        id: this.Quee.get(player1).gameId,
+                    },
+                    data: {
+                        player1Score: this.Quee.get(player1).gameData.score.left,
+                        player2Score: this.Quee.get(player1).gameData.score.right,
+                    }
+                });
                 await this.gameService.resetBall(this.Quee.get(player1).gameData);
                 if (this.Quee.get(player1).gameData.score.left === 5 || this.Quee.get(player1).gameData.score.right === 5) {
+                    if (this.Quee.get(player1).gameData.score.left === 5) {
+                        await this.prisma.game.update({
+                            where: {
+                                id: this.Quee.get(player1).gameId,
+                            },
+                            data: {
+                                winnerId: player1,
+                                loserId: player2,
+                            }
+                        });
+                    }
+                    else {
+                        await this.prisma.game.update({
+                            where: {
+                                id: this.Quee.get(player1).gameId,
+                            },
+                            data: {
+                                winnerId: player2,
+                                loserId: player1,
+                            }
+                        });
+                    }
                     console.log('game over');
                     await this.determineGameResult(player1, player2);
                     this.Quee.get(player1).status = 'waiting';
@@ -155,6 +217,7 @@ let GameGateway = exports.GameGateway = class GameGateway {
         this.Quee.get(id).Socket.emit('paddlesUpdate', this.Quee.get(id).gameData);
     }
     startBotGame(id) {
+        console.log(id, this.Quee.get(id).status);
         if (this.Quee.get(id).status === 'waiting') {
             this.Quee.get(id).status = 'playing';
             this.connectedClients.get(id).emit('startBotGame', this.Quee.get(id).gameData);
@@ -181,12 +244,22 @@ let GameGateway = exports.GameGateway = class GameGateway {
         this.Quee.get(player2).Socket.emit('startGame', this.Quee.get(player2).gameData);
         this.moveBall(player1, player2);
     }
-    matchPlayers() {
+    async matchPlayers() {
         while (this.matchmakingQueue.length >= 2) {
             const player1 = this.matchmakingQueue.shift();
             const player2 = this.matchmakingQueue.shift();
             console.log('Matching players', player1, player2);
             this.startLiveGame(player1, player2);
+            var game = await this.prisma.game.create({
+                data: {
+                    player1Id: player1,
+                    player2Id: player2,
+                    player1Score: 0,
+                    player2Score: 0,
+                }
+            });
+            this.Quee.get(player1).gameId = game.id;
+            this.Quee.get(player2).gameId = game.id;
         }
     }
     broadcastGameData() {
@@ -208,6 +281,7 @@ let GameGateway = exports.GameGateway = class GameGateway {
             gameData: this.gameService.getGameData(),
             playWith: '',
             leader: false,
+            gameId: '',
         };
         const id = this.getByValue(this.connectedClients, client);
         this.Quee.set(id, d);
@@ -243,6 +317,7 @@ exports.GameGateway = GameGateway = __decorate([
     (0, websockets_1.WebSocketGateway)({ namespace: 'game', cors: true, origin: ['http://localhost:3000/game'] }),
     __metadata("design:paramtypes", [game_service_1.GameService,
         jwt_1.JwtService,
-        config_1.ConfigService])
+        config_1.ConfigService,
+        prisma_service_1.PrismaService])
 ], GameGateway);
 //# sourceMappingURL=game.gateway.js.map

@@ -282,6 +282,14 @@ let UsersService = exports.UsersService = class UsersService {
         });
         return block;
     }
+    async deleteAccount(userId) {
+        const user = await this.prisma.user.delete({
+            where: {
+                id: userId,
+            },
+        });
+        return user;
+    }
 };
 exports.UsersService = UsersService = __decorate([
     (0, common_1.Injectable)(),
