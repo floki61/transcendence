@@ -9,6 +9,7 @@ import { diskStorage } from 'multer';
 import { extname } from 'path';
 import { max } from 'class-validator';
 import { UsersGateway } from './users.gateway';
+import { get } from 'http';
 // import { clearConfigCache } from 'prettier';
 
 @Controller()
@@ -123,6 +124,13 @@ export class UsersController {
     async deleteAccount(@Req() req) {
         const user = await this.userservice.deleteAccount(req.user.id);
         return user;
+    }
+
+    @UseGuards(JwtAuthGuard)
+    @Get('getFriends')
+    async getFriends(@Req() req) {
+        const friends = await this.userservice.getFriends(req.user.id);
+        return friends;
     }
 
 }

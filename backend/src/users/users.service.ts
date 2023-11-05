@@ -316,4 +316,22 @@ export class UsersService {
 		});
 		return user;
 	}
+
+	async getFriends(userId: string) {
+		const friendRequests = await this.prisma.friendShip.findMany({
+			where: {
+				OR: [
+					{
+						userId,
+						status: 'ACCEPTED',
+					},
+					{
+						friendId: userId,
+						status: 'ACCEPTED',
+					},
+				],
+			},
+		});
+		return friendRequests;
+	}
 }
