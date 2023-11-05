@@ -98,4 +98,12 @@ export declare class UsersController {
         createdAt: Date;
         updatedAt: Date;
     }>;
+    getFriends(req: any): Promise<{
+        id: string;
+        userId: string;
+        friendId: string;
+        status: import(".prisma/client").$Enums.Status;
+        createdAt: Date;
+        updatedAt: Date;
+    }[]>;
 }
