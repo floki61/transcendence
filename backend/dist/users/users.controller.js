@@ -163,6 +163,7 @@ __decorate([
         storage: (0, multer_1.diskStorage)({
             destination: './uploads',
             filename: (req, avatar, cb) => {
+                console.log("salam khoi");
                 const Name = req.user.id;
                 if ((0, path_1.extname)(avatar.originalname) !== '.png' && (0, path_1.extname)(avatar.originalname) !== '.jpg' && (0, path_1.extname)(avatar.originalname) !== '.jpeg' && (0, path_1.extname)(avatar.originalname) !== '.gif') {
                     return cb(new common_1.HttpException('Only images are allowed', common_1.HttpStatus.BAD_REQUEST), '');

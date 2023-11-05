@@ -112,7 +112,7 @@ export default function page() {
           <div className="flex flex-col w-1/2 border-r-4 border-primecl justify-center items-center my-6 gap-6">
             <div className="flex flex-col items-center gap-3 h-1/2 w-full mt-4">
               <Image
-                src={user.user.picture}
+                src={user.user?.picture || "/placeholder.jpg"}
                 alt={"profile pic"}
                 width={100}
                 height={100}

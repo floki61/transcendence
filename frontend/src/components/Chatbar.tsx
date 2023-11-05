@@ -7,13 +7,13 @@ interface ChatProps {
   	text: string;
 	time: string;
 	image: string;
-	OnClick(name: string, image: string, status: string): void;
+	OnClick?(name: string, image: string, status: string): void;
 }
 
 const Chatbar:React.FC<ChatProps> = ({ name, text, time, image, OnClick }) => {
 
 	const changeDisplay = () => {
-		OnClick(name, image, "online");
+		// OnClick(name, image, "online");
 		console.log(name);
 		console.log(image);
 	}
