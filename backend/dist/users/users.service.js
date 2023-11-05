@@ -290,6 +290,23 @@ let UsersService = exports.UsersService = class UsersService {
         });
         return user;
     }
+    async getFriends(userId) {
+        const friendRequests = await this.prisma.friendShip.findMany({
+            where: {
+                OR: [
+                    {
+                        userId,
+                        status: 'ACCEPTED',
+                    },
+                    {
+                        friendId: userId,
+                        status: 'ACCEPTED',
+                    },
+                ],
+            },
+        });
+        return friendRequests;
+    }
 };
 exports.UsersService = UsersService = __decorate([
     (0, common_1.Injectable)(),

@@ -82,6 +82,10 @@ let UsersController = exports.UsersController = class UsersController {
         const user = await this.userservice.deleteAccount(req.user.id);
         return user;
     }
+    async getFriends(req) {
+        const friends = await this.userservice.getFriends(req.user.id);
+        return friends;
+    }
 };
 __decorate([
     (0, common_1.UseGuards)(jwt_guard_1.JwtAuthGuard),
@@ -204,6 +208,14 @@ __decorate([
     __metadata("design:paramtypes", [Object]),
     __metadata("design:returntype", Promise)
 ], UsersController.prototype, "deleteAccount", null);
+__decorate([
+    (0, common_1.UseGuards)(jwt_guard_1.JwtAuthGuard),
+    (0, common_1.Get)('getFriends'),
+    __param(0, (0, common_1.Req)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object]),
+    __metadata("design:returntype", Promise)
+], UsersController.prototype, "getFriends", null);
 exports.UsersController = UsersController = __decorate([
     (0, common_1.Controller)(),
     __metadata("design:paramtypes", [config_1.ConfigService,
