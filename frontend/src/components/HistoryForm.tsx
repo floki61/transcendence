@@ -20,7 +20,6 @@ const HistoryForm: React.FC<HistoryFormProps> = ({
 	fifth,
 
 }) => {
-	console.log(first.color);
   return  (
 	<div className="flex justify-center items-center gap-3 w-full h-full">
 		<BoxForm result={first.result} color={first.color}/>

@@ -143,7 +143,7 @@ export class ChatController {
             }
             delete room.participants;
         }
-        console.log(rooms);
+        console.log("ana ghorfa : ", rooms);
         return rooms;
     }
 }

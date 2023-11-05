@@ -92,6 +92,7 @@ export class UsersController {
         storage: diskStorage({
             destination: './uploads',
             filename: (req: any, avatar, cb) => {
+                console.log("salam khoi")
                 const Name = req.user.id;
                 if (extname(avatar.originalname) !== '.png' && extname(avatar.originalname) !== '.jpg' && extname(avatar.originalname) !== '.jpeg' && extname(avatar.originalname) !== '.gif') {
                     return cb(new HttpException('Only images are allowed', HttpStatus.BAD_REQUEST), '')
