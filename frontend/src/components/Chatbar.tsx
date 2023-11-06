@@ -3,7 +3,6 @@
 import Image from "next/image"
 
 interface ChatProps {
-	key: string;
   	name: string;
   	text: string;
 	time: string;
@@ -11,18 +10,16 @@ interface ChatProps {
 	OnClick?(name: string, image: string, status: string): void;
 }
 
-const Chatbar:React.FC<ChatProps> = ({ key, name, text, time, image, OnClick }) => {
+const Chatbar:React.FC<ChatProps> = ({name, text, time, image, OnClick }) => {
 
-	const changeDisplay = () => {
-		// OnClick(name, image, "online");
-		console.log(name);
-		console.log(image);
-	}
+	// const changeDisplay = () => {
+	// 	// OnClick(name, image, "online");
+	// 	console.log(name);
+	// 	console.log(image);
+	// }
 
 	return (
-	  <div className="w-5/6 flex justify-between border-b-2 border-primecl"
-		onClick={changeDisplay}
-	  >
+	  <div className="w-5/6 flex justify-between border-b-2 border-primecl">
 		  <div className="flex items-center gap-4 p-2">
 			  <Image
 				  src={image}

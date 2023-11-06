@@ -56,7 +56,6 @@ export default function page() {
   const [imageUrl, setImageUrl] = useState<string | undefined>(user.user?.picture);
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    console.log("first");
     if (e.target.files && e.target.files.length === 1 && user) {
       setImageUrl(URL.createObjectURL(e.target.files[0]));
       console.log("3chiri : " , URL.createObjectURL(e.target.files[0]));

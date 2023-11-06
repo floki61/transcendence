@@ -18,14 +18,14 @@ export default function page() {
 		<div className="flex-1 flex flex-col w-full">
 			<div className="h-[7.5%] w-full rounded-tl-xl bg-primecl flex">
 				<div className="w-1/4 flex items-center justify-around gap-3">
-					<a>#</a>
-					<a>Playername</a>
+					<p>#</p>
+					<p>Playername</p>
 				</div>
 				<div className="w-1/2 flex items-center justify-evenly pl-10">
-					<a>MP</a>
-					<a>W</a>
-					<a>L</a>
-					<a>LV</a>
+					<p>MP</p>
+					<p>W</p>
+					<p>L</p>
+					<p>LV</p>
 				</div>
 				<a className="w-1/4 flex items-center justify-center">FORM</a>
 			</div>
