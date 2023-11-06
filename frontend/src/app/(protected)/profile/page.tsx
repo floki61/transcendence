@@ -35,13 +35,15 @@ export default function page() {
               <h3 className='w-1/3 text-2xl text-center h-full flex justify-center items-center'>History</h3>
             </div>
             <div className='flex-1 w-full rounded-xl bg-segundcl'>
-              <div>
+              <div className='debug flex items-center justify-evenly'>
                 <h4>Mode</h4>
-                <h4>MP</h4>
-                <h4>W</h4>
-                <h4>L</h4>
-                <h4>GS</h4>
-                <h4>GC</h4>
+                <div className='flex items-center justify-evenly'>
+                  <h4>MP</h4>
+                  <h4>W</h4>
+                  <h4>L</h4>
+                  <h4>GS</h4>
+                  <h4>GC</h4>
+                </div>
                 <h4>Form</h4>
               </div>
               <div></div>

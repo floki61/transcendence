@@ -197,4 +197,12 @@ export declare class UsersService {
         createdAt: Date;
         updatedAt: Date;
     }>;
+    getFriends(userId: string): Promise<{
+        id: string;
+        userId: string;
+        friendId: string;
+        status: import(".prisma/client").$Enums.Status;
+        createdAt: Date;
+        updatedAt: Date;
+    }[]>;
 }
