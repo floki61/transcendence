@@ -35,6 +35,12 @@ let UsersController = exports.UsersController = class UsersController {
     async getUser(req) {
         return (req.user);
     }
+    async getName(req) {
+        return (req.user.userName);
+    }
+    async getPicture(req) {
+        return (req.user.picture);
+    }
     userSettings(req, data) {
         console.log(data);
         return this.userservice.updateUser(req, data);
@@ -103,6 +109,22 @@ __decorate([
     __metadata("design:paramtypes", [Object]),
     __metadata("design:returntype", Promise)
 ], UsersController.prototype, "getUser", null);
+__decorate([
+    (0, common_1.Get)('name'),
+    (0, common_1.UseGuards)(jwt_guard_1.JwtAuthGuard),
+    __param(0, (0, common_1.Req)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object]),
+    __metadata("design:returntype", Promise)
+], UsersController.prototype, "getName", null);
+__decorate([
+    (0, common_1.Get)('picture'),
+    (0, common_1.UseGuards)(jwt_guard_1.JwtAuthGuard),
+    __param(0, (0, common_1.Req)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object]),
+    __metadata("design:returntype", Promise)
+], UsersController.prototype, "getPicture", null);
 __decorate([
     (0, common_1.UseGuards)(jwt_guard_1.JwtAuthGuard),
     (0, common_1.Post)('userSettings'),
