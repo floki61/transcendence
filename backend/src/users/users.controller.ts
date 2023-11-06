@@ -32,6 +32,18 @@ export class UsersController {
         return (req.user);
     }
 
+    @Get('name')
+    @UseGuards(JwtAuthGuard)
+    async getName(@Req() req) {
+        return (req.user.userName);
+    }
+
+    @Get('picture')
+    @UseGuards(JwtAuthGuard)
+    async getPicture(@Req() req) {
+        return (req.user.picture);
+    }
+
     @UseGuards(JwtAuthGuard)
     @Post('userSettings')
 	userSettings(@Req() req ,@Body() data) {

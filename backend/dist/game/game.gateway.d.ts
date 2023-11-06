@@ -13,15 +13,7 @@ export declare class GameGateway implements OnGatewayConnection, OnGatewayDiscon
     private server;
     private gameStarted;
     private connectedClients;
-    Quee: Map<string, {
-        Socket: Socket;
-        gameMode: string;
-        status: string;
-        gameData: any;
-        playWith: string;
-        leader: boolean;
-        gameId: string;
-    }>;
+    private Queue;
     private matchmakingQueue;
     handleConnection(client: Socket): Promise<void>;
     handleDisconnect(client: Socket): Promise<void>;
@@ -36,5 +28,5 @@ export declare class GameGateway implements OnGatewayConnection, OnGatewayDiscon
     matchPlayers(): Promise<void>;
     private broadcastGameData;
     getByValue(map: any, searchValue: any): any;
-    gameMode(client: Socket, mode: string): Promise<void>;
+    game(client: Socket, data: any): Promise<void>;
 }
