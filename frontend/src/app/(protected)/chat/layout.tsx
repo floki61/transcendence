@@ -6,6 +6,7 @@ import axios from "axios"
 import { useContext } from "react"
 import { UserContext } from "@/context/userContext"
 import { getTime } from "@/components/getTime"
+import Link from "next/link"
 
 interface FriendType {
 	id: string;
@@ -24,6 +25,7 @@ export default function ChatLayout({
 
 	const user = useContext(UserContext);
 	const [friends, SetFriends] = useState<FriendType[] | null>(null);
+	const [chatbar, SetChatbar] = useState(false);
 
 
 	useEffect(() => {
@@ -38,6 +40,7 @@ export default function ChatLayout({
 					const updatedFriends = data.map((item: any) => item);
 			  
 					SetFriends(updatedFriends);
+					SetChatbar(true);
 				}
 
 			} catch (error) {
@@ -89,16 +92,18 @@ export default function ChatLayout({
 			<div className="h-full w-1/3 flex flex-col items-center gap-4 py-8 border-r-2 border-primecl overflow-scroll">
 				{friends && friends.map((friend) => (
 						<div className="w-full flex justify-center">
-							<Chatbar
-								key= {friend.id}
-								name={friend.name}
-								text={friend.lastMessage}
-								time={friend.lastMessageDate}
-								image={friend.picture}
-							/>
+							<Link href={`/chat/${friend.id}`} className="w-full flex justify-center">
+								<Chatbar
+									key= {friend.id}
+									name={friend.name}
+									text={friend.lastMessage}
+									time={friend.lastMessageDate}
+									image={friend.picture}
+								/>
+							</Link>
 						</div>
 				))}
-				{(friends === null) && (
+				{!chatbar && (
 					<p>Maendakch meamn tdwi ghyrha</p>
 				)}
 			</div>
