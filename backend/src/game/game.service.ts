@@ -68,7 +68,8 @@ export class GameService
         this.gameData.score.left = 0;
         this.gameData.score.right = 0;
     }
-    async updatePaddles(event: string, data, targetPaddle: boolean) {
+    async updatePaddles(event: string, data, targetPaddle: boolean, gameMode: string) {
+        event = gameMode === 'reverse' ? event === 'UP' ? 'DOWN' : 'UP' : event;
         if (event === 'UP') {
             if(targetPaddle) {
                 if (data.leftPaddle.y > data.leftPaddle.height / 2)
@@ -90,7 +91,8 @@ export class GameService
             }
         }
     }
-    async updateBotPaddle(event: string, data) {
+    async updateBotPaddle(event: string, data, gameMode: string) {
+        event = gameMode === 'reverse' ? event === 'UP' ? 'DOWN' : 'UP' : event;
         if (event === 'UP') {
             if (data.leftPaddle.y > data.leftPaddle.height / 2) {
                 data.leftPaddle.y -= data.leftPaddle.speed;
