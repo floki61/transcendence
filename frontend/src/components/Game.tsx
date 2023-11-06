@@ -18,13 +18,20 @@ const GamePage = () => {
         if (!socket) return;
         let canvas: any;
         const sketch = (p: p5) => {
+            // let img: any;
+            // p.preload = () => {
+                // img = p.loadImage("/one-piece.jpg");
+            // };
             p.setup = () => {
                 canvas = p.createCanvas(p.windowWidth / 2, p.windowHeight / 2);
                 canvas.position((p.windowWidth - canvas.width) / 2, (p.windowHeight - canvas.height) / 2);
-                p.background('#151515'); 
+                p.background('#151515');
                 canvas.addClass("border-4 rounded-md bg-gray-800");
-                canvas.style('border-color', '#213e46'); 
-            };    
+                canvas.style('border-color', '#213e46');
+                // if (img && img.width && img.height) {
+                    // p.image(img, 0, 0, p.width, p.height);
+                // }
+            };
             p.windowResized = () => {
                 p.resizeCanvas(p.windowWidth / 2, p.windowHeight / 2);
                 if(gameDataRef.current)
@@ -36,6 +43,7 @@ const GamePage = () => {
                 canvas.position((p.windowWidth - p.width) / 2, (p.windowHeight - p.height) / 2);
             };
             socket.on('startGame', (data) => {
+                gameDataRef.current = data;
                 updatePaddles(p, data);
                 updateBallData(p, data);
                 setCount(true);
@@ -50,9 +58,6 @@ const GamePage = () => {
                  if(botGame)
                     updatePaddles(p, data);
             });
-            // socket.on('score', (data) => {
-            //     updateScore(data);
-            // });
             socket.on('gameResult', (data) => {
                 setGameResult(data);
                 console.log(data);
@@ -68,29 +73,30 @@ const GamePage = () => {
             })
             p.draw = () => {
                 if(count || botGame) {
-                    p.background('#151515'); 
+                    p.background('#151515');
+                    // p.image(img, 0, 0, p.width, p.height);
                     p.textSize(128);
                     p.textAlign(p.CENTER, p.CENTER);
                     p.text(leftScore, p.width / 4, p.height / 2);
                     p.text(rightScore, (p.width / 4) * 3, p.height / 2);
-                    // if (leftPaddle.x && rightPaddle.x) {
-                        p.fill(255);
-                        p.rectMode(p.CENTER);
-                        p.rect(leftPaddle.x, leftPaddle.y, leftPaddle.width, leftPaddle.height);
-                        p.rect(rightPaddle.x, rightPaddle.y, rightPaddle.width, rightPaddle.height);
-                    // }
+                    p.fill(255);
+                    p.rectMode(p.CENTER);
+                    p.rect(leftPaddle.x, leftPaddle.y, leftPaddle.width, leftPaddle.height);
+                    p.rect(rightPaddle.x, rightPaddle.y, rightPaddle.width, rightPaddle.height);
                     p.fill(255);
                     p.ellipse(ball.x, ball.y, ball.radius * 2);
                 }
                 else if (gameResult) {
-                    p.background('#151515'); 
+                    p.background('#151515');
+                    // p.image(img, 0, 0, p.width, p.height);
                     p.fill(255);
                     p.textSize(34);
                     p.textAlign(p.CENTER, p.CENTER);
                     p.text(gameResult, p.width / 2, p.height / 2);
                 }
                 else {
-                    p.background('#151515'); 
+                    p.background('#151515');
+                    // p.image(img, 0, 0, p.width, p.height);
                     p.fill(255);
                     p.textSize(34);
                     p.textAlign(p.CENTER, p.CENTER);
