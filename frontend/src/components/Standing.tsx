@@ -48,10 +48,10 @@ const Standing: React.FC<StandingProps> = ({
 			  <div className='pr-9'>playername</div>
 		  </div>
 		  <div className='w-1/2 h-full text-gray-200 flex items-center justify-evenly pl-10'>
-			<a>42</a>
-			<a>37</a>
-			<a>5</a>
-			<a>10</a>
+			<p>42</p>
+			<p>37</p>
+			<p>5</p>
+			<p>10</p>
 		  </div>
 		  <div className='w-1/4 h-full flex items-center justify-center'>
 			<HistoryForm first={Win} second={Win} third={Win} fourth={Loss} fifth={Win}/>
