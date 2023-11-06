@@ -25,7 +25,7 @@ const GamePage = () => {
             p.setup = () => {
                 canvas = p.createCanvas(p.windowWidth / 2, p.windowHeight / 2);
                 canvas.position((p.windowWidth - canvas.width) / 2, (p.windowHeight - canvas.height) / 2);
-                p.background('#151515');
+                // p.background('#151515');
                 canvas.addClass("border-4 rounded-md bg-gray-800");
                 canvas.style('border-color', '#213e46');
                 // if (img && img.width && img.height) {
@@ -74,16 +74,23 @@ const GamePage = () => {
             p.draw = () => {
                 if(count || botGame) {
                     p.background('#151515');
+                    p.stroke("#213D46");
+                    p.strokeWeight(2);
+                    p.fill("#213D46");
+                    p.line(p.width / 2, 0, p.width / 2, p.height);
+                    p.fill("#213D46");
                     // p.image(img, 0, 0, p.width, p.height);
                     p.textSize(128);
                     p.textAlign(p.CENTER, p.CENTER);
+                    p.fill(255);
                     p.text(leftScore, p.width / 4, p.height / 2);
                     p.text(rightScore, (p.width / 4) * 3, p.height / 2);
-                    p.fill(255);
+                    p.fill("#213D46");
+                    p.noStroke();
                     p.rectMode(p.CENTER);
                     p.rect(leftPaddle.x, leftPaddle.y, leftPaddle.width, leftPaddle.height);
                     p.rect(rightPaddle.x, rightPaddle.y, rightPaddle.width, rightPaddle.height);
-                    p.fill(255);
+                    p.noStroke();
                     p.ellipse(ball.x, ball.y, ball.radius * 2);
                 }
                 else if (gameResult) {
