@@ -36,7 +36,6 @@ export const UserProvider = ({ children }: any ) => {
 			const res = await axios.get("http://localhost:4000/getUser", {
 			  withCredentials: true,
 			});
-			console.log(res.data);
 			setUser(res.data);
 		  } catch (error) {
 			console.error(error);

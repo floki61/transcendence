@@ -1,58 +1,63 @@
-"use client"
-
 import React from 'react'
-import { useContext } from 'react'
-import { UserContext } from '@/context/userContext';
-import Image from 'next/image';
+import HistoryForm from '@/components/HistoryForm'
 
 export default function page() {
-
-  const user = useContext(UserContext);
+	let Win = {result: "W", color: "bg-[#00A83F]"};
+	let Loss = {result: "L", color: "bg-[#DC0000]"};
+	let Unset = {result: "?", color: "bg-[#848788]"}
 
   return (
-    <div className='h-full w-full p-10 overflow-hidden'>
-      {user.user && (
-        <div className='h-full w-full flex flex-col gap-8'>
-          <div className='flex gap-4 h-[25%]'>
-            <Image
-              src={"/oel-berh.jpeg"}
-              alt={"profile pic"}
-              height={150}
-              width={150}
-              className='rounded-full'
-            />
-            <div className='w-3/5 flex flex-col justify-evenly px-4'>
-              <h2 className='text-2xl'>{user.user.fullName}</h2>
-              <h3 className='text-xl'>{user.user.userName}</h3>
-              <div className='w-full bg-[#6A6666] rounded-xl text-center text-black self-end'>Level 5</div>
-            </div>
-            <div className='w-[25%] text-center'>chart</div>
-          </div>
-          <div className='flex-1 flex flex-col items-center'>
-            <div className='w-3/4 h-[12%] rounded-t-xl bg-primecl flex items-center'>
-              <h3 className='w-1/3 text-2xl text-center h-full flex justify-center items-center border-r-2 border-segundcl'>Stats</h3>
-              <h3 className='w-1/3 text-2xl text-center h-full flex justify-center items-center border-r-2 border-segundcl'>Achievements</h3>
-              <h3 className='w-1/3 text-2xl text-center h-full flex justify-center items-center'>History</h3>
-            </div>
-            <div className='flex-1 w-full rounded-xl bg-segundcl'>
-              <div className='debug flex items-center justify-evenly'>
-                <h4>Mode</h4>
-                <div className='flex items-center justify-evenly'>
-                  <h4>MP</h4>
-                  <h4>W</h4>
-                  <h4>L</h4>
-                  <h4>GS</h4>
-                  <h4>GC</h4>
-                </div>
-                <h4>Form</h4>
-              </div>
-              <div></div>
-              <div></div>
-              <div></div>
-            </div>
-          </div>
-        </div>
-      )}
-    </div>
-  );
+	<div className='py-6 px-16 text-xl h-full'>
+		<div className='h-1/4 flex items-center justify-evenly border-b-4 border-primecl'>
+			<h4 className='w-1/4'>Mode</h4>
+			<div className='flex items-center justify-evenly w-1/2'>
+				<h4>MP</h4>
+				<h4>W</h4>
+				<h4>L</h4>
+				<h4>GS</h4>
+				<h4>GC</h4>
+			</div>
+			<h4 className='w-1/4 text-center'>Form</h4>
+		</div>
+		<div className='h-1/4 flex items-center justify-evenly border-b-4 border-primecl'>
+		<h4 className='w-1/4'>Fast Mode</h4>
+			<div className='flex items-center justify-evenly w-1/2'>
+				<h4>15</h4>
+				<h4>9</h4>
+				<h4>6</h4>
+				<h4>89</h4>
+				<h4>54</h4>
+			</div>
+			<h4 className='w-1/4'>
+			<HistoryForm first={Loss} second={Win} third={Win} fourth={Win} fifth={Win}/>
+			</h4>
+		</div>
+		<div className='h-1/4 flex items-center justify-evenly border-b-4 border-primecl'>
+			<h4 className='w-1/4'>Another Mode</h4>
+			<div className='flex items-center justify-evenly w-1/2'>
+				<h4>0</h4>
+				<h4>0</h4>
+				<h4>0</h4>
+				<h4>0</h4>
+				<h4>0</h4>
+			</div>
+			<h4 className='w-1/4'>
+			<HistoryForm first={Unset} second={Unset} third={Unset} fourth={Unset} fifth={Unset}/>
+			</h4>
+		</div>
+		<div className='h-1/4 flex items-center justify-evenly'>
+			<h4 className='w-1/4'>Default Mode</h4>
+			<div className='flex items-center justify-evenly w-1/2'>
+				<h4>15</h4>
+				<h4>9</h4>
+				<h4>6</h4>
+				<h4>89</h4>
+				<h4>54</h4>
+			</div>
+			<h4 className='w-1/4'>
+				<HistoryForm first={Win} second={Win} third={Loss} fourth={Win} fifth={Loss}/>
+			</h4>
+		</div> 
+	</div>
+  )
 }

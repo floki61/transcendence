@@ -8,7 +8,7 @@ import { UserContext } from "@/context/userContext"
 import { getTime } from "@/components/getTime"
 import Link from "next/link"
 
-interface FriendType {
+export interface FriendType {
 	id: string;
 	lastMessage: string;
 	lastMessageDate: string;
@@ -52,14 +52,20 @@ export default function ChatLayout({
 
 	if (friends) {
 		friends.forEach((friend) => {
-				console.log("this is friend : ", friend);
-				console.log("name is : ", friend.name)
+				// console.log("this is friend : ", friend);
+				// console.log("name is : ", friend.name)
 				const Date1 = new Date(friend.lastMessageDate);
 				const Date2 = new Date();
 				const time = getTime(Date1, Date2);
-				console.log("time in hours : " , time.hours)
-				console.log("time in days : " , time.days)
-				if (time.days < 1) {
+				// console.log("time in hours : " , time.hours)
+				// console.log("time in days : " , time.days)
+				if (time.hours < 1) {
+					if (time.minutes == 1)
+						friend.lastMessageDate = String(time.minutes) + " minute ago";
+					else
+						friend.lastMessageDate = String(time.minutes) + " minutes ago";
+				}
+				else if (time.days < 1) {
 					if (time.hours == 1)
 						friend.lastMessageDate = String(time.hours) + " hour ago";
 					else
@@ -91,17 +97,14 @@ export default function ChatLayout({
 		<div className="flex h-full text-white">
 			<div className="h-full w-1/3 flex flex-col items-center gap-4 py-8 border-r-2 border-primecl overflow-scroll">
 				{friends && friends.map((friend) => (
-						<div className="w-full flex justify-center">
-							<Link href={`/chat/${friend.id}`} className="w-full flex justify-center">
-								<Chatbar
-									key= {friend.id}
-									name={friend.name}
-									text={friend.lastMessage}
-									time={friend.lastMessageDate}
-									image={friend.picture}
-								/>
-							</Link>
-						</div>
+					<Link key={friend.id} href={`/chat/${friend.id}`} className="w-full flex justify-center">
+						<Chatbar
+							name={friend.name}
+							text={friend.lastMessage}
+							time={friend.lastMessageDate}
+							image={friend.picture}
+						/>
+					</Link>
 				))}
 				{!chatbar && (
 					<p>Maendakch meamn tdwi ghyrha</p>

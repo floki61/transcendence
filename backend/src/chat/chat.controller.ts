@@ -67,9 +67,10 @@ export class ChatController {
         return rooms;
     }
     
-    @UseGuards(JwtAuthGuard)
+    // @UseGuards(JwtAuthGuard)
     @Post('getMessages')
     async getMessages(@Body() body: any, @Req() req: any) {
+        console.log(body);
         const messages = await this.userservice.getMessages(body);
         return messages;
     }

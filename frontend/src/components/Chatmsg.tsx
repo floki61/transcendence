@@ -15,7 +15,7 @@ const Chatmsg:React.FC<MsgProps> = ({ text, time, className}) => {
 
 	return (
 	  <div className={classes}>
-		  <p className="p-1">{text}</p>
+		  <p className="py-1 px-2">{text}</p>
 		  <p className="self-end px-2 text-xs">{time}</p>
 	  </div>
 	)
