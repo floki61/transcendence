@@ -35,6 +35,8 @@ const Convo = ({ params } : {params: any}) => {
 
   const user = useContext(UserContext);
 	const [chat, SetChat] = useState<ChatType[]>();
+	const [image, SetImage] = useState<string>();
+	const [name, SetName] = useState<string>();
   
     useEffect(() => {
       const getMessages = async () => {
@@ -54,16 +56,33 @@ const Convo = ({ params } : {params: any}) => {
       }
       getMessages();
     }, []);
-  
-    console.log({chat});
-    if (chat && chat[0]) {
-      console.log("user is :", chat[0].user);
-      console.log("user is :", chat[0].msg);
-      if (chat[0].user && chat[0].user)
-        console.log("id is :", chat[0].user.uid);
-    }
+    
+    if (chat && chat[0])
+    console.log("uid : ", chat[0].user.uid)
+    const getName = async () => {
+      if (chat && chat[0]) {
+        console.log("salam")
+        try {
+          const res = await axios.post("http://localhost:4000/getUserNameWithId", {id: chat[0].user.uid},{
+            withCredentials: true,
+          })
+          console.log("res is : " , res.data);
+          SetName(res.data);
+        } catch (error) {
+          console.log("error fetching username")
+        }
+        try {
+          const res = await axios.post("http://localhost:4000/getPictureWithId", {id: chat[0].user.uid},{
+            withCredentials: true,
+          })
+          console.log("res is : " , res.data);
+          SetImage(res.data);
+        } catch (error) {
 
-    console.log("id is :", user.user?.id);
+        }
+      }  
+    }
+    getName();
 
   return (
     <div className="h-full w-full flex">
@@ -72,14 +91,14 @@ const Convo = ({ params } : {params: any}) => {
           <div className="px-4 py-2 flex items-center justify-between bg-primecl">
             <div className="flex items-center gap-4">
               <Image
-                src={"/oel-berh.jpeg"}
+                src={image as string}
                 alt={"friend pic"}
                 width={40}
                 height={40}
                 className="rounded-full"
               />
               <div>
-                <h2 className="text-xl">Floki</h2>
+                <h2 className="text-xl">{name}</h2>
                 <h3 className="text-sm font-light">{chat[0].user.isOnline ? "Online" : "Offline"}</h3>
               </div>
             </div>

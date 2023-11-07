@@ -36,6 +36,8 @@ let UsersController = exports.UsersController = class UsersController {
         return (req.user);
     }
     async getUserNameWithId(req, body) {
+        console.log("first");
+        console.log({ body });
         return this.userservice.getUserNameWithId(body.id);
     }
     async getPictureWithId(req, body) {
@@ -110,7 +112,7 @@ __decorate([
     __metadata("design:returntype", Promise)
 ], UsersController.prototype, "getUser", null);
 __decorate([
-    (0, common_1.Get)('getUserNameWithId'),
+    (0, common_1.Post)('getUserNameWithId'),
     (0, common_1.UseGuards)(jwt_guard_1.JwtAuthGuard),
     __param(0, (0, common_1.Req)()),
     __param(1, (0, common_1.Body)()),
@@ -119,7 +121,7 @@ __decorate([
     __metadata("design:returntype", Promise)
 ], UsersController.prototype, "getUserNameWithId", null);
 __decorate([
-    (0, common_1.Get)('getPictureWithId'),
+    (0, common_1.Post)('getPictureWithId'),
     (0, common_1.UseGuards)(jwt_guard_1.JwtAuthGuard),
     __param(0, (0, common_1.Req)()),
     __param(1, (0, common_1.Body)()),
