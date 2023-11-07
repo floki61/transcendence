@@ -59,7 +59,9 @@ export default function ChatLayout({
 				const time = getTime(Date1, Date2);
 				// console.log("time in hours : " , time.hours)
 				// console.log("time in days : " , time.days)
-				if (time.hours < 1) {
+				if (time.minutes < 1)
+					friend.lastMessageDate = "few seconds ago";
+				else if (time.hours < 1) {
 					if (time.minutes == 1)
 						friend.lastMessageDate = String(time.minutes) + " minute ago";
 					else

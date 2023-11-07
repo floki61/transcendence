@@ -5,36 +5,35 @@ import Chatmsg from "@/components/Chatmsg";
 import Audio from "@/components/Audio";
 import axios from "axios";
 import { useEffect, useState } from "react";
-
-interface IParams {
-  conversationID: string;
-}
+import { useContext } from "react";
+import { UserContext } from "@/context/userContext";
 
 interface ChatType {
   user: {
     createdAt: string;
     id: string;
-    msg: string;
-    msgTime: string;
+    isBanned: boolean;
+    isMuted: boolean;
+    isOnline: boolean;
     rid: string;
+    role: string;
+    uid: string;
     updateAt: string;
-    userId: string;
   };
-  id: string;
-  rid: string;
-  uid: string;
-  role: string;
-  isOnline: boolean;
-  isMuted: boolean;
-  isBanned: boolean;
   createdAt: string;
+  id: string;
+  msg: string;
+  msgTime: string;
+  rid: string;
   updatedAt: string;
+  userId: string;
 }
 
 const Convo = ({ params } : {params: any}) => {
 
   console.log(params.id);
 
+  const user = useContext(UserContext);
 	const [chat, SetChat] = useState<ChatType[]>();
   
     useEffect(() => {
@@ -56,13 +55,19 @@ const Convo = ({ params } : {params: any}) => {
       getMessages();
     }, []);
   
-    console.log("chat : ", chat);
-    if (chat && chat.length > 0)
-      console.log("chat is : ", chat[0].id);
+    console.log({chat});
+    if (chat && chat[0]) {
+      console.log("user is :", chat[0].user);
+      console.log("user is :", chat[0].msg);
+      if (chat[0].user && chat[0].user)
+        console.log("id is :", chat[0].user.uid);
+    }
+
+    console.log("id is :", user.user?.id);
 
   return (
     <div className="h-full w-full flex">
-      {chat && chat[0] && (
+      {user.user && chat && chat[0] && (
         <div className="h-full flex-1 flex flex-col justify-between">
           <div className="px-4 py-2 flex items-center justify-between bg-primecl">
             <div className="flex items-center gap-4">
@@ -75,7 +80,7 @@ const Convo = ({ params } : {params: any}) => {
               />
               <div>
                 <h2 className="text-xl">Floki</h2>
-                <h3 className="text-sm font-light">{chat[0].isOnline ? "Online" : "Offline"}</h3>
+                <h3 className="text-sm font-light">{chat[0].user.isOnline ? "Online" : "Offline"}</h3>
               </div>
             </div>
             <div className="flex gap-8">
@@ -93,27 +98,14 @@ const Convo = ({ params } : {params: any}) => {
               </svg>
             </div>
           </div>
-          <div className="flex flex-col-reverse flex-1 bg-segundcl py-2">
-            <Chatmsg
-              text="This is a message"
-              time="04:20"
-              className="flex font-light justify-between bg-quatrocl rounded-e-lg rounded-bl-lg my-2 mx-4 w-96"
-            />
-            <Chatmsg
-              text="This is a message"
-              time="04:20"
-              className="flex self-end font-light justify-between bg-primecl rounded-s-lg rounded-br-lg my-1 mx-4 w-96"
-            />
-            <Chatmsg
-              text="This is a message"
-              time="04:20"
-              className="flex font-light justify-between bg-quatrocl rounded-e-lg rounded-bl-lg my-1 mx-4 w-96"
-            />
-            <Chatmsg
-              text="This is a message"
-              time="04:20"
-              className="flex self-end font-light justify-between bg-primecl rounded-s-lg rounded-br-lg my-1 mx-4 w-96"
-            />
+          <div className="flex flex-col place-content-end flex-1 bg-segundcl py-2 overflow-scroll">
+            {user.user && chat && chat.map((chatie) => (
+              <Chatmsg
+                text={chatie.msg}
+                time={chatie.msgTime.substring(11, 16)}
+                className={`flex font-light justify-between ${user.user?.id === chatie.user.uid ? "self-end bg-primecl rounded-s-lg rounded-br-lg my-1 mx-4 w-96" : "bg-quatrocl rounded-e-lg rounded-bl-lg my-2 mx-4 w-96"}`}
+              />
+            ))}
           </div>
           <div className="py-4 bg-primecl w-full flex items-center justify-center gap-8">
             <svg

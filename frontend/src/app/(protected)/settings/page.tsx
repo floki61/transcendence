@@ -20,7 +20,7 @@ export default function page() {
 
   const updateUser = async () => {
     try {
-      await axios.post("http://localhost:4000/userSettings", user, {
+      await axios.post("http://localhost:4000/userSettings", user.user, {
         withCredentials: true,
       }); // backend API endpoint
       console.log("saved with : ", user.user?.picture);
