@@ -5,6 +5,8 @@ import Chatmsg from "@/components/Chatmsg";
 import Audio from "@/components/Audio";
 import axios from "axios";
 import { useEffect, useState } from "react";
+import { useContext } from "react";
+import { UserContext } from "@/context/userContext";
 
 interface ChatType {
   user: {
@@ -31,6 +33,7 @@ const Convo = ({ params } : {params: any}) => {
 
   console.log(params.id);
 
+  const user = useContext(UserContext);
 	const [chat, SetChat] = useState<ChatType[]>();
   
     useEffect(() => {
@@ -56,14 +59,15 @@ const Convo = ({ params } : {params: any}) => {
     if (chat && chat[0]) {
       console.log("user is :", chat[0].user);
       console.log("user is :", chat[0].msg);
-      // console.log("user is :", chat[0].user);
-      if (chat[0].user && chat[0].user) 
-        console.log("msg is : ", chat[0].user)
+      if (chat[0].user && chat[0].user)
+        console.log("id is :", chat[0].user.uid);
     }
+
+    console.log("id is :", user.user?.id);
 
   return (
     <div className="h-full w-full flex">
-      {chat && chat[0] && (
+      {user.user && chat && chat[0] && (
         <div className="h-full flex-1 flex flex-col justify-between">
           <div className="px-4 py-2 flex items-center justify-between bg-primecl">
             <div className="flex items-center gap-4">
@@ -94,29 +98,14 @@ const Convo = ({ params } : {params: any}) => {
               </svg>
             </div>
           </div>
-          <div className="flex flex-col-reverse flex-1 bg-segundcl py-2">
-            {chat && chat.map((chatie) => (
+          <div className="flex flex-col place-content-end flex-1 bg-segundcl py-2 overflow-scroll">
+            {user.user && chat && chat.map((chatie) => (
               <Chatmsg
                 text={chatie.msg}
-                time="04:20"
-                className="flex font-light justify-between bg-quatrocl rounded-e-lg rounded-bl-lg my-2 mx-4 w-96"
+                time={chatie.msgTime.substring(11, 16)}
+                className={`flex font-light justify-between ${user.user?.id === chatie.user.uid ? "self-end bg-primecl rounded-s-lg rounded-br-lg my-1 mx-4 w-96" : "bg-quatrocl rounded-e-lg rounded-bl-lg my-2 mx-4 w-96"}`}
               />
             ))}
-            {/* <Chatmsg
-              text="This is a message"
-              time="04:20"
-              className="flex self-end font-light justify-between bg-primecl rounded-s-lg rounded-br-lg my-1 mx-4 w-96"
-            />
-            <Chatmsg
-              text="This is a message"
-              time="04:20"
-              className="flex font-light justify-between bg-quatrocl rounded-e-lg rounded-bl-lg my-1 mx-4 w-96"
-            />
-            <Chatmsg
-              text="This is a message"
-              time="04:20"
-              className="flex self-end font-light justify-between bg-primecl rounded-s-lg rounded-br-lg my-1 mx-4 w-96"
-            /> */}
           </div>
           <div className="py-4 bg-primecl w-full flex items-center justify-center gap-8">
             <svg

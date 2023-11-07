@@ -63,7 +63,6 @@ export class ChatController {
     @Post('getAllRooms')
     async getAllRoom(@Body() body: any, @Req() req: any) {
         const rooms = await this.userservice.getAllRoom();
-        // console.log({ rooms });
         return rooms;
     }
     
