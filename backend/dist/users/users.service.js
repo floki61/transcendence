@@ -104,6 +104,26 @@ let UsersService = exports.UsersService = class UsersService {
             },
         });
     }
+    async getUserNameWithId(id) {
+        const user = await this.prisma.user.findUnique({
+            where: {
+                id,
+            },
+        });
+        if (user)
+            return user.userName;
+        return null;
+    }
+    async getPictureWithId(id) {
+        const user = await this.prisma.user.findUnique({
+            where: {
+                id,
+            },
+        });
+        if (user)
+            return user.picture;
+        return null;
+    }
     async sendFriendRequest(userId, friendId) {
         console.log({ userId, friendId });
         const friendrequest = await this.prisma.friendShip.create({

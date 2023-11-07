@@ -14,8 +14,8 @@ export declare class UsersController {
         cookies: any;
     }>;
     getUser(req: any): Promise<any>;
-    getName(req: any): Promise<any>;
-    getPicture(req: any): Promise<any>;
+    getUserNameWithId(req: any, body: any): Promise<string>;
+    getPictureWithId(req: any, body: any): Promise<string>;
     userSettings(req: any, data: any): Promise<void>;
     sendFriendRequest(body: any, req: any): Promise<{
         id: string;

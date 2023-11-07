@@ -104,6 +104,8 @@ export declare class UsersService {
         createdAt: Date;
         updatedAt: Date;
     }>;
+    getUserNameWithId(id: string): Promise<string>;
+    getPictureWithId(id: string): Promise<string>;
     sendFriendRequest(userId: string, friendId: string): Promise<{
         id: string;
         userId: string;

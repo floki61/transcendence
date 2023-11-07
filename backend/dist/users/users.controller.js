@@ -35,11 +35,11 @@ let UsersController = exports.UsersController = class UsersController {
     async getUser(req) {
         return (req.user);
     }
-    async getName(req) {
-        return (req.user.userName);
+    async getUserNameWithId(req, body) {
+        return this.userservice.getUserNameWithId(body.id);
     }
-    async getPicture(req) {
-        return (req.user.picture);
+    async getPictureWithId(req, body) {
+        return this.userservice.getPictureWithId(body.id);
     }
     userSettings(req, data) {
         console.log(data);
@@ -110,21 +110,23 @@ __decorate([
     __metadata("design:returntype", Promise)
 ], UsersController.prototype, "getUser", null);
 __decorate([
-    (0, common_1.Get)('name'),
+    (0, common_1.Get)('getUserNameWithId'),
     (0, common_1.UseGuards)(jwt_guard_1.JwtAuthGuard),
     __param(0, (0, common_1.Req)()),
+    __param(1, (0, common_1.Body)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Object]),
+    __metadata("design:paramtypes", [Object, Object]),
     __metadata("design:returntype", Promise)
-], UsersController.prototype, "getName", null);
+], UsersController.prototype, "getUserNameWithId", null);
 __decorate([
-    (0, common_1.Get)('picture'),
+    (0, common_1.Get)('getPictureWithId'),
     (0, common_1.UseGuards)(jwt_guard_1.JwtAuthGuard),
     __param(0, (0, common_1.Req)()),
+    __param(1, (0, common_1.Body)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Object]),
+    __metadata("design:paramtypes", [Object, Object]),
     __metadata("design:returntype", Promise)
-], UsersController.prototype, "getPicture", null);
+], UsersController.prototype, "getPictureWithId", null);
 __decorate([
     (0, common_1.UseGuards)(jwt_guard_1.JwtAuthGuard),
     (0, common_1.Post)('userSettings'),

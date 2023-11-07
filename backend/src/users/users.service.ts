@@ -106,6 +106,28 @@ export class UsersService {
         });
     }
 
+	async getUserNameWithId(id: string) {
+		const user = await this.prisma.user.findUnique({
+			where: {
+				id,
+			},
+		});
+		if(user)
+			return user.userName;
+		return null;
+	}
+
+	async getPictureWithId(id: string) {
+		const user = await this.prisma.user.findUnique({
+			where: {
+				id,
+			},
+		});
+		if(user)
+			return user.picture;
+		return null;
+	}
+
 	async sendFriendRequest(userId: string, friendId: string) {
 		console.log({ userId, friendId });
 		const friendrequest = await this.prisma.friendShip.create({
