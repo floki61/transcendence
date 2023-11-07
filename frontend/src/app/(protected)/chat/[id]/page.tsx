@@ -6,29 +6,25 @@ import Audio from "@/components/Audio";
 import axios from "axios";
 import { useEffect, useState } from "react";
 
-interface IParams {
-  conversationID: string;
-}
-
 interface ChatType {
   user: {
     createdAt: string;
     id: string;
-    msg: string;
-    msgTime: string;
+    isBanned: boolean;
+    isMuted: boolean;
+    isOnline: boolean;
     rid: string;
+    role: string;
+    uid: string;
     updateAt: string;
-    userId: string;
   };
-  id: string;
-  rid: string;
-  uid: string;
-  role: string;
-  isOnline: boolean;
-  isMuted: boolean;
-  isBanned: boolean;
   createdAt: string;
+  id: string;
+  msg: string;
+  msgTime: string;
+  rid: string;
   updatedAt: string;
+  userId: string;
 }
 
 const Convo = ({ params } : {params: any}) => {
@@ -56,9 +52,14 @@ const Convo = ({ params } : {params: any}) => {
       getMessages();
     }, []);
   
-    console.log("chat : ", chat);
-    if (chat && chat.length > 0)
-      console.log("chat is : ", chat[0].id);
+    console.log({chat});
+    if (chat && chat[0]) {
+      console.log("user is :", chat[0].user);
+      console.log("user is :", chat[0].msg);
+      // console.log("user is :", chat[0].user);
+      if (chat[0].user && chat[0].user) 
+        console.log("msg is : ", chat[0].user)
+    }
 
   return (
     <div className="h-full w-full flex">
@@ -75,7 +76,7 @@ const Convo = ({ params } : {params: any}) => {
               />
               <div>
                 <h2 className="text-xl">Floki</h2>
-                <h3 className="text-sm font-light">{chat[0].isOnline ? "Online" : "Offline"}</h3>
+                <h3 className="text-sm font-light">{chat[0].user.isOnline ? "Online" : "Offline"}</h3>
               </div>
             </div>
             <div className="flex gap-8">
@@ -94,12 +95,14 @@ const Convo = ({ params } : {params: any}) => {
             </div>
           </div>
           <div className="flex flex-col-reverse flex-1 bg-segundcl py-2">
-            <Chatmsg
-              text="This is a message"
-              time="04:20"
-              className="flex font-light justify-between bg-quatrocl rounded-e-lg rounded-bl-lg my-2 mx-4 w-96"
-            />
-            <Chatmsg
+            {chat && chat.map((chatie) => (
+              <Chatmsg
+                text={chatie.msg}
+                time="04:20"
+                className="flex font-light justify-between bg-quatrocl rounded-e-lg rounded-bl-lg my-2 mx-4 w-96"
+              />
+            ))}
+            {/* <Chatmsg
               text="This is a message"
               time="04:20"
               className="flex self-end font-light justify-between bg-primecl rounded-s-lg rounded-br-lg my-1 mx-4 w-96"
@@ -113,7 +116,7 @@ const Convo = ({ params } : {params: any}) => {
               text="This is a message"
               time="04:20"
               className="flex self-end font-light justify-between bg-primecl rounded-s-lg rounded-br-lg my-1 mx-4 w-96"
-            />
+            /> */}
           </div>
           <div className="py-4 bg-primecl w-full flex items-center justify-center gap-8">
             <svg
