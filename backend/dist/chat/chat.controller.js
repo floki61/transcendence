@@ -55,7 +55,6 @@ let ChatController = exports.ChatController = class ChatController {
         return rooms;
     }
     async getMessages(body, req) {
-        console.log(body);
         const messages = await this.userservice.getMessages(body);
         return messages;
     }

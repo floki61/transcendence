@@ -32,13 +32,13 @@ export class UsersController {
         return (req.user);
     }
 
-    @Get('getUserNameWithId')
+    @Post('getUserNameWithId')
     @UseGuards(JwtAuthGuard)
     async getUserNameWithId(@Req() req, @Body() body: any) {
         return this.userservice.getUserNameWithId(body.id);
     }
 
-    @Get('getPictureWithId')
+    @Post('getPictureWithId')
     @UseGuards(JwtAuthGuard)
     async getPictureWithId(@Req() req, @Body() body: any) {
         return this.userservice.getPictureWithId(body.id);
