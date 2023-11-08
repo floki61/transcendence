@@ -7,9 +7,9 @@ export default function App() {
 
    return (
       <GameProvider>
-     <div className="flex justify-center">
-        <Game />
-     </div>
+      <div className="flex justify-center">
+         <Game />
+      </div>
       </GameProvider>
    );
 }

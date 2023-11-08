@@ -7,6 +7,7 @@ import axios from "axios";
 import { useEffect, useState } from "react";
 import { useContext } from "react";
 import { UserContext } from "@/context/userContext";
+import { useChat } from "@/context/chatSocket";
 
 interface ChatType {
   user: {
@@ -31,15 +32,16 @@ interface ChatType {
 
 const Convo = ({ params } : {params: any}) => {
 
-  console.log(params.id);
-
   const user = useContext(UserContext);
 	const [chat, SetChat] = useState<ChatType[]>();
 	const [image, SetImage] = useState<string>();
 	const [name, SetName] = useState<string>();
 	const [showDiv, SetShowDiv] = useState(false);
+  const {socket} = useChat();
   
     useEffect(() => {
+      if (!socket)
+        return;
       const getMessages = async () => {
         try {
           const res = await axios.post("http://localhost:4000/chat/getMessages", {rid : params.id},{
@@ -48,7 +50,7 @@ const Convo = ({ params } : {params: any}) => {
           const data = res.data;
           if (data.length > 0) {
             const updatedChat = data.map((item: any) => item);
-          
+            
             SetChat(updatedChat);
           }   
         } catch (error) {
@@ -56,6 +58,9 @@ const Convo = ({ params } : {params: any}) => {
         }
       }
       getMessages();
+      socket.on('message', (data) => {
+        console.log("salam : ", data);
+      });
     }, []);
     
     const getName = async () => {
@@ -64,7 +69,6 @@ const Convo = ({ params } : {params: any}) => {
           const res = await axios.post("http://localhost:4000/getUserNameWithId", {id: chat[0].user.uid},{
             withCredentials: true,
           })
-          console.log("res is : " , res.data);
           SetName(res.data);
         } catch (error) {
           console.log("error fetching username")
@@ -73,7 +77,6 @@ const Convo = ({ params } : {params: any}) => {
           const res = await axios.post("http://localhost:4000/getPictureWithId", {id: chat[0].user.uid},{
             withCredentials: true,
           })
-          console.log("res is : " , res.data);
           SetImage(res.data);
         } catch (error) {
           console.log("error fetching picture")
@@ -82,8 +85,25 @@ const Convo = ({ params } : {params: any}) => {
     }
     getName();
 
+    const [input, SetInput] = useState("");
+
+    const handleInput = (e: any) => {
+      SetInput(e.target.value);
+      console.log("input : ", input);
+    }
+
+    const sendMsg = (e: any) => {
+      if (chat && chat[0])
+      socket?.emit('createChat', {
+        "rid": chat[0].rid, 
+        "id": user.user?.id,
+        "msg": input,
+      });
+      SetInput('');
+    }
+
   return (
-    <div className="h-full w-full flex" onClick={() => SetShowDiv}>
+    <div className="h-full w-full flex" onClick={() => {if (showDiv) SetShowDiv(false)}}>
       {user.user && chat && chat[0] && (
         <div className="h-full flex-1 flex flex-col justify-between">
           <div className="px-4 py-2 flex items-center justify-between bg-primecl">
@@ -124,12 +144,12 @@ const Convo = ({ params } : {params: any}) => {
               )}
             </div>
           </div>
-          <div className="flex flex-col place-content-end flex-1 bg-segundcl py-2 overflow-scroll">
+          <div className="flex flex-col place-content-end flex-1 bg-segundcl py-2">
             {user.user && chat && chat.map((chatie) => (
               <Chatmsg
                 text={chatie.msg}
                 time={chatie.msgTime.substring(11, 16)}
-                className={`flex font-light justify-between ${user.user?.id === chatie.user.uid ? "self-end bg-primecl rounded-s-lg rounded-br-lg my-1 mx-4 w-96" : "bg-quatrocl rounded-e-lg rounded-bl-lg my-2 mx-4 w-96"}`}
+                className={`flex font-light justify-between ${user.user?.id === chatie.user.uid ? "self-end bg-primecl rounded-s-lg rounded-br-lg my-1 mx-2" : "bg-quatrocl rounded-e-lg rounded-bl-lg my-1 mx-2 self-start"}`}
               />
             ))}
           </div>
@@ -162,10 +182,15 @@ const Convo = ({ params } : {params: any}) => {
             <input
               key={params.id}
               type="text"
+              value={input}
+              onChange={handleInput}
               placeholder="Type a message"
               className="bg-terserocl rounded-md p-2 px-4 w-5/6 outline-none"
             />
-            <Audio />
+            {/* <Audio /> */}
+            <button type="submit" onClick={sendMsg}>
+              send
+            </button>
           </div>
         </div>
       )}

@@ -35,7 +35,7 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
 					secret: this.config.get('secret')
 				});
 			if (payload.id) {
-				console.log( payload.id);
+				console.log("chat socket : ", payload.id);
 				this.map.set(payload.id, client);
 			}
 			const rooms = await this.chatService.getMyRooms(payload);
