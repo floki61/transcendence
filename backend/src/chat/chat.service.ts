@@ -48,6 +48,16 @@ export class ChatService {
 			// Handle the exception and send an error message to the client
 			client.emit('errorEvent', { message: 'An error occurred', error: error.message });
 		}
+		await this.prisma.chatRoom.update({
+			where: {
+				id: createChatDto.rid,
+			},
+			data: {
+				updatedAt: new Date(),
+				lastMessage: createChatDto.msg,
+				lastMessageDate: new Date(),
+			},
+		});
 		return message;
 	}
 
@@ -390,11 +400,12 @@ export class ChatService {
 				},
 			},
 			include: {
-				messages: {
-					orderBy: {
-						msgTime: 'asc',
-					},
-				},
+				messages: true,//{
+					// orderBy: 
+					// {
+					// 	msgTime: 'asc',
+					// },
+				//},
 				participants: true,
 			},
 			orderBy: {
