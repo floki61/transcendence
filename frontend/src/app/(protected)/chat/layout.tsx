@@ -26,6 +26,8 @@ export default function ChatLayout({
 	const user = useContext(UserContext);
 	const [friends, SetFriends] = useState<FriendType[] | null>(null);
 	const [chatbar, SetChatbar] = useState(false);
+	// const [image, SetImage] = useState<string>();
+	// const [name, SetName] = useState<string>();
 
 
 	useEffect(() => {
@@ -52,13 +54,10 @@ export default function ChatLayout({
 
 	if (friends) {
 		friends.forEach((friend) => {
-				// console.log("this is friend : ", friend);
-				// console.log("name is : ", friend.name)
 				const Date1 = new Date(friend.lastMessageDate);
 				const Date2 = new Date();
 				const time = getTime(Date1, Date2);
-				// console.log("time in hours : " , time.hours)
-				// console.log("time in days : " , time.days)
+
 				if (time.minutes < 1)
 					friend.lastMessageDate = "few seconds ago";
 				else if (time.hours < 1) {
@@ -75,7 +74,7 @@ export default function ChatLayout({
 				}
 				else if (time.weeks < 1) {
 					if (time.days == 1)
-						friend.lastMessageDate = String(time.days) + " day ago";
+						friend.lastMessageDate = "yesterday";
 					else
 						friend.lastMessageDate = String(time.days) + " days ago";
 				}
@@ -92,7 +91,35 @@ export default function ChatLayout({
 						friend.lastMessageDate = String(time.months) + " months ago";
 				}
 			})
-	}
+		}
+		// if (friends) {
+		// 	friends.forEach((friend) => {
+		// 	const getName = async () => {
+		// 		console.log(friend.id);
+		// 		  try {
+		// 			const res = await axios.post("http://localhost:4000/getUserNameWithId", {id: friend.id},{
+		// 			  withCredentials: true,
+		// 			})
+		// 			console.log("res is : " , res.data);
+		// 			SetName(res.data);
+		// 			friend.name = res.data;
+		// 		  } catch (error) {
+		// 			console.log("error fetching username")
+		// 		  }
+		// 		  try {
+		// 			const res = await axios.post("http://localhost:4000/getPictureWithId", {id: friend.id},{
+		// 			  withCredentials: true,
+		// 			})
+		// 			console.log("res is : " , res.data);
+		// 			SetImage(res.data);
+		// 			friend.picture = res.data;
+		// 		  } catch (error) {
+		// 			console.log("error fetching picture")
+		// 		  }
+		// 		}
+		// 	  getName();
+		// 	})
+		// }
 
 
 	return (
