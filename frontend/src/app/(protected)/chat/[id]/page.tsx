@@ -37,6 +37,7 @@ const Convo = ({ params } : {params: any}) => {
 	const [chat, SetChat] = useState<ChatType[]>();
 	const [image, SetImage] = useState<string>();
 	const [name, SetName] = useState<string>();
+	const [showDiv, SetShowDiv] = useState(false);
   
     useEffect(() => {
       const getMessages = async () => {
@@ -57,11 +58,8 @@ const Convo = ({ params } : {params: any}) => {
       getMessages();
     }, []);
     
-    if (chat && chat[0])
-    console.log("uid : ", chat[0].user.uid)
     const getName = async () => {
       if (chat && chat[0]) {
-        console.log("salam")
         try {
           const res = await axios.post("http://localhost:4000/getUserNameWithId", {id: chat[0].user.uid},{
             withCredentials: true,
@@ -78,14 +76,14 @@ const Convo = ({ params } : {params: any}) => {
           console.log("res is : " , res.data);
           SetImage(res.data);
         } catch (error) {
-
+          console.log("error fetching picture")
         }
       }  
     }
     getName();
 
   return (
-    <div className="h-full w-full flex">
+    <div className="h-full w-full flex" onClick={() => SetShowDiv}>
       {user.user && chat && chat[0] && (
         <div className="h-full flex-1 flex flex-col justify-between">
           <div className="px-4 py-2 flex items-center justify-between bg-primecl">
@@ -102,19 +100,28 @@ const Convo = ({ params } : {params: any}) => {
                 <h3 className="text-sm font-light">{chat[0].user.isOnline ? "Online" : "Offline"}</h3>
               </div>
             </div>
-            <div className="flex gap-8">
+            <div className="flex gap-8 relative w-[15%] h-full items-center justify-end">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 width="24"
                 height="24"
                 viewBox="0 0 32 32"
                 fill="none"
+                className="cursor-pointer hover:bg-slate-600 w-[21%] h-3/4 rounded-full"
+                onClick={() => SetShowDiv(!showDiv)}
               >
                 <path
                   d="M19 26C19 26.7956 18.6839 27.5587 18.1213 28.1213C17.5587 28.6839 16.7956 29 16 29C15.2044 29 14.4413 28.6839 13.8787 28.1213C13.3161 27.5587 13 26.7956 13 26C13 25.2044 13.3161 24.4413 13.8787 23.8787C14.4413 23.3161 15.2044 23 16 23C16.7956 23 17.5587 23.3161 18.1213 23.8787C18.6839 24.4413 19 25.2044 19 26ZM19 16C19 16.7956 18.6839 17.5587 18.1213 18.1213C17.5587 18.6839 16.7956 19 16 19C15.2044 19 14.4413 18.6839 13.8787 18.1213C13.3161 17.5587 13 16.7956 13 16C13 15.2044 13.3161 14.4413 13.8787 13.8787C14.4413 13.3161 15.2044 13 16 13C16.7956 13 17.5587 13.3161 18.1213 13.8787C18.6839 14.4413 19 15.2044 19 16ZM19 6C19 6.79565 18.6839 7.55871 18.1213 8.12132C17.5587 8.68393 16.7956 9 16 9C15.2044 9 14.4413 8.68393 13.8787 8.12132C13.3161 7.55871 13 6.79565 13 6C13 5.20435 13.3161 4.44129 13.8787 3.87868C14.4413 3.31607 15.2044 3 16 3C16.7956 3 17.5587 3.31607 18.1213 3.87868C18.6839 4.44129 19 5.20435 19 6Z"
                   fill="#CAD2D5"
                 />
               </svg>
+              {showDiv && (
+                <div className="text-white font-light border-2 border-quatrocl absolute top-10 right-3 w-full h-28 rounded-md bg-terserocl flex flex-col">
+                  <p className="cursor-pointer hover:bg-segundcl rounded-t-md border-b-2 border-quatrocl w-full px-2 flex items-center h-1/3">Mute chat</p>
+                  <p className="cursor-pointer hover:bg-segundcl border-b-2 border-quatrocl w-full px-2 flex items-center h-1/3">Block</p>
+                  <p className="cursor-pointer hover:bg-segundcl rounded-b-md w-full px-2 flex items-center h-1/3">Invite</p>
+                </div>
+              )}
             </div>
           </div>
           <div className="flex flex-col place-content-end flex-1 bg-segundcl py-2 overflow-scroll">
