@@ -83,7 +83,7 @@ const Convo = ({ params } : {params: any}) => {
     getName();
 
   return (
-    <div className="h-full w-full flex">
+    <div className="h-full w-full flex" onClick={() => SetShowDiv}>
       {user.user && chat && chat[0] && (
         <div className="h-full flex-1 flex flex-col justify-between">
           <div className="px-4 py-2 flex items-center justify-between bg-primecl">
@@ -100,14 +100,14 @@ const Convo = ({ params } : {params: any}) => {
                 <h3 className="text-sm font-light">{chat[0].user.isOnline ? "Online" : "Offline"}</h3>
               </div>
             </div>
-            <div className="flex gap-8 relative w-[15%] justify-end">
+            <div className="flex gap-8 relative w-[15%] h-full items-center justify-end">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 width="24"
                 height="24"
                 viewBox="0 0 32 32"
                 fill="none"
-                className="cursor-pointer"
+                className="cursor-pointer hover:bg-slate-600 w-[21%] h-3/4 rounded-full"
                 onClick={() => SetShowDiv(!showDiv)}
               >
                 <path
@@ -116,10 +116,10 @@ const Convo = ({ params } : {params: any}) => {
                 />
               </svg>
               {showDiv && (
-                <div className="text-white border-2 border-quatrocl absolute top-10 right-3 w-full h-24 rounded-lg bg-terserocl flex flex-col">
-                  <p className="border-b-2 border-quatrocl w-full px-2 flex items-center h-1/3">Mute chat</p>
-                  <p className="border-b-2 border-quatrocl w-full px-2 flex items-center h-1/3">Block</p>
-                  <p className="w-full px-2 flex items-center h-1/3">Invite</p>
+                <div className="text-white font-light border-2 border-quatrocl absolute top-10 right-3 w-full h-28 rounded-md bg-terserocl flex flex-col">
+                  <p className="cursor-pointer hover:bg-segundcl rounded-t-md border-b-2 border-quatrocl w-full px-2 flex items-center h-1/3">Mute chat</p>
+                  <p className="cursor-pointer hover:bg-segundcl border-b-2 border-quatrocl w-full px-2 flex items-center h-1/3">Block</p>
+                  <p className="cursor-pointer hover:bg-segundcl rounded-b-md w-full px-2 flex items-center h-1/3">Invite</p>
                 </div>
               )}
             </div>
