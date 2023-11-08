@@ -50,6 +50,16 @@ let ChatService = exports.ChatService = class ChatService {
         catch (error) {
             client.emit('errorEvent', { message: 'An error occurred', error: error.message });
         }
+        await this.prisma.chatRoom.update({
+            where: {
+                id: createChatDto.rid,
+            },
+            data: {
+                updatedAt: new Date(),
+                lastMessage: createChatDto.msg,
+                lastMessageDate: new Date(),
+            },
+        });
         return message;
     }
     async joinRoom(payload) {
@@ -364,11 +374,7 @@ let ChatService = exports.ChatService = class ChatService {
                 },
             },
             include: {
-                messages: {
-                    orderBy: {
-                        msgTime: 'asc',
-                    },
-                },
+                messages: true,
                 participants: true,
             },
             orderBy: {
