@@ -36,8 +36,6 @@ let UsersController = exports.UsersController = class UsersController {
         return (req.user);
     }
     async getUserNameWithId(req, body) {
-        console.log("first");
-        console.log({ body });
         return this.userservice.getUserNameWithId(body.id);
     }
     async getPictureWithId(req, body) {
