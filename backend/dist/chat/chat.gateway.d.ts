@@ -24,4 +24,37 @@ export declare class ChatGateway implements OnGatewayConnection, OnGatewayDiscon
     banUser(payload: any, client: Socket): void;
     unbanUser(payload: any, client: Socket): void;
     leaveRoom(payload: any, client: Socket): void;
+    updateChatRooms(payload: any): Promise<({
+        participants: {
+            id: string;
+            rid: string;
+            uid: string;
+            role: import(".prisma/client").$Enums.Role;
+            isOnline: boolean;
+            isMuted: boolean;
+            isBanned: boolean;
+            createdAt: Date;
+            updatedAt: Date;
+        }[];
+        messages: {
+            id: string;
+            msg: string;
+            msgTime: Date;
+            userId: string;
+            rid: string;
+            createdAt: Date;
+            updatedAt: Date;
+        }[];
+    } & {
+        id: string;
+        name: string;
+        picture: string;
+        lastMessageDate: Date;
+        visibility: import(".prisma/client").$Enums.Visibility;
+        password: string;
+        lastMessage: string;
+        is_DM: boolean;
+        createdAt: Date;
+        updatedAt: Date;
+    })[]>;
 }
