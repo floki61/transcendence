@@ -390,8 +390,15 @@ export class ChatService {
 				},
 			},
 			include: {
-				messages: true,
+				messages: {
+					orderBy: {
+						msgTime: 'asc',
+					},
+				},
 				participants: true,
+			},
+			orderBy: {
+				updatedAt: 'desc',
 			},
 		});
 		for (var room of rooms)

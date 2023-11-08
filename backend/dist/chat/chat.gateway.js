@@ -89,6 +89,7 @@ let ChatGateway = exports.ChatGateway = class ChatGateway {
     async create(createChatDto, client) {
         const message = await this.chatService.create(createChatDto, client);
         this.server.to(createChatDto.rid).emit('message', { userid: message.id, msg: message.msg });
+        this.updateChatRooms({ id: message.id });
         return message;
     }
     async joinRoom(payload) {
@@ -110,6 +111,11 @@ let ChatGateway = exports.ChatGateway = class ChatGateway {
     leaveRoom(payload, client) {
         if (this.map.has(payload.uid))
             this.map.get(payload.uid).leave(payload.rid);
+    }
+    async updateChatRooms(payload) {
+        const rooms = await this.chatService.getMyRooms(payload);
+        this.server.emit('chatRoomsUpdated', rooms);
+        return rooms;
     }
 };
 __decorate([
@@ -161,6 +167,12 @@ __decorate([
     __metadata("design:paramtypes", [Object, socket_io_1.Socket]),
     __metadata("design:returntype", void 0)
 ], ChatGateway.prototype, "leaveRoom", null);
+__decorate([
+    __param(0, (0, websockets_1.MessageBody)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object]),
+    __metadata("design:returntype", Promise)
+], ChatGateway.prototype, "updateChatRooms", null);
 exports.ChatGateway = ChatGateway = __decorate([
     (0, websockets_1.WebSocketGateway)({ namespace: 'chat',
         cors: { origin: 'http://localhost:3000', credentials: true },

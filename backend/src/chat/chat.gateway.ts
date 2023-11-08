@@ -9,6 +9,7 @@ import { Req, UseGuards } from '@nestjs/common';
 import { JwtAuthGuard } from 'src/auth/jwt/jwt.guard';
 import { WsGuard } from 'src/auth/tools/ws.guard';
 import { OnEvent } from '@nestjs/event-emitter';
+import { subscribe } from 'diagnostics_channel';
 
 
 @WebSocketGateway({ namespace: 'chat' ,
@@ -97,6 +98,7 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
 	async create(@MessageBody() createChatDto: CreateChatDto, client: Socket) {
 		const message = await this.chatService.create(createChatDto, client);
 		this.server.to(createChatDto.rid).emit('message', { userid: message.id, msg: message.msg });
+		this.updateChatRooms({id: message.id});
 		return message;
 	}
 	
@@ -131,6 +133,13 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
 	leaveRoom(@MessageBody() payload: any, @ConnectedSocket() client: Socket) {
 		if (this.map.has(payload.uid))
 			this.map.get(payload.uid).leave(payload.rid);
+	}
+
+	// @SubscribeMessage('updateChatRooms')
+	async updateChatRooms(@MessageBody() payload: any) {
+		const rooms = await this.chatService.getMyRooms(payload);
+		this.server.emit('chatRoomsUpdated', rooms);
+		return rooms;
 	}
 
 	// @SubscribeMessage('createRoom')
