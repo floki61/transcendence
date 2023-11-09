@@ -25,8 +25,8 @@ const Chatbar:React.FC<ChatProps> = ({name, text, time, image, OnClick }) => {
 		msg = text;
 
 	return (
-	  <div className="w-5/6 flex justify-between border-b-2 border-primecl">
-		  <div className="flex items-center gap-4 p-2">
+	  <div className="w-full h-full flex justify-between items-center border-t-2 border-primecl">
+		  <div className="flex gap-4 h-3/4">
 			  <Image
 				  src={image}
 				  alt={"floki lherban"}
@@ -34,12 +34,12 @@ const Chatbar:React.FC<ChatProps> = ({name, text, time, image, OnClick }) => {
 				  height={50}
 				  className="rounded-full"
 			  />
-			  <div className="flex flex-col justify-center">
+			  <div className="flex flex-col">
 				  <h2 className="text-xl">{name}</h2>
 				  <p className="font-light">{msg}</p>
 			  </div>
 		  </div>
-		  <p className="text-sm font-light pt-3">{time}</p>
+		  <p className="text-sm font-light pt-3 self-start">{time}</p>
 	  </div>
 	)
 }

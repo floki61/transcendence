@@ -31,7 +31,7 @@ interface ChatType {
 }
 
 export const useChat = (
-  rid: any,
+  rid?: any,
 ) => {
   const user = useContext(UserContext);
   const [chat, SetChat] = useState<ChatType[]>();
@@ -82,8 +82,12 @@ export const useChat = (
     if (chat && chat[0]) {
       let id;
       chat.map((chatie) => {
-        if (chatie.user?.uid != user.user?.id) 
-          id = chatie.user?.uid;
+        if (chatie.user) {
+          if (chatie.user.uid != user.user?.id) 
+            id = chatie.user.uid;
+        }
+        else if (chatie.uid != user.user?.id)
+          id = chatie.uid;
       })
       console.log(id);
       try {
@@ -107,11 +111,12 @@ export const useChat = (
   getName();
 
   const handleInput = (e: any) => {
+    e.preventDefault();
     SetInput(e.target.value);
   }
 
   const sendMsg = (e: any) => {
-    if (chat && chat[0])
+    if (chat && chat[0] && input.length > 0)
       socket?.emit('createChat', {
         "rid": chat[0].rid,
         "uid": user.user?.id,
