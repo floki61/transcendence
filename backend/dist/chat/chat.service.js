@@ -23,11 +23,12 @@ let ChatService = exports.ChatService = class ChatService {
         this.map = new Map();
     }
     async create(createChatDto, client) {
-        const message = { ...createChatDto };
+        var message = { ...createChatDto };
+        console.log(createChatDto);
         const participant = await this.prisma.participant.findUnique({
             where: {
                 uid_rid: {
-                    uid: createChatDto.id,
+                    uid: createChatDto.uid,
                     rid: createChatDto.rid,
                 },
             },
@@ -38,8 +39,9 @@ let ChatService = exports.ChatService = class ChatService {
         if (participant.isBanned === true || participant.isMuted === true) {
             throw new common_1.UnauthorizedException('User cannot send message');
         }
+        var mssg;
         try {
-            await this.prisma.message.create({
+            mssg = await this.prisma.message.create({
                 data: {
                     userId: participant.id,
                     msg: createChatDto.msg,
@@ -60,6 +62,8 @@ let ChatService = exports.ChatService = class ChatService {
                 lastMessageDate: new Date(),
             },
         });
+        message = { ...message, msgTime: mssg.msgTime };
+        console.log(message);
         return message;
     }
     async joinRoom(payload) {
@@ -391,6 +395,7 @@ let ChatService = exports.ChatService = class ChatService {
         return rooms;
     }
     async getMessages(payload) {
+        console.log(payload);
         const message = await this.prisma.message.findMany({
             where: {
                 rid: payload.rid,

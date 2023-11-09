@@ -2,109 +2,15 @@
 
 import Image from "next/image";
 import Chatmsg from "@/components/Chatmsg";
-import Audio from "@/components/Audio";
-import axios from "axios";
-import { useEffect, useState } from "react";
-import { useContext } from "react";
-import { UserContext } from "@/context/userContext";
-import { useChat } from "@/context/chatSocket";
+import { useChat } from "@/hooks/useChat";
 
-interface ChatType {
-  user: {
-    createdAt: string;
-    id: string;
-    isBanned: boolean;
-    isMuted: boolean;
-    isOnline: boolean;
-    rid: string;
-    role: string;
-    uid: string;
-    updateAt: string;
-  };
-  createdAt: string;
-  id: string;
-  msg: string;
-  msgTime: string;
-  rid: string;
-  updatedAt: string;
-  userId: string;
-}
+const Convo = ({ params }: { params: any }) => {
+  const { showDiv, SetShowDiv, user, msg, image, name, input, handleInput, sendMsg } = useChat({ rid: params.id });
 
-const Convo = ({ params } : {params: any}) => {
-
-  const user = useContext(UserContext);
-	const [chat, SetChat] = useState<ChatType[]>();
-	const [image, SetImage] = useState<string>();
-	const [name, SetName] = useState<string>();
-	const [showDiv, SetShowDiv] = useState(false);
-  const {socket} = useChat();
-  
-    useEffect(() => {
-      if (!socket)
-        return;
-      const getMessages = async () => {
-        try {
-          const res = await axios.post("http://localhost:4000/chat/getMessages", {rid : params.id},{
-            withCredentials: true
-          });
-          const data = res.data;
-          if (data.length > 0) {
-            const updatedChat = data.map((item: any) => item);
-            
-            SetChat(updatedChat);
-          }   
-        } catch (error) {
-          console.log("getMessages failed");
-        }
-      }
-      getMessages();
-      socket.on('message', (data) => {
-        console.log("salam : ", data);
-      });
-    }, []);
-    
-    const getName = async () => {
-      if (chat && chat[0]) {
-        try {
-          const res = await axios.post("http://localhost:4000/getUserNameWithId", {id: chat[0].user.uid},{
-            withCredentials: true,
-          })
-          SetName(res.data);
-        } catch (error) {
-          console.log("error fetching username")
-        }
-        try {
-          const res = await axios.post("http://localhost:4000/getPictureWithId", {id: chat[0].user.uid},{
-            withCredentials: true,
-          })
-          SetImage(res.data);
-        } catch (error) {
-          console.log("error fetching picture")
-        }
-      }  
-    }
-    getName();
-
-    const [input, SetInput] = useState("");
-
-    const handleInput = (e: any) => {
-      SetInput(e.target.value);
-      console.log("input : ", input);
-    }
-
-    const sendMsg = (e: any) => {
-      if (chat && chat[0])
-      socket?.emit('createChat', {
-        "rid": chat[0].rid, 
-        "id": user.user?.id,
-        "msg": input,
-      });
-      SetInput('');
-    }
-
+  console.log("chat", msg);
   return (
-    <div className="h-full w-full flex" onClick={() => {if (showDiv) SetShowDiv(false)}}>
-      {user.user && chat && chat[0] && (
+    <div className="h-full w-full flex" onClick={() => { if (showDiv) SetShowDiv(false) }}>
+      {user.user && msg && msg[0] && (
         <div className="h-full flex-1 flex flex-col justify-between">
           <div className="px-4 py-2 flex items-center justify-between bg-primecl">
             <div className="flex items-center gap-4">
@@ -117,7 +23,7 @@ const Convo = ({ params } : {params: any}) => {
               />
               <div>
                 <h2 className="text-xl">{name}</h2>
-                <h3 className="text-sm font-light">{chat[0].user.isOnline ? "Online" : "Offline"}</h3>
+                <h3 className="text-sm font-light">Offline</h3>
               </div>
             </div>
             <div className="flex gap-8 relative w-[15%] h-full items-center justify-end">
@@ -145,11 +51,11 @@ const Convo = ({ params } : {params: any}) => {
             </div>
           </div>
           <div className="flex flex-col place-content-end flex-1 bg-segundcl py-2">
-            {user.user && chat && chat.map((chatie) => (
+            {user.user && msg && msg.map((chatie) => (
               <Chatmsg
                 text={chatie.msg}
                 time={chatie.msgTime.substring(11, 16)}
-                className={`flex font-light justify-between ${user.user?.id === chatie.user.uid ? "self-end bg-primecl rounded-s-lg rounded-br-lg my-1 mx-2" : "bg-quatrocl rounded-e-lg rounded-bl-lg my-1 mx-2 self-start"}`}
+                className={`flex font-light justify-between ${user.user?.id === chatie.uid ? "self-end bg-primecl rounded-s-lg rounded-br-lg my-1 mx-2" : "bg-quatrocl rounded-e-lg rounded-bl-lg my-1 mx-2 self-start"}`}
               />
             ))}
           </div>
@@ -187,7 +93,6 @@ const Convo = ({ params } : {params: any}) => {
               placeholder="Type a message"
               className="bg-terserocl rounded-md p-2 px-4 w-5/6 outline-none"
             />
-            {/* <Audio /> */}
             <button type="submit" onClick={sendMsg}>
               send
             </button>

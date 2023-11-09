@@ -10,9 +10,10 @@ export declare class ChatService {
     constructor(prisma: PrismaService, jwt: JwtService, eventEmitter: EventEmitter2);
     map: Map<any, any>;
     create(createChatDto: CreateChatDto, client: Socket): Promise<{
-        id: string;
+        uid: string;
         msg: string;
         rid: string;
+        msgTime: Date;
     }>;
     joinRoom(payload: any): Promise<string>;
     kickUser(payload: any): Promise<string>;
