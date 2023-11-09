@@ -88,8 +88,8 @@ let ChatGateway = exports.ChatGateway = class ChatGateway {
     }
     async create(createChatDto, client) {
         const message = await this.chatService.create(createChatDto, client);
-        this.server.to(createChatDto.rid).emit('message', { userid: message.id, msg: message.msg });
-        this.updateChatRooms({ id: message.id });
+        this.server.to(createChatDto.rid).emit('message', message);
+        this.updateChatRooms({ uid: message.uid });
         return message;
     }
     async joinRoom(payload) {
@@ -174,7 +174,8 @@ __decorate([
     __metadata("design:returntype", Promise)
 ], ChatGateway.prototype, "updateChatRooms", null);
 exports.ChatGateway = ChatGateway = __decorate([
-    (0, websockets_1.WebSocketGateway)({ namespace: 'chat',
+    (0, websockets_1.WebSocketGateway)({
+        namespace: 'chat',
         cors: { origin: 'http://localhost:3000', credentials: true },
     }),
     __metadata("design:paramtypes", [chat_service_1.ChatService,

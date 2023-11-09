@@ -8,32 +8,32 @@ import { PrismaService } from 'src/prisma/prisma.service';
 
 @Injectable()
 export class UsersService {
-    constructor(private jwt: JwtService,
-        private config: ConfigService,
-        private prisma: PrismaService) {}
+	constructor(private jwt: JwtService,
+		private config: ConfigService,
+		private prisma: PrismaService) { }
 
-    async getUser(idu: string) {
-        return await this.prisma.user.findUnique({
-            where: {
-                id: idu,
-            },
-        });
-    }
+	async getUser(idu: string) {
+		return await this.prisma.user.findUnique({
+			where: {
+				id: idu,
+			},
+		});
+	}
 
 	async checkIfnameExists(data: any) {
-    const user = await this.prisma.user.findUnique({
-        where: {
-            userName: data.userName,
-        },
-    });
-    return user ? true : false;
-}
+		const user = await this.prisma.user.findUnique({
+			where: {
+				userName: data.userName,
+			},
+		});
+		return user ? true : false;
+	}
 	async updateUser(req, data: any) {
-		if(data.userName)
+		if (data.userName)
 			this.updateUserName(req, data);
-		if(data.phoneNumber)
+		if (data.phoneNumber)
 			this.updateUserPhoneNumber(req, data);
-		if(data.country)
+		if (data.country)
 			this.updateUserCountry(req, data);
 		await this.prisma.user.update({
 			where: {
@@ -57,7 +57,7 @@ export class UsersService {
 	}
 	async updateUserName(req, data: any) {
 		// if (await this.checkIfnameExists(data))
-			// throw new UnauthorizedException('Username already exists');«
+		// throw new UnauthorizedException('Username already exists');«
 		// throw new HttpException('Username already exists', HttpStatus.BAD_REQUEST);
 		return await this.prisma.user.update({
 			where: {
@@ -91,20 +91,20 @@ export class UsersService {
 		});
 	}
 
-    async createUser(req) {
+	async createUser(req) {
 		console.log(req.user);
-        return await this.prisma.user.create({
-            data:
-            {
+		return await this.prisma.user.create({
+			data:
+			{
 				userName: req.user.login,
-                id: req.user.id,
-                firstName: req.user.firstName,
-                lastName: req.user.lastName,
-                email: req.user.email,
-                picture: req.user.picture
-            },
-        });
-    }
+				id: req.user.id,
+				firstName: req.user.firstName,
+				lastName: req.user.lastName,
+				email: req.user.email,
+				picture: req.user.picture
+			},
+		});
+	}
 
 	async getUserNameWithId(id: string) {
 		const user = await this.prisma.user.findUnique({
@@ -112,7 +112,7 @@ export class UsersService {
 				id,
 			},
 		});
-		if(user)
+		if (user)
 			return user.userName;
 		return null;
 	}
@@ -123,7 +123,7 @@ export class UsersService {
 				id,
 			},
 		});
-		if(user)
+		if (user)
 			return user.picture;
 		return null;
 	}
@@ -167,33 +167,32 @@ export class UsersService {
 		if (await this.prisma.chatRoom.findFirst({
 			where: {
 				AND: [
-						{
-							participants: {
-								some: {
-									uid: {
-									  in: [userId, friendId],
-									},
+					{
+						participants: {
+							some: {
+								uid: {
+									in: [userId, friendId],
 								},
 							},
 						},
-						{
-							is_DM: true
-						},
-					],
+					},
+					{
+						is_DM: true
+					},
+				],
 			}
-		}))
-		{
+		})) {
 			return { friendrequest };
 		}
 		const chatRoom = this.creatChatRoom(userId, friendId);
 		return { friendrequest, chatRoom };
 	}
 
-	async   creatChatRoom(userId: string, friendId: string) {
+	async creatChatRoom(userId: string, friendId: string) {
 		const chatRoom = await this.prisma.chatRoom.create({
 			data: {
-				name: 'Chat between ' + (await this.prisma.user.findUnique({where: {id: userId}})).firstName 
-				+ ' and ' + (await this.prisma.user.findUnique({where: {id: friendId}})).firstName,
+				name: 'Chat between ' + (await this.prisma.user.findUnique({ where: { id: userId } })).firstName
+					+ ' and ' + (await this.prisma.user.findUnique({ where: { id: friendId } })).firstName,
 			}
 		});
 		const participant1 = await this.prisma.participant.create({
@@ -243,10 +242,10 @@ export class UsersService {
 		})
 		await this.prisma.friendShip.delete({
 			where: {
-				id : (await friendrequest).id,
+				id: (await friendrequest).id,
 			}
 		})
-		
+
 	}
 
 	async checkFriendship(userId: string, friendId: string) {
@@ -270,7 +269,7 @@ export class UsersService {
 	}
 
 	async blockUser(userId: string, friendId: string) {
-		
+
 		const check = await this.prisma.block.findFirst({
 			where: {
 				AND: [

@@ -12,7 +12,8 @@ import { OnEvent } from '@nestjs/event-emitter';
 import { subscribe } from 'diagnostics_channel';
 
 
-@WebSocketGateway({ namespace: 'chat' ,
+@WebSocketGateway({
+	namespace: 'chat',
 	cors: { origin: 'http://localhost:3000', credentials: true },
 })
 export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
@@ -21,8 +22,8 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
 	map = new Map();
 
 	constructor(private readonly chatService: ChatService,
-							private jwt: JwtService,
-							private config: ConfigService ) { }
+		private jwt: JwtService,
+		private config: ConfigService) { }
 
 	async handleConnection(client: Socket) {
 		let cookie: string;
@@ -39,8 +40,7 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
 				this.map.set(payload.id, client);
 			}
 			const rooms = await this.chatService.getMyRooms(payload);
-			if (rooms)
-			{
+			if (rooms) {
 				(rooms).forEach((room: any) => {
 					client.join(room.id);
 				});
@@ -61,14 +61,13 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
 				{
 					secret: this.config.get('secret')
 				}
-				);
-				if (payload.id) {
-					delete this.map[payload.id];
-				}
+			);
+			if (payload.id) {
+				delete this.map[payload.id];
+			}
 		}
 		const rooms = this.chatService.getMyRooms(payload);
-		if (rooms)
-		{
+		if (rooms) {
 			(await rooms).forEach((room: any) => {
 				client.leave(room.id);
 			});
@@ -92,16 +91,17 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
 		}
 		return cookies['access_token'];
 	}
-	
+
 	// @UseGuards(WsGuard)
+
 	@SubscribeMessage('createChat')
 	async create(@MessageBody() createChatDto: CreateChatDto, client: Socket) {
 		const message = await this.chatService.create(createChatDto, client);
-		this.server.to(createChatDto.rid).emit('message', { userid: message.id, msg: message.msg });
-		this.updateChatRooms({id: message.id});
+		this.server.to(createChatDto.rid).emit('message', message);
+		this.updateChatRooms({ uid: message.uid });
 		return message;
 	}
-	
+
 	// @UseGuards(WsGuard)
 	// payload depand on rid uid and password
 	@OnEvent('joinRoom')
@@ -143,11 +143,11 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
 	}
 
 	// @SubscribeMessage('createRoom')
-    // async createRoom(@MessageBody() payload: any, @ConnectedSocket() client: Socket) {
+	// async createRoom(@MessageBody() payload: any, @ConnectedSocket() client: Socket) {
 	// 	// console.log('payload', payload);
 	// 	const room = await this.chatService.createRoom(payload);
-    //     return room;
-    // }
+	//     return room;
+	// }
 
 	// @SubscribeMessage('deleteRoom')
 	// async deleteRoom(@MessageBody() payload: any, @ConnectedSocket() client: Socket) {
@@ -177,7 +177,7 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
 	//   return this.chatService.update(updateChatDto.id, updateChatDto);
 	// }
 
-	
+
 	// @SubscribeMessage('removeChat')
 	// remove(@MessageBody() id: number) {
 	//   return this.chatService.remove(id);

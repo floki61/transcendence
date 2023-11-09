@@ -17,13 +17,13 @@ export class ChatService {
 	map = new Map();
 
 	async create(createChatDto: CreateChatDto, client: Socket) {
-		const message = { ...createChatDto };
-		// console.log( createChatDto );
+		var message = { ...createChatDto };
+		console.log(createChatDto);
 
 		const participant = await this.prisma.participant.findUnique({
 			where: {
 				uid_rid: {
-					uid: createChatDto.id,
+					uid: createChatDto.uid,
 					rid: createChatDto.rid,
 				},
 			},
@@ -35,15 +35,15 @@ export class ChatService {
 		if (participant.isBanned === true || participant.isMuted === true) {
 			throw new UnauthorizedException('User cannot send message');
 		}
-
+		var mssg;
 		try {
-		await this.prisma.message.create({
-			data: {
-			userId: participant.id,
-			msg: createChatDto.msg,
-			rid: createChatDto.rid,
-			}
-		});
+			mssg = await this.prisma.message.create({
+				data: {
+					userId: participant.id,
+					msg: createChatDto.msg,
+					rid: createChatDto.rid,
+				}
+			});
 		} catch (error) {
 			// Handle the exception and send an error message to the client
 			client.emit('errorEvent', { message: 'An error occurred', error: error.message });
@@ -58,6 +58,8 @@ export class ChatService {
 				lastMessageDate: new Date(),
 			},
 		});
+		message = { ...message, msgTime: mssg.msgTime };
+		console.log(message);
 		return message;
 	}
 
@@ -108,12 +110,12 @@ export class ChatService {
 
 	async kickUser(payload: any) {
 		const room = await this.prisma.chatRoom.findUnique({
-		where: {
-			id: payload.rid,
-		},
-		include: {
-			participants: true,
-		},
+			where: {
+				id: payload.rid,
+			},
+			include: {
+				participants: true,
+			},
 		});
 		if (!room) {
 			throw new NotFoundException('Chat room not found');
@@ -121,8 +123,8 @@ export class ChatService {
 		const participant = await this.prisma.participant.findUnique({
 			where: {
 				uid_rid: {
-				uid: payload.id,
-				rid: payload.rid,
+					uid: payload.id,
+					rid: payload.rid,
 				},
 			},
 		});
@@ -187,7 +189,7 @@ export class ChatService {
 					password: hash,
 				},
 			});
-		} else if (payload.visibility === 'PRIVATE') {	
+		} else if (payload.visibility === 'PRIVATE') {
 			room = await this.prisma.chatRoom.update({
 				where: {
 					id: room.id,
@@ -209,8 +211,8 @@ export class ChatService {
 		const participant = await this.prisma.participant.findUnique({
 			where: {
 				uid_rid: {
-				uid: payload.uid,
-				rid: payload.rid,
+					uid: payload.uid,
+					rid: payload.rid,
 				},
 			},
 		});
@@ -223,8 +225,8 @@ export class ChatService {
 		await this.prisma.participant.update({
 			where: {
 				uid_rid: {
-				uid: payload.uid,
-				rid: payload.rid,
+					uid: payload.uid,
+					rid: payload.rid,
 				},
 			},
 			data: {
@@ -234,15 +236,15 @@ export class ChatService {
 		this.eventEmitter.emit('banUser', payload);
 		return 'Banned user';
 	}
-	
+
 
 	async unbanUser(payload: any) {
 		// console.log(payload.rid);
 		const participant = await this.prisma.participant.findUnique({
 			where: {
 				uid_rid: {
-				uid: payload.uid,
-				rid: payload.rid,
+					uid: payload.uid,
+					rid: payload.rid,
 				},
 			},
 		});
@@ -252,8 +254,8 @@ export class ChatService {
 		await this.prisma.participant.update({
 			where: {
 				uid_rid: {
-				uid: payload.uid,
-				rid: payload.rid,
+					uid: payload.uid,
+					rid: payload.rid,
 				},
 			},
 			data: {
@@ -281,8 +283,8 @@ export class ChatService {
 		const participant = await this.prisma.participant.findUnique({
 			where: {
 				uid_rid: {
-				uid: payload.uid,
-				rid: payload.rid,
+					uid: payload.uid,
+					rid: payload.rid,
 				},
 			},
 		});
@@ -324,12 +326,12 @@ export class ChatService {
 
 	async muteUser(payload: any) {
 		// console.log(payload.rid);
-		
+
 		const participant = await this.prisma.participant.findUnique({
 			where: {
 				uid_rid: {
-				uid: payload.uid,
-				rid: payload.rid,
+					uid: payload.uid,
+					rid: payload.rid,
 				},
 			},
 		});
@@ -342,8 +344,8 @@ export class ChatService {
 		await this.prisma.participant.update({
 			where: {
 				uid_rid: {
-				uid: payload.uid,
-				rid: payload.rid,
+					uid: payload.uid,
+					rid: payload.rid,
 				},
 			},
 			data: {
@@ -358,8 +360,8 @@ export class ChatService {
 		const participant = await this.prisma.participant.findUnique({
 			where: {
 				uid_rid: {
-				uid: payload.uid,
-				rid: payload.rid,
+					uid: payload.uid,
+					rid: payload.rid,
 				},
 			},
 		});
@@ -369,8 +371,8 @@ export class ChatService {
 		await this.prisma.participant.update({
 			where: {
 				uid_rid: {
-				uid: payload.uid,
-				rid: payload.rid,
+					uid: payload.uid,
+					rid: payload.rid,
 				},
 			},
 			data: {
@@ -401,10 +403,10 @@ export class ChatService {
 			},
 			include: {
 				messages: true,//{
-					// orderBy: 
-					// {
-					// 	msgTime: 'asc',
-					// },
+				// orderBy: 
+				// {
+				// 	msgTime: 'asc',
+				// },
 				//},
 				participants: true,
 			},
@@ -412,10 +414,8 @@ export class ChatService {
 				updatedAt: 'desc',
 			},
 		});
-		for (var room of rooms)
-		{
-			if (room.messages.length > 0)
-			{
+		for (var room of rooms) {
+			if (room.messages.length > 0) {
 				room.lastMessage = room.messages[room.messages.length - 1].msg;
 				room.lastMessageDate = room.messages[room.messages.length - 1].msgTime;
 				delete room.messages;
@@ -426,6 +426,7 @@ export class ChatService {
 
 
 	async getMessages(payload: any) {
+		console.log(payload);
 		const message = await this.prisma.message.findMany({
 			where: {
 				rid: payload.rid,
@@ -434,6 +435,7 @@ export class ChatService {
 				user: true,
 			},
 		});
+
 		// console.log({ message });
 		return message;
 	}
@@ -542,8 +544,8 @@ export class ChatService {
 		const participant = await this.prisma.participant.findUnique({
 			where: {
 				uid_rid: {
-				uid: payload.uid,
-				rid: payload.rid,
+					uid: payload.uid,
+					rid: payload.rid,
 				},
 			},
 		});
@@ -559,8 +561,8 @@ export class ChatService {
 		await this.prisma.participant.update({
 			where: {
 				uid_rid: {
-				uid: payload.uid,
-				rid: payload.rid,
+					uid: payload.uid,
+					rid: payload.rid,
 				},
 			},
 			data: {
