@@ -5,14 +5,14 @@ import Chatmsg from "@/components/Chatmsg";
 import { useChat } from "@/hooks/useChat";
 
 const Convo = ({ params }: { params: any }) => {
-  const { showDiv, SetShowDiv, user, msg, image, name, input, handleInput, sendMsg } = useChat({ rid: params.id });
+  const { showDiv, SetShowDiv, user, chat, image, name, input, handleInput, sendMsg } = useChat({ rid: params.id });
 
-  console.log("chat", msg);
+  // console.log("chat", chat);
   return (
     <div className="h-full w-full flex" onClick={() => { if (showDiv) SetShowDiv(false) }}>
-      {user.user && msg && msg[0] && (
+      {user.user && chat && chat[0] && (
         <div className="h-full flex-1 flex flex-col justify-between">
-          <div className="px-4 py-2 flex items-center justify-between bg-primecl">
+          <div className="px-4 py-2 flex items-center justify-between bg-primecl overflow-hidden">
             <div className="flex items-center gap-4">
               <Image
                 src={image as string}
@@ -50,16 +50,16 @@ const Convo = ({ params }: { params: any }) => {
               )}
             </div>
           </div>
-          <div className="flex flex-col place-content-end flex-1 bg-segundcl py-2">
-            {user.user && msg && msg.map((chatie) => (
+          <div className="flex flex-col place-content-end flex-1 h-3/4 bg-segundcl py-2 overflow-y-scroll">
+            {user.user && chat && chat.map((chatie) => (
               <Chatmsg
                 text={chatie.msg}
                 time={chatie.msgTime.substring(11, 16)}
-                className={`flex font-light justify-between ${user.user?.id === chatie.uid ? "self-end bg-primecl rounded-s-lg rounded-br-lg my-1 mx-2" : "bg-quatrocl rounded-e-lg rounded-bl-lg my-1 mx-2 self-start"}`}
+                className={`flex font-light justify-between ${(user.user?.id === chatie.user?.uid) || (user.user?.id === chatie.uid) ? "self-end bg-primecl rounded-s-lg rounded-br-lg my-1 mx-2" : "bg-quatrocl rounded-e-lg rounded-bl-lg my-1 mx-2 self-start"}`}
               />
             ))}
           </div>
-          <div className="py-4 bg-primecl w-full flex items-center justify-center gap-8">
+          <div className="py-4 bg-primecl w-full flex items-center justify-center gap-8 overflow-hidden">
             <svg
               xmlns="http://www.w3.org/2000/svg"
               width="20"

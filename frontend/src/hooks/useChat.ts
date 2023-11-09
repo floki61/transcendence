@@ -30,19 +30,11 @@ interface ChatType {
   uid: string;
 }
 
-interface msgType {
-  msg: string;
-  uid: string;
-  rid: string;
-  msgTime: string;
-}
-
 export const useChat = (
   rid: any,
 ) => {
   const user = useContext(UserContext);
-  // const [chat, SetChat] = useState<ChatType[]>();
-  const [msg, SetMsg] = useState<msgType[]>();
+  const [chat, SetChat] = useState<ChatType[]>();
   const [image, SetImage] = useState<string>();
   const [name, SetName] = useState<string>();
   const [showDiv, SetShowDiv] = useState(false);
@@ -61,8 +53,7 @@ export const useChat = (
         const data = res.data;
         if (data.length > 0) {
           updatedChat = data.map((item: any) => item);
-          // SetChat(updatedChat);
-          SetMsg(updatedChat);
+          SetChat(updatedChat);
         }
       } catch (error) {
         console.log("getMessages failed");
@@ -73,19 +64,30 @@ export const useChat = (
   }, []);
 
   useEffect(() => {
-    if (!socket)
-      return;
-    socket.on('message', (data) => {
-      console.log({ data, msg });
-      SetMsg(p => [...p!, data]);
-    });
-  }, [socket]);
+    if (!socket) return;
+    const messageHandler = (data: any) => {
+      SetChat((prevChat) => [...prevChat!, data]);
+    };
+  
+    socket.on('message', messageHandler);
+  
+    // Clean up the event listener
+    return () => {
+      socket.off('message', messageHandler);
+    };
+  }, []);
+  
 
   const getName = async () => {
-    if (msg && msg[0]) {
-      console.log("msg : ", msg);
+    if (chat && chat[0]) {
+      let id;
+      chat.map((chatie) => {
+        if (chatie.user?.uid != user.user?.id) 
+          id = chatie.user?.uid;
+      })
+      console.log(id);
       try {
-        const res = await axios.post("http://localhost:4000/getUserNameWithId", { id: msg[0].uid }, {
+        const res = await axios.post("http://localhost:4000/getUserNameWithId", { id }, {
           withCredentials: true,
         })
         SetName(res.data);
@@ -93,7 +95,7 @@ export const useChat = (
         console.log("error fetching username")
       }
       try {
-        const res = await axios.post("http://localhost:4000/getPictureWithId", { id: msg[0].uid }, {
+        const res = await axios.post("http://localhost:4000/getPictureWithId", { id }, {
           withCredentials: true,
         })
         SetImage(res.data);
@@ -106,18 +108,17 @@ export const useChat = (
 
   const handleInput = (e: any) => {
     SetInput(e.target.value);
-    console.log("input : ", input);
   }
 
   const sendMsg = (e: any) => {
-    if (msg && msg[0])
+    if (chat && chat[0])
       socket?.emit('createChat', {
-        "rid": msg[0].rid,
+        "rid": chat[0].rid,
         "uid": user.user?.id,
         "msg": input,
       });
     SetInput('');
   }
 
-  return { sendMsg, handleInput, user, input, msg, image, name, showDiv, SetShowDiv }
+  return { sendMsg, handleInput, user, input, chat, image, name, showDiv, SetShowDiv }
 }
