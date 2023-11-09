@@ -3,10 +3,11 @@
 import Chatbar from "@/components/Chatbar"
 import { useEffect, useState } from "react"
 import axios from "axios"
-import { useContext } from "react"
-import { UserContext } from "@/context/userContext"
+import {MdGroups} from "react-icons/md"
 import { getTime } from "@/components/getTime"
 import Link from "next/link"
+import { useChat } from "@/hooks/useChat";
+
 
 export interface FriendType {
 	id: string;
@@ -23,11 +24,10 @@ export default function ChatLayout({
 	children: React.ReactNode
 }) {
 
-	const user = useContext(UserContext);
+	// const user = useContext(UserContext);
+	const { showDiv, SetShowDiv, user, chat, image, name, input, handleInput, sendMsg } = useChat({ });
 	const [friends, SetFriends] = useState<FriendType[] | null>(null);
 	const [chatbar, SetChatbar] = useState(false);
-	// const [image, SetImage] = useState<string>();
-	// const [name, SetName] = useState<string>();
 
 
 	useEffect(() => {
@@ -92,41 +92,18 @@ export default function ChatLayout({
 				}
 			})
 		}
-		// if (friends) {
-		// 	friends.forEach((friend) => {
-		// 	const getName = async () => {
-		// 		console.log(friend.id);
-		// 		  try {
-		// 			const res = await axios.post("http://localhost:4000/getUserNameWithId", {id: friend.id},{
-		// 			  withCredentials: true,
-		// 			})
-		// 			console.log("res is : " , res.data);
-		// 			SetName(res.data);
-		// 			friend.name = res.data;
-		// 		  } catch (error) {
-		// 			console.log("error fetching username")
-		// 		  }
-		// 		  try {
-		// 			const res = await axios.post("http://localhost:4000/getPictureWithId", {id: friend.id},{
-		// 			  withCredentials: true,
-		// 			})
-		// 			console.log("res is : " , res.data);
-		// 			SetImage(res.data);
-		// 			friend.picture = res.data;
-		// 		  } catch (error) {
-		// 			console.log("error fetching picture")
-		// 		  }
-		// 		}
-		// 	  getName();
-		// 	})
-		// }
-
 
 	return (
 		<div className="flex h-full text-white">
-			<div className="h-full w-1/3 flex flex-col items-center gap-4 py-8 border-r-2 border-primecl overflow-scroll">
+			<div className="h-full w-1/3 flex flex-col items-center py-4 px-8 border-r-2 border-primecl overflow-scroll">
+				<div className="flex w-full justify-between items-center mb-1">
+					<p>Create Room</p>
+					<div className="cursor-pointer">
+						<MdGroups size={25} />
+					</div>
+				</div>
 				{friends && friends.map((friend) => (
-					<Link key={friend.id} href={`/chat/${friend.id}`} className="w-full flex justify-center">
+					<Link key={friend.id} href={`/chat/${friend.id}`} className="w-full h-[10%] flex justify-center mt-1">
 						<Chatbar
 							name={friend.name}
 							text={friend.lastMessage}

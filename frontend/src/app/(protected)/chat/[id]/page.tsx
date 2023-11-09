@@ -3,16 +3,18 @@
 import Image from "next/image";
 import Chatmsg from "@/components/Chatmsg";
 import { useChat } from "@/hooks/useChat";
+import { ChatSettings } from "@/components/ChatSettings";
+import { IoSend } from "react-icons/io5"
 
 const Convo = ({ params }: { params: any }) => {
   const { showDiv, SetShowDiv, user, chat, image, name, input, handleInput, sendMsg } = useChat({ rid: params.id });
 
-  // console.log("chat", chat);
+
   return (
     <div className="h-full w-full flex" onClick={() => { if (showDiv) SetShowDiv(false) }}>
       {user.user && chat && chat[0] && (
         <div className="h-full flex-1 flex flex-col justify-between">
-          <div className="px-4 py-2 flex items-center justify-between bg-primecl overflow-hidden">
+          <div className="px-4 py-2 flex items-center justify-between bg-primecl">
             <div className="flex items-center gap-4">
               <Image
                 src={image as string}
@@ -23,10 +25,10 @@ const Convo = ({ params }: { params: any }) => {
               />
               <div>
                 <h2 className="text-xl">{name}</h2>
-                <h3 className="text-sm font-light">Offline</h3>
+                <h3 className="text-sm font-light">{chat[0].user.isOnline ? "Online" : "Offline"}</h3>
               </div>
             </div>
-            <div className="flex gap-8 relative w-[15%] h-full items-center justify-end">
+            <div className="flex gap-8 relative w-[17%] h-full items-center justify-end">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 width="24"
@@ -42,15 +44,13 @@ const Convo = ({ params }: { params: any }) => {
                 />
               </svg>
               {showDiv && (
-                <div className="text-white font-light border-2 border-quatrocl absolute top-10 right-3 w-full h-28 rounded-md bg-terserocl flex flex-col">
-                  <p className="cursor-pointer hover:bg-segundcl rounded-t-md border-b-2 border-quatrocl w-full px-2 flex items-center h-1/3">Mute chat</p>
-                  <p className="cursor-pointer hover:bg-segundcl border-b-2 border-quatrocl w-full px-2 flex items-center h-1/3">Block</p>
-                  <p className="cursor-pointer hover:bg-segundcl rounded-b-md w-full px-2 flex items-center h-1/3">Invite</p>
-                </div>
+                <ChatSettings
+                  role={chat[0].user.role as string}
+                />
               )}
             </div>
           </div>
-          <div className="flex flex-col place-content-end flex-1 h-3/4 bg-segundcl py-2 overflow-y-scroll">
+          <div className="flex flex-col place-content-end flex-1 h-3/4 bg-segundcl py-2 overflow-auto">
             {user.user && chat && chat.map((chatie) => (
               <Chatmsg
                 text={chatie.msg}
@@ -59,7 +59,7 @@ const Convo = ({ params }: { params: any }) => {
               />
             ))}
           </div>
-          <div className="py-4 bg-primecl w-full flex items-center justify-center gap-8 overflow-hidden">
+          <div className="py-4 bg-primecl w-full flex items-center justify-center gap-8">
             <svg
               xmlns="http://www.w3.org/2000/svg"
               width="20"
@@ -94,7 +94,7 @@ const Convo = ({ params }: { params: any }) => {
               className="bg-terserocl rounded-md p-2 px-4 w-5/6 outline-none"
             />
             <button type="submit" onClick={sendMsg}>
-              send
+              <IoSend />
             </button>
           </div>
         </div>
