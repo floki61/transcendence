@@ -21,7 +21,7 @@ export class AuthController {
 	googlelogin() {}
 
 	@UseGuards(GoogleGuard)
-	@Get('/auth/google/callback')
+	@Get('google/callback')
 	async googleAuthRedirect(@Req() req, @Res() res: Response) {
 		if(await this.authService.validateUser(req, res)) {
 			// if(req.user.isTwoFactorAuthenticationEnabled)

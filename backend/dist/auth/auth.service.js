@@ -44,8 +44,13 @@ let AuthService = exports.AuthService = class AuthService {
     }
     async validateUser(req, res) {
         const user = await this.userservice.getUser(req.user.id);
-        if (!user)
+        if (!user) {
+            if (await this.userservice.checkIfnameExists(req.user.login)) {
+                console.log("faild to login");
+                throw new common_1.ForbiddenException('Username already exists');
+            }
             await this.userservice.createUser(req);
+        }
         else if (user && user.isTwoFactorAuthenticationEnabled) {
             const token = await this.generateToken(req, '2fa');
             res.cookie('2fa', token, { httpOnly: true, maxAge: 30 * 60 * 1000 });

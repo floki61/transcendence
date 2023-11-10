@@ -19,7 +19,7 @@ const Chatbar:React.FC<ChatProps> = ({name, text, time, image, OnClick }) => {
 	// }
 	let msg;
 
-	if (text.length > 25)
+	if (text && text.length > 25)
 		msg = text.substring(0, 24) + "...";
 	else
 		msg = text;

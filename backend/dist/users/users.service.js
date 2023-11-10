@@ -27,17 +27,18 @@ let UsersService = exports.UsersService = class UsersService {
             },
         });
     }
-    async checkIfnameExists(data) {
+    async checkIfnameExists(username) {
         const user = await this.prisma.user.findUnique({
             where: {
-                userName: data.userName,
+                userName: username,
             },
         });
+        console.log(user);
         return user ? true : false;
     }
     async updateUser(req, data) {
         if (data.userName)
-            this.updateUserName(req, data);
+            this.updateUserName(req, data.userName);
         if (data.phoneNumber)
             this.updateUserPhoneNumber(req, data);
         if (data.country)
@@ -92,7 +93,6 @@ let UsersService = exports.UsersService = class UsersService {
         });
     }
     async createUser(req) {
-        console.log(req.user);
         return await this.prisma.user.create({
             data: {
                 userName: req.user.login,

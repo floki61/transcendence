@@ -40,16 +40,21 @@ export class AuthService {
 
 	async validateUser(req, res) {
 		const user = await this.userservice.getUser(req.user.id);
-		if (!user)
+		if (!user) {
+			if(await this.userservice.checkIfnameExists(req.user.login)) {
+				console.log("faild to login");
+				throw new ForbiddenException('Username already exists');
+			}
 			await this.userservice.createUser(req);
+		}
 		else if(user && user.isTwoFactorAuthenticationEnabled) {
 			const token = await this.generateToken(req, '2fa');
 			res.cookie('2fa', token, { httpOnly: true, maxAge: 30 * 60 * 1000});
 			return true;
 		}
 		const token = await this.generateToken(req, 'jwt');
-		// const sevenDaysInMilliseconds = 7 * 24 * 60 * 60 * 1000;
-		res.cookie('access_token', token, { httpOnly: true, maxAge: 604800000});
+		// 30DaysInMilliseconds = 30 * 24 * 60 * 60 * 1000;
+		res.cookie('access_token', token, { httpOnly: true, maxAge: 2592000000});
 		return user ? true : false;
 	}
 	async logout (req, res) {
