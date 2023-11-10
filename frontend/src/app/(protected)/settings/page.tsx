@@ -26,7 +26,7 @@ export default function page() {
       console.log("saved with : ", user.user?.picture);
       handleSucces();
     } catch (error) {
-        console.error(error);
+      console.error(error);
     }
   };
 
@@ -39,22 +39,22 @@ export default function page() {
         }); // backend API endpoint
       }
     } catch (error) {
-        console.error(error);
+      console.error(error);
     }
   };
 
   const hnadleChange = (e: any) => {
     const { name, value } = e.target;
-  
+    
     if (name === "phoneNumber" && !Number(value) && value !== "" && value !== '0')
       return ;
   
     const newUser = { ...user.user, [name]: value };
     user.setUser(newUser as userType);
   };
-
+  
   const [imageUrl, setImageUrl] = useState<string | undefined>(user.user?.picture);
-
+  
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files.length === 1 && user) {
       setImageUrl(URL.createObjectURL(e.target.files[0]));
@@ -111,7 +111,7 @@ export default function page() {
           <div className="flex flex-col w-1/2 border-r-4 border-primecl justify-center items-center my-6 gap-6">
             <div className="flex flex-col items-center gap-3 h-1/2 w-full mt-4">
               <Image
-                src={user.user?.picture || "/placeholder.jpg"}
+                src={user.user.picture || "/placeholder.jpg"}
                 alt={"profile pic"}
                 width={100}
                 height={100}

@@ -31,6 +31,7 @@ let ChatController = exports.ChatController = class ChatController {
         this.prisma = prisma;
     }
     async createRoom(body, req) {
+        console.log("hello");
         const user = await this.userservice.createRoom(body);
         return user;
     }

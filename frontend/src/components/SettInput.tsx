@@ -4,12 +4,11 @@ import { faEye, faEyeDropper } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Image from "next/image";
 import { useEffect, useState, useRef } from "react";
-import { userType } from "@/app/(protected)/settings/page";
 
 interface SettinputProps {
   holder: string;
   type: string;
-  value: string;
+  value: string | undefined;
   className?: string;
   name: string;
   onChange(e: any): any;
