@@ -21,12 +21,14 @@ export class AuthController {
 	googlelogin() {}
 
 	@UseGuards(GoogleGuard)
-	@Get('/auth/google/callback')
+	@Get('google/callback')
 	async googleAuthRedirect(@Req() req, @Res() res: Response) {
 		if(await this.authService.validateUser(req, res)) {
-			// if(req.user.isTwoFactorAuthenticationEnabled)
-				// res.redirect('2fa/generate');
-			res.redirect(this.config.get('HOME_URL'));
+			const user = await this.userService.getUser(req.user.id);
+			if(user.isTwoFactorAuthenticationEnabled)
+				res.redirect(this.config.get('2FA_URL'));
+			else
+				res.redirect(this.config.get('HOME_URL'));
 		}
 		else
 			res.redirect(this.config.get('SETTINGS_URL'));

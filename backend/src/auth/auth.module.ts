@@ -7,6 +7,7 @@ import { JwtModule } from '@nestjs/jwt';
 import { UsersModule } from 'src/users/users.module';
 import { UsersService } from 'src/users/users.service';
 import { JwtStrategy } from './jwt/jwt.strategy';
+import { GoogleStrategy } from './tools/googleStrategy';
 
 
 
@@ -16,7 +17,7 @@ import { JwtStrategy } from './jwt/jwt.strategy';
     JwtModule.register({}),
   ],
   controllers: [AuthController],
-  providers: [AuthService, JwtStrategy, FortyTwoStrategy, UsersService, ],
+  providers: [AuthService, JwtStrategy, FortyTwoStrategy, GoogleStrategy, UsersService, ],
 })
 export class AuthModule {
   // configure(consumer: MiddlewareConsumer) {

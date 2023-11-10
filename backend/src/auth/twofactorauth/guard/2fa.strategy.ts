@@ -22,7 +22,7 @@ export class TwoFaStrategy extends PassportStrategy(Strategy, '2fa') {
                     return null;
             },
             ]),
-            secretOrKey: '2fasecretcode',
+            secretOrKey: config.get('JWT_2FA_SECRET_KEY'),
         });
     }
 
