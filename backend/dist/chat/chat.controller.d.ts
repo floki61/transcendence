@@ -26,7 +26,7 @@ export declare class ChatController {
     banUser(body: any, req: any): Promise<string>;
     unbanUser(body: any, req: any): Promise<string>;
     kickUser(body: any, req: any): Promise<string>;
-    getAllRoom(body: any, req: any): Promise<({
+    getAllRoom(req: any): Promise<({
         participants: {
             id: string;
             rid: string;

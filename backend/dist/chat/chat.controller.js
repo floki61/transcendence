@@ -31,7 +31,6 @@ let ChatController = exports.ChatController = class ChatController {
         this.prisma = prisma;
     }
     async createRoom(body, req) {
-        console.log("hello");
         const user = await this.userservice.createRoom(body);
         return user;
     }
@@ -51,7 +50,7 @@ let ChatController = exports.ChatController = class ChatController {
         const user = await this.userservice.kickUser(body);
         return user;
     }
-    async getAllRoom(body, req) {
+    async getAllRoom(req) {
         const rooms = await this.userservice.getAllRoom();
         return rooms;
     }
@@ -147,13 +146,11 @@ __decorate([
     __metadata("design:returntype", Promise)
 ], ChatController.prototype, "kickUser", null);
 __decorate([
-    (0, role_decorator_1.Roles)('ADMIN', 'OWNER', 'USER'),
-    (0, common_1.UseGuards)(jwt_guard_1.JwtAuthGuard, roles_guard_1.RolesGuard),
-    (0, common_1.Post)('getAllRooms'),
-    __param(0, (0, common_1.Body)()),
-    __param(1, (0, common_1.Req)()),
+    (0, common_1.UseGuards)(jwt_guard_1.JwtAuthGuard),
+    (0, common_1.Get)('getAllRooms'),
+    __param(0, (0, common_1.Req)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Object, Object]),
+    __metadata("design:paramtypes", [Object]),
     __metadata("design:returntype", Promise)
 ], ChatController.prototype, "getAllRoom", null);
 __decorate([

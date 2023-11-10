@@ -384,6 +384,9 @@ export class ChatService {
 
 	async getAllRoom() {
 		const room = await this.prisma.chatRoom.findMany({
+			where: {
+				is_DM: false,
+			},
 			include: {
 				participants: true,
 			},
@@ -583,5 +586,7 @@ export class ChatService {
 		}
 		return (await user.picture);
 	}
+
+
 
 }
