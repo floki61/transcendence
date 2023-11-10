@@ -22,7 +22,7 @@ export declare class UsersService {
         createdAt: Date;
         updatedAt: Date;
     }>;
-    checkIfnameExists(data: any): Promise<boolean>;
+    checkIfnameExists(username: string): Promise<boolean>;
     updateUser(req: any, data: any): Promise<void>;
     updateUserPicture(req: any, data: any): Promise<{
         id: string;
