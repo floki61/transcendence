@@ -35,7 +35,7 @@ export declare class ChatService {
     deleteRoom(payload: any): Promise<string>;
     muteUser(payload: any): Promise<string>;
     unmuteUser(payload: any): Promise<string>;
-    getAllRoom(): Promise<({
+    getAllRoom(id: any): Promise<({
         participants: {
             id: string;
             rid: string;

@@ -51,7 +51,7 @@ let ChatController = exports.ChatController = class ChatController {
         return user;
     }
     async getAllRoom(req) {
-        const rooms = await this.userservice.getAllRoom();
+        const rooms = await this.userservice.getAllRoom(req.user.id);
         return rooms;
     }
     async getMessages(body, req) {
@@ -154,6 +154,7 @@ __decorate([
     __metadata("design:returntype", Promise)
 ], ChatController.prototype, "getAllRoom", null);
 __decorate([
+    (0, common_1.UseGuards)(jwt_guard_1.JwtAuthGuard),
     (0, common_1.Post)('getMessages'),
     __param(0, (0, common_1.Body)()),
     __param(1, (0, common_1.Req)()),

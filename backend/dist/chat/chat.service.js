@@ -359,7 +359,7 @@ let ChatService = exports.ChatService = class ChatService {
         });
         return 'Unmuted user';
     }
-    async getAllRoom() {
+    async getAllRoom(id) {
         const room = await this.prisma.chatRoom.findMany({
             where: {
                 is_DM: false,
@@ -379,6 +379,7 @@ let ChatService = exports.ChatService = class ChatService {
                         isBanned: false,
                     },
                 },
+                is_DM: true,
             },
             include: {
                 messages: true,

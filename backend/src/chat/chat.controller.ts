@@ -63,11 +63,11 @@ export class ChatController {
     @UseGuards(JwtAuthGuard)
     @Get('getAllRooms')
     async getAllRoom(@Req() req: any) {
-        const rooms = await this.userservice.getAllRoom();
+        const rooms = await this.userservice.getAllRoom(req.user.id);
         return rooms;
     }
 
-    // @UseGuards(JwtAuthGuard)
+    @UseGuards(JwtAuthGuard)
     @Post('getMessages')
     async getMessages(@Body() body: any, @Req() req: any) {
         // console.log(body);
