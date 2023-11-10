@@ -299,6 +299,19 @@ let ChatService = exports.ChatService = class ChatService {
         if (!room) {
             throw new common_1.NotFoundException('Chat room not found');
         }
+        if (room.participants.length > 1) {
+            throw new common_1.UnauthorizedException('Cannot delete room with more than 1 participant');
+        }
+        for (var participant of room.participants) {
+            await this.prisma.participant.delete({
+                where: {
+                    uid_rid: {
+                        uid: participant.uid,
+                        rid: payload.rid,
+                    },
+                },
+            });
+        }
         await this.prisma.chatRoom.delete({
             where: {
                 id: payload.rid,
@@ -363,11 +376,34 @@ let ChatService = exports.ChatService = class ChatService {
         const room = await this.prisma.chatRoom.findMany({
             where: {
                 is_DM: false,
+                OR: [
+                    {
+                        AND: [
+                            {
+                                participants: {
+                                    some: {
+                                        uid: id,
+                                        isBanned: false,
+                                    },
+                                },
+                            },
+                            {
+                                visibility: 'PRIVATE',
+                            },
+                        ],
+                    },
+                    {
+                        NOT: {
+                            visibility: 'PRIVATE',
+                        },
+                    },
+                ],
             },
             include: {
                 participants: true,
             },
         });
+        console.log(room);
         return room;
     }
     async getMyRooms(payload) {
