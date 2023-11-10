@@ -8,6 +8,11 @@ export interface FriendType {
 	lastMessageDate: string;
 	name: string;
 	picture: string;
+	visibility: string;
+	participants: {
+		uid: string;
+		role: string;
+	}[];
 }
 
 export const useRooms = () => {

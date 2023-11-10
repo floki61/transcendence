@@ -386,21 +386,6 @@ export class ChatService {
 		const room = await this.prisma.chatRoom.findMany({
 			where: {
 				is_DM: false,
-				// OR: [
-                //     {
-                //         participants: {
-                //             some: {
-                //                 uid: id,
-                //             },
-                //         },
-                //         visibility: 'PRIVATE',
-                //     },
-                //     {
-                //         NOT: {
-                //             visibility: 'PRIVATE',
-                //         },
-                //     },
-                // ],
 			},
 			include: {
 				participants: true,
