@@ -22,7 +22,7 @@ export declare class UsersService {
         createdAt: Date;
         updatedAt: Date;
     }>;
-    checkIfnameExists(data: any): Promise<boolean>;
+    checkIfnameExists(username: string): Promise<boolean>;
     updateUser(req: any, data: any): Promise<void>;
     updateUserPicture(req: any, data: any): Promise<{
         id: string;
@@ -207,4 +207,44 @@ export declare class UsersService {
         createdAt: Date;
         updatedAt: Date;
     }[]>;
+    getFriendRequests(userId: string): Promise<{
+        id: string;
+        userId: string;
+        friendId: string;
+        status: import(".prisma/client").$Enums.Status;
+        createdAt: Date;
+        updatedAt: Date;
+    }[]>;
+    getFriendProfile(userId: string): Promise<{
+        id: string;
+        userName: string;
+        firstName: string;
+        lastName: string;
+        email: string;
+        picture: string;
+        country: string;
+        phoneNumber: string;
+        accessToken: string;
+        password: string;
+        twoFactorAuthenticationSecret: string;
+        isTwoFactorAuthenticationEnabled: boolean;
+        createdAt: Date;
+        updatedAt: Date;
+    }>;
+    getFriendProfileWithUserName(userName: string): Promise<{
+        id: string;
+        userName: string;
+        firstName: string;
+        lastName: string;
+        email: string;
+        picture: string;
+        country: string;
+        phoneNumber: string;
+        accessToken: string;
+        password: string;
+        twoFactorAuthenticationSecret: string;
+        isTwoFactorAuthenticationEnabled: boolean;
+        createdAt: Date;
+        updatedAt: Date;
+    }>;
 }

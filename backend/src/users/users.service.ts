@@ -20,17 +20,18 @@ export class UsersService {
 		});
 	}
 
-	async checkIfnameExists(data: any) {
+	async checkIfnameExists(username: string) {
 		const user = await this.prisma.user.findUnique({
 			where: {
-				userName: data.userName,
+				userName: username,
 			},
 		});
+		console.log(user);
 		return user ? true : false;
 	}
 	async updateUser(req, data: any) {
 		if (data.userName)
-			this.updateUserName(req, data);
+			this.updateUserName(req, data.userName);
 		if (data.phoneNumber)
 			this.updateUserPhoneNumber(req, data);
 		if (data.country)
@@ -92,7 +93,6 @@ export class UsersService {
 	}
 
 	async createUser(req) {
-		console.log(req.user);
 		return await this.prisma.user.create({
 			data:
 			{
@@ -107,6 +107,9 @@ export class UsersService {
 	}
 
 	async getUserNameWithId(id: string) {
+		// console.log("hahowa", id);
+		if (!id)
+			return null;
 		const user = await this.prisma.user.findUnique({
 			where: {
 				id,
@@ -118,6 +121,8 @@ export class UsersService {
 	}
 
 	async getPictureWithId(id: string) {
+		if (!id)
+			return null;
 		const user = await this.prisma.user.findUnique({
 			where: {
 				id,
@@ -355,4 +360,30 @@ export class UsersService {
 		});
 		return friendRequests;
 	}
+
+	async getFriendRequests(userId: string) {
+		return await this.prisma.friendShip.findMany({
+			where: {
+				friendId: userId,
+				status: 'PENDING',
+			},
+		});
+	}
+
+	async getFriendProfile(userId: string) {
+		return await this.prisma.user.findUnique({
+			where: {
+				id: userId,
+			},
+		});
+	}
+
+	async getFriendProfileWithUserName(userName: string) {
+		return await this.prisma.user.findFirst({
+			where: {
+				userName,
+			},
+		});
+	}
+
 }

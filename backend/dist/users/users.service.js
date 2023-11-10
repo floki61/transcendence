@@ -27,17 +27,18 @@ let UsersService = exports.UsersService = class UsersService {
             },
         });
     }
-    async checkIfnameExists(data) {
+    async checkIfnameExists(username) {
         const user = await this.prisma.user.findUnique({
             where: {
-                userName: data.userName,
+                userName: username,
             },
         });
+        console.log(user);
         return user ? true : false;
     }
     async updateUser(req, data) {
         if (data.userName)
-            this.updateUserName(req, data);
+            this.updateUserName(req, data.userName);
         if (data.phoneNumber)
             this.updateUserPhoneNumber(req, data);
         if (data.country)
@@ -92,7 +93,6 @@ let UsersService = exports.UsersService = class UsersService {
         });
     }
     async createUser(req) {
-        console.log(req.user);
         return await this.prisma.user.create({
             data: {
                 userName: req.user.login,
@@ -105,6 +105,8 @@ let UsersService = exports.UsersService = class UsersService {
         });
     }
     async getUserNameWithId(id) {
+        if (!id)
+            return null;
         const user = await this.prisma.user.findUnique({
             where: {
                 id,
@@ -115,6 +117,8 @@ let UsersService = exports.UsersService = class UsersService {
         return null;
     }
     async getPictureWithId(id) {
+        if (!id)
+            return null;
         const user = await this.prisma.user.findUnique({
             where: {
                 id,
@@ -326,6 +330,28 @@ let UsersService = exports.UsersService = class UsersService {
             },
         });
         return friendRequests;
+    }
+    async getFriendRequests(userId) {
+        return await this.prisma.friendShip.findMany({
+            where: {
+                friendId: userId,
+                status: 'PENDING',
+            },
+        });
+    }
+    async getFriendProfile(userId) {
+        return await this.prisma.user.findUnique({
+            where: {
+                id: userId,
+            },
+        });
+    }
+    async getFriendProfileWithUserName(userName) {
+        return await this.prisma.user.findFirst({
+            where: {
+                userName,
+            },
+        });
     }
 };
 exports.UsersService = UsersService = __decorate([
