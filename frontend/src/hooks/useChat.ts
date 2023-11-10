@@ -68,22 +68,22 @@ export const useChat = (
     const messageHandler = (data: any) => {
       SetChat((prevChat) => [...prevChat!, data]);
     };
-  
+
     socket.on('message', messageHandler);
-  
+
     // Clean up the event listener
     return () => {
       socket.off('message', messageHandler);
     };
   }, []);
-  
+
 
   const getName = async () => {
     if (chat && chat[0]) {
       let id;
       chat.map((chatie) => {
         if (chatie.user) {
-          if (chatie.user.uid != user.user?.id) 
+          if (chatie.user.uid != user.user?.id)
             id = chatie.user.uid;
         }
         else if (chatie.uid != user.user?.id)

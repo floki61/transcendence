@@ -1,4 +1,4 @@
-import { Controller, Get, Body, Req, UnauthorizedException, Post, UseGuards, UseInterceptors, UploadedFiles, UploadedFile, ParseFilePipeBuilder, HttpStatus, ParseFilePipe, MaxFileSizeValidator, FileTypeValidator, HttpException, Delete,} from '@nestjs/common';
+import { Controller, Get, Body, Req, UnauthorizedException, Post, UseGuards, UseInterceptors, UploadedFiles, UploadedFile, ParseFilePipeBuilder, HttpStatus, ParseFilePipe, MaxFileSizeValidator, FileTypeValidator, HttpException, Delete, } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
 import { Request } from 'express';
@@ -18,12 +18,12 @@ export class UsersController {
         private jwt: JwtService,
         private userservice: UsersService,
         private usergtw: UsersGateway,
-        ) { }
+    ) { }
 
     @UseGuards(JwtAuthGuard)
     @Get('/')
     async home(@Req() req) {
-        return ({user: req.user, cookies: req.cookies});
+        return ({ user: req.user, cookies: req.cookies });
     }
 
     @UseGuards(JwtAuthGuard)
@@ -46,10 +46,10 @@ export class UsersController {
 
     @UseGuards(JwtAuthGuard)
     @Post('userSettings')
-	userSettings(@Req() req ,@Body() data) {
+    userSettings(@Req() req, @Body() data) {
         console.log(data);
         return this.userservice.updateUser(req, data);
-	}
+    }
 
     @UseGuards(JwtAuthGuard)
     @Post('sendFriendRequest')
@@ -62,22 +62,22 @@ export class UsersController {
         this.usergtw.server.to(req.body.friendId).emit('friendRequest', friendrequest);
         return friendrequest;
     }
-    
+
     @UseGuards(JwtAuthGuard)
     @Post('cancelFriendRequest')
     async cancelFriendRequest(@Body() body: any, @Req() req) {
-        if( await this.userservice.checkFriendship(req.user.id, req.body.friendId))
+        if (await this.userservice.checkFriendship(req.user.id, req.body.friendId))
             throw new HttpException('You are already friends', HttpStatus.BAD_REQUEST);
         const friendrequest = await this.userservice.cancelFriendRequest(req.user.id, req.body.friendId);
-        
+
         return friendrequest;
     }
-        
+
     @UseGuards(JwtAuthGuard)
     @Post('acc')
     async acceptFrienRequest(@Body() body: any, @Req() req) {
         const friendrequest = await this.userservice.acceptFriendRequest(req.user.id, req.body.friendId); // mean
-        return {friendrequest};
+        return { friendrequest };
     }
 
     @UseGuards(JwtAuthGuard)
@@ -111,7 +111,7 @@ export class UsersController {
                 }
                 return cb(null, `${Name}${extname(avatar.originalname)}`);
             }
-        }) 
+        })
     }))
     async uploadFile(@UploadedFile(
     ) file: Express.Multer.File, @Req() req) {
@@ -144,6 +144,29 @@ export class UsersController {
     async getFriends(@Req() req) {
         const friends = await this.userservice.getFriends(req.user.id);
         return friends;
+    }
+
+    @UseGuards(JwtAuthGuard)
+    @Get('getFriendRequests')
+    async getFriendRequests(@Req() req) {
+        const friendrequests = await this.userservice.getFriendRequests(req.user.id);
+        return friendrequests;
+    }
+
+    @UseGuards(JwtAuthGuard)
+    @Post('getFriendProfile')
+    async getFriendProfile(@Req() req, @Body() body: any) {
+        const friend = await this.userservice.getFriendProfile(body.id);
+        console.log('friend', friend);
+        return friend;
+    }
+
+    @UseGuards(JwtAuthGuard)
+    @Post('getFriendProfileWithUserName')
+    async getFriendProfileWithUserName(@Req() req, @Body() body: any) {
+        const friend = await this.userservice.getFriendProfileWithUserName(body.userName);
+        console.log('friend', friend);
+        return friend;
     }
 
 }
