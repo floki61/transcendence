@@ -34,7 +34,7 @@ export default function Navbar() {
 					  </Link>
 					  <Link href="/profile" className="rounded-full flex justify-center items-center overflow-hidden">
 						  <Image
-							  src={user.user.picture}
+							  src={user.user.picture || "placeholder.jpg"}
 							  alt={"floki"}
 							  width={30}
 							  height={30}

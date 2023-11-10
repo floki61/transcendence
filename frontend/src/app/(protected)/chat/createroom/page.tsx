@@ -80,11 +80,11 @@ export default function page() {
 					onChange={handleChange}
 				>
 					<option value="">Choose the visibility of the room</option>
-					<option value="Public">Public</option>
-					<option value="Protected">Protected</option>
-					<option value="Private">Private</option>
+					<option value="PUBLIC">Public</option>
+					<option value="PROTECTED">Protected</option>
+					<option value="PRIVATE">Private</option>
 				</select>
-				{room?.visibility === "Protected" && (
+				{room?.visibility === "PROTECTED" && (
 					<RoomInput
 						holder="Room Password"
 						type='text'

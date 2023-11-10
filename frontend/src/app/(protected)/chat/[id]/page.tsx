@@ -9,8 +9,7 @@ import { IoSend } from "react-icons/io5"
 const Convo = ({ params }: { params: any }) => {
   const { showDiv, SetShowDiv, user, chat, image, name, input, handleInput, sendMsg } = useChat({ rid: params.id });
 
-  if (chat)
-    console.log(chat);
+  console.log(params.id);
   return (
     <div className="h-full w-full flex" onClick={() => { if (showDiv) SetShowDiv(false) }}>
         <div className="h-full flex-1 flex flex-col justify-between">
