@@ -1,0 +1,48 @@
+import { AuthService } from './auth.service';
+import { Response } from 'express';
+import { Userdto, signindto } from "../users/dto";
+import { ConfigService } from '@nestjs/config';
+import { UsersService } from 'src/users/users.service';
+export declare class AuthController {
+    private readonly authService;
+    private readonly config;
+    private readonly userService;
+    constructor(authService: AuthService, config: ConfigService, userService: UsersService);
+    googlelogin(): void;
+    googleAuthRedirect(req: any, res: Response): Promise<void>;
+    login(): void;
+    authRedirect(req: any, res: Response): Promise<void>;
+    logout(req: any, res: Response): Promise<void>;
+    signup(data: Userdto): Promise<{
+        id: string;
+        userName: string;
+        firstName: string;
+        lastName: string;
+        email: string;
+        picture: string;
+        country: string;
+        phoneNumber: string;
+        accessToken: string;
+        password: string;
+        twoFactorAuthenticationSecret: string;
+        isTwoFactorAuthenticationEnabled: boolean;
+        createdAt: Date;
+        updatedAt: Date;
+    }>;
+    signin(data: signindto): Promise<{
+        id: string;
+        userName: string;
+        firstName: string;
+        lastName: string;
+        email: string;
+        picture: string;
+        country: string;
+        phoneNumber: string;
+        accessToken: string;
+        password: string;
+        twoFactorAuthenticationSecret: string;
+        isTwoFactorAuthenticationEnabled: boolean;
+        createdAt: Date;
+        updatedAt: Date;
+    }>;
+}

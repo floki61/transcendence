@@ -22,6 +22,7 @@ export class ChatController {
     @UseGuards(JwtAuthGuard)
     @Post('createRoom')
     async createRoom(@Body() body: any, @Req() req: any) {
+        console.log("hello");
         const user = await this.userservice.createRoom(body);
         return user;
     }
