@@ -17,9 +17,9 @@ const config_1 = require("@nestjs/config");
 let FortyTwoStrategy = exports.FortyTwoStrategy = class FortyTwoStrategy extends (0, passport_1.PassportStrategy)(passport_42_1.Strategy, '42') {
     constructor(config) {
         super({
-            clientID: config.get('CLIENTID'),
-            clientSecret: config.get('CLIENTSECRET'),
-            callbackURL: config.get('CALLBACKURL'),
+            clientID: config.get('42_CLIENT_ID'),
+            clientSecret: config.get('42_CLIENT_SECRET'),
+            callbackURL: config.get('42_CALLBACK_URL'),
         });
         this.config = config;
     }

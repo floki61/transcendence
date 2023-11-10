@@ -33,7 +33,7 @@ let ChatGateway = exports.ChatGateway = class ChatGateway {
         if (client.request.headers.cookie) {
             cookie = await this.parseCookies(client.request.headers.cookie);
             payload = await this.jwt.verifyAsync(cookie, {
-                secret: this.config.get('secret')
+                secret: this.config.get('JWT_SECRET_KEY')
             });
             if (payload.id) {
                 console.log("chat socket : ", payload.id);
@@ -56,7 +56,7 @@ let ChatGateway = exports.ChatGateway = class ChatGateway {
         if (client.request.headers.cookie) {
             cookie = await this.parseCookies(client.request.headers.cookie);
             payload = await this.jwt.verifyAsync(cookie, {
-                secret: this.config.get('secret')
+                secret: this.config.get('JWT_SECRET_KEY')
             });
             if (payload.id) {
                 delete this.map[payload.id];

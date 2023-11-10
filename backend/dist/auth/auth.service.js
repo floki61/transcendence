@@ -33,9 +33,9 @@ let AuthService = exports.AuthService = class AuthService {
         const payload = { id: user.id, email: user.email };
         let secretValue;
         if (tokenName == 'jwt')
-            secretValue = this.config.get('secret');
+            secretValue = this.config.get('JWT_SECRET_KEY');
         else if (tokenName == '2fa')
-            secretValue = '2fasecretcode';
+            secretValue = this.config.get('JWT_2FA_SECRET_KEY');
         const token = await this.jwtService.signAsync(payload, {
             expiresIn: '7d',
             secret: secretValue,
@@ -44,15 +44,20 @@ let AuthService = exports.AuthService = class AuthService {
     }
     async validateUser(req, res) {
         const user = await this.userservice.getUser(req.user.id);
-        if (!user)
+        if (!user) {
+            if (await this.userservice.checkIfnameExists(req.user.login)) {
+                console.log("faild to login");
+                throw new common_1.ForbiddenException('Username already exists');
+            }
             await this.userservice.createUser(req);
+        }
         else if (user && user.isTwoFactorAuthenticationEnabled) {
             const token = await this.generateToken(req, '2fa');
             res.cookie('2fa', token, { httpOnly: true, maxAge: 30 * 60 * 1000 });
             return true;
         }
         const token = await this.generateToken(req, 'jwt');
-        res.cookie('access_token', token, { httpOnly: true, maxAge: 604800000 });
+        res.cookie('access_token', token, { httpOnly: true, maxAge: 2592000000 });
         return user ? true : false;
     }
     async logout(req, res) {

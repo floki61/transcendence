@@ -23,7 +23,7 @@ let WsGuard = exports.WsGuard = class WsGuard {
     canActivate(context) {
         const bearerToken = context.args[0].handshake.headers.authorization.split(' ')[1];
         try {
-            const decoded = this.jwt.verify(bearerToken, this.config.get("secret"));
+            const decoded = this.jwt.verify(bearerToken, this.config.get("JWT_SECRET_KEY"));
             return new Promise((resolve, reject) => {
                 return this.userService.getUser(decoded.id).then(user => {
                     if (user) {

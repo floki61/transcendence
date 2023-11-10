@@ -29,7 +29,11 @@ let AuthController = exports.AuthController = class AuthController {
     googlelogin() { }
     async googleAuthRedirect(req, res) {
         if (await this.authService.validateUser(req, res)) {
-            res.redirect(this.config.get('HOME_URL'));
+            const user = await this.userService.getUser(req.user.id);
+            if (user.isTwoFactorAuthenticationEnabled)
+                res.redirect(this.config.get('2FA_URL'));
+            else
+                res.redirect(this.config.get('HOME_URL'));
         }
         else
             res.redirect(this.config.get('SETTINGS_URL'));
@@ -66,7 +70,7 @@ __decorate([
 ], AuthController.prototype, "googlelogin", null);
 __decorate([
     (0, common_1.UseGuards)(Guards_1.GoogleGuard),
-    (0, common_1.Get)('/auth/google/callback'),
+    (0, common_1.Get)('google/callback'),
     __param(0, (0, common_1.Req)()),
     __param(1, (0, common_1.Res)()),
     __metadata("design:type", Function),

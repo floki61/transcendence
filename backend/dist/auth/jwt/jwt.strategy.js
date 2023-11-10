@@ -26,7 +26,7 @@ let JwtStrategy = exports.JwtStrategy = class JwtStrategy extends (0, passport_1
                         return null;
                 },
             ]),
-            secretOrKey: config.get('secret'),
+            secretOrKey: config.get('JWT_SECRET_KEY'),
         });
         this.prisma = prisma;
         this.config = config;
