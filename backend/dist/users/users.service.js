@@ -353,6 +353,9 @@ let UsersService = exports.UsersService = class UsersService {
             },
         });
     }
+    async getAllUsers() {
+        return await this.prisma.user.findMany();
+    }
 };
 exports.UsersService = UsersService = __decorate([
     (0, common_1.Injectable)(),

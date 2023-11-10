@@ -169,4 +169,13 @@ export class UsersController {
         return friend;
     }
 
+    @UseGuards(JwtAuthGuard)
+    @Get('getAllUsers')
+    async getAllUsers(@Req() req:any)
+    {
+        const users = await this.userservice.getAllUsers();
+        return users;
+    }
+
+
 }

@@ -11,7 +11,7 @@ import RoomInput from "@/components/RoomInput";
 const Convo = ({ params }: { params: any }) => {
   const { showDiv, SetShowDiv, user, chat, image, name, input, handleInput, sendMsg } = useChat({ rid: params.id });
   const { friends, chatbar } = useRooms();
-  let visible, id;
+  let visible, id, role;
 
   console.log({friends});
   if (friends) {
@@ -21,6 +21,7 @@ const Convo = ({ params }: { params: any }) => {
           for (let member of room.participants) {
             if (member.uid === user.user?.id)
               id = member.uid;
+              role = member.role;
           }
         }
         visible = room.visibility;
@@ -28,6 +29,8 @@ const Convo = ({ params }: { params: any }) => {
     }
     )
   }
+  if (!role)
+    role = "USER";
 
   if (visible === "PROTECTED" && id !== user.user?.id) {
     return (
@@ -46,7 +49,7 @@ const Convo = ({ params }: { params: any }) => {
       </div>
     )
   }
-  else if (visible === "PRIVATE" && !id) {
+  else if (visible === "PRIVATE" && id !== user.user?.id) {
     return (
       <div>private</div>
     )
@@ -55,7 +58,6 @@ const Convo = ({ params }: { params: any }) => {
     return (
       <div className="h-full w-full flex" onClick={() => { if (showDiv) SetShowDiv(false) }}>
           <div className="h-full flex-1 flex flex-col justify-between">
-            {chat && chat[0] && (
               <div className="px-4 py-2 flex items-center justify-between bg-primecl">
                 <div className="flex items-center gap-4">
                   <Image
@@ -87,12 +89,11 @@ const Convo = ({ params }: { params: any }) => {
                 </svg>
                 {showDiv && (
                   <ChatSettings
-                  role={chat[0].user.role as string}
+                    role={role}
                   />
                 )}
               </div>
             </div>
-            )}
             <div className="flex flex-col place-content-end flex-1 h-3/4 bg-segundcl py-2 overflow-auto">
               {user.user && chat && chat.map((chatie) => (
                 <div

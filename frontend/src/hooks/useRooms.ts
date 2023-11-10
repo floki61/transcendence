@@ -4,6 +4,7 @@ import { getTime } from '@/components/getTime';
 
 export interface FriendType {
 	id: string;
+	is_DM: boolean;
 	lastMessage: string;
 	lastMessageDate: string;
 	name: string;
