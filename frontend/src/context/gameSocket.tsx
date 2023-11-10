@@ -29,7 +29,7 @@ export const GameProvider = ({ children }:{children: React.ReactNode}) => {
     useEffect(() => {
         if(!socket) return
         const game = {
-            type: 'Live',
+            type: 'Bot',
             mode: 'simple'
         }
         socket.on('connect', () => {

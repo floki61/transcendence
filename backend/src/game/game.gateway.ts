@@ -30,7 +30,7 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
 			payload = await this.jwt.verifyAsync(
 				cookie,
 				{
-					secret: this.config.get('secret')
+					secret: this.config.get('JWT_SECRET_KEY')
 				});
 			if (payload.id) {
                 console.log(`Client connected: ${payload.id} Socket: ${client.id}`);
@@ -52,7 +52,7 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
 			payload = await this.jwt.verifyAsync(
 				cookie,
 				{
-					secret: this.config.get('secret')
+					secret: this.config.get('JWT_SECRET_KEY')
 				}
 				);
 				if (payload.id) {

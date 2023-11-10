@@ -28,7 +28,7 @@ export class UsersGateway implements OnGatewayConnection {
 			payload = await this.jwt.verifyAsync(
 				cookie,
 				{
-					secret: this.config.get('secret')
+					secret: this.config.get('JWT_SECRET_KEY')
 				}
 				);
 				if (payload.id) {
