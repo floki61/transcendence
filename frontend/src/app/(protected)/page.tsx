@@ -47,17 +47,17 @@ export default function Home() {
       </div>
       <div className='h-[38%] w-full px-4 flex gap-2'>
         <div className='w-1/3 flex flex-col items-center justify-around rounded-xl bg-gradient-to-t from-[#0B2931] from-0% to-[#020C0E] to-20%'>
-          <h2>ONLINE MODE 1</h2>
+          <h2>LIVE MODE 1</h2>
           <Link
-            href={"game?type=Live"}
+            href={"game?type=Live&mode=simple"}
             className="border flex items-center justify-center border-white text-center rounded-3xl w-[30%] h-12 opacity-95 cursor-pointer bg-primecl shadow-[0px 4px 4px 0px rgba(0, 0, 0, 0.25)] transition ease-in-out delay-150 hover:scale-105 duration-300"              >
             Play
           </Link>
         </div>
         <div className='w-1/3 flex flex-col items-center justify-around rounded-xl bg-gradient-to-t from-[#0B2931] from-0% to-[#020C0E] to-20%'>
-          <h2>ONLINE MODE 2</h2>
+          <h2>REVERSE MODE 2</h2>
           <Link
-            href={"game?type=Live"}
+            href={"game?type=Live&mode=reverse"}
             className="border flex items-center justify-center border-white text-center rounded-3xl w-[30%] h-12 opacity-95 cursor-pointer bg-primecl shadow-[0px 4px 4px 0px rgba(0, 0, 0, 0.25)] transition ease-in-out delay-150 hover:scale-105 duration-300"
             >
             Play

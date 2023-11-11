@@ -17,6 +17,7 @@ export const GameProvider = ({ children }:{children: React.ReactNode}) => {
     const [socket, setSocket] = useState<Socket | null>(null);
     const query = useSearchParams();
     const type = query.get('type');
+    const mode = query.get('mode');
  
     useEffect(() => {
         const newSocket = io('http://localhost:4000/game', {
@@ -33,7 +34,7 @@ export const GameProvider = ({ children }:{children: React.ReactNode}) => {
         if(!socket) return
         const game = {
             type,
-            mode: 'simple'
+            mode,
         }
         socket.on('connect', () => {
             socket.emit('gameMode', game);
