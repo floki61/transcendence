@@ -28,7 +28,7 @@ export const useRooms = () => {
 					withCredentials: true
 				});
 				const data = res.data;
-				// console.log("data ", data)
+
 				if (data.length > 0) {
 					const updatedFriends = data.map((item: any) => item);
 
@@ -56,7 +56,7 @@ export const useRooms = () => {
 		}
 		getUsers();
 	}, []);
-	// console.log({ friends });
+
 	if (friends) {
 		friends.forEach((friend) => {
 			if (!friend.lastMessageDate)
@@ -101,6 +101,6 @@ export const useRooms = () => {
 			}
 		})
 	}
-
+	
 	return { friends, chatbar }
 }

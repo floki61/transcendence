@@ -36,7 +36,7 @@ const JoinRooms: React.FC<ConvoProps> = ({ picture, name, status, chat, visibili
       );
       console.log(res.data);
     } catch (error) {
-      console.log("Join groupe failed", error);
+      console.log("Join group failed", error);
     }
   };
 

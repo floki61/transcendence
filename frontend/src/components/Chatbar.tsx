@@ -7,16 +7,12 @@ interface ChatProps {
   	text: string;
 	time: string;
 	image: string;
-	OnClick?(name: string, image: string, status: string): void;
+	visible: string;
+	dm: boolean;
 }
 
-const Chatbar:React.FC<ChatProps> = ({name, text, time, image, OnClick }) => {
+const Chatbar:React.FC<ChatProps> = ({name, text, time, image, visible, dm }) => {
 
-	// const changeDisplay = () => {
-	// 	// OnClick(name, image, "online");
-	// 	console.log(name);
-	// 	console.log(image);
-	// }
 	let msg;
 
 	if (text && text.length > 25)
@@ -39,7 +35,10 @@ const Chatbar:React.FC<ChatProps> = ({name, text, time, image, OnClick }) => {
 				  <p className="font-light">{msg || "Send a text"}</p>
 			  </div>
 		  </div>
-		  <p className="text-sm font-light pt-3 self-start">{time || ""}</p>
+		  <div className="flex flex-col justify-between h-full">
+			<p className="text-sm font-light pt-2">{time || ""}</p>
+			<p className={`${dm === true ? "hidden" : ""} text-xs font-light lowercase self-end pb-1`} >{visible || ""}</p>
+		  </div>
 	  </div>
 	)
 }
