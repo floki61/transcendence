@@ -7,7 +7,7 @@ import { useChat as chatSocket } from "@/context/chatSocket";
 import { useContext } from "react";
 import { UserContext } from "@/context/userContext";
 
-interface ChatType {
+export interface ChatType {
   user: {
     createdAt: string;
     id: string;
