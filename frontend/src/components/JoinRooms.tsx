@@ -16,15 +16,20 @@ export interface ConvoProps {
   input: string;
   handleInput(e: any) : void;
   user: userType | undefined | null;
+  rid: string | undefined,
 }
 
-const JoinRooms: React.FC<ConvoProps> = ({ picture, name, status, chat, visibility, id, input, handleInput, user }) => {
+const JoinRooms: React.FC<ConvoProps> = ({ picture, name, status, chat, visibility, id, input, handleInput, user, rid }) => {
 
   const joinGroup = async () => {
     try {
       const res = await axios.post(
         "http://localhost:4000/chat/joinRoom",
-        input,
+        {
+          password: input,
+          uid: user?.id,
+          rid,
+        },
         {
           withCredentials: true,
         }
