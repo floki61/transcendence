@@ -50,7 +50,6 @@ export const useRooms = () => {
 					SetFriends((prevChat) => [...prevChat!, ...data]);
 					SetChatbar(true);
 				}
-				// console.log({ data });
 			} catch (error) {
 				console.log("getallrooms failed");
 			}

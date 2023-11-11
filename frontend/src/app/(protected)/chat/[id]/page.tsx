@@ -6,12 +6,12 @@ import { useChat } from "@/hooks/useChat";
 import { ChatSettings } from "@/components/ChatSettings";
 import { IoSend } from "react-icons/io5"
 import { useRooms } from "@/hooks/useRooms";
-import RoomInput from "@/components/RoomInput";
+import axios from "axios";
 
 const Convo = ({ params }: { params: any }) => {
   const { showDiv, SetShowDiv, user, chat, image, name, input, handleInput, sendMsg } = useChat({ rid: params.id });
   const { friends, chatbar } = useRooms();
-  let visible, id, role;
+  let visible, id, role, r_name, r_id;
 
   console.log({friends});
   if (friends) {
@@ -25,12 +25,31 @@ const Convo = ({ params }: { params: any }) => {
           }
         }
         visible = room.visibility;
+        r_name = room.name;
+        r_id = room.id;
       }
     }
     )
   }
   if (!role)
     role = "USER";
+
+  const data = {
+    rid: r_id,
+    uid: id,
+    password: input,
+  }
+
+  const joinGroup = async () => {
+    try {
+      const res = await axios.post("http://localhost:4000/chat/joinRoom", input, {
+        withCredentials: true,
+      })
+      console.log(res.data);
+    } catch (error) {
+      console.log("Join groupe failed", error);
+    }
+  };
 
   if (visible === "PROTECTED" && id !== user.user?.id) {
     return (
@@ -40,9 +59,14 @@ const Convo = ({ params }: { params: any }) => {
             <input
               placeholder="Password"
               type="text"
-              className="p-3 pl-4 rounded-xl bg-primecl placeholder-slate-400 text-lg outline-none border font-light w-3/4"
+              className="p-3 pl-4 rounded-xl bg-terserocl placeholder-slate-400 text-lg outline-none border font-light w-3/4"
+              onChange={handleInput}
+              value={input}
             />
-            <button className="border rounded-xl w-1/4 h-[9%] bg-primecl cursor-pointer transition ease-in-out delay-150 hover:scale-105 duration-300">
+            <button
+              className="border-2 rounded-xl w-1/4 h-[9%] bg-segundcl cursor-pointer transition ease-in-out delay-150 hover:scale-105 duration-300"
+              onClick={joinGroup}
+            >
               JOIN
             </button>
         </div>
@@ -68,7 +92,7 @@ const Convo = ({ params }: { params: any }) => {
                     className="rounded-full"
                   />
                   <div>
-                    <h2 className="text-xl">{name}</h2>
+                    <h2 className="text-xl">{name || r_name }</h2>
                     <h3 className="text-sm font-light">Online</h3>
                   </div>
                 </div>
@@ -97,7 +121,7 @@ const Convo = ({ params }: { params: any }) => {
             <div className="flex flex-col place-content-end flex-1 h-3/4 bg-segundcl py-2 overflow-auto">
               {user.user && chat && chat.map((chatie) => (
                 <div
-                  className={`${(user.user?.id === chatie.user?.uid) || (user.user?.id === chatie.uid) ? "self-end my-1 mx-2" : "my-1 mx-2 self-start"}`}
+                  className={`${(user.user?.id === chatie.user?.uid) || (user.user?.id === chatie.uid) ? "self-end my-1 mx-2" : "my-1 mx-2 self-start"} ${(chatie.msg.length > 50 ? "w-[40%]" : "")}`}
                   key={chatie.id}  
                 >
                   <Chatmsg

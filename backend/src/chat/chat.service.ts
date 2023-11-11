@@ -75,7 +75,6 @@ export class ChatService {
 		}
 		if (room.is_DM === true)
 			throw new NotFoundException('Chat room is DM');
-		// console.log(payload, room);
 		if (room.visibility === 'PROTECTED') {
 			if (!payload.password) {
 				throw new NotFoundException('Password is required in protected room');

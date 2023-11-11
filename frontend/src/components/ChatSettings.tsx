@@ -5,6 +5,15 @@ export const ChatSettings = (
 ) => {
 	console.log(role.role);
 	// add participant onclick
+
+	const addParticipants = async () => {
+		// try {
+		// 	const res = axios.get("http://localhost:4000/")
+		// } catch (error) {
+			console.log("add Participant failed");
+		// }
+	}
+
 	if (role.role === "USER") {
 		return (
 		  <div className="text-white text-sm font-light border-2 border-quatrocl absolute top-10 right-3 w-full h-28 rounded-md bg-terserocl flex flex-col">
@@ -29,7 +38,7 @@ export const ChatSettings = (
 		return (
 			<div className="text-white text-sm font-light border-2 border-quatrocl absolute top-10 right-3 w-full h-[110] rounded-md bg-terserocl flex flex-col">
 				<p className="cursor-pointer hover:bg-segundcl rounded-t-md border-b-2 border-quatrocl w-full px-2 flex items-center h-[11%]">View Participants</p>
-				<p className="cursor-pointer hover:bg-segundcl rounded-t-md border-b-2 border-quatrocl w-full px-2 flex items-center h-[11%]">Add Participants</p>
+				<p className="cursor-pointer hover:bg-segundcl rounded-t-md border-b-2 border-quatrocl w-full px-2 flex items-center h-[11%]" onClick={addParticipants}>Add Participants</p>
 				<p className="cursor-pointer hover:bg-segundcl border-b-2 border-quatrocl w-full px-2 flex items-center h-[11%]">Mute a Participant</p>
 				<p className="cursor-pointer hover:bg-segundcl border-b-2 border-quatrocl w-full px-2 flex items-center h-[11%]">Ban a Participant</p>
 				<p className="cursor-pointer hover:bg-segundcl border-b-2 border-quatrocl w-full px-2 flex items-center h-[11%]">Kick a Participant</p>
