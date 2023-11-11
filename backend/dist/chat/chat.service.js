@@ -437,6 +437,22 @@ let ChatService = exports.ChatService = class ChatService {
         }
         return rooms;
     }
+    async getUniqueMyRooms(payload) {
+        const room = await this.prisma.chatRoom.findMany({
+            where: {
+                participants: {
+                    some: {
+                        uid: payload.id,
+                        isBanned: false,
+                    },
+                },
+            },
+        });
+        if (!room) {
+            throw new common_1.NotFoundException('Chat room not found');
+        }
+        return room;
+    }
     async getMessages(payload) {
         const message = await this.prisma.message.findMany({
             where: {
@@ -587,6 +603,44 @@ let ChatService = exports.ChatService = class ChatService {
             throw new common_1.NotFoundException('User not found');
         }
         return await user.picture;
+    }
+    async addParticipant(payload) {
+        const room = await this.prisma.chatRoom.findUnique({
+            where: {
+                id: payload.rid,
+            },
+        });
+        if (!room) {
+            throw new common_1.NotFoundException('Chat room not found');
+        }
+        const user = await this.prisma.user.findUnique({
+            where: {
+                id: payload.id,
+            },
+        });
+        if (!user) {
+            throw new common_1.NotFoundException('User not found');
+        }
+        const participant = await this.prisma.participant.findUnique({
+            where: {
+                uid_rid: {
+                    uid: payload.id,
+                    rid: payload.rid,
+                },
+            },
+        });
+        if (participant) {
+            throw new common_1.UnauthorizedException('User already in chat room');
+        }
+        const newParticipant = await this.prisma.participant.create({
+            data: {
+                uid: payload.id,
+                rid: payload.rid,
+                role: 'USER',
+            },
+        });
+        console.log(newParticipant);
+        return newParticipant;
     }
 };
 exports.ChatService = ChatService = __decorate([

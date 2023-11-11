@@ -145,7 +145,16 @@ export class ChatController {
         }
         return rooms;
     }
-    
+
+    @Roles('OWNER', 'ADMIN')
+    @UseGuards(JwtAuthGuard, RolesGuard)
+    @Post('addParticipant')
+    async addParticipant(@Body() body: any, @Req() req: any) {
+        console.log('hahowa');
+        const room = await this.userservice.addParticipant(body);
+        return room;
+    }
+
 
     // @UseGuards(JwtAuthGuard)
     // @Get('AllRooms')

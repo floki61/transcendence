@@ -96,6 +96,11 @@ let ChatController = exports.ChatController = class ChatController {
         }
         return rooms;
     }
+    async addParticipant(body, req) {
+        console.log('hahowa');
+        const room = await this.userservice.addParticipant(body);
+        return room;
+    }
 };
 __decorate([
     (0, common_1.UseGuards)(jwt_guard_1.JwtAuthGuard),
@@ -240,6 +245,16 @@ __decorate([
     __metadata("design:paramtypes", [Object]),
     __metadata("design:returntype", Promise)
 ], ChatController.prototype, "getMyRooms", null);
+__decorate([
+    (0, role_decorator_1.Roles)('OWNER', 'ADMIN'),
+    (0, common_1.UseGuards)(jwt_guard_1.JwtAuthGuard, roles_guard_1.RolesGuard),
+    (0, common_1.Post)('addParticipant'),
+    __param(0, (0, common_1.Body)()),
+    __param(1, (0, common_1.Req)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object, Object]),
+    __metadata("design:returntype", Promise)
+], ChatController.prototype, "addParticipant", null);
 exports.ChatController = ChatController = __decorate([
     (0, common_1.Controller)('chat'),
     __metadata("design:paramtypes", [config_1.ConfigService,

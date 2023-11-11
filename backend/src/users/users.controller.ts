@@ -171,11 +171,8 @@ export class UsersController {
 
     @UseGuards(JwtAuthGuard)
     @Get('getAllUsers')
-    async getAllUsers(@Req() req:any)
-    {
+    async getAllUsers(@Req() req: any) {
         const users = await this.userservice.getAllUsers();
         return users;
     }
-
-
 }
