@@ -39,12 +39,13 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
 				console.log("chat socket : ", payload.id);
 				this.map.set(payload.id, client);
 			}
-			const rooms = await this.chatService.getMyRooms(payload);
+			const rooms = await this.chatService.getUniqueMyRooms(payload);
 			if (rooms) {
 				(rooms).forEach((room: any) => {
 					client.join(room.id);
 				});
 			}
+
 		}
 		else {
 			client.disconnect();

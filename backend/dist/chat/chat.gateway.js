@@ -39,7 +39,7 @@ let ChatGateway = exports.ChatGateway = class ChatGateway {
                 console.log("chat socket : ", payload.id);
                 this.map.set(payload.id, client);
             }
-            const rooms = await this.chatService.getMyRooms(payload);
+            const rooms = await this.chatService.getUniqueMyRooms(payload);
             if (rooms) {
                 (rooms).forEach((room) => {
                     client.join(room.id);
