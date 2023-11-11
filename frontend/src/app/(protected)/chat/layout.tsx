@@ -6,7 +6,6 @@ import axios from "axios"
 import {MdGroupAdd} from "react-icons/md"
 import { getTime } from "@/components/getTime"
 import Link from "next/link"
-import { useChat } from "@/hooks/useChat";
 import { useRooms } from "@/hooks/useRooms"
 
 
@@ -18,6 +17,8 @@ export default function ChatLayout({
 
 	const { friends, chatbar } = useRooms();
 	const [roomDiv, SetRoomDiv] = useState(false);
+
+	console.log({friends});
 
 	return (
 		<div className="flex h-full text-white">
@@ -50,8 +51,8 @@ export default function ChatLayout({
 					<p>Maendakch meamn tdwi ghyrha</p>
 				)}
 			</div>
-			<div className="flex flex-1">
-				<div className="flex-1">
+			<div className="flex flex-1 overflow-hidden">
+				<div className="flex-1 w-2/3">
 					{children}
 				</div>
 			</div>

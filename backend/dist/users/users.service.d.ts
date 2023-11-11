@@ -247,4 +247,20 @@ export declare class UsersService {
         createdAt: Date;
         updatedAt: Date;
     }>;
+    getAllUsers(): Promise<{
+        id: string;
+        userName: string;
+        firstName: string;
+        lastName: string;
+        email: string;
+        picture: string;
+        country: string;
+        phoneNumber: string;
+        accessToken: string;
+        password: string;
+        twoFactorAuthenticationSecret: string;
+        isTwoFactorAuthenticationEnabled: boolean;
+        createdAt: Date;
+        updatedAt: Date;
+    }[]>;
 }
