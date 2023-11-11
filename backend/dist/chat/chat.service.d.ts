@@ -92,6 +92,18 @@ export declare class ChatService {
         createdAt: Date;
         updatedAt: Date;
     })[]>;
+    getUniqueMyRooms(payload: any): Promise<{
+        id: string;
+        name: string;
+        picture: string;
+        lastMessageDate: Date;
+        visibility: import(".prisma/client").$Enums.Visibility;
+        password: string;
+        lastMessage: string;
+        is_DM: boolean;
+        createdAt: Date;
+        updatedAt: Date;
+    }[]>;
     getMessages(payload: any): Promise<({
         user: {
             id: string;
@@ -118,4 +130,15 @@ export declare class ChatService {
     changePassword(payload: any): Promise<string>;
     giveAdmin(payload: any): Promise<string>;
     getUserPicture(uid: any): Promise<string>;
+    addParticipant(payload: any): Promise<{
+        id: string;
+        rid: string;
+        uid: string;
+        role: import(".prisma/client").$Enums.Role;
+        isOnline: boolean;
+        isMuted: boolean;
+        isBanned: boolean;
+        createdAt: Date;
+        updatedAt: Date;
+    }>;
 }
