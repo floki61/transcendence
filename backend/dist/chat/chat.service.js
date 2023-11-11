@@ -438,7 +438,6 @@ let ChatService = exports.ChatService = class ChatService {
         return rooms;
     }
     async getMessages(payload) {
-        console.log('>>>>>>>>>>', payload);
         const message = await this.prisma.message.findMany({
             where: {
                 rid: payload.rid,
