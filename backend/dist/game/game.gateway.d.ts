@@ -1,5 +1,5 @@
 import { OnGatewayConnection, OnGatewayDisconnect } from '@nestjs/websockets';
-import { Socket } from 'socket.io';
+import { Server, Socket } from 'socket.io';
 import { GameService } from './game.service';
 import { JwtService } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
@@ -10,10 +10,19 @@ export declare class GameGateway implements OnGatewayConnection, OnGatewayDiscon
     private config;
     private prisma;
     constructor(gameService: GameService, jwt: JwtService, config: ConfigService, prisma: PrismaService);
-    private server;
+    server: Server;
     private gameStarted;
     private connectedClients;
-    private Queue;
+    Queue: Map<string, {
+        Socket: Socket;
+        gameType: string;
+        gameMode: string;
+        status: string;
+        gameData: any;
+        playWith: string;
+        leader: boolean;
+        gameId: string;
+    }>;
     private matchmakingQueue;
     handleConnection(client: Socket): Promise<void>;
     handleDisconnect(client: Socket): Promise<void>;
@@ -26,7 +35,6 @@ export declare class GameGateway implements OnGatewayConnection, OnGatewayDiscon
     updatePaddle(client: Socket, event: any): Promise<void>;
     private startLiveGame;
     matchPlayers(): Promise<void>;
-    private broadcastGameData;
     getByValue(map: any, searchValue: any): any;
     game(client: Socket, data: any): Promise<void>;
 }
