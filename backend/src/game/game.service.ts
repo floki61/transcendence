@@ -1,12 +1,12 @@
 import { Injectable } from '@nestjs/common';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 import { Server, Socket } from 'socket.io';
+import { GameGateway } from './game.gateway';
 
 @Injectable()
 export class GameService 
 {
-    constructor(private eventEmitter: EventEmitter2
-        ) { }
+    constructor(private gameGtw: GameGateway) {}
     private initialGameData = {
         canvasWidth: 850,
         canvasHeight: 400,
@@ -164,20 +164,9 @@ export class GameService
             data.rightPaddle.y += data.rightPaddle.speed;
         // return data;
     }
-    // async moveBot() {
-    //     if(ball.xSpeed < 0 || ball.x < p.width / 2)
-    //         return ;
-    //     if(rightPaddle.y > ball.y && rightPaddle.y - rightPaddle.height / 2 > ball.y && rightPaddle.y > rightPaddle.height / 2)
-    //         rightPaddle.y -= rightPaddle.speed;
-    //     else if(rightPaddle.y < ball.y && rightPaddle.y + rightPaddle.height / 2 < ball.y && rightPaddle.y < p.height - rightPaddle.height / 2)
-    //         rightPaddle.y += rightPaddle.speed;
-    // }
-
-    // async Quee(id: any) {
-    //     this.eventEmitter.emit('quee', id);
-    // }
-
-    // async Botgame(id: any) {
-    //     this.eventEmitter.emit('Botgame', id);
-    // }
+    async checkingIfInGame(id: any) {
+        if(this.gameGtw.Queue.has(id))
+            return true;
+        return false;
+    }
 }

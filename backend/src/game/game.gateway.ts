@@ -16,10 +16,10 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
         }
 
     @WebSocketServer()
-    private server: Server;
+    server: Server;
     private gameStarted = false;
     private connectedClients: Map<string, Socket> = new Map<string, Socket>();
-    private Queue: Map<string, {Socket: Socket, gameType: string, gameMode: string, status: string, gameData: any, playWith: string, leader: boolean, gameId: string}> = new Map<string, {Socket: Socket, gameType: string,gameMode: string, status: string, gameData: any, playWith: string, leader: boolean, gameId: string}>();
+    Queue: Map<string, {Socket: Socket, gameType: string, gameMode: string, status: string, gameData: any, playWith: string, leader: boolean, gameId: string}> = new Map<string, {Socket: Socket, gameType: string,gameMode: string, status: string, gameData: any, playWith: string, leader: boolean, gameId: string}>();
     private matchmakingQueue: string[] = [];
 
     async handleConnection(client: Socket) {
@@ -249,6 +249,18 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
         this.moveBall(player1, player2);
     }
     
+    private startFriendGame(player1: string, player2: string) {
+        this.Queue.get(player1).status = 'playing';
+        this.Queue.get(player1).playWith = player2;
+        this.Queue.get(player1).leader = true;
+        this.Queue.get(player2).status = 'playing';
+        this.Queue.get(player2).playWith = player1;
+        console.log('Friend game started');
+        this.Queue.get(player1).Socket.emit('startGame', this.Queue.get(player1).gameData);
+        this.Queue.get(player2).Socket.emit('startGame', this.Queue.get(player1).gameData);
+        this.moveBall(player1, player2);
+    }
+
     async matchPlayers() {
         while (this.matchmakingQueue.length >= 2) {
             const player1 = this.matchmakingQueue.shift();
@@ -279,12 +291,20 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
           if (value === searchValue)
             return key;
         }
-      }      
+    }
+    
+    // private sendPlayRequest(playerId: string, friendId: string) {
+    //     const friendSocket = this.Queue.get(friendId)?.Socket;
+    //     if (friendSocket) {
+    //       friendSocket.emit('playRequest', { playerId });
+    //     }
+    // }
 
+  
     @SubscribeMessage('gameMode')
     async game(client: Socket, data) {
         console.log(data);
-        const d = {
+        const gameData = {
             Socket: client,
             gameType: data.type,
             gameMode: data.mode,
@@ -294,13 +314,22 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
             leader: false,
             gameId: '',
         }
-        const id = this.getByValue(this.connectedClients, client);
-        this.Queue.set(id, d);
+        const playerId = this.getByValue(this.connectedClients, client);
+        this.Queue.set(playerId, gameData);
         if(data.type === 'Bot')
-            this.startBotGame(id);
+            this.startBotGame(playerId);
         else if(data.type === 'Live')
-            this.matchmakingQueue.push(id);
-        // this.startLiveGame(id);
-    }
-    
+            this.matchmakingQueue.push(playerId);
+        else if(data.type === 'Friend') {
+            if(this.Queue.has(data.friendId)) {
+                const friendData = this.Queue.get(data.friendId);
+                if (friendData.gameType === 'Friend' && friendData.playWith === playerId) {
+                    this.startFriendGame(playerId, data.friendId);
+                }
+            }
+            else {
+                // this.sendPlayRequest(playerId, data.friendId);
+            }
+        }
+    } 
 }

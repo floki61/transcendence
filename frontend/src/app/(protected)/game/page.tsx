@@ -1,6 +1,5 @@
 "use client"
 import Game from '@/components/Game';
-import Botgame from '@/components/Botgame';
 import {GameProvider} from "@/context/gameSocket"
 
 export default function App() {
@@ -13,3 +12,4 @@ export default function App() {
       </GameProvider>
    );
 }
+ 
