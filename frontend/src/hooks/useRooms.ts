@@ -4,6 +4,7 @@ import { getTime } from '@/components/getTime';
 
 export interface FriendType {
 	id: string;
+	is_DM: boolean;
 	lastMessage: string;
 	lastMessageDate: string;
 	name: string;
@@ -27,7 +28,7 @@ export const useRooms = () => {
 					withCredentials: true
 				});
 				const data = res.data;
-				console.log("data ", data)
+				// console.log("data ", data)
 				if (data.length > 0) {
 					const updatedFriends = data.map((item: any) => item);
 
@@ -38,7 +39,7 @@ export const useRooms = () => {
 			} catch (error) {
 				console.log("hadchi baqi makhdamch");
 			}
-			console.log("friends ", friends)
+			// console.log("friends ", friends)
 			try {
 				const res = await axios.get("http://localhost:4000/chat/getAllRooms", {
 					withCredentials: true,
@@ -49,14 +50,13 @@ export const useRooms = () => {
 					SetFriends((prevChat) => [...prevChat!, ...data]);
 					SetChatbar(true);
 				}
-				// console.log({ data });
 			} catch (error) {
 				console.log("getallrooms failed");
 			}
 		}
 		getUsers();
 	}, []);
-	console.log({ friends });
+	// console.log({ friends });
 	if (friends) {
 		friends.forEach((friend) => {
 			if (!friend.lastMessageDate)

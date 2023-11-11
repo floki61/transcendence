@@ -1,7 +1,8 @@
 "use client"
 import { useState, createContext, useContext, useEffect, use } from 'react';
 import {io, Socket} from 'socket.io-client';
-
+import { useSearchParams } from 'next/navigation';
+   
 interface GameSocket {
     socket: Socket | null
 }
@@ -14,7 +15,10 @@ export const useGame = () => useContext(GameContext);
 
 export const GameProvider = ({ children }:{children: React.ReactNode}) => {
     const [socket, setSocket] = useState<Socket | null>(null);
-
+    const query = useSearchParams();
+    const type = query.get('type');
+    const mode = query.get('mode');
+ 
     useEffect(() => {
         const newSocket = io('http://localhost:4000/game', {
             withCredentials: true,
@@ -29,8 +33,8 @@ export const GameProvider = ({ children }:{children: React.ReactNode}) => {
     useEffect(() => {
         if(!socket) return
         const game = {
-            type: 'multiplayer',
-            mode: 'simple'
+            type,
+            mode,
         }
         socket.on('connect', () => {
             socket.emit('gameMode', game);
