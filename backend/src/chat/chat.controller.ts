@@ -145,6 +145,7 @@ export class ChatController {
         }
         return rooms;
     }
+    
 
     // @UseGuards(JwtAuthGuard)
     // @Get('AllRooms')

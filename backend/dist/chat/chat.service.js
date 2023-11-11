@@ -46,11 +46,14 @@ let ChatService = exports.ChatService = class ChatService {
                     userId: participant.id,
                     msg: createChatDto.msg,
                     rid: createChatDto.rid,
-                }
+                },
             });
         }
         catch (error) {
-            client.emit('errorEvent', { message: 'An error occurred', error: error.message });
+            client.emit('errorEvent', {
+                message: 'An error occurred',
+                error: error.message,
+            });
         }
         await this.prisma.chatRoom.update({
             where: {
@@ -141,7 +144,7 @@ let ChatService = exports.ChatService = class ChatService {
                 },
             },
         });
-        console.log((await this.map.size));
+        console.log(await this.map.size);
         if (this.map.get(payload.id)) {
             this.map.get(payload.id).leave(payload.rid);
         }
@@ -435,7 +438,7 @@ let ChatService = exports.ChatService = class ChatService {
         return rooms;
     }
     async getMessages(payload) {
-        console.log(payload);
+        console.log('>>>>>>>>>>', payload);
         const message = await this.prisma.message.findMany({
             where: {
                 rid: payload.rid,
@@ -584,11 +587,13 @@ let ChatService = exports.ChatService = class ChatService {
         if (!user) {
             throw new common_1.NotFoundException('User not found');
         }
-        return (await user.picture);
+        return await user.picture;
     }
 };
 exports.ChatService = ChatService = __decorate([
     (0, common_1.Injectable)(),
-    __metadata("design:paramtypes", [prisma_service_1.PrismaService, jwt_1.JwtService, event_emitter_1.EventEmitter2])
+    __metadata("design:paramtypes", [prisma_service_1.PrismaService,
+        jwt_1.JwtService,
+        event_emitter_1.EventEmitter2])
 ], ChatService);
 //# sourceMappingURL=chat.service.js.map
