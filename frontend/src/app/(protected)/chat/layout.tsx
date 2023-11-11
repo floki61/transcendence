@@ -7,6 +7,7 @@ import { MdGroupAdd } from "react-icons/md";
 import { getTime } from "@/components/getTime";
 import Link from "next/link";
 import { useRooms } from "@/hooks/useRooms";
+import { useRoomInfo } from "@/hooks/useRoomInfo";
 
 export default function ChatLayout({
   children,
@@ -15,8 +16,9 @@ export default function ChatLayout({
 }) {
   const { friends, chatbar } = useRooms();
   const [roomDiv, SetRoomDiv] = useState(false);
+  let visible;
 
-  console.log({ friends });
+  // console.log({ friends });
 
   return (
     <div className="flex h-full text-white">
@@ -47,6 +49,8 @@ export default function ChatLayout({
                 text={friend.lastMessage}
                 time={friend.lastMessageDate}
                 image={friend.picture}
+                visible={friend.visibility}
+                dm={friend.is_DM}
               />
             </Link>
           ))}
