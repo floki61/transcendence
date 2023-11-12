@@ -10,7 +10,7 @@ interface RoomInfoProps {
 
 export const useRoomInfo = ({friends, rid, user}: RoomInfoProps) => {
 
-	let visible, id, role = "USER", r_name, r_id, dm;
+	let visible, id = "", role = "USER", r_name, r_id, dm;
 
 	if (friends) {
 		friends.map((room: any) => {
