@@ -4,7 +4,8 @@ import { JwtAuthGuard } from 'src/auth/jwt/jwt.guard';
 import { GameGateway } from './game.gateway';
 import { GameService } from './game.service';
 import { UsersService } from 'src/users/users.service';
-// 
+import { EventEmitter2 } from '@nestjs/event-emitter';
+
 @Controller()
 export class GameController {
 	constructor(private gameService: GameService,
@@ -17,12 +18,10 @@ export class GameController {
             throw new HttpException('You can\'t send play request to yourself', HttpStatus.BAD_REQUEST);
         if (!await this.userservice.checkFriendship(req.user.id, req.body.friendId))
             throw new HttpException('You are not friends', HttpStatus.BAD_REQUEST);
-		// if (await this.gameService.checkingIfInGame(req.user.id)) {
-		// 	throw new HttpException('You are in game', HttpStatus.BAD_REQUEST);
-		// }
-		// if (await this.gameService.checkingIfInGame(req.body.friendId)) {
-		// 	throw new HttpException('Your friend is in game', HttpStatus.BAD_REQUEST);
-		// }
+		if (await this.gameService.checkingIfInGame(req.user.id))
+			throw new HttpException('You are in game', HttpStatus.BAD_REQUEST);
+		if (await this.gameService.checkingIfInGame(req.body.friendId))
+			throw new HttpException('Your friend is in game', HttpStatus.BAD_REQUEST);
         this.gamegtw.server.to(req.body.friendId).emit('PlayRequest', req.user.id);
 		return { message: 'Play request sent successfully' };
     }
@@ -33,12 +32,10 @@ export class GameController {
 			throw new HttpException('You can\'t accept play request from yourself', HttpStatus.BAD_REQUEST);
 		if (!await this.userservice.checkFriendship(req.user.id, req.body.friendId))
 			throw new HttpException('You are not friends', HttpStatus.BAD_REQUEST);
-		// if (await this.gameService.checkingIfInGame(req.user.id)) {
-		// 	throw new HttpException('You are in game', HttpStatus.BAD_REQUEST);
-		// }
-		// if (await this.gameService.checkingIfInGame(req.body.friendId)) {
-		// 	throw new HttpException('Your friend is in game', HttpStatus.BAD_REQUEST);
-		// }
+		if (await this.gameService.checkingIfInGame(req.user.id))
+			throw new HttpException('You are in game', HttpStatus.BAD_REQUEST);
+		if (await this.gameService.checkingIfInGame(req.body.friendId))
+			throw new HttpException('Your friend is in game', HttpStatus.BAD_REQUEST);
 		this.gamegtw.server.to(req.body.friendId).emit('PlayRequestAccepted', req.user.id);
 		return { message: 'Play request accepted successfully' };
 	}
@@ -49,12 +46,10 @@ export class GameController {
 			throw new HttpException('You can\'t reject play request from yourself', HttpStatus.BAD_REQUEST);
 		if (!await this.userservice.checkFriendship(req.user.id, req.body.friendId))
 			throw new HttpException('You are not friends', HttpStatus.BAD_REQUEST);
-		// if (await this.gameService.checkingIfInGame(req.user.id)) {
-		// 	throw new HttpException('You are in game', HttpStatus.BAD_REQUEST);
-		// }
-		// if (await this.gameService.checkingIfInGame(req.body.friendId)) {
-		// 	throw new HttpException('Your friend is in game', HttpStatus.BAD_REQUEST);
-		// }
+		if (await this.gameService.checkingIfInGame(req.user.id))
+			throw new HttpException('You are in game', HttpStatus.BAD_REQUEST);
+		if (await this.gameService.checkingIfInGame(req.body.friendId))
+			throw new HttpException('Your friend is in game', HttpStatus.BAD_REQUEST);
 		this.gamegtw.server.to(req.body.friendId).emit('PlayRequestRejected', req.user.id);
 		return { message: 'Play request rejected successfully' };
 	}
