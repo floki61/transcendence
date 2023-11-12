@@ -143,7 +143,7 @@ export class ChatService {
 		if (participant.role === 'OWNER') {
 			throw new UnauthorizedException('Cannot kick owner');
 		}
-		// console.log(payload);
+		console.log(payload);
 		await this.prisma.participant.delete({
 			where: {
 				uid_rid: {

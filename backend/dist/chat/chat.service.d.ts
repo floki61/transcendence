@@ -60,6 +60,15 @@ export declare class ChatService {
         updatedAt: Date;
     })[]>;
     getMyRooms(payload: any): Promise<({
+        messages: {
+            id: string;
+            msg: string;
+            msgTime: Date;
+            userId: string;
+            rid: string;
+            createdAt: Date;
+            updatedAt: Date;
+        }[];
         participants: {
             id: string;
             rid: string;
@@ -68,15 +77,6 @@ export declare class ChatService {
             isOnline: boolean;
             isMuted: boolean;
             isBanned: boolean;
-            createdAt: Date;
-            updatedAt: Date;
-        }[];
-        messages: {
-            id: string;
-            msg: string;
-            msgTime: Date;
-            userId: string;
-            rid: string;
             createdAt: Date;
             updatedAt: Date;
         }[];
