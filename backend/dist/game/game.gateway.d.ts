@@ -13,16 +13,6 @@ export declare class GameGateway implements OnGatewayConnection, OnGatewayDiscon
     server: Server;
     private gameStarted;
     private connectedClients;
-    Queue: Map<string, {
-        Socket: Socket;
-        gameType: string;
-        gameMode: string;
-        status: string;
-        gameData: any;
-        playWith: string;
-        leader: boolean;
-        gameId: string;
-    }>;
     private matchmakingQueue;
     handleConnection(client: Socket): Promise<void>;
     handleDisconnect(client: Socket): Promise<void>;
