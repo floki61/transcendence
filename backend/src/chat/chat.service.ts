@@ -438,7 +438,7 @@ export class ChatService {
 				participants: true,
 			},
 		});
-		console.log(room);
+		// console.log(room);
 		return room;
 	}
 

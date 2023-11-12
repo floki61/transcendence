@@ -2,194 +2,195 @@
 // learn more about it in the docs: https://pris.ly/d/prisma-schema
 
 generator client {
-	provider = "prisma-client-js"
+    provider = "prisma-client-js"
 }
 
 datasource db {
-	provider = "postgresql"
-	url      = env("DATABASE_URL")
+    provider = "postgresql"
+    url      = env("DATABASE_URL")
 }
 
 enum Role {
-	USER
-	ADMIN
-	OWNER
+    USER
+    ADMIN
+    OWNER
 }
 
 enum Visibility {
-	PUBLIC
-	PRIVATE
-	PROTECTED
+    PUBLIC
+    PRIVATE
+    PROTECTED
 }
 
 enum Status {
-	PENDING
-	ACCEPTED
-	REJECTED
+    PENDING
+    ACCEPTED
+    REJECTED
 }
 
 model User {
-	id                            		String       @id @default(cuid())
-	userName                      		String?       @unique
-	firstName                     		String
-	lastName                      		String
-	email                         		String?      @unique
-	picture                       		String?      @default("") // Use nullable (?) for optional fields
-	country                       		String?      @default("") // Use nullable (?) for optional fields
-	phoneNumber							String?      @default("") // Use nullable (?) for optional fields
-	accessToken                   		String?      @default("") // Use nullable (?) for optional fields
-	password                      		String? // Password should not have a default value
-	twoFactorAuthenticationSecret 		String?
-	membership                    		Participant[]
-	isTwoFactorAuthenticationEnabled 	Boolean @default(false)
-	senders                       		FriendShip[] @relation("sender")
-	receivers                     		FriendShip[] @relation("receiver")
-	wins                       			Game[] @relation("winner")
-	loses                     			Game[] @relation("loser")
-	blockSenders                  		Block[] @relation("sender")
-	blockReceivers                		Block[] @relation("receiver")
-	achivements							Achivement[]
-	notifications						Notification[]
-	// lastSeen    DateTime?    @default(now())
+    id                               String         @id @default(cuid())
+    userName                         String?        @unique
+    firstName                        String
+    lastName                         String
+    email                            String?        @unique
+    picture                          String?        @default("") // Use nullable (?) for optional fields
+    country                          String?        @default("") // Use nullable (?) for optional fields
+    phoneNumber                      String?        @default("") // Use nullable (?) for optional fields
+    accessToken                      String?        @default("") // Use nullable (?) for optional fields
+    password                         String? // Password should not have a default value
+    twoFactorAuthenticationSecret    String?
+    membership                       Participant[]
+    isTwoFactorAuthenticationEnabled Boolean        @default(false)
+    senders                          FriendShip[]   @relation("sender")
+    receivers                        FriendShip[]   @relation("receiver")
+    wins                             Game[]         @relation("winner")
+    loses                            Game[]         @relation("loser")
+    blockSenders                     Block[]        @relation("sender")
+    blockReceivers                   Block[]        @relation("receiver")
+    achivements                      Achivement[]
+    notifications                    Notification[]
+    // lastSeen    DateTime?    @default(now())
 
-	createdAt DateTime @default(now())
-	updatedAt DateTime @updatedAt
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
 }
 
 model Participant {
-	id String @id @default(cuid())
+    id String @id @default(cuid())
 
-	room ChatRoom @relation(fields: [rid], references: [id])
-	rid  String
+    room ChatRoom @relation(fields: [rid], references: [id])
+    rid  String
 
-	user User   @relation(fields: [uid], references: [id])
-	uid  String
+    user User   @relation(fields: [uid], references: [id])
+    uid  String
 
-	messages    Message[]
+    messages Message[]
 
-	role Role @default(USER)
+    role Role @default(USER)
 
-	isOnline Boolean @default(false)
-	isMuted  Boolean @default(false)
-	isBanned Boolean @default(false)
+    isOnline Boolean @default(false)
+    isMuted  Boolean @default(false)
+    isBanned Boolean @default(false)
 
-	createdAt DateTime @default(now())
-	updatedAt DateTime @updatedAt
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
 
-	@@unique([uid, rid])
+    @@unique([uid, rid])
 }
 
 model ChatRoom {
-	id           	String        @id @default(cuid())
-	name         	String
-	picture		 	String? @default("")
-	lastMessageDate DateTime?
-	visibility   	Visibility    @default(PUBLIC)
-	password     	String?
-	participants 	Participant[]
-	messages     	Message[]
-	lastMessage  	String?
-	is_DM        	Boolean       @default(true)
+    id              String        @id @default(cuid())
+    name            String
+    picture         String?       @default("")
+    lastMessageDate DateTime?
+    visibility      Visibility    @default(PUBLIC)
+    password        String?
+    participants    Participant[]
+    messages        Message[]
+    lastMessage     String?
+    is_DM           Boolean       @default(true)
 
-	createdAt DateTime @default(now())
-	updatedAt DateTime @updatedAt
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
 }
 
 model FriendShip {
-	id String @id @default(cuid())
+    id String @id @default(cuid())
 
-	user   User   @relation(name: "sender", fields: [userId], references: [id])
-	userId String
+    user   User   @relation(name: "sender", fields: [userId], references: [id])
+    userId String
 
-	friend   User   @relation(name: "receiver", fields: [friendId], references: [id])
-	friendId String
+    friend   User   @relation(name: "receiver", fields: [friendId], references: [id])
+    friendId String
 
-	status Status @default(PENDING)
+    status Status @default(PENDING)
 
-	createdAt DateTime @default(now())
-	updatedAt DateTime @updatedAt
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
 
-	@@unique([userId, friendId])
+    @@unique([userId, friendId])
 }
 
 model Block {
-	id String @id @default(cuid())
+    id String @id @default(cuid())
 
-	user	User   @relation(name: "sender", fields: [uid], references: [id])
-	uid		String
+    user User   @relation(name: "sender", fields: [uid], references: [id])
+    uid  String
 
-	friend	User   @relation(name: "receiver", fields: [fid], references: [id])
-	fid		String
+    friend User   @relation(name: "receiver", fields: [fid], references: [id])
+    fid    String
 
-	createdAt DateTime @default(now())
-	updatedAt DateTime @updatedAt
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
 
-	@@unique([uid, fid])
+    @@unique([uid, fid])
 }
 
 model Message {
-	id  String @id @default(cuid())
-	msg String
+    id  String @id @default(cuid())
+    msg String
 
-	msgTime DateTime @default(now())
+    msgTime DateTime @default(now())
 
-	userId String? // This field refers to the sender of the message
-	user   Participant?   @relation(fields: [userId], references: [id])
+    userId String? // This field refers to the sender of the message
+    user   Participant? @relation(fields: [userId], references: [id])
 
-	rid  String?
-	room ChatRoom? @relation(fields: [rid], references: [id])
+    rid  String?
+    room ChatRoom? @relation(fields: [rid], references: [id])
 
-	createdAt DateTime @default(now())
-	updatedAt DateTime @updatedAt
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
 }
 
 model Game {
-	id String @id @default(cuid())
+    id String @id @default(cuid())
 
-	player1   User   @relation(name: "winner", fields: [player1Id], references: [id])
-	player1Id String
+    mode String?
 
-	player2   User   @relation(name: "loser", fields: [player2Id], references: [id])
-	player2Id String
+    player1   User   @relation(name: "winner", fields: [player1Id], references: [id])
+    player1Id String
 
-	player1Score Int
+    player2   User   @relation(name: "loser", fields: [player2Id], references: [id])
+    player2Id String
 
-	player2Score Int
+    player1Score Int
 
-	winnerId 		String?
-	loserId 		String?
+    player2Score Int
 
-	createdAt DateTime @default(now())
-	updatedAt DateTime @updatedAt
+    winnerId String?
+    loserId  String?
+
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
 }
 
 model Achivement {
-	id String @id @default(cuid())
+    id String @id @default(cuid())
 
-	user   User   @relation(fields: [uid], references: [id])
-	uid String
+    user User   @relation(fields: [uid], references: [id])
+    uid  String
 
-	achivementName String
+    achivementName String
 
-	alreadyAchieved Boolean @default(false)
+    alreadyAchieved Boolean @default(false)
 
-	createdAt DateTime @default(now())
-	updatedAt DateTime @updatedAt
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
 
-	@@unique([uid, achivementName])
+    @@unique([uid, achivementName])
 }
 
 model Notification {
-	id String @id @default(cuid())
+    id String @id @default(cuid())
 
-	user   User   @relation(fields: [uid], references: [id])
-	uid String
+    user User   @relation(fields: [uid], references: [id])
+    uid  String
 
-	notificationName String
+    notificationName String
 
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
 
-	createdAt DateTime @default(now())
-	updatedAt DateTime @updatedAt
-
-	@@unique([uid, notificationName])
+    @@unique([uid, notificationName])
 }
