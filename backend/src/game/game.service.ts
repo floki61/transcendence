@@ -8,6 +8,7 @@ import { PrismaService } from 'src/prisma/prisma.service';
 export class GameService 
 {
     constructor(/*private gameGtw: GameGateway*/) {}
+    Queue: Map<string, {Socket: Socket, gameType: string, gameMode: string, status: string, gameData: any, playWith: string, leader: boolean, gameId: string}> = new Map<string, {Socket: Socket, gameType: string,gameMode: string, status: string, gameData: any, playWith: string, leader: boolean, gameId: string}>();
     private initialGameData = {
         canvasWidth: 850,
         canvasHeight: 400,
@@ -165,9 +166,9 @@ export class GameService
             data.rightPaddle.y += data.rightPaddle.speed;
         // return data;
     }
-    // async checkingIfInGame(id: any) {
-    //     if(this.gameGtw.Queue.has(id))
-    //         return true;
-    //     return false;
-    // }
+    async checkingIfInGame(id: any) {
+        if(this.Queue.has(id))
+            return true;
+        return false;
+    }
 }

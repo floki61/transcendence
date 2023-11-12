@@ -19,7 +19,7 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
     server: Server;
     private gameStarted = false;
     private connectedClients: Map<string, Socket> = new Map<string, Socket>();
-    Queue: Map<string, {Socket: Socket, gameType: string, gameMode: string, status: string, gameData: any, playWith: string, leader: boolean, gameId: string}> = new Map<string, {Socket: Socket, gameType: string,gameMode: string, status: string, gameData: any, playWith: string, leader: boolean, gameId: string}>();
+    // gameService.Queue: Map<string, {Socket: Socket, gameType: string, gameMode: string, status: string, gameData: any, playWith: string, leader: boolean, gameId: string}> = new Map<string, {Socket: Socket, gameType: string,gameMode: string, status: string, gameData: any, playWith: string, leader: boolean, gameId: string}>();
     private matchmakingQueue: string[] = [];
 
     async handleConnection(client: Socket) {
@@ -57,40 +57,40 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
 				);
 				if (payload.id) {
                     console.log(`Client disconnected: ${payload.id} Socket: ${client.id}`);
-                    if (this.Queue.get(payload.id) && this.Queue.get(payload.id).status === 'playing' && this.Queue.get(payload.id).gameType === 'Live') {
+                    if (this.gameService.Queue.get(payload.id) && this.gameService.Queue.get(payload.id).status === 'playing' && this.gameService.Queue.get(payload.id).gameType === 'Live') {
                         var player1;
                         var player2;
-                        if (this.Queue.get(payload.id).leader) {
+                        if (this.gameService.Queue.get(payload.id).leader) {
                             player1 = payload.id;
-                            player2 = this.Queue.get(payload.id).playWith;
-                            if (this.Queue.get(player2))
-                                this.Queue.get(player2).Socket.emit('gameResult', 'Winner');
-                            this.Queue.get(player1).status = 'finished';
-                            this.Queue.get(player2).status = 'finished';
+                            player2 = this.gameService.Queue.get(payload.id).playWith;
+                            if (this.gameService.Queue.get(player2))
+                                this.gameService.Queue.get(player2).Socket.emit('gameResult', 'Winner');
+                            this.gameService.Queue.get(player1).status = 'finished';
+                            this.gameService.Queue.get(player2).status = 'finished';
                         }
                         else {
-                            player1 = this.Queue.get(payload.id).playWith;
+                            player1 = this.gameService.Queue.get(payload.id).playWith;
                             player2 = payload.id;
-                            if (this.Queue.get(player1))
-                                this.Queue.get(player1).Socket.emit('gameResult', 'Winner');
-                            this.Queue.get(player2).status = 'finished';
-                            this.Queue.get(player1).status = 'finished';
+                            if (this.gameService.Queue.get(player1))
+                                this.gameService.Queue.get(player1).Socket.emit('gameResult', 'Winner');
+                            this.gameService.Queue.get(player2).status = 'finished';
+                            this.gameService.Queue.get(player1).status = 'finished';
                         }
                         await this.prisma.game.update({
                             where:
                             {
-                                id: this.Queue.get(payload.id).gameId,
+                                id: this.gameService.Queue.get(payload.id).gameId,
                             },
                             data: {
-                                player1Score: this.Queue.get(payload.id).gameData.score.left,
-                                player2Score: this.Queue.get(payload.id).gameData.score.right,
+                                player1Score: this.gameService.Queue.get(payload.id).gameData.score.left,
+                                player2Score: this.gameService.Queue.get(payload.id).gameData.score.right,
                                 winnerId: player2,
                                 loserId: player1,
                             }
                         });
                     }
-                    if(this.Queue.has(payload.id))
-                        this.Queue.delete(payload.id);
+                    if(this.gameService.Queue.has(payload.id))
+                        this.gameService.Queue.delete(payload.id);
                     if(this.matchmakingQueue.includes(payload.id))
                         this.matchmakingQueue.splice(this.matchmakingQueue.indexOf(payload.id), 1);
                     this.connectedClients.delete(payload.id);
@@ -117,92 +117,92 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
 	}
 
     async determineGameResult(id, id2?) {
-        if (this.Queue.get(id).gameType === 'Bot') {
-            if(this.Queue.get(id)) {
-                if(this.Queue.get(id).gameData.score.left === 5)
-                    this.Queue.get(id).Socket.emit('gameResult', 'Winner');
+        if (this.gameService.Queue.get(id).gameType === 'Bot') {
+            if(this.gameService.Queue.get(id)) {
+                if(this.gameService.Queue.get(id).gameData.score.left === 5)
+                    this.gameService.Queue.get(id).Socket.emit('gameResult', 'Winner');
                 else
-                    this.Queue.get(id).Socket.emit('gameResult', 'Loser');
+                    this.gameService.Queue.get(id).Socket.emit('gameResult', 'Loser');
             }
         }
-        else if (this.Queue.get(id).gameType === 'Live') {
-            if(this.Queue.get(id).gameData.score.left === 5) {
-                if(this.Queue.get(id))
-                    this.Queue.get(id).Socket.emit('gameResult', 'Winner');
-                if(this.Queue.get(id2))
-                    this.Queue.get(id2).Socket.emit('gameResult', 'Loser');
+        else if (this.gameService.Queue.get(id).gameType === 'Live') {
+            if(this.gameService.Queue.get(id).gameData.score.left === 5) {
+                if(this.gameService.Queue.get(id))
+                    this.gameService.Queue.get(id).Socket.emit('gameResult', 'Winner');
+                if(this.gameService.Queue.get(id2))
+                    this.gameService.Queue.get(id2).Socket.emit('gameResult', 'Loser');
             }
             else {
-                if(this.Queue.get(id))
-                    this.Queue.get(id).Socket.emit('gameResult', 'Loser');
-                if(this.Queue.get(id2))
-                    this.Queue.get(id2).Socket.emit('gameResult', 'Winner');
+                if(this.gameService.Queue.get(id))
+                    this.gameService.Queue.get(id).Socket.emit('gameResult', 'Loser');
+                if(this.gameService.Queue.get(id2))
+                    this.gameService.Queue.get(id2).Socket.emit('gameResult', 'Winner');
             }
         }
     }
-    
+
     private async moveBotBall(id) {
-        if(!this.Queue.get(id))
+        if(!this.gameService.Queue.get(id))
             return ;
-        while (this.Queue.has(id) && this.Queue.get(id).status === 'playing') {
-            let res = await this.gameService.moveBall(this.Queue.get(id).gameData);
-            await this.gameService.moveBot(this.Queue.get(id).gameData);
-            if (!this.Queue.has(id) || this.Queue.get(id).status !== 'playing')
+        while (this.gameService.Queue.has(id) && this.gameService.Queue.get(id).status === 'playing') {
+            let res = await this.gameService.moveBall(this.gameService.Queue.get(id).gameData);
+            await this.gameService.moveBot(this.gameService.Queue.get(id).gameData);
+            if (!this.gameService.Queue.has(id) || this.gameService.Queue.get(id).status !== 'playing')
                 break;
             if(res === 'reset') {
-                await this.gameService.resetBall(this.Queue.get(id).gameData);
-                if(this.Queue.get(id).gameData.score.left === 5 || this.Queue.get(id).gameData.score.right === 5) {
+                await this.gameService.resetBall(this.gameService.Queue.get(id).gameData);
+                if(this.gameService.Queue.get(id).gameData.score.left === 5 || this.gameService.Queue.get(id).gameData.score.right === 5) {
                     console.log('game over');
-                    if(this.Queue.get(id))
+                    if(this.gameService.Queue.get(id))
                         await this.determineGameResult(id);
-                    this.Queue.get(id).status = 'finished';
+                    this.gameService.Queue.get(id).status = 'finished';
                     break;
                 }
             }
-            this.Queue.get(id).Socket.emit('updateBall', this.Queue.get(id).gameData);
+            this.gameService.Queue.get(id).Socket.emit('updateBall', this.gameService.Queue.get(id).gameData);
             await new Promise((resolve) => setTimeout(resolve, 1000 / 60));
         }
     }
     private async moveBall(player1, player2) {
-        if(!this.Queue.get(player1) || !this.Queue.get(player2))
+        if(!this.gameService.Queue.get(player1) || !this.gameService.Queue.get(player2))
             return ;
-        while(this.Queue.has(player1) && this.Queue.has(player2) && this.Queue.get(player1).status === 'playing' && this.Queue.get(player2).status === 'playing') {
-            let res = await this.gameService.moveBall(this.Queue.get(player1).gameData);
-            if (!this.Queue.has(player1) || !this.Queue.has(player2) || this.Queue.get(player1).status !== 'playing' || this.Queue.get(player2).status !== 'playing')
+        while(this.gameService.Queue.has(player1) && this.gameService.Queue.has(player2) && this.gameService.Queue.get(player1).status === 'playing' && this.gameService.Queue.get(player2).status === 'playing') {
+            let res = await this.gameService.moveBall(this.gameService.Queue.get(player1).gameData);
+            if (!this.gameService.Queue.has(player1) || !this.gameService.Queue.has(player2) || this.gameService.Queue.get(player1).status !== 'playing' || this.gameService.Queue.get(player2).status !== 'playing')
                 break ;
             if(res === 'reset') {
                 await this.prisma.game.update({
                     where:
                     {
-                        id: this.Queue.get(player1).gameId,
+                        id: this.gameService.Queue.get(player1).gameId,
                     },
                     data: {
-                        player1Score: this.Queue.get(player1).gameData.score.left,
-                        player2Score: this.Queue.get(player1).gameData.score.right,
+                        player1Score: this.gameService.Queue.get(player1).gameData.score.left,
+                        player2Score: this.gameService.Queue.get(player1).gameData.score.right,
                     }
                 });
-                await this.gameService.resetBall(this.Queue.get(player1).gameData);
-                if(this.Queue.get(player1).gameData.score.left === 5 || this.Queue.get(player1).gameData.score.right === 5) {
+                await this.gameService.resetBall(this.gameService.Queue.get(player1).gameData);
+                if(this.gameService.Queue.get(player1).gameData.score.left === 5 || this.gameService.Queue.get(player1).gameData.score.right === 5) {
                     await this.prisma.game.update({
                         where:
                         {
-                            id: this.Queue.get(player1).gameId,
+                            id: this.gameService.Queue.get(player1).gameId,
                         },
                         data: {
-                            winnerId: this.Queue.get(player1).gameData.score.left === 5 ? player1 : player2,
-                            loserId: this.Queue.get(player1).gameData.score.right === 5 ? player2 : player1,
+                            winnerId: this.gameService.Queue.get(player1).gameData.score.left === 5 ? player1 : player2,
+                            loserId: this.gameService.Queue.get(player1).gameData.score.right === 5 ? player2 : player1,
                         }
                     });
                     console.log('game over');
                     await this.determineGameResult(player1, player2);
-                    this.Queue.get(player1).status = 'finished';
-                    this.Queue.get(player2).status = 'finished';
+                    this.gameService.Queue.get(player1).status = 'finished';
+                    this.gameService.Queue.get(player2).status = 'finished';
                     break;
                 }
             }
-            if(this.Queue.get(player1) && this.Queue.get(player2) && this.Queue.get(player1).status === 'playing' && this.Queue.get(player2).status === 'playing') {
-                this.Queue.get(player1).Socket.emit('updateBall', this.Queue.get(player1).gameData);
-                this.Queue.get(player2).Socket.emit('updateBall', this.Queue.get(player1).gameData);
+            if(this.gameService.Queue.get(player1) && this.gameService.Queue.get(player2) && this.gameService.Queue.get(player1).status === 'playing' && this.gameService.Queue.get(player2).status === 'playing') {
+                this.gameService.Queue.get(player1).Socket.emit('updateBall', this.gameService.Queue.get(player1).gameData);
+                this.gameService.Queue.get(player2).Socket.emit('updateBall', this.gameService.Queue.get(player1).gameData);
             }
             await new Promise((resolve) => setTimeout(resolve, 1000 / 60));
         }
@@ -211,16 +211,16 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
     @SubscribeMessage('paddleBotUpdate')
     async updateBotPaddle(client: Socket, event) {
         const id = this.getByValue(this.connectedClients, client);
-        await this.gameService.updateBotPaddle(event, this.Queue.get(id).gameData, this.Queue.get(id).gameMode);
-        if(this.Queue.get(id))
-            this.Queue.get(id).Socket.emit('paddlesUpdate', this.Queue.get(id).gameData);
+        await this.gameService.updateBotPaddle(event, this.gameService.Queue.get(id).gameData, this.gameService.Queue.get(id).gameMode);
+        if(this.gameService.Queue.get(id))
+            this.gameService.Queue.get(id).Socket.emit('paddlesUpdate', this.gameService.Queue.get(id).gameData);
     }
 
     private startBotGame(id) {
-        console.log(id, this.Queue.get(id).status);
-        if(this.Queue.get(id).status === 'waiting') {
-            this.Queue.get(id).status = 'playing';
-            this.connectedClients.get(id).emit('startBotGame', this.Queue.get(id).gameData);
+        console.log(id, this.gameService.Queue.get(id).status);
+        if(this.gameService.Queue.get(id).status === 'waiting') {
+            this.gameService.Queue.get(id).status = 'playing';
+            this.connectedClients.get(id).emit('startBotGame', this.gameService.Queue.get(id).gameData);
             console.log('Bot game started');
             this.moveBotBall(id);
         }
@@ -229,35 +229,35 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
     @SubscribeMessage('paddlesUpdate')
     async updatePaddle(client: Socket, event) {
         const id = this.getByValue(this.connectedClients, client);
-        const targetPaddle = this.Queue.get(id).leader ? true : false;
-        const leaderid = targetPaddle ? id : this.Queue.get(id).playWith;
-        await this.gameService.updatePaddles(event, this.Queue.get(leaderid).gameData, targetPaddle, this.Queue.get(leaderid).gameMode);
-        this.Queue.get(id).Socket.emit('paddlesUpdate', this.Queue.get(leaderid).gameData);
-        this.Queue.get(this.Queue.get(id).playWith).Socket.emit('paddlesUpdate', this.Queue.get(leaderid).gameData);
+        const targetPaddle = this.gameService.Queue.get(id).leader ? true : false;
+        const leaderid = targetPaddle ? id : this.gameService.Queue.get(id).playWith;
+        await this.gameService.updatePaddles(event, this.gameService.Queue.get(leaderid).gameData, targetPaddle, this.gameService.Queue.get(leaderid).gameMode);
+        this.gameService.Queue.get(id).Socket.emit('paddlesUpdate', this.gameService.Queue.get(leaderid).gameData);
+        this.gameService.Queue.get(this.gameService.Queue.get(id).playWith).Socket.emit('paddlesUpdate', this.gameService.Queue.get(leaderid).gameData);
 
     }
 
     private startLiveGame(player1: string, player2: string) {
-        this.Queue.get(player1).status = 'playing';
-        this.Queue.get(player1).playWith = player2;
-        this.Queue.get(player1).leader = true;
-        this.Queue.get(player2).status = 'playing';
-        this.Queue.get(player2).playWith = player1;
+        this.gameService.Queue.get(player1).status = 'playing';
+        this.gameService.Queue.get(player1).playWith = player2;
+        this.gameService.Queue.get(player1).leader = true;
+        this.gameService.Queue.get(player2).status = 'playing';
+        this.gameService.Queue.get(player2).playWith = player1;
         console.log('Live game started');
-        this.Queue.get(player1).Socket.emit('startGame', this.Queue.get(player1).gameData);
-        this.Queue.get(player2).Socket.emit('startGame', this.Queue.get(player1).gameData);
+        this.gameService.Queue.get(player1).Socket.emit('startGame', this.gameService.Queue.get(player1).gameData);
+        this.gameService.Queue.get(player2).Socket.emit('startGame', this.gameService.Queue.get(player1).gameData);
         this.moveBall(player1, player2);
     }
     
     // private startFriendGame(player1: string, player2: string) {
-    //     this.Queue.get(player1).status = 'playing';
-    //     this.Queue.get(player1).playWith = player2;
-    //     this.Queue.get(player1).leader = true;
-    //     this.Queue.get(player2).status = 'playing';
-    //     this.Queue.get(player2).playWith = player1;
+    //     this.gameService.Queue.get(player1).status = 'playing';
+    //     this.gameService.Queue.get(player1).playWith = player2;
+    //     this.gameService.Queue.get(player1).leader = true;
+    //     this.gameService.Queue.get(player2).status = 'playing';
+    //     this.gameService.Queue.get(player2).playWith = player1;
     //     console.log('Friend game started');
-    //     this.Queue.get(player1).Socket.emit('startGame', this.Queue.get(player1).gameData);
-    //     this.Queue.get(player2).Socket.emit('startGame', this.Queue.get(player1).gameData);
+    //     this.gameService.Queue.get(player1).Socket.emit('startGame', this.gameService.Queue.get(player1).gameData);
+    //     this.gameService.Queue.get(player2).Socket.emit('startGame', this.gameService.Queue.get(player1).gameData);
     //     this.moveBall(player1, player2);
     // }
 
@@ -274,8 +274,8 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
                     player2Score: 0,
                 }
             })
-            this.Queue.get(player1).gameId = game.id;
-            this.Queue.get(player2).gameId = game.id;
+            this.gameService.Queue.get(player1).gameId = game.id;
+            this.gameService.Queue.get(player2).gameId = game.id;
             this.startLiveGame(player1, player2);
         }
     }
@@ -288,7 +288,7 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
     }
     
     // private sendPlayRequest(playerId: string, friendId: string) {
-    //     const friendSocket = this.Queue.get(friendId)?.Socket;
+    //     const friendSocket = this.gameService.Queue.get(friendId)?.Socket;
     //     if (friendSocket) {
     //       friendSocket.emit('playRequest', { playerId });
     //     }
@@ -309,14 +309,14 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
             gameId: '',
         }
         const playerId = this.getByValue(this.connectedClients, client);
-        this.Queue.set(playerId, gameData);
+        this.gameService.Queue.set(playerId, gameData);
         if(data.type === 'Bot')
             this.startBotGame(playerId);
         else if(data.type === 'Live')
             this.matchmakingQueue.push(playerId);
         // else if(data.type === 'Friend') {
-        //     if(this.Queue.has(data.friendId)) {
-        //         const friendData = this.Queue.get(data.friendId);
+        //     if(this.gameService.Queue.has(data.friendId)) {
+        //         const friendData = this.gameService.Queue.get(data.friendId);
         //         if (friendData.gameType === 'Friend' && friendData.playWith === playerId) {
         //             this.startFriendGame(playerId, data.friendId);
         //         }
