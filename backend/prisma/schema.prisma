@@ -31,6 +31,7 @@ enum Status {
 model User {
     id                               String         @id @default(cuid())
     userName                         String?        @unique
+    level                            Int            @default(0)
     firstName                        String
     lastName                         String
     email                            String?        @unique

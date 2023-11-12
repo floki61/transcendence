@@ -183,7 +183,7 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
                 });
                 await this.gameService.resetBall(this.gameService.Queue.get(player1).gameData);
                 if (this.gameService.Queue.get(player1).gameData.score.left === 5 || this.gameService.Queue.get(player1).gameData.score.right === 5) {
-                    await this.prisma.game.update({
+                    const game = await this.prisma.game.update({
                         where:
                         {
                             id: this.gameService.Queue.get(player1).gameId,
@@ -195,6 +195,16 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
                             player2Id: this.gameService.Queue.get(player1).gameData.score.left === 5 ? player2 : player1,
                             player1Score: this.gameService.Queue.get(player1).gameData.score.left === 5 ? 5 : this.gameService.Queue.get(player1).gameData.score.right,
                             player2Score: this.gameService.Queue.get(player1).gameData.score.right === 5 ? this.gameService.Queue.get(player1).gameData.score.left : 5,
+                        }
+                    });
+                    const winner = await this.prisma.user.update({
+                        where: {
+                            id: game.winnerId,
+                        },
+                        data: {
+                            level: {
+                                increment: 30,
+                            }
                         }
                     });
                     console.log('game over');

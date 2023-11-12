@@ -15,6 +15,7 @@ export declare class AuthService {
     signup(dto: Userdto): Promise<{
         id: string;
         userName: string;
+        level: number;
         firstName: string;
         lastName: string;
         email: string;
@@ -31,6 +32,7 @@ export declare class AuthService {
     signin(dto: signindto): Promise<{
         id: string;
         userName: string;
+        level: number;
         firstName: string;
         lastName: string;
         email: string;
