@@ -75,6 +75,13 @@ export class ChatController {
         return messages;
     }
 
+    @UseGuards(JwtAuthGuard)
+    @Post('leaveRoom')
+    async leaveRoom(@Body() body: any, @Req() req: any) {
+        const room = await this.userservice.leaveRoom(body);
+        return room;
+    }
+
     /////////////////////////////
     @Roles('OWNER')
     @UseGuards(JwtAuthGuard, RolesGuard)
@@ -155,6 +162,7 @@ export class ChatController {
         return room;
     }
 
+    // @Roles('OWNER', 'ADMIN')
 
     // @UseGuards(JwtAuthGuard)
     // @Get('AllRooms')

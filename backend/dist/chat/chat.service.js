@@ -256,7 +256,7 @@ let ChatService = exports.ChatService = class ChatService {
         this.eventEmitter.emit('unbanUser', payload);
         return 'Unbanned user';
     }
-    async leaveRoom(payload, client) {
+    async leaveRoom(payload) {
         const room = await this.prisma.chatRoom.findUnique({
             where: {
                 id: payload.rid,
