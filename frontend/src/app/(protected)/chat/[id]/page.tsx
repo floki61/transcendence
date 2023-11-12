@@ -6,7 +6,6 @@ import { useChat } from "@/hooks/useChat";
 import { ChatSettings } from "@/components/ChatSettings";
 import { IoSend } from "react-icons/io5";
 import { useRooms } from "@/hooks/useRooms";
-import axios from "axios";
 import { usePathname } from "next/navigation";
 import { useEffect, useRef, useLayoutEffect } from "react";
 import JoinRooms from "@/components/JoinRooms";
@@ -65,9 +64,9 @@ const Convo = ({ params }: { params: any }) => {
     return (
       <div
         className="h-full w-full flex"
-        onClick={() => {
-          if (showDiv) SetShowDiv(false);
-        }}
+        // onClick={() => {
+        //   if (showDiv) SetShowDiv(false);
+        // }}
       >
         <div className="h-full flex-1 flex flex-col justify-between">
           <div className="px-4 py-2 flex items-center justify-between bg-primecl">
@@ -185,7 +184,7 @@ const Convo = ({ params }: { params: any }) => {
                   fill="#CAD2D5"
                 />
               </svg>
-              {showDiv && <ChatSettings role={role} />}
+              {showDiv && <ChatSettings role={role} id={id} />}
             </div>
           </div>
           <div className="flex flex-col flex-1 bg-segundcl py-2 overflow-scroll">

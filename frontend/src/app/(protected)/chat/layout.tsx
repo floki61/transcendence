@@ -2,12 +2,10 @@
 
 import Chatbar from "@/components/Chatbar";
 import { useEffect, useState } from "react";
-import axios from "axios";
 import { MdGroupAdd } from "react-icons/md";
-import { getTime } from "@/components/getTime";
 import Link from "next/link";
 import { useRooms } from "@/hooks/useRooms";
-import { useRoomInfo } from "@/hooks/useRoomInfo";
+
 
 export default function ChatLayout({
   children,
@@ -16,9 +14,6 @@ export default function ChatLayout({
 }) {
   const { friends, chatbar } = useRooms();
   const [roomDiv, SetRoomDiv] = useState(false);
-  let visible;
-
-  // console.log({ friends });
 
   return (
     <div className="flex h-full text-white">
