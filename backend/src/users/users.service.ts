@@ -371,11 +371,12 @@ export class UsersService {
 	}
 
 	async getFriendProfile(userId: string) {
-		return await this.prisma.user.findUnique({
+		const user = await this.prisma.user.findUnique({
 			where: {
 				id: userId,
 			},
 		});
+		return { user, ...await this.getLevelP(user.level) };
 	}
 
 	async getFriendProfileWithUserName(userName: string) {
@@ -386,9 +387,76 @@ export class UsersService {
 		});
 	}
 
-	async getAllUsers()
-	{
+	async getAllUsers() {
 		return await this.prisma.user.findMany();
 	}
 
+	async getLevelP(lvl: number) {
+		let level_P = 0;
+		let i = lvl;
+		let index = 20;
+		let barPourcentage;
+		while (i >= index) {
+			i -= index;
+			level_P++;
+			index *= 2;
+		}
+		if (i > 0) {
+			barPourcentage = (i / index) * 100;
+		}
+		return { level_P, barPourcentage };
+	}
+
+	async getProfile(userId: string) {
+		let user = await this.prisma.user.findUnique({
+			where: {
+				id: userId,
+			},
+		});
+		return { user, ...await this.getLevelP(user.level) };
+	}
+
+	async getStats(body: any) {
+		const user = await this.prisma.user.findUnique({
+			where: {
+				id: body.id,
+			},
+			include: {
+				wins: true,
+				loses: true,
+			}
+		});
+		let stats = {
+			MP: 0,
+			W: 0,
+			L: 0,
+			GS: 0,
+			GC: 0
+		}
+		const games = await this.prisma.game.findMany({
+			where: {
+				AND: [
+					{
+						OR: [
+							{
+								winnerId: body.id,
+							},
+							{
+								loserId: body.id,
+							},
+						],
+					},
+					{
+						mode: body.mode,
+					},
+				],
+			},
+		});
+		stats.MP = games.length;
+		stats.W = games.filter(game => game.winnerId === body.id).length;
+		stats.L = stats.MP - stats.W;
+		stats.GS = games.reduce((total, game) => total + (game.winnerId === body.id ? game.player1Score : game.player2Score), 0);
+		stats.GC = games.reduce((total, game) => total + (game.winnerId === body.id ? game.player2Score : game.player1Score), 0);
+		return { stats };
+	}
 }

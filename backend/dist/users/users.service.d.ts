@@ -9,6 +9,7 @@ export declare class UsersService {
     getUser(idu: string): Promise<{
         id: string;
         userName: string;
+        level: number;
         firstName: string;
         lastName: string;
         email: string;
@@ -27,6 +28,7 @@ export declare class UsersService {
     updateUserPicture(req: any, data: any): Promise<{
         id: string;
         userName: string;
+        level: number;
         firstName: string;
         lastName: string;
         email: string;
@@ -43,6 +45,7 @@ export declare class UsersService {
     updateUserName(req: any, data: any): Promise<{
         id: string;
         userName: string;
+        level: number;
         firstName: string;
         lastName: string;
         email: string;
@@ -59,6 +62,7 @@ export declare class UsersService {
     updateUserPhoneNumber(req: any, data: any): Promise<{
         id: string;
         userName: string;
+        level: number;
         firstName: string;
         lastName: string;
         email: string;
@@ -75,6 +79,7 @@ export declare class UsersService {
     updateUserCountry(req: any, data: any): Promise<{
         id: string;
         userName: string;
+        level: number;
         firstName: string;
         lastName: string;
         email: string;
@@ -91,6 +96,7 @@ export declare class UsersService {
     createUser(req: any): Promise<{
         id: string;
         userName: string;
+        level: number;
         firstName: string;
         lastName: string;
         email: string;
@@ -186,6 +192,7 @@ export declare class UsersService {
     deleteAccount(userId: string): Promise<{
         id: string;
         userName: string;
+        level: number;
         firstName: string;
         lastName: string;
         email: string;
@@ -216,24 +223,30 @@ export declare class UsersService {
         updatedAt: Date;
     }[]>;
     getFriendProfile(userId: string): Promise<{
-        id: string;
-        userName: string;
-        firstName: string;
-        lastName: string;
-        email: string;
-        picture: string;
-        country: string;
-        phoneNumber: string;
-        accessToken: string;
-        password: string;
-        twoFactorAuthenticationSecret: string;
-        isTwoFactorAuthenticationEnabled: boolean;
-        createdAt: Date;
-        updatedAt: Date;
+        level_P: number;
+        barPourcentage: any;
+        user: {
+            id: string;
+            userName: string;
+            level: number;
+            firstName: string;
+            lastName: string;
+            email: string;
+            picture: string;
+            country: string;
+            phoneNumber: string;
+            accessToken: string;
+            password: string;
+            twoFactorAuthenticationSecret: string;
+            isTwoFactorAuthenticationEnabled: boolean;
+            createdAt: Date;
+            updatedAt: Date;
+        };
     }>;
     getFriendProfileWithUserName(userName: string): Promise<{
         id: string;
         userName: string;
+        level: number;
         firstName: string;
         lastName: string;
         email: string;
@@ -250,6 +263,7 @@ export declare class UsersService {
     getAllUsers(): Promise<{
         id: string;
         userName: string;
+        level: number;
         firstName: string;
         lastName: string;
         email: string;
@@ -263,4 +277,38 @@ export declare class UsersService {
         createdAt: Date;
         updatedAt: Date;
     }[]>;
+    getLevelP(lvl: number): Promise<{
+        level_P: number;
+        barPourcentage: any;
+    }>;
+    getProfile(userId: string): Promise<{
+        level_P: number;
+        barPourcentage: any;
+        user: {
+            id: string;
+            userName: string;
+            level: number;
+            firstName: string;
+            lastName: string;
+            email: string;
+            picture: string;
+            country: string;
+            phoneNumber: string;
+            accessToken: string;
+            password: string;
+            twoFactorAuthenticationSecret: string;
+            isTwoFactorAuthenticationEnabled: boolean;
+            createdAt: Date;
+            updatedAt: Date;
+        };
+    }>;
+    getStats(body: any): Promise<{
+        stats: {
+            MP: number;
+            W: number;
+            L: number;
+            GS: number;
+            GC: number;
+        };
+    }>;
 }

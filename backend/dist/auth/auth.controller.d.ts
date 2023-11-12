@@ -16,6 +16,7 @@ export declare class AuthController {
     signup(data: Userdto): Promise<{
         id: string;
         userName: string;
+        level: number;
         firstName: string;
         lastName: string;
         email: string;
@@ -32,6 +33,7 @@ export declare class AuthController {
     signin(data: signindto): Promise<{
         id: string;
         userName: string;
+        level: number;
         firstName: string;
         lastName: string;
         email: string;

@@ -1,4 +1,4 @@
-import { Body, Controller, Get, HttpException, HttpStatus, Post, Req, Res, UseGuards} from '@nestjs/common';
+import { Body, Controller, Get, HttpException, HttpStatus, Post, Req, Res, UseGuards } from '@nestjs/common';
 import { Server } from 'socket.io';
 import { JwtAuthGuard } from 'src/auth/jwt/jwt.guard';
 import { GameGateway } from './game.gateway';
@@ -9,22 +9,22 @@ import { EventEmitter2 } from '@nestjs/event-emitter';
 @Controller()
 export class GameController {
 	constructor(private gameService: GameService,
-				private userservice: UsersService,
-				private gamegtw: GameGateway) {}
+		private userservice: UsersService,
+		private gamegtw: GameGateway) { }
 	@UseGuards(JwtAuthGuard)
-    @Post('sendPlaydRequest')
-    async sendPlayRequest(@Body() body: any, @Req() req) {
-        if (req.user.id == req.body.friendId)
-            throw new HttpException('You can\'t send play request to yourself', HttpStatus.BAD_REQUEST);
-        if (!await this.userservice.checkFriendship(req.user.id, req.body.friendId))
-            throw new HttpException('You are not friends', HttpStatus.BAD_REQUEST);
+	@Post('sendPlaydRequest')
+	async sendPlayRequest(@Body() body: any, @Req() req) {
+		if (req.user.id == req.body.friendId)
+			throw new HttpException('You can\'t send play request to yourself', HttpStatus.BAD_REQUEST);
+		if (!await this.userservice.checkFriendship(req.user.id, req.body.friendId))
+			throw new HttpException('You are not friends', HttpStatus.BAD_REQUEST);
 		if (await this.gameService.checkingIfInGame(req.user.id))
 			throw new HttpException('You are in game', HttpStatus.BAD_REQUEST);
 		if (await this.gameService.checkingIfInGame(req.body.friendId))
 			throw new HttpException('Your friend is in game', HttpStatus.BAD_REQUEST);
-        this.gamegtw.server.to(req.body.friendId).emit('PlayRequest', req.user.id);
+		this.gamegtw.server.to(req.body.friendId).emit('PlayRequest', req.user.id);
 		return { message: 'Play request sent successfully' };
-    }
+	}
 	@UseGuards(JwtAuthGuard)
 	@Post('acceptPlayRequest')
 	async acceptPlayRequest(@Body() body: any, @Req() req) {

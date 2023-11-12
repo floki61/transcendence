@@ -406,7 +406,6 @@ let ChatService = exports.ChatService = class ChatService {
                 participants: true,
             },
         });
-        console.log(room);
         return room;
     }
     async getMyRooms(payload) {
