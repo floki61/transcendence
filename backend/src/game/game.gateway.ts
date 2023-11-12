@@ -280,8 +280,10 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
             const player1 = this.matchmakingQueue.shift();
             const player2 = this.matchmakingQueue.shift();
             console.log('Matching players', player1, player2);
+            console.log(this.gameService.Queue.get(player1).gameMode);
             var game = await this.prisma.game.create({
                 data: {
+                    mode: this.gameService.Queue.get(player1).gameMode,
                     player1Id: player1,
                     player2Id: player2,
                     player1Score: 0,

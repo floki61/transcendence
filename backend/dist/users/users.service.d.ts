@@ -302,4 +302,13 @@ export declare class UsersService {
             updatedAt: Date;
         };
     }>;
+    getStats(body: any): Promise<{
+        stats: {
+            MP: number;
+            W: number;
+            L: number;
+            GS: number;
+            GC: number;
+        };
+    }>;
 }
