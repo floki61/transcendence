@@ -612,34 +612,27 @@ let ChatService = exports.ChatService = class ChatService {
         if (!room) {
             throw new common_1.NotFoundException('Chat room not found');
         }
-        const user = await this.prisma.user.findUnique({
-            where: {
-                id: payload.id,
-            },
-        });
-        if (!user) {
-            throw new common_1.NotFoundException('User not found');
-        }
-        const participant = await this.prisma.participant.findUnique({
-            where: {
-                uid_rid: {
-                    uid: payload.id,
-                    rid: payload.rid,
+        for (let uid of payload.uids) {
+            const participant = await this.prisma.participant.findUnique({
+                where: {
+                    uid_rid: {
+                        uid: uid,
+                        rid: payload.rid,
+                    },
                 },
-            },
-        });
-        if (participant) {
-            throw new common_1.UnauthorizedException('User already in chat room');
+            });
+            if (participant) {
+                throw new common_1.UnauthorizedException('User already in chat room');
+            }
+            let newParticipant = await this.prisma.participant.create({
+                data: {
+                    uid: uid,
+                    rid: payload.rid,
+                    role: 'USER',
+                },
+            });
         }
-        const newParticipant = await this.prisma.participant.create({
-            data: {
-                uid: payload.id,
-                rid: payload.rid,
-                role: 'USER',
-            },
-        });
-        console.log(newParticipant);
-        return newParticipant;
+        return 'Added participant';
     }
 };
 exports.ChatService = ChatService = __decorate([

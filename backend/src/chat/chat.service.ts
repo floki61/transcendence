@@ -659,33 +659,53 @@ export class ChatService {
 		if (!room) {
 			throw new NotFoundException('Chat room not found');
 		}
-		const user = await this.prisma.user.findUnique({
-			where: {
-				id: payload.id,
-			},
-		});
-		if (!user) {
-			throw new NotFoundException('User not found');
-		}
-		const participant = await this.prisma.participant.findUnique({
-			where: {
-				uid_rid: {
-					uid: payload.id,
-					rid: payload.rid,
+		for (let uid of payload.uids) {
+			const participant = await this.prisma.participant.findUnique({
+				where: {
+					uid_rid: {
+						uid: uid,
+						rid: payload.rid,
+					},
 				},
-			},
-		});
-		if (participant) {
-			throw new UnauthorizedException('User already in chat room');
+			});
+			if (participant) {
+				throw new UnauthorizedException('User already in chat room');
+			}
+			let newParticipant = await this.prisma.participant.create({
+				data: {
+					uid: uid,
+					rid: payload.rid,
+					role: 'USER',
+				},
+			});
 		}
-		const newParticipant = await this.prisma.participant.create({
-			data: {
-				uid: payload.id,
-				rid: payload.rid,
-				role: 'USER',
-			},
-		});
-		console.log(newParticipant);
-		return newParticipant;
+		// const user = await this.prisma.user.findUnique({
+		// 	where: {
+		// 		id: payload.id,
+		// 	},
+		// });
+		// if (!user) {
+		// 	throw new NotFoundException('User not found');
+		// }
+		// const participant = await this.prisma.participant.findUnique({
+		// 	where: {
+		// 		uid_rid: {
+		// 			uid: payload.id,
+		// 			rid: payload.rid,
+		// 		},
+		// 	},
+		// });
+		// if (participant) {
+		// 	throw new UnauthorizedException('User already in chat room');
+		// }
+		// const newParticipant = await this.prisma.participant.create({
+		// 	data: {
+		// 		uid: payload.id,
+		// 		rid: payload.rid,
+		// 		role: 'USER',
+		// 	},
+		// });
+		// console.log(newParticipant);
+		return 'Added participant';
 	}
 }
