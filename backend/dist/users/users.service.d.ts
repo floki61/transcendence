@@ -310,5 +310,17 @@ export declare class UsersService {
             GS: number;
             GC: number;
         };
+        gamestats: {
+            id: string;
+            mode: string;
+            player1Id: string;
+            player2Id: string;
+            player1Score: number;
+            player2Score: number;
+            winnerId: string;
+            loserId: string;
+            createdAt: Date;
+            updatedAt: Date;
+        }[];
     }>;
 }
