@@ -6,14 +6,14 @@ import { ConfigService } from '@nestjs/config';
 import { OnEvent } from '@nestjs/event-emitter';
 import { PrismaService } from 'src/prisma/prisma.service';
 
-@WebSocketGateway({ namespace: 'game', cors: true, origin: ['http://localhost:3000/game']})
+@WebSocketGateway({ namespace: 'game', cors: true, origin: ['http://localhost:3000/game'] })
 export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
     constructor(private readonly gameService: GameService,
         private jwt: JwtService,
         private config: ConfigService,
         private prisma: PrismaService) {
-            setInterval(() => this.matchPlayers(), 1000);
-        }
+        setInterval(() => this.matchPlayers(), 1000);
+    }
 
     @WebSocketServer()
     server: Server;
@@ -26,134 +26,134 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
         let cookie: string;
         let payload: any;
         if (client.request.headers.cookie) {
-			cookie = await this.parseCookies(client.request.headers.cookie);
-			payload = await this.jwt.verifyAsync(
-				cookie,
-				{
-					secret: this.config.get('JWT_SECRET_KEY')
-				});
-			if (payload.id) {
+            cookie = await this.parseCookies(client.request.headers.cookie);
+            payload = await this.jwt.verifyAsync(
+                cookie,
+                {
+                    secret: this.config.get('JWT_SECRET_KEY')
+                });
+            if (payload.id) {
                 console.log(`Client connected: ${payload.id} Socket: ${client.id}`);
-                if(this.connectedClients.has(payload.id))
+                if (this.connectedClients.has(payload.id))
                     client.disconnect();
                 this.connectedClients.set(payload.id, client);
-			}
-		}
-		else {
-			client.disconnect();
-		}
+            }
+        }
+        else {
+            client.disconnect();
+        }
     }
 
     async handleDisconnect(client: Socket) {
         let cookie: string;
-		let payload: any;
-		if (client.request.headers.cookie) {
-			cookie = await this.parseCookies(client.request.headers.cookie);
-			payload = await this.jwt.verifyAsync(
-				cookie,
-				{
-					secret: this.config.get('JWT_SECRET_KEY')
-				}
-				);
-				if (payload.id) {
-                    console.log(`Client disconnected: ${payload.id} Socket: ${client.id}`);
-                    if (this.gameService.Queue.get(payload.id) && this.gameService.Queue.get(payload.id).status === 'playing' && this.gameService.Queue.get(payload.id).gameType === 'Live') {
-                        var player1;
-                        var player2;
-                        if (this.gameService.Queue.get(payload.id).leader) {
-                            player1 = payload.id;
-                            player2 = this.gameService.Queue.get(payload.id).playWith;
-                            if (this.gameService.Queue.get(player2))
-                                this.gameService.Queue.get(player2).Socket.emit('gameResult', 'Winner');
-                            this.gameService.Queue.get(player1).status = 'finished';
-                            this.gameService.Queue.get(player2).status = 'finished';
-                        }
-                        else {
-                            player1 = this.gameService.Queue.get(payload.id).playWith;
-                            player2 = payload.id;
-                            if (this.gameService.Queue.get(player1))
-                                this.gameService.Queue.get(player1).Socket.emit('gameResult', 'Winner');
-                            this.gameService.Queue.get(player2).status = 'finished';
-                            this.gameService.Queue.get(player1).status = 'finished';
-                        }
-                        await this.prisma.game.update({
-                            where:
-                            {
-                                id: this.gameService.Queue.get(payload.id).gameId,
-                            },
-                            data: {
-                                player1Score: this.gameService.Queue.get(payload.id).gameData.score.left,
-                                player2Score: this.gameService.Queue.get(payload.id).gameData.score.right,
-                                winnerId: player2,
-                                loserId: player1,
-                            }
-                        });
+        let payload: any;
+        if (client.request.headers.cookie) {
+            cookie = await this.parseCookies(client.request.headers.cookie);
+            payload = await this.jwt.verifyAsync(
+                cookie,
+                {
+                    secret: this.config.get('JWT_SECRET_KEY')
+                }
+            );
+            if (payload.id) {
+                console.log(`Client disconnected: ${payload.id} Socket: ${client.id}`);
+                if (this.gameService.Queue.get(payload.id) && this.gameService.Queue.get(payload.id).status === 'playing' && this.gameService.Queue.get(payload.id).gameType === 'Live') {
+                    var player1;
+                    var player2;
+                    if (this.gameService.Queue.get(payload.id).leader) {
+                        player1 = payload.id;
+                        player2 = this.gameService.Queue.get(payload.id).playWith;
+                        if (this.gameService.Queue.get(player2))
+                            this.gameService.Queue.get(player2).Socket.emit('gameResult', 'Winner');
+                        this.gameService.Queue.get(player1).status = 'finished';
+                        this.gameService.Queue.get(player2).status = 'finished';
                     }
-                    if(this.gameService.Queue.has(payload.id))
-                        this.gameService.Queue.delete(payload.id);
-                    if(this.matchmakingQueue.includes(payload.id))
-                        this.matchmakingQueue.splice(this.matchmakingQueue.indexOf(payload.id), 1);
-                    this.connectedClients.delete(payload.id);
-				}
-		}
+                    else {
+                        player1 = this.gameService.Queue.get(payload.id).playWith;
+                        player2 = payload.id;
+                        if (this.gameService.Queue.get(player1))
+                            this.gameService.Queue.get(player1).Socket.emit('gameResult', 'Winner');
+                        this.gameService.Queue.get(player2).status = 'finished';
+                        this.gameService.Queue.get(player1).status = 'finished';
+                    }
+                    await this.prisma.game.update({
+                        where:
+                        {
+                            id: this.gameService.Queue.get(payload.id).gameId,
+                        },
+                        data: {
+                            player1Score: this.gameService.Queue.get(payload.id).gameData.score.left,
+                            player2Score: this.gameService.Queue.get(payload.id).gameData.score.right,
+                            winnerId: player2,
+                            loserId: player1,
+                        }
+                    });
+                }
+                if (this.gameService.Queue.has(payload.id))
+                    this.gameService.Queue.delete(payload.id);
+                if (this.matchmakingQueue.includes(payload.id))
+                    this.matchmakingQueue.splice(this.matchmakingQueue.indexOf(payload.id), 1);
+                this.connectedClients.delete(payload.id);
+            }
+        }
     }
 
     private parseCookies(cookieHeader: string | undefined): string {
-		const cookies: Record<string, string> = {};
-		if (cookieHeader) {
-			cookieHeader.split(';').forEach((cookie) => {
-				const parts = cookie.split('=');
-				const name = parts.shift()?.trim();
-				let value = decodeURI(parts.join('='));
-				if (value.startsWith('"') && value.endsWith('"')) {
-					value = value.slice(1, -1);
-				}
-				if (name) {
-					cookies[name] = value;
-				}
-			});
-		}
-		return cookies['access_token'];
-	}
+        const cookies: Record<string, string> = {};
+        if (cookieHeader) {
+            cookieHeader.split(';').forEach((cookie) => {
+                const parts = cookie.split('=');
+                const name = parts.shift()?.trim();
+                let value = decodeURI(parts.join('='));
+                if (value.startsWith('"') && value.endsWith('"')) {
+                    value = value.slice(1, -1);
+                }
+                if (name) {
+                    cookies[name] = value;
+                }
+            });
+        }
+        return cookies['access_token'];
+    }
 
     async determineGameResult(id, id2?) {
         if (this.gameService.Queue.get(id).gameType === 'Bot') {
-            if(this.gameService.Queue.get(id)) {
-                if(this.gameService.Queue.get(id).gameData.score.left === 5)
+            if (this.gameService.Queue.get(id)) {
+                if (this.gameService.Queue.get(id).gameData.score.left === 5)
                     this.gameService.Queue.get(id).Socket.emit('gameResult', 'Winner');
                 else
                     this.gameService.Queue.get(id).Socket.emit('gameResult', 'Loser');
             }
         }
         else if (this.gameService.Queue.get(id).gameType === 'Live') {
-            if(this.gameService.Queue.get(id).gameData.score.left === 5) {
-                if(this.gameService.Queue.get(id))
+            if (this.gameService.Queue.get(id).gameData.score.left === 5) {
+                if (this.gameService.Queue.get(id))
                     this.gameService.Queue.get(id).Socket.emit('gameResult', 'Winner');
-                if(this.gameService.Queue.get(id2))
+                if (this.gameService.Queue.get(id2))
                     this.gameService.Queue.get(id2).Socket.emit('gameResult', 'Loser');
             }
             else {
-                if(this.gameService.Queue.get(id))
+                if (this.gameService.Queue.get(id))
                     this.gameService.Queue.get(id).Socket.emit('gameResult', 'Loser');
-                if(this.gameService.Queue.get(id2))
+                if (this.gameService.Queue.get(id2))
                     this.gameService.Queue.get(id2).Socket.emit('gameResult', 'Winner');
             }
         }
     }
 
     private async moveBotBall(id) {
-        if(!this.gameService.Queue.get(id))
-            return ;
+        if (!this.gameService.Queue.get(id))
+            return;
         while (this.gameService.Queue.has(id) && this.gameService.Queue.get(id).status === 'playing') {
             let res = await this.gameService.moveBall(this.gameService.Queue.get(id).gameData);
             await this.gameService.moveBot(this.gameService.Queue.get(id).gameData);
             if (!this.gameService.Queue.has(id) || this.gameService.Queue.get(id).status !== 'playing')
                 break;
-            if(res === 'reset') {
+            if (res === 'reset') {
                 await this.gameService.resetBall(this.gameService.Queue.get(id).gameData);
-                if(this.gameService.Queue.get(id).gameData.score.left === 5 || this.gameService.Queue.get(id).gameData.score.right === 5) {
+                if (this.gameService.Queue.get(id).gameData.score.left === 5 || this.gameService.Queue.get(id).gameData.score.right === 5) {
                     console.log('game over');
-                    if(this.gameService.Queue.get(id))
+                    if (this.gameService.Queue.get(id))
                         await this.determineGameResult(id);
                     this.gameService.Queue.get(id).status = 'finished';
                     break;
@@ -164,13 +164,13 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
         }
     }
     private async moveBall(player1, player2) {
-        if(!this.gameService.Queue.get(player1) || !this.gameService.Queue.get(player2))
-            return ;
-        while(this.gameService.Queue.has(player1) && this.gameService.Queue.has(player2) && this.gameService.Queue.get(player1).status === 'playing' && this.gameService.Queue.get(player2).status === 'playing') {
+        if (!this.gameService.Queue.get(player1) || !this.gameService.Queue.get(player2))
+            return;
+        while (this.gameService.Queue.has(player1) && this.gameService.Queue.has(player2) && this.gameService.Queue.get(player1).status === 'playing' && this.gameService.Queue.get(player2).status === 'playing') {
             let res = await this.gameService.moveBall(this.gameService.Queue.get(player1).gameData);
             if (!this.gameService.Queue.has(player1) || !this.gameService.Queue.has(player2) || this.gameService.Queue.get(player1).status !== 'playing' || this.gameService.Queue.get(player2).status !== 'playing')
-                break ;
-            if(res === 'reset') {
+                break;
+            if (res === 'reset') {
                 await this.prisma.game.update({
                     where:
                     {
@@ -182,7 +182,7 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
                     }
                 });
                 await this.gameService.resetBall(this.gameService.Queue.get(player1).gameData);
-                if(this.gameService.Queue.get(player1).gameData.score.left === 5 || this.gameService.Queue.get(player1).gameData.score.right === 5) {
+                if (this.gameService.Queue.get(player1).gameData.score.left === 5 || this.gameService.Queue.get(player1).gameData.score.right === 5) {
                     await this.prisma.game.update({
                         where:
                         {
@@ -190,7 +190,11 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
                         },
                         data: {
                             winnerId: this.gameService.Queue.get(player1).gameData.score.left === 5 ? player1 : player2,
-                            loserId: this.gameService.Queue.get(player1).gameData.score.right === 5 ? player2 : player1,
+                            loserId: this.gameService.Queue.get(player1).gameData.score.left === 5 ? player2 : player1,
+                            player1Id: this.gameService.Queue.get(player1).gameData.score.left === 5 ? player1 : player2,
+                            player2Id: this.gameService.Queue.get(player1).gameData.score.left === 5 ? player2 : player1,
+                            player1Score: this.gameService.Queue.get(player1).gameData.score.left === 5 ? 5 : this.gameService.Queue.get(player1).gameData.score.right,
+                            player2Score: this.gameService.Queue.get(player1).gameData.score.right === 5 ? this.gameService.Queue.get(player1).gameData.score.left : 5,
                         }
                     });
                     console.log('game over');
@@ -200,7 +204,7 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
                     break;
                 }
             }
-            if(this.gameService.Queue.get(player1) && this.gameService.Queue.get(player2) && this.gameService.Queue.get(player1).status === 'playing' && this.gameService.Queue.get(player2).status === 'playing') {
+            if (this.gameService.Queue.get(player1) && this.gameService.Queue.get(player2) && this.gameService.Queue.get(player1).status === 'playing' && this.gameService.Queue.get(player2).status === 'playing') {
                 this.gameService.Queue.get(player1).Socket.emit('updateBall', this.gameService.Queue.get(player1).gameData);
                 this.gameService.Queue.get(player2).Socket.emit('updateBall', this.gameService.Queue.get(player1).gameData);
             }
@@ -212,13 +216,13 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
     async updateBotPaddle(client: Socket, event) {
         const id = this.getByValue(this.connectedClients, client);
         await this.gameService.updateBotPaddle(event, this.gameService.Queue.get(id).gameData, this.gameService.Queue.get(id).gameMode);
-        if(this.gameService.Queue.get(id))
+        if (this.gameService.Queue.get(id))
             this.gameService.Queue.get(id).Socket.emit('paddlesUpdate', this.gameService.Queue.get(id).gameData);
     }
 
     private startBotGame(id) {
         console.log(id, this.gameService.Queue.get(id).status);
-        if(this.gameService.Queue.get(id).status === 'waiting') {
+        if (this.gameService.Queue.get(id).status === 'waiting') {
             this.gameService.Queue.get(id).status = 'playing';
             this.connectedClients.get(id).emit('startBotGame', this.gameService.Queue.get(id).gameData);
             console.log('Bot game started');
@@ -248,7 +252,7 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
         this.gameService.Queue.get(player2).Socket.emit('startGame', this.gameService.Queue.get(player1).gameData);
         this.moveBall(player1, player2);
     }
-    
+
     // private startFriendGame(player1: string, player2: string) {
     //     this.gameService.Queue.get(player1).status = 'playing';
     //     this.gameService.Queue.get(player1).playWith = player2;
@@ -282,11 +286,11 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
 
     getByValue(map, searchValue) {
         for (let [key, value] of map.entries()) {
-          if (value === searchValue)
-            return key;
+            if (value === searchValue)
+                return key;
         }
     }
-    
+
     // private sendPlayRequest(playerId: string, friendId: string) {
     //     const friendSocket = this.gameService.Queue.get(friendId)?.Socket;
     //     if (friendSocket) {
@@ -294,7 +298,7 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
     //     }
     // }
 
-  
+
     @SubscribeMessage('gameMode')
     async game(client: Socket, data) {
         console.log(data);
@@ -310,9 +314,9 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
         }
         const playerId = this.getByValue(this.connectedClients, client);
         this.gameService.Queue.set(playerId, gameData);
-        if(data.type === 'Bot')
+        if (data.type === 'Bot')
             this.startBotGame(playerId);
-        else if(data.type === 'Live')
+        else if (data.type === 'Live')
             this.matchmakingQueue.push(playerId);
         // else if(data.type === 'Friend') {
         //     if(this.gameService.Queue.has(data.friendId)) {
@@ -325,5 +329,5 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
         //         // this.sendPlayRequest(playerId, data.friendId);
         //     }
         // }
-    } 
+    }
 }
