@@ -42,7 +42,7 @@ export default function ChatLayout({
             <Link
               key={index}
               href={`/chat/${friend.id}`}
-              className="w-full h-[10%] flex justify-center mt-1"
+              className="w-full h-[10%] flex justify-center"
             >
               <Chatbar
                 name={friend.name}
