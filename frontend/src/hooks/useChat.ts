@@ -29,7 +29,7 @@ export interface ChatType {
   uid: string;
 }
 
-export const useChat = () => {
+export const useChat = (id : string) => {
   const user = useContext(UserContext);
   const [chat, SetChat] = useState<ChatType[]>();
   const [image, SetImage] = useState<string>();
@@ -37,6 +37,7 @@ export const useChat = () => {
   const [showDiv, SetShowDiv] = useState(false);
   const [input, SetInput] = useState("");
   const { socket } = chatSocket();
+  let rid = id;
 
   const getMessages = async (roomId: string) => {
     if (!socket) return;
@@ -53,28 +54,14 @@ export const useChat = () => {
       );
       const data = res.data;
       console.log("oki", data);
-      if (data.length > 0) {
+      // if (data.length > 0) {
         // updatedChat = data.map((item: any) => item);
         SetChat(data.map((item: any) => item));
-      }
+      // }
     } catch (error) {
       console.log("getMessages failed");
     }
   };
-
-  useEffect(() => {
-    if (!socket) return;
-    const messageHandler = (data: any) => {
-      SetChat((prevChat) => [...prevChat!, data]);
-    };
-
-    socket.on("message", messageHandler);
-
-    // Clean up the event listener
-    return () => {
-      socket.off("message", messageHandler);
-    };
-  }, []);
 
   const getName = async () => {
     if (chat && chat[0]) {
@@ -119,9 +106,10 @@ export const useChat = () => {
   };
 
   const sendMsg = (e: any) => {
-    if (chat && chat[0] && input.length > 0)
+    console.log("ggfd : ", rid);
+    if (input.length > 0)
       socket?.emit("createChat", {
-        rid: chat[0].rid,
+        rid,
         uid: user.user?.id,
         msg: input,
       });
@@ -134,6 +122,7 @@ export const useChat = () => {
     user,
     input,
     chat,
+    SetChat,
     image,
     name,
     showDiv,
