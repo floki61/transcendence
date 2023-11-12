@@ -60,6 +60,15 @@ export declare class ChatService {
         updatedAt: Date;
     })[]>;
     getMyRooms(payload: any): Promise<({
+        messages: {
+            id: string;
+            msg: string;
+            msgTime: Date;
+            userId: string;
+            rid: string;
+            createdAt: Date;
+            updatedAt: Date;
+        }[];
         participants: {
             id: string;
             rid: string;
@@ -68,15 +77,6 @@ export declare class ChatService {
             isOnline: boolean;
             isMuted: boolean;
             isBanned: boolean;
-            createdAt: Date;
-            updatedAt: Date;
-        }[];
-        messages: {
-            id: string;
-            msg: string;
-            msgTime: Date;
-            userId: string;
-            rid: string;
             createdAt: Date;
             updatedAt: Date;
         }[];
@@ -130,15 +130,5 @@ export declare class ChatService {
     changePassword(payload: any): Promise<string>;
     giveAdmin(payload: any): Promise<string>;
     getUserPicture(uid: any): Promise<string>;
-    addParticipant(payload: any): Promise<{
-        id: string;
-        rid: string;
-        uid: string;
-        role: import(".prisma/client").$Enums.Role;
-        isOnline: boolean;
-        isMuted: boolean;
-        isBanned: boolean;
-        createdAt: Date;
-        updatedAt: Date;
-    }>;
+    addParticipant(payload: any): Promise<string>;
 }
