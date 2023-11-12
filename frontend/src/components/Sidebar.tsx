@@ -8,7 +8,7 @@ export default function Sidebar() {
   const pathName = usePathname();
 
   return (
-	<aside className="w-14 flex flex-col items-center gap-20">
+	<aside className="w-14 flex flex-col items-center gap-14">
 		<Link href="/" className={`${pathName === "/" ? 'border-2 rounded-e-xl bg-primecl border-primecl' : ''} flex justify-center items-center mt-8 hover:border-2 hover:rounded-e-xl hover:bg-primecl hover:border-primecl w-full h-8`}>
 			<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 27 25" fill="none">
 				<path d="M14.1969 0.314227C13.8115 -0.070888 13.1876 -0.070888 12.8034 0.314227L1.13724 11.977C0.953054 12.1611 0.848633 12.4124 0.848633 12.6748V21.1811C0.848633 23.1772 2.46709 24.7956 4.4631 24.7956H10.239V15.8506H16.76V24.7956H22.536C24.5319 24.7956 26.1504 23.1772 26.1504 21.1812V12.6748C26.1504 12.4124 26.0469 12.1611 25.8618 11.977L14.1969 0.314227Z" fill="white"/>
