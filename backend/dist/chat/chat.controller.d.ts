@@ -111,4 +111,15 @@ export declare class ChatController {
         createdAt: Date;
         updatedAt: Date;
     })[]>;
+    addParticipant(body: any, req: any): Promise<{
+        id: string;
+        rid: string;
+        uid: string;
+        role: import(".prisma/client").$Enums.Role;
+        isOnline: boolean;
+        isMuted: boolean;
+        isBanned: boolean;
+        createdAt: Date;
+        updatedAt: Date;
+    }>;
 }
