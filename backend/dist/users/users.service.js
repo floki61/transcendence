@@ -416,12 +416,35 @@ let UsersService = exports.UsersService = class UsersService {
                 ],
             },
         });
+        const gamestats = await this.prisma.game.findMany({
+            where: {
+                AND: [
+                    {
+                        OR: [
+                            {
+                                winnerId: body.id,
+                            },
+                            {
+                                loserId: body.id,
+                            },
+                        ],
+                    },
+                    {
+                        mode: body.mode,
+                    },
+                ],
+            },
+            orderBy: {
+                createdAt: 'desc',
+            },
+            take: 5,
+        });
         stats.MP = games.length;
         stats.W = games.filter(game => game.winnerId === body.id).length;
         stats.L = stats.MP - stats.W;
         stats.GS = games.reduce((total, game) => total + (game.winnerId === body.id ? game.player1Score : game.player2Score), 0);
         stats.GC = games.reduce((total, game) => total + (game.winnerId === body.id ? game.player2Score : game.player1Score), 0);
-        return { stats };
+        return { stats, gamestats };
     }
 };
 exports.UsersService = UsersService = __decorate([
