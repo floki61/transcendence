@@ -136,6 +136,7 @@ let ChatService = exports.ChatService = class ChatService {
         if (participant.role === 'OWNER') {
             throw new common_1.UnauthorizedException('Cannot kick owner');
         }
+        console.log(payload);
         await this.prisma.participant.delete({
             where: {
                 uid_rid: {
@@ -633,6 +634,18 @@ let ChatService = exports.ChatService = class ChatService {
             });
         }
         return 'Added participant';
+    }
+    async getParticipant(payload) {
+        const users = await this.prisma.user.findMany({
+            where: {
+                membership: {
+                    some: {
+                        rid: payload.rid,
+                    }
+                }
+            }
+        });
+        return users;
     }
 };
 exports.ChatService = ChatService = __decorate([

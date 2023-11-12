@@ -131,4 +131,21 @@ export declare class ChatService {
     giveAdmin(payload: any): Promise<string>;
     getUserPicture(uid: any): Promise<string>;
     addParticipant(payload: any): Promise<string>;
+    getParticipant(payload: any): Promise<{
+        id: string;
+        userName: string;
+        level: number;
+        firstName: string;
+        lastName: string;
+        email: string;
+        picture: string;
+        country: string;
+        phoneNumber: string;
+        accessToken: string;
+        password: string;
+        twoFactorAuthenticationSecret: string;
+        isTwoFactorAuthenticationEnabled: boolean;
+        createdAt: Date;
+        updatedAt: Date;
+    }[]>;
 }

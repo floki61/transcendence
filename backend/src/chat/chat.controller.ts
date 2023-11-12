@@ -157,12 +157,20 @@ export class ChatController {
     @UseGuards(JwtAuthGuard, RolesGuard)
     @Post('addParticipant')
     async addParticipant(@Body() body: any, @Req() req: any) {
-        console.log('hahowa');
+        // console.log('hahowa');
         const room = await this.userservice.addParticipant(body);
         return room;
     }
 
-    // @Roles('OWNER', 'ADMIN')
+    
+    @UseGuards(JwtAuthGuard)
+    @Post('getParticipants')
+    async getParticipant(@Body() body: any, @Req() req: any) {
+        // console.log('hahowa');
+        const room = await this.userservice.getParticipant(body);
+        return room;
+    }
+
 
     // @UseGuards(JwtAuthGuard)
     // @Get('AllRooms')
