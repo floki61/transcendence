@@ -708,4 +708,18 @@ export class ChatService {
 		// console.log(newParticipant);
 		return 'Added participant';
 	}
+
+	async getParticipant(payload: any) {
+		const users = await this.prisma.user.findMany({
+			where:{
+				membership:{
+					some:{
+						rid: payload.rid,
+					}
+				}
+			}
+		})
+
+		return users;
+	}
 }

@@ -40,7 +40,7 @@ export const ChatSettings: React.FC<ChatSettingsProps> = ({
 		return (
 			<div className="text-white text-sm font-light border-2 border-quatrocl absolute top-10 right-3 w-full h-[110] rounded-md bg-terserocl flex flex-col">
 				<Link href={`/chat/${id}/viewParticipants`} className="cursor-pointer hover:bg-segundcl rounded-t-md border-b-2 border-quatrocl w-full px-2 flex items-center h-[11%]">View Participants</Link>
-				<Link href={`/chat/${id}/addParticipants`} className="cursor-pointer hover:bg-segundcl border-b-2 border-quatrocl w-full px-2 flex items-center h-[11%]">Add Participants</Link>
+				<Link href={`/chat/${id}/addParticipants`} as={`/chat/${id}/addParticipants`} className="cursor-pointer hover:bg-segundcl border-b-2 border-quatrocl w-full px-2 flex items-center h-[11%]">Add Participants</Link>
 				<Link href={`/chat/${id}/muteParticipant`} className="cursor-pointer hover:bg-segundcl border-b-2 border-quatrocl w-full px-2 flex items-center h-[11%]">Mute a Participant</Link>
 				<Link href={`/chat/${id}/banParticipant`} className="cursor-pointer hover:bg-segundcl border-b-2 border-quatrocl w-full px-2 flex items-center h-[11%]">Ban a Participant</Link>
 				<Link href={`/chat/${id}/kickParticipant`} className="cursor-pointer hover:bg-segundcl border-b-2 border-quatrocl w-full px-2 flex items-center h-[11%]">Kick a Participant</Link>

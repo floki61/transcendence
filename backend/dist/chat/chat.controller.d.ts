@@ -79,15 +79,6 @@ export declare class ChatController {
     changePassword(body: any, req: any): Promise<string>;
     giveAdmin(body: any, req: any): Promise<string>;
     getMyRooms(req: any): Promise<({
-        messages: {
-            id: string;
-            msg: string;
-            msgTime: Date;
-            userId: string;
-            rid: string;
-            createdAt: Date;
-            updatedAt: Date;
-        }[];
         participants: {
             id: string;
             rid: string;
@@ -96,6 +87,15 @@ export declare class ChatController {
             isOnline: boolean;
             isMuted: boolean;
             isBanned: boolean;
+            createdAt: Date;
+            updatedAt: Date;
+        }[];
+        messages: {
+            id: string;
+            msg: string;
+            msgTime: Date;
+            userId: string;
+            rid: string;
             createdAt: Date;
             updatedAt: Date;
         }[];
@@ -112,4 +112,21 @@ export declare class ChatController {
         updatedAt: Date;
     })[]>;
     addParticipant(body: any, req: any): Promise<string>;
+    getParticipant(body: any, req: any): Promise<{
+        id: string;
+        userName: string;
+        level: number;
+        firstName: string;
+        lastName: string;
+        email: string;
+        picture: string;
+        country: string;
+        phoneNumber: string;
+        accessToken: string;
+        password: string;
+        twoFactorAuthenticationSecret: string;
+        isTwoFactorAuthenticationEnabled: boolean;
+        createdAt: Date;
+        updatedAt: Date;
+    }[]>;
 }

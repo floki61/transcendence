@@ -634,6 +634,18 @@ let ChatService = exports.ChatService = class ChatService {
         }
         return 'Added participant';
     }
+    async getParticipant(payload) {
+        const users = await this.prisma.user.findMany({
+            where: {
+                membership: {
+                    some: {
+                        rid: payload.rid,
+                    }
+                }
+            }
+        });
+        return users;
+    }
 };
 exports.ChatService = ChatService = __decorate([
     (0, common_1.Injectable)(),

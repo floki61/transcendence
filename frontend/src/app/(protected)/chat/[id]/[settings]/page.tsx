@@ -11,17 +11,19 @@ import { ChatFeatures } from '@/components/ChatFeatures';
 export default function page({params} : {params: any}) {
 	
   const [users, SetUsers] = useState<userType[]>();
+  const [selected, SetSelected] = useState<string[]>([""]);
   const feature = params.settings;
 
-  console.log(feature);
+  // console.log(feature);
 
   useEffect(() => {
     const getParticipants = async () => {
       try {
-        const res = await axios.get("http://localhost:4000/getAllUsers", {
+        const res = await axios.post("http://localhost:4000/chat/getParticipants", {rid: params.id},{
           withCredentials: true,
-        });
+        })
         const data = res.data;
+        console.log(res.data);
         SetUsers(data.map((user: any) => user));
       } catch (error) {
         console.log("add Participant failed");
@@ -37,6 +39,8 @@ export default function page({params} : {params: any}) {
           users={users}
           title="Room Participants"
           checkbox={false}
+          selected={selected}
+          rid={params.id}
         />
       </div>
     )
@@ -49,6 +53,9 @@ export default function page({params} : {params: any}) {
           title = "Add Participants to the room"
           button='Invite'
           checkbox={true}
+          selected={selected}
+          rid={params.id}
+          SetSelected={SetSelected}
         />
       </div>
     )
@@ -61,6 +68,9 @@ export default function page({params} : {params: any}) {
           title = "Mute participants in the room"
           button='Mute'
           checkbox={true}
+          selected={selected}
+          rid={params.id}
+          SetSelected={SetSelected}
         />
       </div>
     )
@@ -73,6 +83,9 @@ export default function page({params} : {params: any}) {
           title = "Ban Participants in the room"
           button='Ban'
           checkbox={true}
+          selected={selected}
+          rid={params.id}
+          SetSelected={SetSelected}
         />
       </div>
     )
@@ -85,6 +98,9 @@ export default function page({params} : {params: any}) {
           title = "Kick Participants off the room"
           button='Kick'
           checkbox={true}
+          selected={selected}
+          rid={params.id}
+          SetSelected={SetSelected}
         />
       </div>
     )
