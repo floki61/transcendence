@@ -31,7 +31,7 @@ export declare class ChatService {
     }>;
     banUser(payload: any): Promise<string>;
     unbanUser(payload: any): Promise<string>;
-    leaveRoom(payload: any, client: Socket): Promise<string>;
+    leaveRoom(payload: any): Promise<string>;
     deleteRoom(payload: any): Promise<string>;
     muteUser(payload: any): Promise<string>;
     unmuteUser(payload: any): Promise<string>;

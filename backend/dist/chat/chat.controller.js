@@ -58,6 +58,10 @@ let ChatController = exports.ChatController = class ChatController {
         const messages = await this.userservice.getMessages(body);
         return messages;
     }
+    async leaveRoom(body, req) {
+        const room = await this.userservice.leaveRoom(body);
+        return room;
+    }
     async deleteRoom(body, req) {
         const room = await this.userservice.deleteRoom(body);
         return room;
@@ -170,6 +174,15 @@ __decorate([
     __metadata("design:paramtypes", [Object, Object]),
     __metadata("design:returntype", Promise)
 ], ChatController.prototype, "getMessages", null);
+__decorate([
+    (0, common_1.UseGuards)(jwt_guard_1.JwtAuthGuard),
+    (0, common_1.Post)('leaveRoom'),
+    __param(0, (0, common_1.Body)()),
+    __param(1, (0, common_1.Req)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object, Object]),
+    __metadata("design:returntype", Promise)
+], ChatController.prototype, "leaveRoom", null);
 __decorate([
     (0, role_decorator_1.Roles)('OWNER'),
     (0, common_1.UseGuards)(jwt_guard_1.JwtAuthGuard, roles_guard_1.RolesGuard),

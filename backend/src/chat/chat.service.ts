@@ -277,7 +277,7 @@ export class ChatService {
 		return 'Unbanned user';
 	}
 
-	async leaveRoom(payload: any, client: Socket) {
+	async leaveRoom(payload: any) {
 		// console.log(payload.rid);
 		const room = await this.prisma.chatRoom.findUnique({
 			where: {
