@@ -175,4 +175,11 @@ export class UsersController {
         const users = await this.userservice.getAllUsers();
         return users;
     }
+
+    @UseGuards(JwtAuthGuard)
+    @Get('profile')
+    async profile(@Req() req) {
+        const user = await this.userservice.getProfile(req.user.id);
+        return user;
+    }
 }
