@@ -127,4 +127,21 @@ export declare class ChatController {
         updatedAt: Date;
     })[]>;
     addParticipant(body: any, req: any): Promise<string>;
+    getParticipant(body: any, req: any): Promise<{
+        id: string;
+        userName: string;
+        level: number;
+        firstName: string;
+        lastName: string;
+        email: string;
+        picture: string;
+        country: string;
+        phoneNumber: string;
+        accessToken: string;
+        password: string;
+        twoFactorAuthenticationSecret: string;
+        isTwoFactorAuthenticationEnabled: boolean;
+        createdAt: Date;
+        updatedAt: Date;
+    }[]>;
 }

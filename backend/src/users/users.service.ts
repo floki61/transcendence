@@ -65,7 +65,7 @@ export class UsersService {
 				id: req.user.id,
 			},
 			data: {
-				userName: data.userName,
+				userName: data,
 			},
 		});
 	}
