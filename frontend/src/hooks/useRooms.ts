@@ -17,9 +17,8 @@ export interface FriendType {
 }
 
 export const useRooms = () => {
-	const [friends, SetFriends] = useState<FriendType[] | null>(null);
-	const [chatbar, SetChatbar] = useState(false);
-
+	const [friends, setFriends] = useState<FriendType[]>([]);
+	const [chatbar, setChatbar] = useState(false);
 
 	useEffect(() => {
 		const getUsers = async () => {
@@ -28,27 +27,24 @@ export const useRooms = () => {
 					withCredentials: true
 				});
 				const data = res.data;
-
 				if (data.length > 0) {
-					const updatedFriends = data.map((item: any) => item);
-
-					SetFriends(updatedFriends);
-					SetChatbar(true);
+					setFriends(data);
+					setChatbar(true);
 				}
-
 			} catch (error) {
 				console.log("hadchi baqi makhdamch");
 			}
-			// console.log("friends ", friends)
 			try {
 				const res = await axios.get("http://localhost:4000/chat/getAllRooms", {
 					withCredentials: true,
 				})
 				const data = res.data;
-
 				if (data && data.length > 0) {
-					SetFriends((prevChat) => [...(prevChat! || []), ...data]);
-					SetChatbar(true);
+					setFriends((prev) => {
+						const uniqueRooms = data.filter((room: any) => !prev.some((prevRoom) => prevRoom.id === room.id));
+						return [...prev, ...uniqueRooms]
+					});
+					setChatbar(true);
 				}
 			} catch (error) {
 				console.log("getallrooms failed");
@@ -56,6 +52,7 @@ export const useRooms = () => {
 		}
 		getUsers();
 	}, []);
+	console.log({ friends })
 
 	if (friends) {
 		friends.forEach((friend) => {

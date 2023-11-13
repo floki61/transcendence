@@ -1,7 +1,8 @@
 "use client";
 
 import Chatbar from "@/components/Chatbar";
-import { useEffect, useState } from "react";
+import { useState } from "react";
+
 import { MdGroupAdd } from "react-icons/md";
 import Link from "next/link";
 import { useRooms } from "@/hooks/useRooms";
@@ -17,27 +18,25 @@ export default function ChatLayout({
 
   return (
     <div className="flex h-full text-white">
-      <div className="h-full w-1/3 flex flex-col items-center py-4 px-8 border-r-2 border-primecl overflow-scroll">
-        <div className="flex w-full justify-between items-center mb-2">
-          <div className="cursor-pointer w-full flex justify-end">
-            <Link
-              href="/chat/createroom"
-              className="flex gap-3 rounded-lg bg-quatrocl px-2 items-center"
-              onClick={() => SetRoomDiv(!roomDiv)}
-            >
-              <p>Create Room</p>
-              <div className="">
-                <MdGroupAdd size={22} />
-              </div>
-            </Link>
-          </div>
+      <div className="h-full w-1/3 flex flex-col items-center border-r-2 border-primecl overflow-scroll">
+        <div className="flex w-full justify-between items-center my-2 px-4">
+          <Link
+            href="/chat/createroom"
+            className="flex gap-3 rounded-lg hover:bg-quatrocl p-2 items-center"
+            onClick={() => SetRoomDiv(!roomDiv)}
+          >
+            <div className="">
+              <MdGroupAdd size={22} />
+            </div>
+            Create Room
+          </Link>
         </div>
         {friends &&
           friends.map((friend, index) => (
             <Link
               key={index}
               href={`/chat/${friend.id}`}
-              className="w-full h-[10%] flex justify-center"
+              className="block w-full pl-1"
             >
               <Chatbar
                 name={friend.name}
