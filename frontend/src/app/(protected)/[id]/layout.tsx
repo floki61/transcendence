@@ -68,9 +68,9 @@ export default function layout({params, children}: {params: any; children: React
 				  className='absolute place-self-end'
 				/>
 				<div className='w-[60%] h-[12%] rounded-t-xl bg-primecl flex items-center'>
-				  <Link href="/profile" className={`${pathName === "/profile" ? 'bg-gradient-to-t from-[#000000] from-0% to-segundcl to-100% ' : ''} hover:bg-gradient-to-t hover:from-[#000000] hover:from-0% hover:to-segundcl hover:to-100% hover:rounded-tl-xl w-1/3 text-2xl text-center h-full flex justify-center items-center border-r border-segundcl`}>Stats</Link>
-				  <Link href="/profile/achievements" className={`${pathName === '/profile/achievements' ? 'bg-gradient-to-t from-[#000000] from-0% to-segundcl to-100% ' : ''} hover:bg-gradient-to-t hover:from-[#000000] hover:from-0% hover:to-segundcl hover:to-100% w-1/3 text-2xl text-center h-full flex justify-center items-center border-r border-segundcl`}>Achievements</Link>
-				  <Link href="/profile/history" className={`${pathName === '/profile/history' ? 'bg-gradient-to-t from-[#000000] from-0% to-segundcl to-100% ' : ''} hover:bg-gradient-to-t hover:from-[#000000] hover:from-0% hover:to-segundcl hover:to-100% hover:rounded-tr-xl w-1/3 text-2xl text-center h-full flex justify-center items-center`}>History</Link>
+				  <Link href={`/${params.id}`} className={`${pathName === "/" + params.id ? 'bg-gradient-to-t from-[#000000] from-0% to-segundcl to-100% ' : ''} hover:bg-gradient-to-t hover:from-[#000000] hover:from-0% hover:to-segundcl hover:to-100% hover:rounded-tl-xl w-1/3 text-2xl text-center h-full flex justify-center items-center border-r border-segundcl`}>Stats</Link>
+				  <Link href={`/${params.id}/achievements`} className={`${pathName === "/" + params.id + "/achievements" ? 'bg-gradient-to-t from-[#000000] from-0% to-segundcl to-100% ' : ''} hover:bg-gradient-to-t hover:from-[#000000] hover:from-0% hover:to-segundcl hover:to-100% w-1/3 text-2xl text-center h-full flex justify-center items-center border-r border-segundcl`}>Achievements</Link>
+				  <Link href={`/${params.id}/history`} className={`${pathName === "/" + params.id + "/history" ? 'bg-gradient-to-t from-[#000000] from-0% to-segundcl to-100% ' : ''} hover:bg-gradient-to-t hover:from-[#000000] hover:from-0% hover:to-segundcl hover:to-100% hover:rounded-tr-xl w-1/3 text-2xl text-center h-full flex justify-center items-center`}>History</Link>
 				</div>
 				<div className='px-16 w-full flex-1 rounded-xl'>
 				  <div className='h-full w-full rounded-xl bg-segundcl'>
