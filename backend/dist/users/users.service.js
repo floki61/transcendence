@@ -68,7 +68,7 @@ let UsersService = exports.UsersService = class UsersService {
                 id: req.user.id,
             },
             data: {
-                userName: data.userName,
+                userName: data,
             },
         });
     }

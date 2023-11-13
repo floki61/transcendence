@@ -161,7 +161,6 @@ export class ChatController {
         const room = await this.userservice.addParticipant(body);
         return room;
     }
-
     
     @UseGuards(JwtAuthGuard)
     @Post('getParticipants')
@@ -170,7 +169,6 @@ export class ChatController {
         const room = await this.userservice.getParticipant(body);
         return room;
     }
-
 
     // @UseGuards(JwtAuthGuard)
     // @Get('AllRooms')
