@@ -176,10 +176,19 @@ export class ChatController {
     @UseGuards(JwtAuthGuard, RolesGuard)
     @Post('getRoomById')
     async getRoomById(@Body() body: any, @Req() req: any) {
-        // console.log('hahowa');
+        console.log('hahowa');
         const room = await this.userservice.getRoomById(body);
         return room;
     }
+    
+    @UseGuards(JwtAuthGuard)
+    @Post('participantNotInRoom')
+    async participantNotInRoom(@Body() body: any, @Req() req: any) {
+        // console.log('hahowa');
+        const room = await this.userservice.participantNotInRoom(body);
+        return room;
+    }
+
 
     // @UseGuards(JwtAuthGuard)
     // @Get('AllRooms')

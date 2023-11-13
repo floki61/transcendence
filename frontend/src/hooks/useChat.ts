@@ -2,7 +2,7 @@
 
 import Audio from "@/components/Audio";
 import axios from "axios";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useChat as chatSocket } from "@/context/chatSocket";
 import { useContext } from "react";
 import { UserContext } from "@/context/userContext";
@@ -35,7 +35,7 @@ export const useChat = (id : string) => {
   const [image, SetImage] = useState<string>();
   const [name, SetName] = useState<string>();
   const [showDiv, SetShowDiv] = useState(false);
-  const [input, SetInput] = useState("");
+  const input = useRef<HTMLInputElement>(null);
   const { socket } = chatSocket();
   let rid = id;
 
@@ -100,25 +100,27 @@ export const useChat = (id : string) => {
   };
   getName();
 
-  const handleInput = (e: any) => {
-    e.preventDefault();
-    SetInput(e.target.value);
-  };
+  const handleKeyDown = (event: any) => {
+      if (event.key === 'Enter') {
+        event.preventDefault();
+        sendMsg();
+      }
+  }
 
-  const sendMsg = (e: any) => {
+  const sendMsg = () => {
     console.log("ggfd : ", rid);
-    if (input.length > 0)
+    if (input.current) {
       socket?.emit("createChat", {
         rid,
         uid: user.user?.id,
-        msg: input,
+        msg: input.current.value,
       });
-    SetInput("");
+      input.current.value = '';
+    }
   };
 
   return {
     sendMsg,
-    handleInput,
     user,
     input,
     chat,
@@ -129,5 +131,6 @@ export const useChat = (id : string) => {
     SetShowDiv,
     getMessages,
     socket,
+    handleKeyDown,
   };
 };

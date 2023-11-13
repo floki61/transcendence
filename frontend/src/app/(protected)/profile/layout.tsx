@@ -7,11 +7,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 
-export default function page({
-	children,
-}: {
-	children: React.ReactNode
-}) {
+export default function page({children}: {children: React.ReactNode}, {params}: {params: any}) {
 
   const user = useContext(UserContext);
   const pathName = usePathname();
@@ -31,7 +27,10 @@ export default function page({
             <div className='w-3/5 h-full flex flex-col justify-between px-4'>
               <h2 className='text-2xl'>{user.user.fullName}</h2>
               <h3 className='text-xl'>{user.user.userName}</h3>
-              <div className='w-full bg-[#6A6666] rounded-xl text-center text-black self-end bg-gradient-to-r from-[#CD7F32] from-60% to-[#6A6666] to-60% '>Level 5</div>
+              <div className='w-full bg-[#6A6666] rounded-xl text-center text-black self-end'>
+                Level {user.user.level}
+                <div className={`bg-[#CD7F32] w-[%${user.level_P}]`}></div>
+              </div>
             </div>
             <div className='w-[25%] text-center'>chart</div>
           </div>
