@@ -793,4 +793,28 @@ export class ChatService {
 		}
 		return room;
 	}
+
+	async participantNotInRoom(body: any)
+	{
+		const room = await this.prisma.chatRoom.findFirst({
+			where: {
+				id : body.rid,
+			},
+			include: {
+				participants: true,
+			}
+		});
+		const users = await this.prisma.user.findMany({
+			where: {
+				NOT:{
+				membership:{
+					some:{
+							rid: body.rid,
+						}
+					}
+				}
+			}
+		})
+		return users;
+	}
 }

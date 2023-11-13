@@ -36,7 +36,7 @@ export default function page({params} : {params: any}) {
   useEffect(() => {
     const getAllUsers = async () => {
       try {
-        const res = await axios.get("http://localhost:4000/getAllUsers",{
+        const res = await axios.post("http://localhost:4000/chat/participantNotInRoom", {rid: params.id},{
           withCredentials: true,
         })
         const data = res.data;

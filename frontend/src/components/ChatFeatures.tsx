@@ -1,11 +1,12 @@
 import { userType } from '@/context/userContext'
-import React, { useRef } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import { Participant } from './Participant';
 import axios from 'axios';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useContext } from 'react';
 import { UserContext } from '@/context/userContext';
+import { FriendType } from '@/hooks/useRooms';
 
 interface ChatFeaturesProps {
 	users: userType[] | undefined;
@@ -189,6 +190,23 @@ export const ChatFeatures: React.FC<ChatFeaturesProps> = ({
 		)
 	}
 	else if (mode === "changeVisible") {
+		const [room, SetRoom] = useState<FriendType>();
+
+		useEffect(() => {
+			const getRoom = async () => {
+				try {
+					const res = await axios.post("http://localhost:4000/chat/getRoomById", {id: rid}, {
+						withCredentials: true,
+					})
+					console.log("success", res.data);
+					SetRoom(res.data);
+				} catch (error) {
+					console.log("getRoom by id failed", error);
+				}
+			} 
+			getRoom();
+		}, []);
+
 		return (
 			<div className='bg-segundcl rounded-lg h-full py-4 flex justify-center items-center'>
 				<section className='h-1/2 w-2/3 flex flex-col rounded-md'>

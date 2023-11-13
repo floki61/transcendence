@@ -52,7 +52,7 @@ export const useRooms = () => {
 		}
 		getUsers();
 	}, []);
-	console.log({ friends })
+	// console.log({ friends })
 
 	if (friends) {
 		friends.forEach((friend) => {

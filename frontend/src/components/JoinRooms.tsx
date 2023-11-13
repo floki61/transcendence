@@ -13,32 +13,40 @@ export interface ConvoProps {
   chat: ChatType[] | undefined;
   visibility: string;
   id: string;
-  input: string;
-  handleInput(e: any) : void;
+  input: any;
   user: userType | undefined | null;
   rid: string | undefined,
 }
 
-const JoinRooms: React.FC<ConvoProps> = ({ picture, name, status, chat, visibility, id, input, handleInput, user, rid }) => {
+const JoinRooms: React.FC<ConvoProps> = ({ picture, name, status, chat, visibility, id, input, user, rid }) => {
 
   const joinGroup = async () => {
-    try {
-      const res = await axios.post(
-        "http://localhost:4000/chat/joinRoom",
-        {
-          password: input,
-          uid: user?.id,
-          rid,
-        },
-        {
-          withCredentials: true,
-        }
-      );
-      console.log(res.data);
-    } catch (error) {
-      console.log("Join group failed", error);
+    if (input) {
+      try {
+        const res = await axios.post(
+          "http://localhost:4000/chat/joinRoom",
+          {
+            password: input.current.value,
+            uid: user?.id,
+            rid,
+          },
+          {
+            withCredentials: true,
+          }
+        );
+        console.log(res.data);
+      } catch (error) {
+        console.log("Join group failed", error);
+      }
     }
   };
+
+  const handleKeyDown = (event: any) => {
+    if (event.key === 'Enter') {
+      event.preventDefault();
+      joinGroup();
+    }
+  }
 
   if (visibility === "PROTECTED") {
       return (
@@ -52,8 +60,8 @@ const JoinRooms: React.FC<ConvoProps> = ({ picture, name, status, chat, visibili
               placeholder="Password"
               type="text"
               className="p-3 pl-4 rounded-xl bg-terserocl placeholder-slate-400 text-lg outline-none border font-light w-3/4"
-              onChange={handleInput}
-              value={input}
+              ref={input}
+              onKeyDown={handleKeyDown}
             />
             <button
               className="border-2 rounded-xl w-1/3 h-[15%] bg-segundcl cursor-pointer transition ease-in-out delay-150 hover:scale-105 duration-300"

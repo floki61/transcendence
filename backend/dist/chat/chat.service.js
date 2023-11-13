@@ -688,6 +688,28 @@ let ChatService = exports.ChatService = class ChatService {
         }
         return room;
     }
+    async participantNotInRoom(body) {
+        const room = await this.prisma.chatRoom.findFirst({
+            where: {
+                id: body.rid,
+            },
+            include: {
+                participants: true,
+            }
+        });
+        const users = await this.prisma.user.findMany({
+            where: {
+                NOT: {
+                    membership: {
+                        some: {
+                            rid: body.rid,
+                        }
+                    }
+                }
+            }
+        });
+        return users;
+    }
 };
 exports.ChatService = ChatService = __decorate([
     (0, common_1.Injectable)(),

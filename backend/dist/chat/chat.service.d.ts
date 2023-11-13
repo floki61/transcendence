@@ -175,4 +175,21 @@ export declare class ChatService {
         createdAt: Date;
         updatedAt: Date;
     }>;
+    participantNotInRoom(body: any): Promise<{
+        id: string;
+        userName: string;
+        level: number;
+        firstName: string;
+        lastName: string;
+        email: string;
+        picture: string;
+        country: string;
+        phoneNumber: string;
+        accessToken: string;
+        password: string;
+        twoFactorAuthenticationSecret: string;
+        isTwoFactorAuthenticationEnabled: boolean;
+        createdAt: Date;
+        updatedAt: Date;
+    }[]>;
 }

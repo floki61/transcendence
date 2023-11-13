@@ -15,8 +15,8 @@ export const ChatSettings: React.FC<ChatSettingsProps> = ({
 	dm,
 }
 ) => {
-	console.log(role);
-	console.log(id);
+	// console.log(role);
+	// console.log(id);
 
 	if (role === "USER" && dm) {
 		return (
