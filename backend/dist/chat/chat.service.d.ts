@@ -45,7 +45,7 @@ export declare class ChatService {
         createdAt: Date;
         updatedAt: Date;
     }>;
-    formatDate(duration: any): Promise<Date>;
+    formatDate(duration: any): Promise<any>;
     unmuteUser(payload: any): Promise<string>;
     getAllRoom(id: any): Promise<({
         participants: {
@@ -73,6 +73,15 @@ export declare class ChatService {
         updatedAt: Date;
     })[]>;
     getMyRooms(payload: any): Promise<({
+        messages: {
+            id: string;
+            msg: string;
+            msgTime: Date;
+            userId: string;
+            rid: string;
+            createdAt: Date;
+            updatedAt: Date;
+        }[];
         participants: {
             id: string;
             rid: string;
@@ -82,15 +91,6 @@ export declare class ChatService {
             isMuted: boolean;
             isBanned: boolean;
             muteTime: Date;
-            createdAt: Date;
-            updatedAt: Date;
-        }[];
-        messages: {
-            id: string;
-            msg: string;
-            msgTime: Date;
-            userId: string;
-            rid: string;
             createdAt: Date;
             updatedAt: Date;
         }[];
@@ -146,7 +146,7 @@ export declare class ChatService {
     giveAdmin(payload: any): Promise<string>;
     getUserPicture(uid: any): Promise<string>;
     addParticipant(payload: any): Promise<string>;
-    getParticipant(payload: any): Promise<{
+    getParticipant(payload: any, uid: any): Promise<{
         id: string;
         userName: string;
         level: number;
@@ -163,4 +163,16 @@ export declare class ChatService {
         createdAt: Date;
         updatedAt: Date;
     }[]>;
+    getRoomById(payload: any): Promise<{
+        id: string;
+        name: string;
+        picture: string;
+        lastMessageDate: Date;
+        visibility: import(".prisma/client").$Enums.Visibility;
+        password: string;
+        lastMessage: string;
+        is_DM: boolean;
+        createdAt: Date;
+        updatedAt: Date;
+    }>;
 }

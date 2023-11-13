@@ -46,8 +46,8 @@ export const useRooms = () => {
 				})
 				const data = res.data;
 
-				if (data.length > 0) {
-					SetFriends((prevChat) => [...prevChat!, ...data]);
+				if (data && data.length > 0) {
+					SetFriends((prevChat) => [...(prevChat! || []), ...data]);
 					SetChatbar(true);
 				}
 			} catch (error) {
@@ -101,6 +101,6 @@ export const useRooms = () => {
 			}
 		})
 	}
-	
+
 	return { friends, chatbar }
 }

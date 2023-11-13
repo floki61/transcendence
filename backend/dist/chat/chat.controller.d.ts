@@ -93,6 +93,15 @@ export declare class ChatController {
     changePassword(body: any, req: any): Promise<string>;
     giveAdmin(body: any, req: any): Promise<string>;
     getMyRooms(req: any): Promise<({
+        messages: {
+            id: string;
+            msg: string;
+            msgTime: Date;
+            userId: string;
+            rid: string;
+            createdAt: Date;
+            updatedAt: Date;
+        }[];
         participants: {
             id: string;
             rid: string;
@@ -102,15 +111,6 @@ export declare class ChatController {
             isMuted: boolean;
             isBanned: boolean;
             muteTime: Date;
-            createdAt: Date;
-            updatedAt: Date;
-        }[];
-        messages: {
-            id: string;
-            msg: string;
-            msgTime: Date;
-            userId: string;
-            rid: string;
             createdAt: Date;
             updatedAt: Date;
         }[];
@@ -144,4 +144,16 @@ export declare class ChatController {
         createdAt: Date;
         updatedAt: Date;
     }[]>;
+    getRoomById(body: any, req: any): Promise<{
+        id: string;
+        name: string;
+        picture: string;
+        lastMessageDate: Date;
+        visibility: import(".prisma/client").$Enums.Visibility;
+        password: string;
+        lastMessage: string;
+        is_DM: boolean;
+        createdAt: Date;
+        updatedAt: Date;
+    }>;
 }

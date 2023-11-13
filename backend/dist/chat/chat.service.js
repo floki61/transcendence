@@ -217,7 +217,7 @@ let ChatService = exports.ChatService = class ChatService {
         if (participant.role === 'OWNER') {
             throw new common_1.UnauthorizedException('Cannot ban owner');
         }
-        await this.prisma.participant.update({
+        let user = await this.prisma.participant.update({
             where: {
                 uid_rid: {
                     uid: payload.uid,
@@ -229,6 +229,7 @@ let ChatService = exports.ChatService = class ChatService {
             },
         });
         this.eventEmitter.emit('banUser', payload);
+        console.log(user);
         return 'Banned user';
     }
     async unbanUser(payload) {
@@ -303,9 +304,6 @@ let ChatService = exports.ChatService = class ChatService {
         if (!room) {
             throw new common_1.NotFoundException('Chat room not found');
         }
-        if (room.participants.length > 1) {
-            throw new common_1.UnauthorizedException('Cannot delete room with more than 1 participant');
-        }
         for (var participant of room.participants) {
             await this.prisma.participant.delete({
                 where: {
@@ -348,19 +346,23 @@ let ChatService = exports.ChatService = class ChatService {
             },
             data: {
                 isMuted: true,
-                muteTime: getTime,
             },
         });
+        setTimeout(() => {
+            this.unmuteUser(payload);
+        }, getTime);
         return participant;
     }
     async formatDate(duration) {
-        let cuurent_date = new Date();
-        if (duration === '2min')
-            cuurent_date.setMinutes(cuurent_date.getMinutes() + 2);
+        let cuurent_date;
+        if (duration === '1min')
+            cuurent_date = 1 * 60000;
+        else if (duration === '2min')
+            cuurent_date = 2 * 60000;
         else if (duration === '5min')
-            cuurent_date.setMinutes(cuurent_date.getMinutes() + 5);
+            cuurent_date = 5 * 60000;
         else if (duration === '10min')
-            cuurent_date.setMinutes(cuurent_date.getMinutes() + 10);
+            cuurent_date = 1 * 60000;
         return cuurent_date;
     }
     async unmuteUser(payload) {
@@ -411,7 +413,19 @@ let ChatService = exports.ChatService = class ChatService {
                     },
                     {
                         NOT: {
-                            visibility: 'PRIVATE',
+                            OR: [
+                                {
+                                    participants: {
+                                        some: {
+                                            uid: id,
+                                            isBanned: true,
+                                        },
+                                    },
+                                },
+                                {
+                                    visibility: 'PRIVATE',
+                                },
+                            ],
                         },
                     },
                 ],
@@ -648,17 +662,31 @@ let ChatService = exports.ChatService = class ChatService {
         }
         return 'Added participant';
     }
-    async getParticipant(payload) {
+    async getParticipant(payload, uid) {
         const users = await this.prisma.user.findMany({
             where: {
                 membership: {
                     some: {
                         rid: payload.rid,
+                        NOT: {
+                            uid: uid,
+                        },
                     }
                 }
             }
         });
         return users;
+    }
+    async getRoomById(payload) {
+        const room = await this.prisma.chatRoom.findUnique({
+            where: {
+                id: payload.rid,
+            },
+        });
+        if (!room) {
+            throw new common_1.NotFoundException('Chat room not found');
+        }
+        return room;
     }
 };
 exports.ChatService = ChatService = __decorate([
