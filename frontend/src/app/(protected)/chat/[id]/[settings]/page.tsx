@@ -127,6 +127,38 @@ export default function page({params} : {params: any}) {
       </div>
     )
   }
+  else if (feature === "changeRoomName") {
+    return (
+      <div className='p-8 h-full w-full'>
+        <ChatFeatures
+          users={participants}
+          title = "Type in the new room name"
+          button='Change'
+          checkbox={false}
+          selected={selected}
+          rid={params.id}
+          SetSelected={SetSelected}
+          mode="changeName"
+        />
+      </div>
+    )
+  }
+  else if (feature === "changeRoomVisibility") {
+    return (
+      <div className='p-8 h-full w-full'>
+        <ChatFeatures
+          users={participants}
+          title = "Change the visibility of the room"
+          button='Change'
+          checkbox={false}
+          selected={selected}
+          rid={params.id}
+          SetSelected={SetSelected}
+          mode="changeVisible"
+        />
+      </div>
+    )
+  }
   else if (feature === "giveAdmin") {
     return (
       <div className='p-8 h-full w-full'>
@@ -159,8 +191,23 @@ export default function page({params} : {params: any}) {
       </div>
     )
   }
-  else {
-    router.push("not-found");
+  else if (feature === "leaveRoom") {
+    return (
+      <div className='p-8 h-full w-full'>
+        <ChatFeatures
+          users={participants}
+          title = "Are you sure that you want to leave this room ? this action will prohibit you from reaching this room !"
+          button='Leave'
+          checkbox={true}
+          selected={selected}
+          rid={params.id}
+          SetSelected={SetSelected}
+          mode="leave"
+        />
+      </div>
+    )
   }
-
+  else {
+    router.push("/not-found");
+  }
 }

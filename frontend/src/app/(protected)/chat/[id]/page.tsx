@@ -98,7 +98,7 @@ const Convo = ({ params }: { params: any }) => {
                   fill="#CAD2D5"
                 />
               </svg>
-              {showDiv && <ChatSettings role={role} id={params.id}/>}
+              {showDiv && <ChatSettings dm={dm} role={role} id={params.id}/>}
             </div>
           </div>
           <div className="flex flex-col flex-1 bg-segundcl py-2 overflow-scroll">

@@ -23,7 +23,7 @@ export default function page() {
       await axios.post("http://localhost:4000/userSettings", user.user, {
         withCredentials: true,
       }); // backend API endpoint
-      console.log("saved with : ", user.user?.picture);
+      console.log("saved with : ", user.user);
       handleSucces();
     } catch (error) {
       console.error(error);
@@ -106,7 +106,7 @@ export default function page() {
 
   return (
     <div className="h-full">
-      {user.user && (
+      {user && user.user && (
         <div className={`${classes} flex rounded-2xl bg-segundcl h-[90%] m-8`}>
           <div className="flex flex-col w-1/2 border-r-4 border-primecl justify-center items-center my-6 gap-6">
             <div className="flex flex-col items-center gap-3 h-1/2 w-full mt-4">
