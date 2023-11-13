@@ -43,6 +43,7 @@ export declare class ChatGateway implements OnGatewayConnection, OnGatewayDiscon
             isOnline: boolean;
             isMuted: boolean;
             isBanned: boolean;
+            muteTime: Date;
             createdAt: Date;
             updatedAt: Date;
         }[];
