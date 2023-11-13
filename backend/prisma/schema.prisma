@@ -74,6 +74,8 @@ model Participant {
     isMuted  Boolean @default(false)
     isBanned Boolean @default(false)
 
+    muteTime DateTime?
+
     createdAt DateTime @default(now())
     updatedAt DateTime @updatedAt
 

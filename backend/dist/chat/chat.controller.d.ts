@@ -35,6 +35,7 @@ export declare class ChatController {
             isOnline: boolean;
             isMuted: boolean;
             isBanned: boolean;
+            muteTime: Date;
             createdAt: Date;
             updatedAt: Date;
         }[];
@@ -59,6 +60,7 @@ export declare class ChatController {
             isOnline: boolean;
             isMuted: boolean;
             isBanned: boolean;
+            muteTime: Date;
             createdAt: Date;
             updatedAt: Date;
         };
@@ -75,7 +77,18 @@ export declare class ChatController {
     deleteRoom(body: any, req: any): Promise<string>;
     changeVisibility(body: any, req: any): Promise<string>;
     changeRoomName(body: any, req: any): Promise<string>;
-    muteUser(body: any, req: any): Promise<string>;
+    muteUser(body: any, req: any): Promise<{
+        id: string;
+        rid: string;
+        uid: string;
+        role: import(".prisma/client").$Enums.Role;
+        isOnline: boolean;
+        isMuted: boolean;
+        isBanned: boolean;
+        muteTime: Date;
+        createdAt: Date;
+        updatedAt: Date;
+    }>;
     unmuteUser(body: any, req: any): Promise<string>;
     changePassword(body: any, req: any): Promise<string>;
     giveAdmin(body: any, req: any): Promise<string>;
@@ -88,6 +101,7 @@ export declare class ChatController {
             isOnline: boolean;
             isMuted: boolean;
             isBanned: boolean;
+            muteTime: Date;
             createdAt: Date;
             updatedAt: Date;
         }[];

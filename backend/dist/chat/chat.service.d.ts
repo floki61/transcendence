@@ -33,7 +33,19 @@ export declare class ChatService {
     unbanUser(payload: any): Promise<string>;
     leaveRoom(payload: any): Promise<string>;
     deleteRoom(payload: any): Promise<string>;
-    muteUser(payload: any): Promise<string>;
+    muteUser(payload: any): Promise<{
+        id: string;
+        rid: string;
+        uid: string;
+        role: import(".prisma/client").$Enums.Role;
+        isOnline: boolean;
+        isMuted: boolean;
+        isBanned: boolean;
+        muteTime: Date;
+        createdAt: Date;
+        updatedAt: Date;
+    }>;
+    formatDate(duration: any): Promise<Date>;
     unmuteUser(payload: any): Promise<string>;
     getAllRoom(id: any): Promise<({
         participants: {
@@ -44,6 +56,7 @@ export declare class ChatService {
             isOnline: boolean;
             isMuted: boolean;
             isBanned: boolean;
+            muteTime: Date;
             createdAt: Date;
             updatedAt: Date;
         }[];
@@ -68,6 +81,7 @@ export declare class ChatService {
             isOnline: boolean;
             isMuted: boolean;
             isBanned: boolean;
+            muteTime: Date;
             createdAt: Date;
             updatedAt: Date;
         }[];
@@ -113,6 +127,7 @@ export declare class ChatService {
             isOnline: boolean;
             isMuted: boolean;
             isBanned: boolean;
+            muteTime: Date;
             createdAt: Date;
             updatedAt: Date;
         };
