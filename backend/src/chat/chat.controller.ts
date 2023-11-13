@@ -40,8 +40,10 @@ export class ChatController {
     @Post('banUser')
     async banUser(@Body() body: any, @Req() req: any) {
         const user = await this.userservice.banUser(body);
+        console.log(user);
         return user;
     }
+
 
     @Roles('ADMIN', 'OWNER')
     @UseGuards(JwtAuthGuard, RolesGuard)
@@ -161,12 +163,21 @@ export class ChatController {
         const room = await this.userservice.addParticipant(body);
         return room;
     }
-    
+
     @UseGuards(JwtAuthGuard)
     @Post('getParticipants')
     async getParticipant(@Body() body: any, @Req() req: any) {
         // console.log('hahowa');
-        const room = await this.userservice.getParticipant(body);
+        const room = await this.userservice.getParticipant(body, req.user.id);
+        return room;
+    }
+
+    @Roles('OWNER', 'ADMIN')
+    @UseGuards(JwtAuthGuard, RolesGuard)
+    @Post('getRoomById')
+    async getRoomById(@Body() body: any, @Req() req: any) {
+        // console.log('hahowa');
+        const room = await this.userservice.getRoomById(body);
         return room;
     }
 

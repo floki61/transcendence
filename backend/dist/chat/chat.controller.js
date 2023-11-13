@@ -40,6 +40,7 @@ let ChatController = exports.ChatController = class ChatController {
     }
     async banUser(body, req) {
         const user = await this.userservice.banUser(body);
+        console.log(user);
         return user;
     }
     async unbanUser(body, req) {
@@ -105,7 +106,11 @@ let ChatController = exports.ChatController = class ChatController {
         return room;
     }
     async getParticipant(body, req) {
-        const room = await this.userservice.getParticipant(body);
+        const room = await this.userservice.getParticipant(body, req.user.id);
+        return room;
+    }
+    async getRoomById(body, req) {
+        const room = await this.userservice.getRoomById(body);
         return room;
     }
 };
@@ -280,6 +285,16 @@ __decorate([
     __metadata("design:paramtypes", [Object, Object]),
     __metadata("design:returntype", Promise)
 ], ChatController.prototype, "getParticipant", null);
+__decorate([
+    (0, role_decorator_1.Roles)('OWNER', 'ADMIN'),
+    (0, common_1.UseGuards)(jwt_guard_1.JwtAuthGuard, roles_guard_1.RolesGuard),
+    (0, common_1.Post)('getRoomById'),
+    __param(0, (0, common_1.Body)()),
+    __param(1, (0, common_1.Req)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object, Object]),
+    __metadata("design:returntype", Promise)
+], ChatController.prototype, "getRoomById", null);
 exports.ChatController = ChatController = __decorate([
     (0, common_1.Controller)('chat'),
     __metadata("design:paramtypes", [config_1.ConfigService,
