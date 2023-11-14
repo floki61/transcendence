@@ -8,7 +8,7 @@ import { ConfigService } from '@nestjs/config';
 import { Req, UseGuards } from '@nestjs/common';
 import { JwtAuthGuard } from 'src/auth/jwt/jwt.guard';
 import { WsGuard } from 'src/auth/tools/ws.guard';
-import { OnEvent } from '@nestjs/event-emitter';
+import { EventEmitter2, OnEvent } from '@nestjs/event-emitter';
 import { subscribe } from 'diagnostics_channel';
 
 
@@ -23,7 +23,8 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
 
 	constructor(private readonly chatService: ChatService,
 		private jwt: JwtService,
-		private config: ConfigService) { }
+		private config: ConfigService,
+		private event: EventEmitter2) { }
 
 	async handleConnection(client: Socket) {
 		let cookie: string;
@@ -38,6 +39,8 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
 			if (payload.id) {
 				console.log("chat socket : ", payload.id);
 				this.map.set(payload.id, client);
+			} else {
+				client.disconnect();
 			}
 			const rooms = await this.chatService.getUniqueMyRooms(payload);
 			if (rooms) {
@@ -45,7 +48,10 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
 					client.join(room.id);
 				});
 			}
-
+			const usr = await this.chatService.findOne(payload.id);
+			if (!(usr.status === 'INGAME'))
+				await this.chatService.updateStatus(1, payload.id);
+			console.log("---------- usr : ", usr.status, usr.id);
 		}
 		else {
 			client.disconnect();
@@ -64,7 +70,10 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
 				}
 			);
 			if (payload.id) {
-				delete this.map[payload.id];
+				this.map.delete(payload.id);
+				const usr = await this.chatService.findOne(payload.id);
+				await this.chatService.updateStatus(0, payload.id);
+				console.log("out usr : ", usr.status, usr.id);
 			}
 		}
 		const rooms = this.chatService.getMyRooms(payload);
@@ -134,6 +143,16 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
 	leaveRoom(@MessageBody() payload: any, @ConnectedSocket() client: Socket) {
 		if (this.map.has(payload.uid))
 			this.map.get(payload.uid).leave(payload.rid);
+	}
+
+	@OnEvent('endgame')
+	async updateStatus(@MessageBody() payload: any) {
+		if (this.map.has(payload.id)) {
+			await this.chatService.updateStatus(1, payload.id);
+		}
+		else {
+			await this.chatService.updateStatus(0, payload.id);
+		}
 	}
 
 	// @SubscribeMessage('updateChatRooms')

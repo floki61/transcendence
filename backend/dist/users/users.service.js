@@ -68,7 +68,7 @@ let UsersService = exports.UsersService = class UsersService {
                 id: req.user.id,
             },
             data: {
-                userName: data.userName,
+                userName: data,
             },
         });
     }
@@ -445,6 +445,14 @@ let UsersService = exports.UsersService = class UsersService {
         stats.GS = games.reduce((total, game) => total + (game.winnerId === body.id ? game.player1Score : game.player2Score), 0);
         stats.GC = games.reduce((total, game) => total + (game.winnerId === body.id ? game.player2Score : game.player1Score), 0);
         return { stats, gamestats };
+    }
+    async getAchievements(userId) {
+        const achievements = await this.prisma.achivement.findMany({
+            where: {
+                uid: userId,
+            },
+        });
+        return achievements;
     }
 };
 exports.UsersService = UsersService = __decorate([

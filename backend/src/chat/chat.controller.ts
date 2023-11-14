@@ -40,8 +40,10 @@ export class ChatController {
     @Post('banUser')
     async banUser(@Body() body: any, @Req() req: any) {
         const user = await this.userservice.banUser(body);
+        console.log(user);
         return user;
     }
+
 
     @Roles('ADMIN', 'OWNER')
     @UseGuards(JwtAuthGuard, RolesGuard)
@@ -70,9 +72,16 @@ export class ChatController {
     @UseGuards(JwtAuthGuard)
     @Post('getMessages')
     async getMessages(@Body() body: any, @Req() req: any) {
-        // console.log(body);
+        // messages are not in order in case of user kicked of the room and went back
         const messages = await this.userservice.getMessages(body);
         return messages;
+    }
+
+    @UseGuards(JwtAuthGuard)
+    @Post('leaveRoom')
+    async leaveRoom(@Body() body: any, @Req() req: any) {
+        const room = await this.userservice.leaveRoom(body);
+        return room;
     }
 
     /////////////////////////////
@@ -150,8 +159,33 @@ export class ChatController {
     @UseGuards(JwtAuthGuard, RolesGuard)
     @Post('addParticipant')
     async addParticipant(@Body() body: any, @Req() req: any) {
-        console.log('hahowa');
+        // console.log('hahowa');
         const room = await this.userservice.addParticipant(body);
+        return room;
+    }
+
+    @UseGuards(JwtAuthGuard)
+    @Post('getParticipants')
+    async getParticipant(@Body() body: any, @Req() req: any) {
+        // console.log('hahowa');
+        const room = await this.userservice.getParticipant(body, req.user.id);
+        return room;
+    }
+
+    @Roles('OWNER', 'ADMIN')
+    @UseGuards(JwtAuthGuard, RolesGuard)
+    @Post('getRoomById')
+    async getRoomById(@Body() body: any, @Req() req: any) {
+        console.log('hahowa');
+        const room = await this.userservice.getRoomById(body);
+        return room;
+    }
+    
+    @UseGuards(JwtAuthGuard)
+    @Post('participantNotInRoom')
+    async participantNotInRoom(@Body() body: any, @Req() req: any) {
+        // console.log('hahowa');
+        const room = await this.userservice.participantNotInRoom(body);
         return room;
     }
 

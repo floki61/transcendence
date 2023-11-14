@@ -4,13 +4,15 @@ import { CreateChatDto } from './dto/create-chat.dto';
 import { Server, Socket } from 'socket.io';
 import { JwtService } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
+import { EventEmitter2 } from '@nestjs/event-emitter';
 export declare class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
     private readonly chatService;
     private jwt;
     private config;
+    private event;
     server: Server;
     map: Map<any, any>;
-    constructor(chatService: ChatService, jwt: JwtService, config: ConfigService);
+    constructor(chatService: ChatService, jwt: JwtService, config: ConfigService, event: EventEmitter2);
     handleConnection(client: Socket): Promise<void>;
     handleDisconnect(client: Socket): Promise<void>;
     private parseCookies;
@@ -25,6 +27,7 @@ export declare class ChatGateway implements OnGatewayConnection, OnGatewayDiscon
     banUser(payload: any, client: Socket): void;
     unbanUser(payload: any, client: Socket): void;
     leaveRoom(payload: any, client: Socket): void;
+    updateStatus(payload: any): Promise<void>;
     updateChatRooms(payload: any): Promise<({
         participants: {
             id: string;
@@ -34,6 +37,7 @@ export declare class ChatGateway implements OnGatewayConnection, OnGatewayDiscon
             isOnline: boolean;
             isMuted: boolean;
             isBanned: boolean;
+            muteTime: Date;
             createdAt: Date;
             updatedAt: Date;
         }[];

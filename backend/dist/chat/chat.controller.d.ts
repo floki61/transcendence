@@ -35,6 +35,7 @@ export declare class ChatController {
             isOnline: boolean;
             isMuted: boolean;
             isBanned: boolean;
+            muteTime: Date;
             createdAt: Date;
             updatedAt: Date;
         }[];
@@ -59,6 +60,7 @@ export declare class ChatController {
             isOnline: boolean;
             isMuted: boolean;
             isBanned: boolean;
+            muteTime: Date;
             createdAt: Date;
             updatedAt: Date;
         };
@@ -71,10 +73,22 @@ export declare class ChatController {
         createdAt: Date;
         updatedAt: Date;
     })[]>;
+    leaveRoom(body: any, req: any): Promise<string>;
     deleteRoom(body: any, req: any): Promise<string>;
     changeVisibility(body: any, req: any): Promise<string>;
     changeRoomName(body: any, req: any): Promise<string>;
-    muteUser(body: any, req: any): Promise<string>;
+    muteUser(body: any, req: any): Promise<{
+        id: string;
+        rid: string;
+        uid: string;
+        role: import(".prisma/client").$Enums.Role;
+        isOnline: boolean;
+        isMuted: boolean;
+        isBanned: boolean;
+        muteTime: Date;
+        createdAt: Date;
+        updatedAt: Date;
+    }>;
     unmuteUser(body: any, req: any): Promise<string>;
     changePassword(body: any, req: any): Promise<string>;
     giveAdmin(body: any, req: any): Promise<string>;
@@ -87,6 +101,7 @@ export declare class ChatController {
             isOnline: boolean;
             isMuted: boolean;
             isBanned: boolean;
+            muteTime: Date;
             createdAt: Date;
             updatedAt: Date;
         }[];
@@ -111,15 +126,53 @@ export declare class ChatController {
         createdAt: Date;
         updatedAt: Date;
     })[]>;
-    addParticipant(body: any, req: any): Promise<{
+    addParticipant(body: any, req: any): Promise<string>;
+    getParticipant(body: any, req: any): Promise<{
         id: string;
-        rid: string;
-        uid: string;
-        role: import(".prisma/client").$Enums.Role;
-        isOnline: boolean;
-        isMuted: boolean;
-        isBanned: boolean;
+        userName: string;
+        level: number;
+        firstName: string;
+        lastName: string;
+        status: import(".prisma/client").$Enums.Stts;
+        email: string;
+        picture: string;
+        country: string;
+        phoneNumber: string;
+        accessToken: string;
+        password: string;
+        twoFactorAuthenticationSecret: string;
+        isTwoFactorAuthenticationEnabled: boolean;
+        createdAt: Date;
+        updatedAt: Date;
+    }[]>;
+    getRoomById(body: any, req: any): Promise<{
+        id: string;
+        name: string;
+        picture: string;
+        lastMessageDate: Date;
+        visibility: import(".prisma/client").$Enums.Visibility;
+        password: string;
+        lastMessage: string;
+        is_DM: boolean;
         createdAt: Date;
         updatedAt: Date;
     }>;
+    participantNotInRoom(body: any, req: any): Promise<{
+        id: string;
+        userName: string;
+        level: number;
+        firstName: string;
+        lastName: string;
+        status: import(".prisma/client").$Enums.Stts;
+        email: string;
+        picture: string;
+        country: string;
+        phoneNumber: string;
+        accessToken: string;
+        password: string;
+        twoFactorAuthenticationSecret: string;
+        isTwoFactorAuthenticationEnabled: boolean;
+        createdAt: Date;
+        updatedAt: Date;
+    }[]>;
 }

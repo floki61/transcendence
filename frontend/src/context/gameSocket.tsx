@@ -16,7 +16,6 @@ export const useGame = () => useContext(GameContext);
 export const GameProvider = ({ children }:{children: React.ReactNode}) => {
     const [socket, setSocket] = useState<Socket | null>(null);
     const query = useSearchParams();
-    console.log(query);
     const type = query.get('type');
     const mode = query.get('mode');
  

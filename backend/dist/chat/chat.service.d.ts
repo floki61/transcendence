@@ -31,9 +31,21 @@ export declare class ChatService {
     }>;
     banUser(payload: any): Promise<string>;
     unbanUser(payload: any): Promise<string>;
-    leaveRoom(payload: any, client: Socket): Promise<string>;
+    leaveRoom(payload: any): Promise<string>;
     deleteRoom(payload: any): Promise<string>;
-    muteUser(payload: any): Promise<string>;
+    muteUser(payload: any): Promise<{
+        id: string;
+        rid: string;
+        uid: string;
+        role: import(".prisma/client").$Enums.Role;
+        isOnline: boolean;
+        isMuted: boolean;
+        isBanned: boolean;
+        muteTime: Date;
+        createdAt: Date;
+        updatedAt: Date;
+    }>;
+    formatDate(duration: any): Promise<any>;
     unmuteUser(payload: any): Promise<string>;
     getAllRoom(id: any): Promise<({
         participants: {
@@ -44,6 +56,7 @@ export declare class ChatService {
             isOnline: boolean;
             isMuted: boolean;
             isBanned: boolean;
+            muteTime: Date;
             createdAt: Date;
             updatedAt: Date;
         }[];
@@ -68,6 +81,7 @@ export declare class ChatService {
             isOnline: boolean;
             isMuted: boolean;
             isBanned: boolean;
+            muteTime: Date;
             createdAt: Date;
             updatedAt: Date;
         }[];
@@ -113,6 +127,7 @@ export declare class ChatService {
             isOnline: boolean;
             isMuted: boolean;
             isBanned: boolean;
+            muteTime: Date;
             createdAt: Date;
             updatedAt: Date;
         };
@@ -130,14 +145,88 @@ export declare class ChatService {
     changePassword(payload: any): Promise<string>;
     giveAdmin(payload: any): Promise<string>;
     getUserPicture(uid: any): Promise<string>;
-    addParticipant(payload: any): Promise<{
+    addParticipant(payload: any): Promise<string>;
+    getParticipant(payload: any, uid: any): Promise<{
         id: string;
-        rid: string;
-        uid: string;
-        role: import(".prisma/client").$Enums.Role;
-        isOnline: boolean;
-        isMuted: boolean;
-        isBanned: boolean;
+        userName: string;
+        level: number;
+        firstName: string;
+        lastName: string;
+        status: import(".prisma/client").$Enums.Stts;
+        email: string;
+        picture: string;
+        country: string;
+        phoneNumber: string;
+        accessToken: string;
+        password: string;
+        twoFactorAuthenticationSecret: string;
+        isTwoFactorAuthenticationEnabled: boolean;
+        createdAt: Date;
+        updatedAt: Date;
+    }[]>;
+    getRoomById(payload: any): Promise<{
+        id: string;
+        name: string;
+        picture: string;
+        lastMessageDate: Date;
+        visibility: import(".prisma/client").$Enums.Visibility;
+        password: string;
+        lastMessage: string;
+        is_DM: boolean;
+        createdAt: Date;
+        updatedAt: Date;
+    }>;
+    participantNotInRoom(body: any): Promise<{
+        id: string;
+        userName: string;
+        level: number;
+        firstName: string;
+        lastName: string;
+        status: import(".prisma/client").$Enums.Stts;
+        email: string;
+        picture: string;
+        country: string;
+        phoneNumber: string;
+        accessToken: string;
+        password: string;
+        twoFactorAuthenticationSecret: string;
+        isTwoFactorAuthenticationEnabled: boolean;
+        createdAt: Date;
+        updatedAt: Date;
+    }[]>;
+    updateStatus(flag: number, id: string): Promise<{
+        id: string;
+        userName: string;
+        level: number;
+        firstName: string;
+        lastName: string;
+        status: import(".prisma/client").$Enums.Stts;
+        email: string;
+        picture: string;
+        country: string;
+        phoneNumber: string;
+        accessToken: string;
+        password: string;
+        twoFactorAuthenticationSecret: string;
+        isTwoFactorAuthenticationEnabled: boolean;
+        createdAt: Date;
+        updatedAt: Date;
+    }>;
+    findOne(id: string): Promise<{
+        id: string;
+        userName: string;
+        level: number;
+        firstName: string;
+        lastName: string;
+        status: import(".prisma/client").$Enums.Stts;
+        email: string;
+        picture: string;
+        country: string;
+        phoneNumber: string;
+        accessToken: string;
+        password: string;
+        twoFactorAuthenticationSecret: string;
+        isTwoFactorAuthenticationEnabled: boolean;
         createdAt: Date;
         updatedAt: Date;
     }>;

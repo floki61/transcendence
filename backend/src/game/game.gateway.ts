@@ -38,8 +38,17 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
                     console.log('Client already connected: ' + payload.id);
                     client.emit('alreadyConnected');
                 }
-                else
+                else {
                     this.connectedClients.set(payload.id, client);
+                    await this.prisma.user.update({
+                        where: {
+                            id: payload.id,
+                        },
+                        data: {
+                            status: 'INGAME',
+                        }
+                    });
+                }
             }
         }
         else {
@@ -101,11 +110,24 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
                     this.gameService.Queue.delete(payload.id);
                 if (this.matchmakingQueue.includes(payload.id))
                     this.matchmakingQueue.splice(this.matchmakingQueue.indexOf(payload.id), 1);
-                if (this.connectedClients.has(payload.id))
+                if (this.connectedClients.has(payload.id)) {
                     this.connectedClients.delete(payload.id);
+                    await this.prisma.user.update({
+                        where: {
+                            id: payload.id,
+                        },
+                        data: {
+                            status: 'OFFLINE',
+                        },
+                    });
+                    this.gameService.endgameForStatus(payload.id);
+                }
             }
         }
     }
+
+    // @OnEvent('checkgame')
+
 
     private parseCookies(cookieHeader: string | undefined): string {
         const cookies: Record<string, string> = {};
@@ -200,12 +222,25 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
                         data: {
                             winnerId: this.gameService.Queue.get(player1).gameData.score.left === 5 ? player1 : player2,
                             loserId: this.gameService.Queue.get(player1).gameData.score.left === 5 ? player2 : player1,
-                            player1Id: this.gameService.Queue.get(player1).gameData.score.left === 5 ? player1 : player2,
-                            player2Id: this.gameService.Queue.get(player1).gameData.score.left === 5 ? player2 : player1,
-                            player1Score: this.gameService.Queue.get(player1).gameData.score.left === 5 ? 5 : this.gameService.Queue.get(player1).gameData.score.right,
-                            player2Score: this.gameService.Queue.get(player1).gameData.score.right === 5 ? this.gameService.Queue.get(player1).gameData.score.left : 5,
+                            // player1Id: this.gameService.Queue.get(player1).gameData.score.left === 5 ? player1 : player2,
+                            // player2Id: this.gameService.Queue.get(player1).gameData.score.left === 5 ? player2 : player1,
+                            // player1Score: this.gameService.Queue.get(player1).gameData.score.left === 5 ? 5 : this.gameService.Queue.get(player1).gameData.score.right,
+                            // player2Score: this.gameService.Queue.get(player1).gameData.score.right === 5 ? this.gameService.Queue.get(player1).gameData.score.left : 5,
                         }
                     });
+                    await this.prisma.game.update({
+                        where:
+                        {
+                            id: this.gameService.Queue.get(player1).gameId,
+                        },
+                        data: {
+                            player1Id: this.gameService.Queue.get(player1).gameData.score.left === 5 ? player1 : player2,
+                            player2Id: this.gameService.Queue.get(player1).gameData.score.left === 5 ? player2 : player1,
+                            player1Score: (player2 === game.winnerId) ? game.player2Score : game.player1Score,
+                            player2Score: (player2 === game.winnerId) ? game.player1Score : game.player2Score,
+                        }
+                    });
+
                     const winner = await this.prisma.user.update({
                         where: {
                             id: game.winnerId,
@@ -216,6 +251,8 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
                             }
                         }
                     });
+                    this.gameService.handleAchievements(game.winnerId);
+
                     console.log('game over');
                     await this.determineGameResult(player1, player2);
                     this.gameService.Queue.get(player1).status = 'finished';
@@ -343,7 +380,6 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
             gameId: '',
         }
         const playerId = this.getByValue(this.connectedClients, client);
-        console.log('-----------------',playerId);
         this.gameService.Queue.set(playerId, gameData);
         if (data.type === 'Bot')
             this.startBotGame(playerId);

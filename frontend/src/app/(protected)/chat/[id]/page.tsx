@@ -9,7 +9,6 @@ import { useRooms } from "@/hooks/useRooms";
 import { usePathname } from "next/navigation";
 import { useEffect, useRef, useLayoutEffect } from "react";
 import JoinRooms from "@/components/JoinRooms";
-import { RoomConvo } from "@/components/RoomConvo";
 import { useRoomInfo } from "@/hooks/useRoomInfo";
 
 const Convo = ({ params }: { params: any }) => {
@@ -22,15 +21,16 @@ const Convo = ({ params }: { params: any }) => {
     image,
     name,
     input,
-    handleInput,
     sendMsg,
     getMessages,
     socket,
+    handleKeyDown,
   } = useChat(params.id);
   const { friends, chatbar } = useRooms();
   const {visible, id, role, r_name, r_id, dm} = useRoomInfo({friends: friends, rid: params.id, user: user.user});
   const lastMeassgeRef = useRef<any>(null);
   const pathName = usePathname();
+  let friendId;
 
   useEffect(() => {
     getMessages(pathName.split("/").at(-1) as string);
@@ -60,14 +60,16 @@ const Convo = ({ params }: { params: any }) => {
     }
   }, [pathName, socket, lastMeassgeRef.current]);
 
+  if (chat) {
+    chat.map((chatie) => {
+      if (chatie.user?.uid !== user.user?.id)
+        friendId = chatie.user?.uid;
+    })
+  }
+
   if (dm) {
     return (
-      <div
-        className="h-full w-full flex"
-        // onClick={() => {
-        //   if (showDiv) SetShowDiv(false);
-        // }}
-      >
+      <div className="h-full w-full flex">
         <div className="h-full flex-1 flex flex-col justify-between">
           <div className="px-4 py-2 flex items-center justify-between bg-primecl">
             <div className="flex items-center gap-4">
@@ -98,7 +100,7 @@ const Convo = ({ params }: { params: any }) => {
                   fill="#CAD2D5"
                 />
               </svg>
-              {showDiv && <ChatSettings role={role} id={params.id}/>}
+              {showDiv && <ChatSettings dm={dm} role={role} id={params.id} friendId={friendId}/>}
             </div>
           </div>
           <div className="flex flex-col flex-1 bg-segundcl py-2 overflow-scroll">
@@ -132,8 +134,8 @@ const Convo = ({ params }: { params: any }) => {
             <input
               key={params.id}
               type="text"
-              value={input}
-              onChange={handleInput}
+              ref={input}
+              onKeyDown={handleKeyDown}
               placeholder="Type a message"
               className="bg-terserocl rounded-md p-2 px-4 w-5/6 outline-none"
             />
@@ -218,8 +220,8 @@ const Convo = ({ params }: { params: any }) => {
             <input
               key={params.id}
               type="text"
-              value={input}
-              onChange={handleInput}
+              ref={input}
+              onKeyDown={handleKeyDown}
               placeholder="Type a message"
               className="bg-terserocl rounded-md p-2 px-4 w-5/6 outline-none"
             />
@@ -241,7 +243,6 @@ const Convo = ({ params }: { params: any }) => {
           visibility={visible as any}
           id={id as any}
           input={input}
-          handleInput={handleInput}
           user={user.user}
           rid={r_id}
         />

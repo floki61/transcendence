@@ -13,6 +13,7 @@ export interface userType {
 	lastName: string;
 	userName: string;
 	phoneNumber: string;
+	level: number;
 	country: string;
 	isTwoFactorAuthenticationEnabled: boolean;
 }

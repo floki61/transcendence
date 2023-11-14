@@ -40,6 +40,7 @@ let ChatController = exports.ChatController = class ChatController {
     }
     async banUser(body, req) {
         const user = await this.userservice.banUser(body);
+        console.log(user);
         return user;
     }
     async unbanUser(body, req) {
@@ -57,6 +58,10 @@ let ChatController = exports.ChatController = class ChatController {
     async getMessages(body, req) {
         const messages = await this.userservice.getMessages(body);
         return messages;
+    }
+    async leaveRoom(body, req) {
+        const room = await this.userservice.leaveRoom(body);
+        return room;
     }
     async deleteRoom(body, req) {
         const room = await this.userservice.deleteRoom(body);
@@ -97,8 +102,20 @@ let ChatController = exports.ChatController = class ChatController {
         return rooms;
     }
     async addParticipant(body, req) {
-        console.log('hahowa');
         const room = await this.userservice.addParticipant(body);
+        return room;
+    }
+    async getParticipant(body, req) {
+        const room = await this.userservice.getParticipant(body, req.user.id);
+        return room;
+    }
+    async getRoomById(body, req) {
+        console.log('hahowa');
+        const room = await this.userservice.getRoomById(body);
+        return room;
+    }
+    async participantNotInRoom(body, req) {
+        const room = await this.userservice.participantNotInRoom(body);
         return room;
     }
 };
@@ -167,6 +184,15 @@ __decorate([
     __metadata("design:paramtypes", [Object, Object]),
     __metadata("design:returntype", Promise)
 ], ChatController.prototype, "getMessages", null);
+__decorate([
+    (0, common_1.UseGuards)(jwt_guard_1.JwtAuthGuard),
+    (0, common_1.Post)('leaveRoom'),
+    __param(0, (0, common_1.Body)()),
+    __param(1, (0, common_1.Req)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object, Object]),
+    __metadata("design:returntype", Promise)
+], ChatController.prototype, "leaveRoom", null);
 __decorate([
     (0, role_decorator_1.Roles)('OWNER'),
     (0, common_1.UseGuards)(jwt_guard_1.JwtAuthGuard, roles_guard_1.RolesGuard),
@@ -255,6 +281,34 @@ __decorate([
     __metadata("design:paramtypes", [Object, Object]),
     __metadata("design:returntype", Promise)
 ], ChatController.prototype, "addParticipant", null);
+__decorate([
+    (0, common_1.UseGuards)(jwt_guard_1.JwtAuthGuard),
+    (0, common_1.Post)('getParticipants'),
+    __param(0, (0, common_1.Body)()),
+    __param(1, (0, common_1.Req)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object, Object]),
+    __metadata("design:returntype", Promise)
+], ChatController.prototype, "getParticipant", null);
+__decorate([
+    (0, role_decorator_1.Roles)('OWNER', 'ADMIN'),
+    (0, common_1.UseGuards)(jwt_guard_1.JwtAuthGuard, roles_guard_1.RolesGuard),
+    (0, common_1.Post)('getRoomById'),
+    __param(0, (0, common_1.Body)()),
+    __param(1, (0, common_1.Req)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object, Object]),
+    __metadata("design:returntype", Promise)
+], ChatController.prototype, "getRoomById", null);
+__decorate([
+    (0, common_1.UseGuards)(jwt_guard_1.JwtAuthGuard),
+    (0, common_1.Post)('participantNotInRoom'),
+    __param(0, (0, common_1.Body)()),
+    __param(1, (0, common_1.Req)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object, Object]),
+    __metadata("design:returntype", Promise)
+], ChatController.prototype, "participantNotInRoom", null);
 exports.ChatController = ChatController = __decorate([
     (0, common_1.Controller)('chat'),
     __metadata("design:paramtypes", [config_1.ConfigService,

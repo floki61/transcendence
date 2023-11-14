@@ -3,16 +3,15 @@
 import Image from "next/image"
 
 interface ChatProps {
-  	name: string;
-  	text: string;
+	name: string;
+	text: string;
 	time: string;
 	image: string;
 	visible: string;
 	dm: boolean;
 }
 
-const Chatbar:React.FC<ChatProps> = ({name, text, time, image, visible, dm }) => {
-
+const Chatbar: React.FC<ChatProps> = ({ name, text, time, image, visible, dm }) => {
 	let msg;
 
 	if (text && text.length > 25)
@@ -21,25 +20,25 @@ const Chatbar:React.FC<ChatProps> = ({name, text, time, image, visible, dm }) =>
 		msg = text;
 
 	return (
-	  <div className="w-full h-full flex justify-between items-center border-t-2 border-primecl">
-		  <div className="flex gap-4 h-3/4">
-			  <Image
-				  src={image || "/placeholder.jpg"} 
-				  alt={"floki lherban"}
-				  width={50}
-				  height={50}
-				  className="rounded-full"
-			  />
-			  <div className="flex flex-col">
-				  <h2 className="text-xl">{name}</h2>
-				  <p className="font-light">{msg || "Send a text"}</p>
-			  </div>
-		  </div>
-		  <div className="flex flex-col justify-between h-full">
-			<p className="text-sm font-light pt-2">{time || ""}</p>
-			<p className={`${dm === true ? "hidden" : ""} text-xs font-light lowercase self-end pb-1`} >{visible || ""}</p>
-		  </div>
-	  </div>
+		<div className="flex justify-between border-t border-primecl py-3 hover:bg-quatrocl/40 px-4">
+			<div className="flex gap-3 flex-1">
+				<Image
+					src={image || "/placeholder.jpg"}
+					alt={"floki lherban"}
+					width={50}
+					height={50}
+					className="rounded-full aspect-square object-cover h-12 w-12"
+				/>
+				<div className="flex flex-col w-full max-w-[230px]">
+					<h2 className="text-xl truncate break-all">{name}</h2>
+					<p className="font-light truncate">{msg || "Send a text"}</p>
+				</div>
+			</div>
+			<div className="flex flex-col text-white/60">
+				<p className="text-sm font-light ">{time || ""}</p>
+				<p className={`${dm === true ? "hidden" : ""} text-xs font-light lowercase self-end`} >{visible || ""}</p>
+			</div>
+		</div>
 	)
 }
 
