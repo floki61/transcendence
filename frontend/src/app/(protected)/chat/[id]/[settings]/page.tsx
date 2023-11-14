@@ -159,6 +159,22 @@ export default function page({params} : {params: any}) {
       </div>
     )
   }
+  else if (feature === "changeRoomPasswd") {
+    return (
+      <div className='p-8 h-full w-full'>
+        <ChatFeatures
+          users={participants}
+          title = "Change the password of the room"
+          button='Change'
+          checkbox={false}
+          selected={selected}
+          rid={params.id}
+          SetSelected={SetSelected}
+          mode="changePasswd"
+        />
+      </div>
+    )
+  }
   else if (feature === "giveAdmin") {
     return (
       <div className='p-8 h-full w-full'>

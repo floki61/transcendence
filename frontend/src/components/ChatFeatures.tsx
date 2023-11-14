@@ -34,7 +34,7 @@ export const ChatFeatures: React.FC<ChatFeaturesProps> = ({
 	const user = useContext(UserContext);
 	const name = useRef<HTMLInputElement>(null);
 	const password = useRef<HTMLInputElement>(null);
-	const visible = useRef<HTMLSelectElement>(null);
+	const [visible, SetVisible] = useState("");
 
 	const handleSubmit = async () => {
 		selected.shift();
@@ -120,10 +120,8 @@ export const ChatFeatures: React.FC<ChatFeaturesProps> = ({
 			}
 		}
 		else if (mode === "changeVisible") {
-			if (visible) {
 				try {
-					const inputValue = visible.current?.value;
-					const res = await axios.post("http://localhost:4000/chat/changeVisibility", { visibility: inputValue, rid }, {
+					const res = await axios.post("http://localhost:4000/chat/changeVisibility", {password, visibility: visible, rid }, {
 						withCredentials: true,
 					})
 					console.log("success", res.data);
@@ -133,7 +131,6 @@ export const ChatFeatures: React.FC<ChatFeaturesProps> = ({
 				}
 			}
 		}
-	};
 
 	if (mode === "delete" || mode === "leave") {
 		return (
@@ -190,6 +187,76 @@ export const ChatFeatures: React.FC<ChatFeaturesProps> = ({
 		)
 	}
 	else if (mode === "changeVisible") {
+		const [room, SetRoom] = useState<FriendType>();
+
+		useEffect(() => {
+			const getRoom = async () => {
+				try {
+					const res = await axios.post("http://localhost:4000/chat/getRoomById", {rid}, {
+						withCredentials: true,
+					})
+					console.log("success", res.data);
+					SetRoom(res.data);
+				} catch (error) {
+					console.log("getRoom by id failed", error);
+				}
+			}
+			getRoom();
+		}, []);
+
+		return (
+			<div className='bg-segundcl rounded-lg h-full py-4 flex justify-center items-center'>
+				{room && (
+					<section className='h-1/2 w-2/3 flex flex-col rounded-md'>
+						<h2 className='h-1/5 px-4 text-xl flex items-center justify-center capitalize bg-primecl rounded-t-md'>{title}</h2>
+						<div className='flex-1 bg-terserocl flex flex-col items-center justify-center gap-6'>
+							<select
+								className='p-3 pl-4 rounded-xl bg-quatrocl placeholder-slate-400 text-lg outline-none font-light w-3/4'
+								name='visibility'
+								onChange={(e: any) => {SetVisible(e.target.value)}}
+							>
+								<option value="">Choose the visibility of the room</option>
+								<option value="PUBLIC">Public</option>
+								<option value="PROTECTED">Protected</option>
+								<option value="PRIVATE">Private</option>
+							</select>
+							{visible === room.visibility && (
+								<p className='text-red-600 text-sm'>This action won't apply as the room visibility is no different that the previous</p>
+							)}
+							{visible !== room.visibility && visible !== "" && room.visibility === "PROTECTED" && (
+								<input
+									placeholder="Room Password"
+									type='text'
+									ref={password}
+									className='p-2 pl-4 rounded-xl bg-quatrocl placeholder-slate-400 text-lg outline-none font-light w-3/4'
+								/>
+							)}
+							{visible === "PROTECTED" && room.visibility !== visible && (
+								<input
+									placeholder="Room Password"
+									type='text'
+									ref={password}
+									className='p-2 pl-4 rounded-xl bg-quatrocl placeholder-slate-400 text-lg outline-none font-light w-3/4'
+								/>
+							)}
+						</div>
+						<div className='bg-primecl flex items-center justify-center rounded-b-md h-1/5'>
+							{button && (
+								<button
+									type='submit'
+									className='border rounded-lg w-1/4 h-1/2 bg-segundcl cursor-pointer  transition ease-in-out delay-150 hover:scale-105 duration-300'
+									onClick={handleSubmit}
+								>
+									{button}
+								</button>
+							)}
+						</div>
+					</section>
+				)}
+			</div>
+		)
+	}
+	else if (mode === "changePasswd") {
 		const [room, SetRoom] = useState<FriendType>();
 
 		useEffect(() => {

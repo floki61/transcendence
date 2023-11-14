@@ -30,6 +30,7 @@ const Convo = ({ params }: { params: any }) => {
   const {visible, id, role, r_name, r_id, dm} = useRoomInfo({friends: friends, rid: params.id, user: user.user});
   const lastMeassgeRef = useRef<any>(null);
   const pathName = usePathname();
+  let friendId;
 
   useEffect(() => {
     getMessages(pathName.split("/").at(-1) as string);
@@ -58,6 +59,13 @@ const Convo = ({ params }: { params: any }) => {
       });
     }
   }, [pathName, socket, lastMeassgeRef.current]);
+
+  if (chat) {
+    chat.map((chatie) => {
+      if (chatie.user?.uid !== user.user?.id)
+        friendId = chatie.user?.uid;
+    })
+  }
 
   if (dm) {
     return (
@@ -92,7 +100,7 @@ const Convo = ({ params }: { params: any }) => {
                   fill="#CAD2D5"
                 />
               </svg>
-              {showDiv && <ChatSettings dm={dm} role={role} id={params.id}/>}
+              {showDiv && <ChatSettings dm={dm} role={role} id={params.id} friendId={friendId}/>}
             </div>
           </div>
           <div className="flex flex-col flex-1 bg-segundcl py-2 overflow-scroll">
