@@ -72,7 +72,7 @@ export class ChatController {
     @UseGuards(JwtAuthGuard)
     @Post('getMessages')
     async getMessages(@Body() body: any, @Req() req: any) {
-        // console.log(body);
+        // messages are not in order in case of user kicked of the room and went back
         const messages = await this.userservice.getMessages(body);
         return messages;
     }

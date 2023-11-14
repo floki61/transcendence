@@ -581,6 +581,7 @@ export class ChatService {
 			}
 		}
 		if (payload.visibility === 'PROTECTED') {
+			console.log("salam");
 			if (!payload.password) {
 				throw new NotFoundException('Password is required in protected room');
 			}
