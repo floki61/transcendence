@@ -7,6 +7,7 @@ import { PrismaService } from 'src/prisma/prisma.service';
 @Injectable()
 export class GameService {
     constructor(private prisma: PrismaService,
+        private even: EventEmitter2
         /*private gameGtw: GameGateway*/) { }
     Queue: Map<string, { Socket: Socket, gameType: string, gameMode: string, status: string, gameData: any, playWith: string, leader: boolean, gameId: string }> = new Map<string, { Socket: Socket, gameType: string, gameMode: string, status: string, gameData: any, playWith: string, leader: boolean, gameId: string }>();
     private initialGameData = {
@@ -245,4 +246,7 @@ export class GameService {
         return 1;
     }
 
+    async endgameForStatus(id: string) {
+        this.even.emit('endgame', id);
+    }
 }

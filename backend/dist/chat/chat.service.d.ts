@@ -152,6 +152,7 @@ export declare class ChatService {
         level: number;
         firstName: string;
         lastName: string;
+        status: import(".prisma/client").$Enums.Stts;
         email: string;
         picture: string;
         country: string;
@@ -181,6 +182,7 @@ export declare class ChatService {
         level: number;
         firstName: string;
         lastName: string;
+        status: import(".prisma/client").$Enums.Stts;
         email: string;
         picture: string;
         country: string;
@@ -192,4 +194,40 @@ export declare class ChatService {
         createdAt: Date;
         updatedAt: Date;
     }[]>;
+    updateStatus(flag: number, id: string): Promise<{
+        id: string;
+        userName: string;
+        level: number;
+        firstName: string;
+        lastName: string;
+        status: import(".prisma/client").$Enums.Stts;
+        email: string;
+        picture: string;
+        country: string;
+        phoneNumber: string;
+        accessToken: string;
+        password: string;
+        twoFactorAuthenticationSecret: string;
+        isTwoFactorAuthenticationEnabled: boolean;
+        createdAt: Date;
+        updatedAt: Date;
+    }>;
+    findOne(id: string): Promise<{
+        id: string;
+        userName: string;
+        level: number;
+        firstName: string;
+        lastName: string;
+        status: import(".prisma/client").$Enums.Stts;
+        email: string;
+        picture: string;
+        country: string;
+        phoneNumber: string;
+        accessToken: string;
+        password: string;
+        twoFactorAuthenticationSecret: string;
+        isTwoFactorAuthenticationEnabled: boolean;
+        createdAt: Date;
+        updatedAt: Date;
+    }>;
 }

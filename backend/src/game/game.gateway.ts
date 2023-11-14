@@ -37,6 +37,14 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
                 if (this.connectedClients.has(payload.id))
                     client.disconnect();
                 this.connectedClients.set(payload.id, client);
+                await this.prisma.user.update({
+                    where: {
+                        id: payload.id,
+                    },
+                    data: {
+                        status: 'INGAME',
+                    }
+                });
             }
         }
         else {
@@ -94,9 +102,21 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
                 if (this.matchmakingQueue.includes(payload.id))
                     this.matchmakingQueue.splice(this.matchmakingQueue.indexOf(payload.id), 1);
                 this.connectedClients.delete(payload.id);
+                await this.prisma.user.update({
+                    where: {
+                        id: payload.id,
+                    },
+                    data: {
+                        status: 'OFFLINE',
+                    },
+                });
+                this.gameService.endgameForStatus(payload.id);
             }
         }
     }
+
+    // @OnEvent('checkgame')
+
 
     private parseCookies(cookieHeader: string | undefined): string {
         const cookies: Record<string, string> = {};

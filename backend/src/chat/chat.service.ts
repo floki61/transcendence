@@ -817,4 +817,26 @@ export class ChatService {
 		})
 		return users;
 	}
+
+	async updateStatus(flag: number, id: string) {
+		if (id) {
+			const user = await this.prisma.user.update({
+				where: {
+					id: id,
+				},
+				data: {
+					status: (flag === 1) ? 'ONLINE' : 'OFFLINE',
+				},
+			});
+			return user;
+		}
+	}
+
+	async findOne(id: string) {
+		return this.prisma.user.findUnique({
+			where: {
+				id,
+			},
+		});
+	}
 }
