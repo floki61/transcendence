@@ -21,10 +21,11 @@ const jwt_1 = require("@nestjs/jwt");
 const config_1 = require("@nestjs/config");
 const event_emitter_1 = require("@nestjs/event-emitter");
 let ChatGateway = exports.ChatGateway = class ChatGateway {
-    constructor(chatService, jwt, config) {
+    constructor(chatService, jwt, config, event) {
         this.chatService = chatService;
         this.jwt = jwt;
         this.config = config;
+        this.event = event;
         this.map = new Map();
     }
     async handleConnection(client) {
@@ -39,12 +40,19 @@ let ChatGateway = exports.ChatGateway = class ChatGateway {
                 console.log("chat socket : ", payload.id);
                 this.map.set(payload.id, client);
             }
+            else {
+                client.disconnect();
+            }
             const rooms = await this.chatService.getUniqueMyRooms(payload);
             if (rooms) {
                 (rooms).forEach((room) => {
                     client.join(room.id);
                 });
             }
+            const usr = await this.chatService.findOne(payload.id);
+            if (!(usr.status === 'INGAME'))
+                await this.chatService.updateStatus(1, payload.id);
+            console.log("---------- usr : ", usr.status, usr.id);
         }
         else {
             client.disconnect();
@@ -59,7 +67,10 @@ let ChatGateway = exports.ChatGateway = class ChatGateway {
                 secret: this.config.get('JWT_SECRET_KEY')
             });
             if (payload.id) {
-                delete this.map[payload.id];
+                this.map.delete(payload.id);
+                const usr = await this.chatService.findOne(payload.id);
+                await this.chatService.updateStatus(0, payload.id);
+                console.log("out usr : ", usr.status, usr.id);
             }
         }
         const rooms = this.chatService.getMyRooms(payload);
@@ -111,6 +122,14 @@ let ChatGateway = exports.ChatGateway = class ChatGateway {
     leaveRoom(payload, client) {
         if (this.map.has(payload.uid))
             this.map.get(payload.uid).leave(payload.rid);
+    }
+    async updateStatus(payload) {
+        if (this.map.has(payload.id)) {
+            await this.chatService.updateStatus(1, payload.id);
+        }
+        else {
+            await this.chatService.updateStatus(0, payload.id);
+        }
     }
     async updateChatRooms(payload) {
         const rooms = await this.chatService.getMyRooms(payload);
@@ -168,6 +187,13 @@ __decorate([
     __metadata("design:returntype", void 0)
 ], ChatGateway.prototype, "leaveRoom", null);
 __decorate([
+    (0, event_emitter_1.OnEvent)('endgame'),
+    __param(0, (0, websockets_1.MessageBody)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object]),
+    __metadata("design:returntype", Promise)
+], ChatGateway.prototype, "updateStatus", null);
+__decorate([
     __param(0, (0, websockets_1.MessageBody)()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Object]),
@@ -180,6 +206,7 @@ exports.ChatGateway = ChatGateway = __decorate([
     }),
     __metadata("design:paramtypes", [chat_service_1.ChatService,
         jwt_1.JwtService,
-        config_1.ConfigService])
+        config_1.ConfigService,
+        event_emitter_1.EventEmitter2])
 ], ChatGateway);
 //# sourceMappingURL=chat.gateway.js.map

@@ -133,6 +133,7 @@ export declare class ChatController {
         level: number;
         firstName: string;
         lastName: string;
+        status: import(".prisma/client").$Enums.Stts;
         email: string;
         picture: string;
         country: string;
@@ -162,6 +163,7 @@ export declare class ChatController {
         level: number;
         firstName: string;
         lastName: string;
+        status: import(".prisma/client").$Enums.Stts;
         email: string;
         picture: string;
         country: string;

@@ -13,6 +13,7 @@ export declare class JwtStrategy extends JwtStrategy_base {
         level: number;
         firstName: string;
         lastName: string;
+        status: import(".prisma/client").$Enums.Stts;
         email: string;
         picture: string;
         country: string;
