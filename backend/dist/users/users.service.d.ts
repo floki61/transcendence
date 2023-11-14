@@ -323,4 +323,12 @@ export declare class UsersService {
             updatedAt: Date;
         }[];
     }>;
+    getAchievements(userId: string): Promise<{
+        id: string;
+        uid: string;
+        achivementName: string;
+        alreadyAchieved: boolean;
+        createdAt: Date;
+        updatedAt: Date;
+    }[]>;
 }
