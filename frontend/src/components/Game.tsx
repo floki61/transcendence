@@ -13,24 +13,17 @@ const GamePage = () => {
     const [count, setCount] = useState(false);
     const [gameResult, setGameResult] = useState(null);
     const [botGame, setBotGame] = useState(false);
+    const [client, setClient] = useState(false);
 
     useEffect(() => {
         if (!socket) return;
         let canvas: any;
         const sketch = (p: p5) => {
-            // let img: any;
-            // p.preload = () => {
-                // img = p.loadImage("/one-piece.jpg");
-            // };
             p.setup = () => {
                 canvas = p.createCanvas(p.windowWidth / 2, p.windowHeight / 2);
                 canvas.position((p.windowWidth - canvas.width) / 2, (p.windowHeight - canvas.height) / 2);
-                // p.background('#151515');
                 canvas.addClass("border-4 rounded-md bg-gray-800");
                 canvas.style('border-color', '#213e46');
-                // if (img && img.width && img.height) {
-                    // p.image(img, 0, 0, p.width, p.height);
-                // }
             };
             p.windowResized = () => {
                 p.resizeCanvas(p.windowWidth / 2, p.windowHeight / 2);
@@ -53,36 +46,44 @@ const GamePage = () => {
                 updatePaddles(p, data);
             });
             socket.on('updateBall', (data) => {
-                 updateBallData(p, data);
-                 updateScore(data);
-                 if(botGame)
-                    updatePaddles(p, data);
+                updateBallData(p, data);
+                updateScore(data);    
+                if(botGame)
+                   updatePaddles(p, data);
             });
             socket.on('gameResult', (data) => {
                 setGameResult(data);
-                console.log(data);
                 setBotGame(false);
                 setCount(false);
+                p.resizeCanvas(p.windowWidth / 2, p.windowHeight / 2);
+                canvas.position();
+                centerCanvas();
             });
             socket.on('startBotGame', (data) => {
                 console.log("startBotGame");
                 updatePaddles(p, data);
                 updateBallData(p, data);
                 setBotGame(true);
-                // setCount(true);
+            })
+            socket.on('alreadyConnected', (data) => {
+                setClient(true);
             })
             p.draw = () => {
-                if(count || botGame) {
+                if(client) {
+                    p.background('#151515');
+                    p.fill(255);
+                    p.textSize(34);
+                    p.textAlign(p.CENTER, p.CENTER);
+                    p.text("already in game", p.width / 2, p.height / 2);
+                }
+                else if(count || botGame) {
                     p.background('#151515');
                     p.stroke("#213D46");
                     p.strokeWeight(2);
-                    p.fill("#213D46");
                     p.line(p.width / 2, 0, p.width / 2, p.height);
                     p.fill("#213D46");
-                    // p.image(img, 0, 0, p.width, p.height);
                     p.textSize(128);
                     p.textAlign(p.CENTER, p.CENTER);
-                    p.fill(255);
                     p.text(leftScore, p.width / 4, p.height / 2);
                     p.text(rightScore, (p.width / 4) * 3, p.height / 2);
                     p.fill("#213D46");
@@ -90,12 +91,13 @@ const GamePage = () => {
                     p.rectMode(p.CENTER);
                     p.rect(leftPaddle.x, leftPaddle.y, leftPaddle.width, leftPaddle.height);
                     p.rect(rightPaddle.x, rightPaddle.y, rightPaddle.width, rightPaddle.height);
+                    if(ball.pos === 1)
+                        p.fill('#151515');
                     p.noStroke();
                     p.ellipse(ball.x, ball.y, ball.radius * 2);
                 }
                 else if (gameResult) {
                     p.background('#151515');
-                    // p.image(img, 0, 0, p.width, p.height);
                     p.fill(255);
                     p.textSize(34);
                     p.textAlign(p.CENTER, p.CENTER);
@@ -103,7 +105,6 @@ const GamePage = () => {
                 }
                 else {
                     p.background('#151515');
-                    // p.image(img, 0, 0, p.width, p.height);
                     p.fill(255);
                     p.textSize(34);
                     p.textAlign(p.CENTER, p.CENTER);

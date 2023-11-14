@@ -24,6 +24,7 @@ export class GameService {
             // ySpeed: 5 * Math.sin(Math.random() * (2 * Math.PI)),
             xSpeed: 5 * (Math.random() < 0.5 ? 1 : -1),
             ySpeed: 5 * (Math.random() < 0.5 ? 1 : -1),
+            pos: 0,
         },
         leftPaddle: {
             x: 15,
