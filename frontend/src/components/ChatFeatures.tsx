@@ -276,41 +276,53 @@ export const ChatFeatures: React.FC<ChatFeaturesProps> = ({
 
 		return (
 			<div className='bg-segundcl rounded-lg h-full py-4 flex justify-center items-center'>
-				<section className='h-1/2 w-2/3 flex flex-col rounded-md'>
-					<h2 className='h-1/5 px-4 text-xl flex items-center justify-center capitalize bg-primecl rounded-t-md'>{title}</h2>
-					<div className='flex-1 bg-terserocl flex items-center justify-center'>
-						<select
-							className='p-3 pl-4 rounded-xl bg-quatrocl placeholder-slate-400 text-lg outline-none font-light w-3/4'
-							name='visibility'
-							ref={visible}
-						>
-							<option value="">Choose the visibility of the room</option>
-							<option value="PUBLIC">Public</option>
-							<option value="PROTECTED">Protected</option>
-							<option value="PRIVATE">Private</option>
-						</select>
-						{visible.current?.value === "PROTECTED" && (
-							<input
-								placeholder="Room Password"
-								type='text'
-								ref={password}
-							// value={password}
-							// name='password'
-							/>
-						)}
-					</div>
-					<div className='bg-primecl flex items-center justify-center rounded-b-md h-1/5'>
-						{button && (
-							<button
-								type='submit'
-								className='border rounded-lg w-1/4 h-1/2 bg-segundcl cursor-pointer  transition ease-in-out delay-150 hover:scale-105 duration-300'
-								onClick={handleSubmit}
+				{room && (
+					<section className='h-1/2 w-2/3 flex flex-col rounded-md'>
+						<h2 className='h-1/5 px-4 text-xl flex items-center justify-center capitalize bg-primecl rounded-t-md'>{title}</h2>
+						<div className='flex-1 bg-terserocl flex items-center justify-center'>
+							<select
+								className='p-3 pl-4 rounded-xl bg-quatrocl placeholder-slate-400 text-lg outline-none font-light w-3/4'
+								name='visibility'
+								ref={visible}
 							>
-								{button}
-							</button>
-						)}
-					</div>
-				</section>
+								<option value="">Choose the visibility of the room</option>
+								<option value="PUBLIC">Public</option>
+								<option value="PROTECTED">Protected</option>
+								<option value="PRIVATE">Private</option>
+							</select>
+							{visible === room.visibility && (
+								<p className='text-red-600 text-sm'>This action won't apply as the room visibility is no different that the previous</p>
+							)}
+							{visible !== room.visibility && visible !== "" && room.visibility === "PROTECTED" && (
+								<input
+									placeholder="Room Password"
+									type='text'
+									ref={password}
+									className='p-2 pl-4 rounded-xl bg-quatrocl placeholder-slate-400 text-lg outline-none font-light w-3/4'
+								/>
+							)}
+							{visible === "PROTECTED" && room.visibility !== visible && (
+								<input
+									placeholder="Room Password"
+									type='text'
+									ref={password}
+									className='p-2 pl-4 rounded-xl bg-quatrocl placeholder-slate-400 text-lg outline-none font-light w-3/4'
+								/>
+							)}
+						</div>
+						<div className='bg-primecl flex items-center justify-center rounded-b-md h-1/5'>
+							{button && (
+								<button
+									type='submit'
+									className='border rounded-lg w-1/4 h-1/2 bg-segundcl cursor-pointer  transition ease-in-out delay-150 hover:scale-105 duration-300'
+									onClick={handleSubmit}
+								>
+									{button}
+								</button>
+							)}
+						</div>
+					</section>
+				)}
 			</div>
 		)
 	}
