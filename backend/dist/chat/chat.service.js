@@ -510,6 +510,7 @@ let ChatService = exports.ChatService = class ChatService {
             }
         }
         if (payload.visibility === 'PROTECTED') {
+            console.log("salam");
             if (!payload.password) {
                 throw new common_1.NotFoundException('Password is required in protected room');
             }
