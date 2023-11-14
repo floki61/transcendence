@@ -63,10 +63,10 @@ export const Participant: React.FC<ParticipantProps> = ({
 			className='rounded-full'
 		/>
 		<p className='text-white text-xl'>{name}</p>
-		{checkbox && many && (
+		{checkbox && !many && (
 			<input type='checkbox' checked={checked} className='ml-auto w-4 h-4' onChange={() => {handleSingleSelection(id)}}></input>
 		)}
-		{checkbox && !many && (
+		{checkbox && many && (
 			<input type='checkbox' className='ml-auto w-4 h-4' onChange={() => {handleCheckedBox(id)}}></input>
 		)}
 	</div>

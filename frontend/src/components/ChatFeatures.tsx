@@ -35,6 +35,7 @@ export const ChatFeatures: React.FC<ChatFeaturesProps> = ({
 	const name = useRef<HTMLInputElement>(null);
 	const password = useRef<HTMLInputElement>(null);
 	const [visible, SetVisible] = useState("");
+	const [time, SetTimer] = useState("");
 	const [checked, setChecked] = useState("");
 
 	const handleCheckboxChange = (participantId: string) => {
@@ -65,6 +66,18 @@ export const ChatFeatures: React.FC<ChatFeaturesProps> = ({
 				router.push(`/chat/${rid}`);
 			} catch (error) {
 				console.log("kickuser failed.", error);
+			}
+		}
+		else if (mode === "mute") {
+			try {
+				console.log(selected[0]);
+				const res = await axios.post("http://localhost:4000/chat/muteUser", {duration: time, uid: selected[0], rid }, {
+					withCredentials: true,
+				})
+				console.log("success", res.data);
+				router.push(`/chat/${rid}`);
+			} catch (error) {
+				console.log("mute user failed.", error);
 			}
 		}
 		else if (mode === "ban") {
@@ -356,7 +369,7 @@ export const ChatFeatures: React.FC<ChatFeaturesProps> = ({
 								selected={selected}
 								SetSelected={SetSelected}
 								id={user.id}
-								many={false}
+								many={true}
 							/>
 						</div>
 					)}
@@ -376,6 +389,61 @@ export const ChatFeatures: React.FC<ChatFeaturesProps> = ({
 		</div>
 		)
 	}
+	else if (mode === "mute") {
+		return (
+			<div className='bg-segundcl rounded-lg h-full py-4 flex justify-center'>
+				<section className='h-full w-1/2 flex flex-col rounded-md'>
+					<h2 className='h-[10%] flex items-center justify-center capitalize bg-primecl rounded-t-md'>{title}</h2>
+					<div className='flex-1 bg-terserocl overflow-scroll'>
+						{users && users.map((user, index) =>
+							<div key={index} className='h-[15%] border-b-2 border-primecl'>
+								<Participant
+									name={user.userName}
+									picture={user.picture}
+									checkbox={checkbox}
+									selected={selected}
+									SetSelected={SetSelected}
+									id={user.id}
+									many={false}
+									checked={checked === user.id}
+									SetChecked={handleCheckboxChange}
+								/>
+							</div>
+						)}
+					</div>
+					<div className='h-[20%] flex flex-col justify-center items-center gap-4 bg-primecl rounded-b-md'>
+						<select
+							className='p-2 pl-4 rounded-xl bg-quatrocl placeholder-slate-400 text-lg outline-none font-light w-3/4'
+							onChange={(e: any) => {SetTimer(e.target.value)}}
+						>
+							<option value="">Set the timer</option>
+							<option value="1min">One Minute</option>
+							<option value="2min">Two Minutes</option>
+							<option value="5min">Five Minutes</option>
+							<option value="10min">Ten Minutes</option>
+						</select>
+						{button && time === "" && (
+							<button
+								type='submit'
+								className='border w-1/3 h-1/3 rounded-lg bg-slate-400 cursor-pointer'
+							>
+								{button}
+							</button>
+						)}
+						{button && time !== "" && (
+							<button
+								type='submit'
+								className='border w-1/3 h-1/3 rounded-lg bg-segundcl cursor-pointer  transition ease-in-out delay-150 hover:scale-105 duration-300'
+								onClick={handleSubmit}
+							>
+								{button}
+							</button>
+						)}
+					</div>
+				</section>
+			</div>
+		)
+	}
 	else {
 		return (
 			<div className='bg-segundcl rounded-lg h-full py-4 flex justify-center'>
@@ -391,7 +459,7 @@ export const ChatFeatures: React.FC<ChatFeaturesProps> = ({
 									selected={selected}
 									SetSelected={SetSelected}
 									id={user.id}
-									many={true}
+									many={false}
 									checked={checked === user.id}
 									SetChecked={handleCheckboxChange}
 								/>
