@@ -191,12 +191,25 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
                         data: {
                             winnerId: this.gameService.Queue.get(player1).gameData.score.left === 5 ? player1 : player2,
                             loserId: this.gameService.Queue.get(player1).gameData.score.left === 5 ? player2 : player1,
-                            player1Id: this.gameService.Queue.get(player1).gameData.score.left === 5 ? player1 : player2,
-                            player2Id: this.gameService.Queue.get(player1).gameData.score.left === 5 ? player2 : player1,
-                            player1Score: this.gameService.Queue.get(player1).gameData.score.left === 5 ? 5 : this.gameService.Queue.get(player1).gameData.score.right,
-                            player2Score: this.gameService.Queue.get(player1).gameData.score.right === 5 ? this.gameService.Queue.get(player1).gameData.score.left : 5,
+                            // player1Id: this.gameService.Queue.get(player1).gameData.score.left === 5 ? player1 : player2,
+                            // player2Id: this.gameService.Queue.get(player1).gameData.score.left === 5 ? player2 : player1,
+                            // player1Score: this.gameService.Queue.get(player1).gameData.score.left === 5 ? 5 : this.gameService.Queue.get(player1).gameData.score.right,
+                            // player2Score: this.gameService.Queue.get(player1).gameData.score.right === 5 ? this.gameService.Queue.get(player1).gameData.score.left : 5,
                         }
                     });
+                    await this.prisma.game.update({
+                        where:
+                        {
+                            id: this.gameService.Queue.get(player1).gameId,
+                        },
+                        data: {
+                            player1Id: this.gameService.Queue.get(player1).gameData.score.left === 5 ? player1 : player2,
+                            player2Id: this.gameService.Queue.get(player1).gameData.score.left === 5 ? player2 : player1,
+                            player1Score: (player2 === game.winnerId) ? game.player2Score : game.player1Score,
+                            player2Score: (player2 === game.winnerId) ? game.player1Score : game.player2Score,
+                        }
+                    });
+
                     const winner = await this.prisma.user.update({
                         where: {
                             id: game.winnerId,
@@ -207,6 +220,8 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
                             }
                         }
                     });
+                    this.gameService.handleAchievements(game.winnerId);
+
                     console.log('game over');
                     await this.determineGameResult(player1, player2);
                     this.gameService.Queue.get(player1).status = 'finished';
