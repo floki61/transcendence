@@ -21,6 +21,7 @@ let ball = {
     xSpeed: 0,
     ySpeed: 0,
     speed: 0,
+    pos: 0,
 };
 let leftScore = 0, rightScore = 0;
 
@@ -43,6 +44,7 @@ function updateBallData(p: p5, data: any) {
         ball.x  = (data.ball.x * (p.windowWidth / 2)) / data.canvasWidth;
         ball.y  = (data.ball.y * (p.windowHeight / 2)) / data.canvasHeight;
         ball.radius  = (data.ball.radius * (p.windowHeight / 2)) / data.canvasHeight;
+        ball.pos = data.ball.pos;
     }
 }
 
