@@ -711,6 +711,26 @@ let ChatService = exports.ChatService = class ChatService {
         });
         return users;
     }
+    async updateStatus(flag, id) {
+        if (id) {
+            const user = await this.prisma.user.update({
+                where: {
+                    id: id,
+                },
+                data: {
+                    status: (flag === 1) ? 'ONLINE' : 'OFFLINE',
+                },
+            });
+            return user;
+        }
+    }
+    async findOne(id) {
+        return this.prisma.user.findUnique({
+            where: {
+                id,
+            },
+        });
+    }
 };
 exports.ChatService = ChatService = __decorate([
     (0, common_1.Injectable)(),

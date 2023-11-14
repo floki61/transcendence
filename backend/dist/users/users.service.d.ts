@@ -12,6 +12,7 @@ export declare class UsersService {
         level: number;
         firstName: string;
         lastName: string;
+        status: import(".prisma/client").$Enums.Stts;
         email: string;
         picture: string;
         country: string;
@@ -31,6 +32,7 @@ export declare class UsersService {
         level: number;
         firstName: string;
         lastName: string;
+        status: import(".prisma/client").$Enums.Stts;
         email: string;
         picture: string;
         country: string;
@@ -48,6 +50,7 @@ export declare class UsersService {
         level: number;
         firstName: string;
         lastName: string;
+        status: import(".prisma/client").$Enums.Stts;
         email: string;
         picture: string;
         country: string;
@@ -65,6 +68,7 @@ export declare class UsersService {
         level: number;
         firstName: string;
         lastName: string;
+        status: import(".prisma/client").$Enums.Stts;
         email: string;
         picture: string;
         country: string;
@@ -82,6 +86,7 @@ export declare class UsersService {
         level: number;
         firstName: string;
         lastName: string;
+        status: import(".prisma/client").$Enums.Stts;
         email: string;
         picture: string;
         country: string;
@@ -99,6 +104,7 @@ export declare class UsersService {
         level: number;
         firstName: string;
         lastName: string;
+        status: import(".prisma/client").$Enums.Stts;
         email: string;
         picture: string;
         country: string;
@@ -195,6 +201,7 @@ export declare class UsersService {
         level: number;
         firstName: string;
         lastName: string;
+        status: import(".prisma/client").$Enums.Stts;
         email: string;
         picture: string;
         country: string;
@@ -231,6 +238,7 @@ export declare class UsersService {
             level: number;
             firstName: string;
             lastName: string;
+            status: import(".prisma/client").$Enums.Stts;
             email: string;
             picture: string;
             country: string;
@@ -249,6 +257,7 @@ export declare class UsersService {
         level: number;
         firstName: string;
         lastName: string;
+        status: import(".prisma/client").$Enums.Stts;
         email: string;
         picture: string;
         country: string;
@@ -266,6 +275,7 @@ export declare class UsersService {
         level: number;
         firstName: string;
         lastName: string;
+        status: import(".prisma/client").$Enums.Stts;
         email: string;
         picture: string;
         country: string;
@@ -290,6 +300,7 @@ export declare class UsersService {
             level: number;
             firstName: string;
             lastName: string;
+            status: import(".prisma/client").$Enums.Stts;
             email: string;
             picture: string;
             country: string;

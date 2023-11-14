@@ -28,12 +28,19 @@ enum Status {
     REJECTED
 }
 
+enum Stts {
+    ONLINE
+    OFFLINE
+    INGAME
+}
+
 model User {
     id                               String         @id @default(cuid())
     userName                         String?        @unique
     level                            Int            @default(0)
     firstName                        String
     lastName                         String
+    status                           Stts           @default(OFFLINE)
     email                            String?        @unique
     picture                          String?        @default("") // Use nullable (?) for optional fields
     country                          String?        @default("") // Use nullable (?) for optional fields
