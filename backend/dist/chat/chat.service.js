@@ -322,6 +322,7 @@ let ChatService = exports.ChatService = class ChatService {
         return 'Deleted room';
     }
     async muteUser(payload) {
+        console.log(payload);
         let getTime = await this.formatDate(payload.duration);
         let participant = await this.prisma.participant.findUnique({
             where: {
