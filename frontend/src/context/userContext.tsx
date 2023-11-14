@@ -21,13 +21,11 @@ export interface userType {
 type UserContextType = {
 	user: userType | undefined | null;
 	setUser: React.Dispatch<React.SetStateAction<userType | undefined | null>>;
-	level_P: number;
   };
 
 export const UserContext = createContext<UserContextType>({
 	user: null,
 	setUser: () => null,
-	level_P: 0,
 });
 
 export const UserProvider = ({ children }: any ) => {
@@ -54,7 +52,6 @@ export const UserProvider = ({ children }: any ) => {
 	const contextValue: UserContextType = {
 		user,
 		setUser,
-		level_P: 0,
 	  };
 
 	return (

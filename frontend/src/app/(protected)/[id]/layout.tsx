@@ -8,34 +8,34 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 
-interface ProfileType {
+export interface ProfileType {
 	user: userType;
 	level_P: number;
+	barPourcentage: number;
 }
 
 export default function layout({params, children}: {params: any; children: React.ReactNode}) {
 	const [friend, SetFriend] = useState<ProfileType>();
 	const pathName = usePathname();
-
+	
 	useEffect(() => {
-	  const getFriend = async () => {
-		  try {
-			  const res = await axios.post("http://localhost:4000/getFriendProfile", {id: params.id},{
-				  withCredentials: true,
-			  })
-			  console.log("success", res.data);
-			  SetFriend(res.data);
-		  } catch (error) {
-			  console.log("get Friend profile failed.", error);
-		  }
-	  }
-	  getFriend();
-	}, [])
-  
-	console.log(friend?.user);
+		const getFriend = async () => {
+			try {
+				const res = await axios.post("http://localhost:4000/getFriendProfile", {id: params.id},{
+					withCredentials: true,
+				})
+				console.log("success", res.data);
+				SetFriend(res.data);
+			} catch (error) {
+				console.log("get Friend profile failed.", error);
+			}
+		}
+		getFriend();
+	}, [])  
+	console.log(friend?.barPourcentage);
 	console.log(params);
 	if (friend && friend.user)
-		friend.user.fullName = friend.user.firstName + " " + friend.user.lastName
+		friend.user.fullName = friend.user.firstName + " " + friend.user.lastName;
 
     return (
 		<div className='h-full w-full p-10 overflow-hidden'>
@@ -52,9 +52,11 @@ export default function layout({params, children}: {params: any; children: React
 				<div className='w-3/5 h-full flex flex-col justify-between px-4'>
 				  <h2 className='text-2xl'>{friend.user.fullName}</h2>
 				  <h3 className='text-xl'>{friend.user.userName}</h3>
-				  <div className='w-full bg-[#6A6666] rounded-xl text-center text-black self-end'>
-					Level {friend.user.level}
-					<div className={`bg-[#CD7F32] w-[%${friend.level_P}]`}></div>
+				  <div className='relative w-full bg-[#6A6666] rounded-xl text-center text-black self-end'>
+					{friend && (
+						<div className={`bg-[#CD7F32] w-[${friend.barPourcentage}%] h-full rounded-xl absolute top-0 left-0`}></div>
+					)}
+					<p className='text-black text-center z-10 relative text-xl font-medium'>Level {friend.level_P}</p>
 				  </div>
 				</div>
 				<div className='w-[25%] text-center'>chart</div>
