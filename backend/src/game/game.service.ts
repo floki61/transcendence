@@ -5,10 +5,10 @@ import { GameGateway } from './game.gateway';
 import { PrismaService } from 'src/prisma/prisma.service';
 
 @Injectable()
-export class GameService 
-{
-    constructor(/*private gameGtw: GameGateway*/) {}
-    Queue: Map<string, {Socket: Socket, gameType: string, gameMode: string, status: string, gameData: any, playWith: string, leader: boolean, gameId: string}> = new Map<string, {Socket: Socket, gameType: string,gameMode: string, status: string, gameData: any, playWith: string, leader: boolean, gameId: string}>();
+export class GameService {
+    constructor(private prisma: PrismaService,
+        /*private gameGtw: GameGateway*/) { }
+    Queue: Map<string, { Socket: Socket, gameType: string, gameMode: string, status: string, gameData: any, playWith: string, leader: boolean, gameId: string }> = new Map<string, { Socket: Socket, gameType: string, gameMode: string, status: string, gameData: any, playWith: string, leader: boolean, gameId: string }>();
     private initialGameData = {
         canvasWidth: 850,
         canvasHeight: 400,
@@ -60,9 +60,9 @@ export class GameService
         data.ball.speed = 5;
         // this.gameData.ball.xSpeed = 5 * Math.cos(Math.random() * (2 * Math.PI));
         // this.gameData.ball.ySpeed = 5 * Math.sin(Math.random() * (2 * Math.PI));
-        data.ball.xSpeed = data.ball.speed *  (Math.random() < 0.5 ? 1 : -1);
-        data.ball.ySpeed = data.ball.speed *  (Math.random() < 0.5 ? 1 : -1);
-        return ;
+        data.ball.xSpeed = data.ball.speed * (Math.random() < 0.5 ? 1 : -1);
+        data.ball.ySpeed = data.ball.speed * (Math.random() < 0.5 ? 1 : -1);
+        return;
         // return data;
 
     }
@@ -73,7 +73,7 @@ export class GameService
     async updatePaddles(event: string, data, targetPaddle: boolean, gameMode: string) {
         event = gameMode === 'reverse' ? event === 'UP' ? 'DOWN' : 'UP' : event;
         if (event === 'UP') {
-            if(targetPaddle) {
+            if (targetPaddle) {
                 if (data.leftPaddle.y > data.leftPaddle.height / 2)
                     data.leftPaddle.y -= data.leftPaddle.speed;
             }
@@ -83,7 +83,7 @@ export class GameService
             }
         }
         else if (event === 'DOWN') {
-            if(targetPaddle) {
+            if (targetPaddle) {
                 if (data.leftPaddle.y < data.canvasHeight - data.leftPaddle.height / 2)
                     data.leftPaddle.y += data.leftPaddle.speed;
             }
@@ -110,7 +110,7 @@ export class GameService
     private map(value: number, start1: number, stop1: number, start2: number, stop2: number): number {
         return start2 + (stop2 - start2) * ((value - start1) / (stop1 - start1));
     }
- 
+
     private ballHitsPaddle(ball, paddle) {
         return (
             ball.x - ball.radius < paddle.x + paddle.width / 2 &&
@@ -127,8 +127,8 @@ export class GameService
     async moveBall(data) {
         if (data.ball.y < 0 || data.ball.y > data.canvasHeight - data.ball.radius)
             data.ball.ySpeed *= -1;
-        else if (data.ball.x < 0 || data.ball.x > data.canvasWidth){
-            if(data.ball.x < 0)
+        else if (data.ball.x < 0 || data.ball.x > data.canvasWidth) {
+            if (data.ball.x < 0)
                 data.score.right++;
             else
                 data.score.left++;
@@ -158,17 +158,91 @@ export class GameService
         // return data;
     }
     async moveBot(data) {
-        if(data.ball.xSpeed < 0 || data.ball.x < data.canvasWidth / 2)
-            return ;
-        if(data.rightPaddle.y > data.ball.y && data.rightPaddle.y - data.rightPaddle.height / 2 > data.ball.y && data.rightPaddle.y > data.rightPaddle.height / 2)
+        if (data.ball.xSpeed < 0 || data.ball.x < data.canvasWidth / 2)
+            return;
+        if (data.rightPaddle.y > data.ball.y && data.rightPaddle.y - data.rightPaddle.height / 2 > data.ball.y && data.rightPaddle.y > data.rightPaddle.height / 2)
             data.rightPaddle.y -= data.rightPaddle.speed;
-        else if(data.rightPaddle.y < data.ball.y && data.rightPaddle.y + data.rightPaddle.height / 2 < data.ball.y && data.rightPaddle.y < data.canvasHeight - data.rightPaddle.height / 2)
+        else if (data.rightPaddle.y < data.ball.y && data.rightPaddle.y + data.rightPaddle.height / 2 < data.ball.y && data.rightPaddle.y < data.canvasHeight - data.rightPaddle.height / 2)
             data.rightPaddle.y += data.rightPaddle.speed;
         // return data;
     }
     async checkingIfInGame(id: any) {
-        if(this.Queue.has(id))
+        if (this.Queue.has(id))
             return true;
         return false;
     }
+
+    async handleAchievements(id: string) {
+        const user = await this.prisma.user.findUnique({
+            where: {
+                id: id
+            },
+            include: {
+                wins: true,
+                achivements: true
+            }
+        });
+        if (user) {
+            const achivement = await this.prisma.achivement.findMany({
+                where: {
+                    uid: id
+                }
+            });
+            if (user.wins.length >= 1) {
+                if (await this.checkAchievements(achivement, id, '1 win')) {
+                    await this.prisma.achivement.create({
+                        data: {
+                            achivementName: '1 win',
+                            uid: id,
+                            alreadyAchieved: true,
+                        }
+                    });
+                }
+            }
+
+            if (user.wins.length >= 3) {
+                if (await this.checkAchievements(achivement, id, '3 wins')) {
+                    await this.prisma.achivement.create({
+                        data: {
+                            achivementName: '3 wins',
+                            uid: id,
+                            alreadyAchieved: true,
+                        }
+                    });
+                }
+            }
+            if (user.wins.length >= 5) {
+                if (await this.checkAchievements(achivement, id, '5 wins')) {
+                    await this.prisma.achivement.create({
+                        data: {
+                            achivementName: '5 wins',
+                            uid: id,
+                            alreadyAchieved: true,
+                        }
+                    });
+                }
+            }
+            if (user.wins.length >= 10) {
+                if (await this.checkAchievements(achivement, id, '10 wins')) {
+                    await this.prisma.achivement.create({
+                        data: {
+                            achivementName: '10 wins',
+                            uid: id,
+                            alreadyAchieved: true,
+                        }
+                    });
+                }
+            }
+        }
+    }
+
+    async checkAchievements(payload: any, id: string, achivement: string) {
+        for (let ach of payload) {
+            if (ach.achivementName === achivement && ach.alreadyAchieved) {
+                return 0;
+            }
+        }
+        return 1;
+    }
+
 }
