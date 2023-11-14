@@ -35,9 +35,15 @@ export const ChatFeatures: React.FC<ChatFeaturesProps> = ({
 	const name = useRef<HTMLInputElement>(null);
 	const password = useRef<HTMLInputElement>(null);
 	const [visible, SetVisible] = useState("");
+	const [checked, setChecked] = useState("");
+
+	const handleCheckboxChange = (participantId: string) => {
+	  setChecked(participantId);
+	};
 
 	const handleSubmit = async () => {
-		selected.shift();
+		if (selected.length > 1)
+			selected.shift();
 		if (mode === "add") {
 			try {
 				const res = await axios.post("http://localhost:4000/chat/addParticipant", { uids: selected, rid, }, {
@@ -120,17 +126,36 @@ export const ChatFeatures: React.FC<ChatFeaturesProps> = ({
 			}
 		}
 		else if (mode === "changeVisible") {
-				try {
-					const res = await axios.post("http://localhost:4000/chat/changeVisibility", {password, visibility: visible, rid }, {
-						withCredentials: true,
-					})
-					console.log("success", res.data);
-					router.push(`/chat/${rid}`);
-				} catch (error) {
-					console.log("changeVisibility failed.", error);
-				}
+			let pass;
+			if (password) {
+				pass = password.current?.value;
+			}
+			try {
+				const res = await axios.post("http://localhost:4000/chat/changeVisibility", {password: pass, visibility: visible, rid }, {
+					withCredentials: true,
+				})
+				console.log("success", res.data);
+				router.push(`/chat/${rid}`);
+			} catch (error) {
+				console.log("changeVisibility failed.", error);
 			}
 		}
+		else if (mode === "changePasswd") {
+			let pass;
+			if (password) {
+				pass = password.current?.value;
+			}
+			try {
+				const res = await axios.post("http://localhost:4000/chat/changePassword", {password: pass, rid }, {
+					withCredentials: true,
+				})
+				console.log("success", res.data);
+				router.push(`/chat/${rid}`);
+			} catch (error) {
+				console.log("changePassword failed.", error);
+			}
+		}
+	}
 
 	if (mode === "delete" || mode === "leave") {
 		return (
@@ -241,11 +266,19 @@ export const ChatFeatures: React.FC<ChatFeaturesProps> = ({
 							)}
 						</div>
 						<div className='bg-primecl flex items-center justify-center rounded-b-md h-1/5'>
-							{button && (
+							{visible !== room.visibility && visible !== "" && button && (
 								<button
 									type='submit'
 									className='border rounded-lg w-1/4 h-1/2 bg-segundcl cursor-pointer  transition ease-in-out delay-150 hover:scale-105 duration-300'
 									onClick={handleSubmit}
+								>
+									{button}
+								</button>
+							)}
+							{(visible === room.visibility) && button && (
+								<button
+									type='submit'
+									className='border rounded-lg w-1/4 h-1/2 bg-slate-400 cursor-pointer'
 								>
 									{button}
 								</button>
@@ -262,7 +295,7 @@ export const ChatFeatures: React.FC<ChatFeaturesProps> = ({
 		useEffect(() => {
 			const getRoom = async () => {
 				try {
-					const res = await axios.post("http://localhost:4000/chat/getRoomById", { rid: rid }, {
+					const res = await axios.post("http://localhost:4000/chat/getRoomById", { rid }, {
 						withCredentials: true,
 					})
 					console.log("success", res.data);
@@ -280,30 +313,12 @@ export const ChatFeatures: React.FC<ChatFeaturesProps> = ({
 					<section className='h-1/2 w-2/3 flex flex-col rounded-md'>
 						<h2 className='h-1/5 px-4 text-xl flex items-center justify-center capitalize bg-primecl rounded-t-md'>{title}</h2>
 						<div className='flex-1 bg-terserocl flex items-center justify-center'>
-							<select
-								className='p-3 pl-4 rounded-xl bg-quatrocl placeholder-slate-400 text-lg outline-none font-light w-3/4'
-								name='visibility'
-								ref={visible}
-							>
-								<option value="">Choose the visibility of the room</option>
-								<option value="PUBLIC">Public</option>
-								<option value="PROTECTED">Protected</option>
-								<option value="PRIVATE">Private</option>
-							</select>
-							{visible === room.visibility && (
-								<p className='text-red-600 text-sm'>This action won't apply as the room visibility is no different that the previous</p>
+							{room.visibility !== "PROTECTED" && (
+								<p className='text-red-600 text-sm'>This action is not available as the room visibility is no protected</p>
 							)}
-							{visible !== room.visibility && visible !== "" && room.visibility === "PROTECTED" && (
+							{room.visibility === "PROTECTED" && (
 								<input
-									placeholder="Room Password"
-									type='text'
-									ref={password}
-									className='p-2 pl-4 rounded-xl bg-quatrocl placeholder-slate-400 text-lg outline-none font-light w-3/4'
-								/>
-							)}
-							{visible === "PROTECTED" && room.visibility !== visible && (
-								<input
-									placeholder="Room Password"
+									placeholder="New Room Password"
 									type='text'
 									ref={password}
 									className='p-2 pl-4 rounded-xl bg-quatrocl placeholder-slate-400 text-lg outline-none font-light w-3/4'
@@ -311,7 +326,7 @@ export const ChatFeatures: React.FC<ChatFeaturesProps> = ({
 							)}
 						</div>
 						<div className='bg-primecl flex items-center justify-center rounded-b-md h-1/5'>
-							{button && (
+							{button && room.visibility === "PROTECTED" && (
 								<button
 									type='submit'
 									className='border rounded-lg w-1/4 h-1/2 bg-segundcl cursor-pointer  transition ease-in-out delay-150 hover:scale-105 duration-300'
@@ -324,6 +339,41 @@ export const ChatFeatures: React.FC<ChatFeaturesProps> = ({
 					</section>
 				)}
 			</div>
+		)
+	}
+	else if (mode === "add") {
+		return (
+			<div className='bg-segundcl rounded-lg h-full py-4 flex justify-center'>
+			<section className='h-full w-1/2 flex flex-col rounded-md'>
+				<h2 className='h-[10%] flex items-center justify-center capitalize bg-primecl rounded-t-md'>{title}</h2>
+				<div className='flex-1 bg-terserocl overflow-scroll'>
+					{users && users.map((user, index) =>
+						<div key={index} className='h-[15%] border-b-2 border-primecl'>
+							<Participant
+								name={user.userName}
+								picture={user.picture}
+								checkbox={checkbox}
+								selected={selected}
+								SetSelected={SetSelected}
+								id={user.id}
+								many={false}
+							/>
+						</div>
+					)}
+				</div>
+				<div className='h-[10%] flex justify-center items-center bg-primecl rounded-b-md'>
+					{button && (
+						<button
+							type='submit'
+							className='border w-1/3 h-1/2 rounded-lg bg-segundcl cursor-pointer  transition ease-in-out delay-150 hover:scale-105 duration-300'
+							onClick={handleSubmit}
+						>
+							{button}
+						</button>
+					)}
+				</div>
+			</section>
+		</div>
 		)
 	}
 	else {
@@ -341,6 +391,9 @@ export const ChatFeatures: React.FC<ChatFeaturesProps> = ({
 									selected={selected}
 									SetSelected={SetSelected}
 									id={user.id}
+									many={true}
+									checked={checked === user.id}
+									SetChecked={handleCheckboxChange}
 								/>
 							</div>
 						)}

@@ -8,6 +8,9 @@ interface ParticipantProps {
 	selected: string[];
 	SetSelected?(e: any): any;
 	id: string;
+	many: boolean;
+	checked?: boolean;
+	SetChecked?(e: string): any;
 }
 
 export const Participant: React.FC<ParticipantProps> = ({
@@ -17,6 +20,9 @@ export const Participant: React.FC<ParticipantProps> = ({
 	selected,
 	SetSelected,
 	id,
+	many,
+	checked,
+	SetChecked,
 }) => {
 
 	
@@ -39,6 +45,14 @@ export const Participant: React.FC<ParticipantProps> = ({
 		}
 	};
 
+	const handleSingleSelection = (userId: string) => {
+		if (selected && SetSelected && SetChecked) {
+			SetChecked(userId);
+			console.log("ana hna")
+			SetSelected([userId]);
+		}
+	}
+	console.log(many)
   return (
 	<div className='flex items-center gap-6 h-full px-4'>
 		<Image
@@ -49,7 +63,10 @@ export const Participant: React.FC<ParticipantProps> = ({
 			className='rounded-full'
 		/>
 		<p className='text-white text-xl'>{name}</p>
-		{checkbox && (
+		{checkbox && many && (
+			<input type='checkbox' checked={checked} className='ml-auto w-4 h-4' onChange={() => {handleSingleSelection(id)}}></input>
+		)}
+		{checkbox && !many && (
 			<input type='checkbox' className='ml-auto w-4 h-4' onChange={() => {handleCheckedBox(id)}}></input>
 		)}
 	</div>
