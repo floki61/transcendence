@@ -482,4 +482,13 @@ export class UsersService {
 		stats.GC = games.reduce((total, game) => total + (game.winnerId === body.id ? game.player2Score : game.player1Score), 0);
 		return { stats, gamestats };
 	}
+
+	async getAchievements(userId: string) {
+		const achievements = await this.prisma.achivement.findMany({
+			where: {
+				uid: userId,
+			},
+		});
+		return achievements;
+	}
 }

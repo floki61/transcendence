@@ -189,4 +189,11 @@ export class UsersController {
         const stats = await this.userservice.getStats(body);
         return stats;
     }
+
+    @UseGuards(JwtAuthGuard)
+    @Post('getAchievements')
+    async getAchievements(@Req() req, @Body() body: any) {
+        const achievements = await this.userservice.getAchievements(body.id);
+        return achievements;
+    }
 }

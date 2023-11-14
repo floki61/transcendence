@@ -795,11 +795,10 @@ export class ChatService {
 		return room;
 	}
 
-	async participantNotInRoom(body: any)
-	{
+	async participantNotInRoom(body: any) {
 		const room = await this.prisma.chatRoom.findFirst({
 			where: {
-				id : body.rid,
+				id: body.rid,
 			},
 			include: {
 				participants: true,
@@ -807,9 +806,9 @@ export class ChatService {
 		});
 		const users = await this.prisma.user.findMany({
 			where: {
-				NOT:{
-				membership:{
-					some:{
+				NOT: {
+					membership: {
+						some: {
 							rid: body.rid,
 						}
 					}
