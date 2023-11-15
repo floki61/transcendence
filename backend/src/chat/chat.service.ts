@@ -561,21 +561,54 @@ export class ChatService {
 				user: true,
 			},
 		});
-		for (let msg of message) {
-			participant = await this.prisma.participant.findFirst({
-				where: {
-					id: msg.userId,
-				},
+		if (payload.id === null) {
+			throw new Error('ID must not be null');
+		  }		  
+		// for (let msg of message) {
+		// 	participant = await this.prisma.participant.findFirst({
+		// 		where: {
+		// 			id: msg.userId,
+		// 		},
 
-			});
-			user = await this.prisma.user.findFirst({
+		// 	});
+		// 	user = await this.prisma.user.findFirst({
+		// 		where: {
+		// 			id: participant.uid,
+		// 		},
+		// 	});
+		// 	msg = { ...msg, user: user };
+		// }
+		// return message;
+		for (let msg of message) {
+			if (msg.userId) {
+			  participant = await this.prisma.participant.findFirst({
 				where: {
-					id: participant.uid,
+				  id: msg.userId,
 				},
-			});
-			msg = { ...msg, user: user };
-		}
-		return message;
+			  });
+		  
+			  if (participant) {
+				user = await this.prisma.user.findFirst({
+				  where: {
+					id: participant.uid,
+				  },
+				});
+		  
+				if (user) {
+				  msg = { ...msg, user: user };
+				} else {
+				  console.error(`User not found for participant ID: ${participant.uid}`);
+				}
+			  } else {
+				console.error(`Participant not found for user ID: ${msg.userId}`);
+			  }
+			} else {
+			  console.error('msg.userId is null or undefined');
+			}
+		  }
+		  
+		  return message;
+		  
 	}
 
 	async changeVisibility(payload: any) {
