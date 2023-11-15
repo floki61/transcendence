@@ -22,6 +22,7 @@ export declare class JwtStrategy extends JwtStrategy_base {
         password: string;
         twoFactorAuthenticationSecret: string;
         isTwoFactorAuthenticationEnabled: boolean;
+        isDeleted: boolean;
         createdAt: Date;
         updatedAt: Date;
     }>;

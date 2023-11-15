@@ -27,6 +27,7 @@ export declare class AuthService {
         password: string;
         twoFactorAuthenticationSecret: string;
         isTwoFactorAuthenticationEnabled: boolean;
+        isDeleted: boolean;
         createdAt: Date;
         updatedAt: Date;
     }>;
@@ -45,6 +46,7 @@ export declare class AuthService {
         password: string;
         twoFactorAuthenticationSecret: string;
         isTwoFactorAuthenticationEnabled: boolean;
+        isDeleted: boolean;
         createdAt: Date;
         updatedAt: Date;
     }>;

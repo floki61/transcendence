@@ -42,7 +42,9 @@ let AuthController = exports.AuthController = class AuthController {
     async authRedirect(req, res) {
         if (await this.authService.validateUser(req, res)) {
             const user = await this.userService.getUser(req.user.id);
-            if (user.isTwoFactorAuthenticationEnabled)
+            if (user.isDeleted)
+                res.redirect(this.config.get('LOGIN_URL'));
+            else if (user.isTwoFactorAuthenticationEnabled)
                 res.redirect(this.config.get('2FA_URL'));
             else
                 res.redirect(this.config.get('HOME_URL'));
