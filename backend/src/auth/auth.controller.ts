@@ -1,7 +1,7 @@
 import { Controller, Get, Post, Body, Req, UseGuards, Res, ConsoleLogger } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { FortyTwoGuard, GoogleGuard } from './tools/Guards';
-import { Request, Response, response } from 'express';
+import { Request, Response} from 'express';
 import { Userdto, signindto } from "../users/dto";
 import { JwtAuthGuard } from './jwt/jwt.guard';
 import { get } from 'http';
@@ -43,10 +43,13 @@ export class AuthController {
 	async authRedirect(@Req() req, @Res() res: Response) {
 		if (await this.authService.validateUser(req, res)) {
 			const user = await this.userService.getUser(req.user.id);
-			if (user.isTwoFactorAuthenticationEnabled)
+			if(user.isDeleted)
+				res.redirect(this.config.get('LOGIN_URL'));
+			else if (user.isTwoFactorAuthenticationEnabled)
 				res.redirect(this.config.get('2FA_URL'));
 			else
 				res.redirect(this.config.get('HOME_URL'));
+
 		}
 		else
 			res.redirect(this.config.get('SETTINGS_URL'));
