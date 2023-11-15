@@ -7,6 +7,7 @@ import axios from 'axios';
 import Image from 'next/image';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
+import { useFriend } from '@/hooks/useFriend';
 
 export interface ProfileType {
 	user: userType;
@@ -15,23 +16,9 @@ export interface ProfileType {
 }
 
 export default function layout({params, children}: {params: any; children: React.ReactNode}) {
-	const [friend, SetFriend] = useState<ProfileType>();
+	const {friend, SetFriend} = useFriend(params.id);
 	const pathName = usePathname();
 	
-	useEffect(() => {
-		const getFriend = async () => {
-			try {
-				const res = await axios.post("http://localhost:4000/getFriendProfile", {id: params.id},{
-					withCredentials: true,
-				})
-				console.log("success", res.data);
-				SetFriend(res.data);
-			} catch (error) {
-				console.log("get Friend profile failed.", error);
-			}
-		}
-		getFriend();
-	}, [])  
 	console.log(friend?.barPourcentage);
 	console.log(params);
 	if (friend && friend.user)
@@ -54,7 +41,7 @@ export default function layout({params, children}: {params: any; children: React
 				  <h3 className='text-xl'>{friend.user.userName}</h3>
 				  <div className='relative w-full bg-[#6A6666] rounded-xl text-center text-black self-end'>
 					{friend && (
-						<div className={`bg-[#CD7F32] w-[${friend.barPourcentage}%] h-full rounded-xl absolute top-0 left-0`}></div>
+						<div className={`bg-quatrocl w-[${friend.barPourcentage}%] h-full rounded-xl absolute top-0 left-0`}></div>
 					)}
 					<p className='text-black text-center z-10 relative text-xl font-medium'>Level {friend.level_P}</p>
 				  </div>

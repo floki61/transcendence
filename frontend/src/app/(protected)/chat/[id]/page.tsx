@@ -82,7 +82,7 @@ const Convo = ({ params }: { params: any }) => {
               />
               <div>
                 <h2 className="text-xl">{name || r_name}</h2>
-                <h3 className="text-sm font-light">Online</h3>
+                <h3 className="text-sm font-light lowercase">{user.user?.status}</h3>
               </div>
             </div>
             <div className="flex gap-8 relative w-[17%] h-full items-center justify-end">
