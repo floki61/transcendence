@@ -189,6 +189,7 @@ export class UsersController {
     @Post('getStats')
     async getStats(@Req() req, @Body() body: any) {
         const stats = await this.userservice.getStats(body);
+        console.log({stats});
         return stats;
     }
 

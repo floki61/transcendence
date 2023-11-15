@@ -48,7 +48,7 @@ export default function page({children}: {children: React.ReactNode}, {params}: 
               <h2 className='text-2xl'>{user.user.fullName}</h2>
               <h3 className='text-xl'>{user.user.userName}</h3>
               <div className='w-full bg-[#6A6666] relative rounded-xl text-center text-black self-end'>
-                <div className={`bg-[#CD7F32] w-[${user.barPourcentage}%] h-full rounded-xl absolute top-0 left-0`}></div>
+                <div className={`bg-quatrocl w-[${user.barPourcentage}%] h-full rounded-xl absolute top-0 left-0`}></div>
                 <p className='text-black text-center z-10 relative text-xl font-medium'>Level {user.level_P}</p>
               </div>
             </div>
@@ -61,6 +61,7 @@ export default function page({children}: {children: React.ReactNode}, {params}: 
               width={170}
               height={170}
               className='absolute place-self-end'
+              priority
             />
             <div className='w-[60%] h-[12%] rounded-t-xl bg-primecl flex items-center'>
               <Link href="/profile" className={`${pathName === "/profile" ? 'bg-gradient-to-t from-[#000000] from-0% to-segundcl to-100% ' : ''} hover:bg-gradient-to-t hover:from-[#000000] hover:from-0% hover:to-segundcl hover:to-100% hover:rounded-tl-xl w-1/3 text-2xl text-center h-full flex justify-center items-center border-r border-segundcl`}>Stats</Link>

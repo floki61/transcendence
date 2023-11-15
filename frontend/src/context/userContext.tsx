@@ -16,6 +16,7 @@ export interface userType {
 	level: number;
 	country: string;
 	isTwoFactorAuthenticationEnabled: boolean;
+	status: string;
 }
 
 type UserContextType = {
