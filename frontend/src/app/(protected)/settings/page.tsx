@@ -78,6 +78,17 @@ export default function page() {
     console.log(showDiv);
     setShowDiv(true);
   };
+  const handleDeleteAccount = async () => {
+    try {
+      const res = await axios.post("http://localhost:4000/deleteAccount", {id: user.user?.id},{
+			  withCredentials: true,
+		  });
+      console.log("delete success", res.data);
+      window.location.href = 'http://localhost:3000/login';
+    } catch (error) {
+      console.log("delete failed", error);
+    }
+  }
 
   const [success, setSuccess] = useState(false);
 
@@ -153,6 +164,7 @@ export default function page() {
               <Button
                 text="DELETE THE ACCOUNT"
                 className="rounded-3xl w-2/5 p-2 h-12 opacity-80 cursor-pointer bg-red-700  transition ease-in-out delay-150 hover:scale-105 duration-300"
+                onClick={handleDeleteAccount}
               />
             </div>
           </div>

@@ -1,0 +1,2 @@
+-- AlterEnum
+ALTER TYPE "Stts" ADD VALUE 'DELETED';

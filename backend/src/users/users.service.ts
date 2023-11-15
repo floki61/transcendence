@@ -2,7 +2,6 @@ import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 // import { MESSAGES } from '@nestjs/core/constants';
 import { JwtService } from '@nestjs/jwt';
-import { Status } from '@prisma/client';
 import { PrismaService } from 'src/prisma/prisma.service';
 
 
@@ -335,12 +334,19 @@ export class UsersService {
 	// }
 
 	async deleteAccount(userId: string) {
-		const user = await this.prisma.user.delete({
+		await this.prisma.user.update({
 			where: {
 				id: userId,
 			},
+			data: {
+				status: "DELETED",
+				isDeleted: true,
+				picture: '',
+				userName: userId,
+				firstName: 'User',
+				lastName: '',
+			},
 		});
-		return user;
 	}
 
 	async getFriends(userId: string) {
