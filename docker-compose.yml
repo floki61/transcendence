@@ -1,0 +1,40 @@
+version: '3.8'
+services:
+  db:
+    container_name: db
+    image: postgres:14.1-alpine
+    restart: always
+    env_file:
+      - backend/.env
+    ports:
+      - '5432:5432'
+    volumes:
+      - vdb:/var/lib/postgresql/data
+  backend:
+    container_name: backend
+    env_file:
+      - backend/.env
+    ports:
+      - '4000:4000'
+    build:
+      context: ./backend
+    depends_on:
+      - db
+    volumes:
+      - /Users/abayar/Desktop/tran/backend/src:/backend/src
+      - /Users/abayar/Desktop/tran/backend/uploads:/backend/uploads
+  frontend:
+    container_name: frontend
+    env_file:
+      - frontend/.env
+    ports:
+      - '3000:3000'
+    build:
+      context: ./frontend
+    depends_on:
+      - backend
+    volumes:
+      - /Users/abayar/Desktop/tran/frontend/src:/frontend/src
+
+volumes:
+  vdb:
