@@ -352,7 +352,7 @@ export class ChatService {
 	}
 
 	async muteUser(payload: any) {
-		// console.log(payload.rid);
+		console.log(payload);
 		let getTime = await this.formatDate(payload.duration);
 		let participant = await this.prisma.participant.findUnique({
 			where: {
@@ -367,7 +367,7 @@ export class ChatService {
 		}
 		if (participant.role === 'OWNER') {
 			throw new UnauthorizedException('Cannot mute owner');
-		}
+		} 
 		participant = await this.prisma.participant.update({
 			where: {
 				uid_rid: {
