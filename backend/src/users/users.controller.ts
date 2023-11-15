@@ -22,7 +22,7 @@ export class UsersController {
     ) { }
 
     @UseGuards(JwtAuthGuard)
-    @Get('/')
+    @Get('/home')
     async home(@Req() req) {
         return ({ user: req.user, cookies: req.cookies });
     }
@@ -189,7 +189,7 @@ export class UsersController {
     @Post('getStats')
     async getStats(@Req() req, @Body() body: any) {
         const stats = await this.userservice.getStats(body);
-        console.log({stats});
+        console.log({ stats });
         return stats;
     }
 
