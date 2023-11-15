@@ -32,6 +32,7 @@ enum Stts {
     ONLINE
     OFFLINE
     INGAME
+    DELETED
 }
 
 model User {
@@ -58,6 +59,7 @@ model User {
     blockReceivers                   Block[]        @relation("receiver")
     achivements                      Achivement[]
     notifications                    Notification[]
+    isDeleted                        Boolean        @default(false)
     // lastSeen    DateTime?    @default(now())
 
     createdAt DateTime @default(now())

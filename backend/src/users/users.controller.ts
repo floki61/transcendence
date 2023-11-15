@@ -1,4 +1,4 @@
-import { Controller, Get, Body, Req, UnauthorizedException, Post, UseGuards, UseInterceptors, UploadedFiles, UploadedFile, ParseFilePipeBuilder, HttpStatus, ParseFilePipe, MaxFileSizeValidator, FileTypeValidator, HttpException, Delete, } from '@nestjs/common';
+import { Controller, Get, Body, Req, UnauthorizedException, Post, UseGuards, UseInterceptors, UploadedFiles, UploadedFile, ParseFilePipeBuilder, HttpStatus, ParseFilePipe, MaxFileSizeValidator, FileTypeValidator, HttpException, Delete, Res, } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
 import { Request } from 'express';
@@ -10,6 +10,7 @@ import { extname } from 'path';
 import { max } from 'class-validator';
 import { UsersGateway } from './users.gateway';
 import { get } from 'http';
+import { Response } from 'express';
 // import { clearConfigCache } from 'prettier';
 
 @Controller()
@@ -133,10 +134,11 @@ export class UsersController {
     }
 
     @UseGuards(JwtAuthGuard)
-    @Delete('deleteAccount')
-    async deleteAccount(@Req() req) {
-        const user = await this.userservice.deleteAccount(req.user.id);
-        return user;
+    @Post('deleteAccount')
+    async deleteAccount(@Req() req, @Res() res: Response) {
+        await this.userservice.deleteAccount(req.user.id);
+        res.clearCookie('access_token');
+        res.send({ message: 'Account deleted' });
     }
 
     @UseGuards(JwtAuthGuard)

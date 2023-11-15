@@ -34,17 +34,21 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
                 });
             if (payload.id) {
                 console.log(`Client connected: ${payload.id} Socket: ${client.id}`);
-                if (this.connectedClients.has(payload.id))
-                    client.disconnect();
-                this.connectedClients.set(payload.id, client);
-                await this.prisma.user.update({
-                    where: {
-                        id: payload.id,
-                    },
-                    data: {
-                        status: 'INGAME',
-                    }
-                });
+                if (this.connectedClients.has(payload.id)) {
+                    console.log('Client already connected: ' + payload.id);
+                    client.emit('alreadyConnected');
+                }
+                else {
+                    this.connectedClients.set(payload.id, client);
+                    await this.prisma.user.update({
+                        where: {
+                            id: payload.id,
+                        },
+                        data: {
+                            status: 'INGAME',
+                        }
+                    });
+                }
             }
         }
         else {
@@ -55,6 +59,8 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
     async handleDisconnect(client: Socket) {
         let cookie: string;
         let payload: any;
+        if(!this.connectedClients.has(this.getByValue(this.connectedClients, client)))
+            return ;
         if (client.request.headers.cookie) {
             cookie = await this.parseCookies(client.request.headers.cookie);
             payload = await this.jwt.verifyAsync(
@@ -65,7 +71,10 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
             );
             if (payload.id) {
                 console.log(`Client disconnected: ${payload.id} Socket: ${client.id}`);
-                if (this.gameService.Queue.get(payload.id) && this.gameService.Queue.get(payload.id).status === 'playing' && this.gameService.Queue.get(payload.id).gameType === 'Live') {
+                if(this.gameService.Queue.get(payload.id) && this.gameService.Queue.get(payload.id).gameType === 'Bot') {
+                    this.gameService.Queue.get(payload.id).status = 'finished';
+                }
+                else if (this.gameService.Queue.get(payload.id) && this.gameService.Queue.get(payload.id).status === 'playing' && this.gameService.Queue.get(payload.id).gameType === 'Live') {
                     var player1;
                     var player2;
                     if (this.gameService.Queue.get(payload.id).leader) {
@@ -101,16 +110,18 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
                     this.gameService.Queue.delete(payload.id);
                 if (this.matchmakingQueue.includes(payload.id))
                     this.matchmakingQueue.splice(this.matchmakingQueue.indexOf(payload.id), 1);
-                this.connectedClients.delete(payload.id);
-                await this.prisma.user.update({
-                    where: {
-                        id: payload.id,
-                    },
-                    data: {
-                        status: 'OFFLINE',
-                    },
-                });
-                this.gameService.endgameForStatus(payload.id);
+                if (this.connectedClients.has(payload.id)) {
+                    this.connectedClients.delete(payload.id);
+                    await this.prisma.user.update({
+                        where: {
+                            id: payload.id,
+                        },
+                        data: {
+                            status: 'OFFLINE',
+                        },
+                    });
+                    this.gameService.endgameForStatus(payload.id);
+                }
             }
         }
     }
@@ -249,6 +260,14 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
                     break;
                 }
             }
+            if(this.gameService.Queue.get(player1).gameMode === 'hidden') {
+                if (this.gameService.Queue.get(player1).gameData.ball.x < this.gameService.Queue.get(player1).gameData.canvasWidth / 3 ||
+                    this.gameService.Queue.get(player1).gameData.ball.x > this.gameService.Queue.get(player1).gameData.canvasWidth - (this.gameService.Queue.get(player1).gameData.canvasWidth / 3)) {
+                    this.gameService.Queue.get(player1).gameData.ball.pos = 0;
+                }
+                else
+                    this.gameService.Queue.get(player1).gameData.ball.pos = 1;
+            }
             if (this.gameService.Queue.get(player1) && this.gameService.Queue.get(player2) && this.gameService.Queue.get(player1).status === 'playing' && this.gameService.Queue.get(player2).status === 'playing') {
                 this.gameService.Queue.get(player1).Socket.emit('updateBall', this.gameService.Queue.get(player1).gameData);
                 this.gameService.Queue.get(player2).Socket.emit('updateBall', this.gameService.Queue.get(player1).gameData);
@@ -348,7 +367,8 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
 
     @SubscribeMessage('gameMode')
     async game(client: Socket, data) {
-        console.log(data);
+        if(!this.connectedClients.has(this.getByValue(this.connectedClients, client)))
+            return ;
         const gameData = {
             Socket: client,
             gameType: data.type,
