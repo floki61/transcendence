@@ -32,11 +32,17 @@ export default function page() {
 
   const updateProfilePic = async () => {
     try {
-      if (user) {
-        console.log("ha ach ansift : ", user.user?.picture);
-        await axios.post("http://localhost:4000/upload", {avatar :user.user?.picture}, {
+      if (user && user.user) {
+        const formData = new FormData();
+        formData.append('avatar', user.user.picture);
+      
+        console.log("ha ach ansift : ", user.user.picture);
+        await axios.post("http://localhost:4000/upload", formData, {
           withCredentials: true,
-        }); // backend API endpoint
+          headers: {
+            'Content-Type': 'multipart/form-data', // Set the content type to multipart/form-data
+          },
+        });
       }
     } catch (error) {
       console.error(error);
