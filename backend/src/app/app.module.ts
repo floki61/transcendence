@@ -4,7 +4,7 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { JwtModule, JwtService } from '@nestjs/jwt';
 import { AuthModule } from 'src/auth/auth.module';
 import { UsersModule } from 'src/users/users.module';
-import { twoFactorAuthModule} from 'src/auth/twofactorauth/twofactorauth.module';
+import { twoFactorAuthModule } from 'src/auth/twofactorauth/twofactorauth.module';
 import { AppService } from './app.service';
 import { FortyTwoStrategy } from 'src/auth/tools/FortyTwoStrategy';
 import { PrismaService } from 'src/prisma/prisma.service';
@@ -27,10 +27,12 @@ import { ExceptionsFilter } from 'src/filter_ex/exception_filter';
 import { GameService } from 'src/game/game.service';
 import { ChatController } from 'src/chat/chat.controller';
 import { TwoFactorAuthService } from 'src/auth/twofactorauth/twofactorauth.service';
+import { ServeStaticModule } from '@nestjs/serve-static';
+import { join } from 'path';
 
 @Module({
   imports: [
-    ConfigModule.forRoot({ isGlobal: true}),
+    ConfigModule.forRoot({ isGlobal: true }),
     UsersModule,
     AuthModule,
     twoFactorAuthModule,
@@ -40,6 +42,10 @@ import { TwoFactorAuthService } from 'src/auth/twofactorauth/twofactorauth.servi
     ChatModule,
     EventEmitterModule.forRoot(),
     GameModule,
+    ServeStaticModule.forRoot({
+      rootPath: '/backend/uploads/',
+      renderPath: '/backend/uploads/',
+    }),
   ],
   controllers: [AppController, AuthController, GameController, UsersController],
   providers: [JwtService, AppService, FortyTwoStrategy, PrismaService, AuthService, ConfigService, UsersService, TwoFactorAuthService,

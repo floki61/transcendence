@@ -1,11 +1,11 @@
 
 import { PassportStrategy } from '@nestjs/passport';
-import { Strategy, Profile} from 'passport-42';
+import { Strategy, Profile } from 'passport-42';
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 
 @Injectable()
-export class FortyTwoStrategy extends PassportStrategy(Strategy,'42') {
+export class FortyTwoStrategy extends PassportStrategy(Strategy, '42') {
     constructor(private readonly config: ConfigService) {
         super({
             clientID: config.get('42_CLIENT_ID'),
@@ -14,7 +14,7 @@ export class FortyTwoStrategy extends PassportStrategy(Strategy,'42') {
         });
     }
 
-    async validate (accessToken: string, refreshToken: string, profile: Profile, done: any): Promise<any> {
+    async validate(accessToken: string, refreshToken: string, profile: Profile, done: any): Promise<any> {
         const user = {
             id: profile.id,
             email: profile.emails[0].value,
@@ -25,7 +25,7 @@ export class FortyTwoStrategy extends PassportStrategy(Strategy,'42') {
             accessToken,
             login: profile._json.login
         };
-        if(user)
+        if (user)
             done(null, user);
         else
             done(null, false);

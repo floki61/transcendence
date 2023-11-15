@@ -42,16 +42,17 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
 			} else {
 				client.disconnect();
 			}
+
 			const rooms = await this.chatService.getUniqueMyRooms(payload);
 			if (rooms) {
 				(rooms).forEach((room: any) => {
 					client.join(room.id);
 				});
 			}
-			const usr = await this.chatService.findOne(payload.id);
-			if (!(usr.status === 'INGAME'))
-				await this.chatService.updateStatus(1, payload.id);
-			console.log("---------- usr : ", usr.status, usr.id);
+			// const usr = await this.chatService.findOne(payload.id);
+			// if (!(usr.status === 'INGAME'))
+			// await this.chatService.updateStatus(1, payload.id);
+			// console.log("---------- usr : ", usr.status, usr.id);
 		}
 		else {
 			client.disconnect();
@@ -71,9 +72,9 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
 			);
 			if (payload.id) {
 				this.map.delete(payload.id);
-				const usr = await this.chatService.findOne(payload.id);
-				await this.chatService.updateStatus(0, payload.id);
-				console.log("out usr : ", usr.status, usr.id);
+				// const usr = await this.chatService.findOne(payload.id);
+				// await this.chatService.updateStatus(0, payload.id);
+				// console.log("out usr : ", usr.status, usr.id);
 			}
 		}
 		const rooms = this.chatService.getMyRooms(payload);
@@ -147,12 +148,12 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
 
 	@OnEvent('endgame')
 	async updateStatus(@MessageBody() payload: any) {
-		if (this.map.has(payload.id)) {
-			await this.chatService.updateStatus(1, payload.id);
-		}
-		else {
-			await this.chatService.updateStatus(0, payload.id);
-		}
+		// if (this.map.has(payload.id)) {
+		// 	await this.chatService.updateStatus(1, payload.id);
+		// }
+		// else {
+		// 	await this.chatService.updateStatus(0, payload.id);
+		// }
 	}
 
 	// @SubscribeMessage('updateChatRooms')

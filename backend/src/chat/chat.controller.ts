@@ -117,6 +117,7 @@ export class ChatController {
         return room;
     }
 
+
     @Roles('OWNER', 'ADMIN')
     @UseGuards(JwtAuthGuard, RolesGuard)
     @Post('unmuteUser')
@@ -180,7 +181,7 @@ export class ChatController {
         const room = await this.userservice.getRoomById(body);
         return room;
     }
-    
+
     @UseGuards(JwtAuthGuard)
     @Post('participantNotInRoom')
     async participantNotInRoom(@Body() body: any, @Req() req: any) {
