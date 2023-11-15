@@ -482,6 +482,8 @@ let ChatService = exports.ChatService = class ChatService {
         return room;
     }
     async getMessages(payload) {
+        var user;
+        var participant;
         const message = await this.prisma.message.findMany({
             where: {
                 rid: payload.rid,
@@ -490,6 +492,19 @@ let ChatService = exports.ChatService = class ChatService {
                 user: true,
             },
         });
+        for (let msg of message) {
+            participant = await this.prisma.participant.findFirst({
+                where: {
+                    id: msg.userId,
+                },
+            });
+            user = await this.prisma.user.findFirst({
+                where: {
+                    id: participant.uid,
+                },
+            });
+            msg = { ...msg, user: user };
+        }
         return message;
     }
     async changeVisibility(payload) {

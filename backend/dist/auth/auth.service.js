@@ -51,6 +51,8 @@ let AuthService = exports.AuthService = class AuthService {
             }
             await this.userservice.createUser(req);
         }
+        else if (user && user.isDeleted)
+            return true;
         else if (user && user.isTwoFactorAuthenticationEnabled) {
             const token = await this.generateToken(req, '2fa');
             res.cookie('2fa', token, { httpOnly: true, maxAge: 30 * 60 * 1000 });

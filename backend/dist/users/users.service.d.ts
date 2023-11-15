@@ -21,6 +21,7 @@ export declare class UsersService {
         password: string;
         twoFactorAuthenticationSecret: string;
         isTwoFactorAuthenticationEnabled: boolean;
+        isDeleted: boolean;
         createdAt: Date;
         updatedAt: Date;
     }>;
@@ -41,6 +42,7 @@ export declare class UsersService {
         password: string;
         twoFactorAuthenticationSecret: string;
         isTwoFactorAuthenticationEnabled: boolean;
+        isDeleted: boolean;
         createdAt: Date;
         updatedAt: Date;
     }>;
@@ -59,6 +61,7 @@ export declare class UsersService {
         password: string;
         twoFactorAuthenticationSecret: string;
         isTwoFactorAuthenticationEnabled: boolean;
+        isDeleted: boolean;
         createdAt: Date;
         updatedAt: Date;
     }>;
@@ -77,6 +80,7 @@ export declare class UsersService {
         password: string;
         twoFactorAuthenticationSecret: string;
         isTwoFactorAuthenticationEnabled: boolean;
+        isDeleted: boolean;
         createdAt: Date;
         updatedAt: Date;
     }>;
@@ -95,6 +99,7 @@ export declare class UsersService {
         password: string;
         twoFactorAuthenticationSecret: string;
         isTwoFactorAuthenticationEnabled: boolean;
+        isDeleted: boolean;
         createdAt: Date;
         updatedAt: Date;
     }>;
@@ -113,6 +118,7 @@ export declare class UsersService {
         password: string;
         twoFactorAuthenticationSecret: string;
         isTwoFactorAuthenticationEnabled: boolean;
+        isDeleted: boolean;
         createdAt: Date;
         updatedAt: Date;
     }>;
@@ -195,24 +201,7 @@ export declare class UsersService {
         createdAt: Date;
         updatedAt: Date;
     }>;
-    deleteAccount(userId: string): Promise<{
-        id: string;
-        userName: string;
-        level: number;
-        firstName: string;
-        lastName: string;
-        status: import(".prisma/client").$Enums.Stts;
-        email: string;
-        picture: string;
-        country: string;
-        phoneNumber: string;
-        accessToken: string;
-        password: string;
-        twoFactorAuthenticationSecret: string;
-        isTwoFactorAuthenticationEnabled: boolean;
-        createdAt: Date;
-        updatedAt: Date;
-    }>;
+    deleteAccount(userId: string): Promise<void>;
     getFriends(userId: string): Promise<{
         id: string;
         userId: string;
@@ -247,6 +236,7 @@ export declare class UsersService {
             password: string;
             twoFactorAuthenticationSecret: string;
             isTwoFactorAuthenticationEnabled: boolean;
+            isDeleted: boolean;
             createdAt: Date;
             updatedAt: Date;
         };
@@ -266,6 +256,7 @@ export declare class UsersService {
         password: string;
         twoFactorAuthenticationSecret: string;
         isTwoFactorAuthenticationEnabled: boolean;
+        isDeleted: boolean;
         createdAt: Date;
         updatedAt: Date;
     }>;
@@ -284,6 +275,7 @@ export declare class UsersService {
         password: string;
         twoFactorAuthenticationSecret: string;
         isTwoFactorAuthenticationEnabled: boolean;
+        isDeleted: boolean;
         createdAt: Date;
         updatedAt: Date;
     }[]>;
@@ -309,6 +301,7 @@ export declare class UsersService {
             password: string;
             twoFactorAuthenticationSecret: string;
             isTwoFactorAuthenticationEnabled: boolean;
+            isDeleted: boolean;
             createdAt: Date;
             updatedAt: Date;
         };

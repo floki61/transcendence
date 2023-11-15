@@ -28,6 +28,7 @@ export declare class AuthController {
         password: string;
         twoFactorAuthenticationSecret: string;
         isTwoFactorAuthenticationEnabled: boolean;
+        isDeleted: boolean;
         createdAt: Date;
         updatedAt: Date;
     }>;
@@ -46,6 +47,7 @@ export declare class AuthController {
         password: string;
         twoFactorAuthenticationSecret: string;
         isTwoFactorAuthenticationEnabled: boolean;
+        isDeleted: boolean;
         createdAt: Date;
         updatedAt: Date;
     }>;

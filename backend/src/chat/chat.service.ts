@@ -367,7 +367,7 @@ export class ChatService {
 		}
 		if (participant.role === 'OWNER') {
 			throw new UnauthorizedException('Cannot mute owner');
-		} 
+		}
 		participant = await this.prisma.participant.update({
 			where: {
 				uid_rid: {
@@ -551,6 +551,8 @@ export class ChatService {
 	}
 
 	async getMessages(payload: any) {
+		var user;
+		var participant;
 		const message = await this.prisma.message.findMany({
 			where: {
 				rid: payload.rid,
@@ -559,6 +561,20 @@ export class ChatService {
 				user: true,
 			},
 		});
+		for (let msg of message) {
+			participant = await this.prisma.participant.findFirst({
+				where: {
+					id: msg.userId,
+				},
+
+			});
+			user = await this.prisma.user.findFirst({
+				where: {
+					id: participant.uid,
+				},
+			});
+			msg = { ...msg, user: user };
+		}
 		return message;
 	}
 

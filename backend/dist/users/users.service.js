@@ -307,12 +307,19 @@ let UsersService = exports.UsersService = class UsersService {
         return block;
     }
     async deleteAccount(userId) {
-        const user = await this.prisma.user.delete({
+        await this.prisma.user.update({
             where: {
                 id: userId,
             },
+            data: {
+                status: "DELETED",
+                isDeleted: true,
+                picture: '',
+                userName: userId,
+                firstName: 'User',
+                lastName: '',
+            },
         });
-        return user;
     }
     async getFriends(userId) {
         const friendRequests = await this.prisma.friendShip.findMany({
