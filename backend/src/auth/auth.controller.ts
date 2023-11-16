@@ -49,7 +49,6 @@ export class AuthController {
 				res.redirect(this.config.get('2FA_URL'));
 			else
 				res.redirect(this.config.get('HOME_URL'));
-
 		}
 		else
 			res.redirect(this.config.get('SETTINGS_URL'));

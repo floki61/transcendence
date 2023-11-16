@@ -49,10 +49,6 @@ let ChatGateway = exports.ChatGateway = class ChatGateway {
                     client.join(room.id);
                 });
             }
-            const usr = await this.chatService.findOne(payload.id);
-            if (!(usr.status === 'INGAME'))
-                await this.chatService.updateStatus(1, payload.id);
-            console.log("---------- usr : ", usr.status, usr.id);
         }
         else {
             client.disconnect();
@@ -68,9 +64,6 @@ let ChatGateway = exports.ChatGateway = class ChatGateway {
             });
             if (payload.id) {
                 this.map.delete(payload.id);
-                const usr = await this.chatService.findOne(payload.id);
-                await this.chatService.updateStatus(0, payload.id);
-                console.log("out usr : ", usr.status, usr.id);
             }
         }
         const rooms = this.chatService.getMyRooms(payload);
@@ -124,12 +117,6 @@ let ChatGateway = exports.ChatGateway = class ChatGateway {
             this.map.get(payload.uid).leave(payload.rid);
     }
     async updateStatus(payload) {
-        if (this.map.has(payload.id)) {
-            await this.chatService.updateStatus(1, payload.id);
-        }
-        else {
-            await this.chatService.updateStatus(0, payload.id);
-        }
     }
     async updateChatRooms(payload) {
         const rooms = await this.chatService.getMyRooms(payload);
