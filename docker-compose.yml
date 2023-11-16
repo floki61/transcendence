@@ -16,6 +16,7 @@ services:
       - backend/.env
     ports:
       - '4000:4000'
+      - '5555:5555'
     build:
       context: ./backend
     depends_on:

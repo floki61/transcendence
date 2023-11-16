@@ -158,16 +158,16 @@ export class UsersController {
     @UseGuards(JwtAuthGuard)
     @Post('getFriendProfile')
     async getFriendProfile(@Req() req, @Body() body: any) {
-        const friend = await this.userservice.getFriendProfile(body.id);
-        console.log('friend', friend);
+        const friend = await this.userservice.getFriendProfile(body.id, req.user.id);
+        // console.log('friend', friend);
         return friend;
     }
 
     @UseGuards(JwtAuthGuard)
     @Post('getFriendProfileWithUserName')
     async getFriendProfileWithUserName(@Req() req, @Body() body: any) {
-        const friend = await this.userservice.getFriendProfileWithUserName(body.userName);
-        console.log('friend', friend);
+        const friend = await this.userservice.getFriendProfileWithUserName(body.userName, req.user.id);
+        // console.log('friend', friend);
         return friend;
     }
 
@@ -198,5 +198,12 @@ export class UsersController {
     async getAchievements(@Req() req, @Body() body: any) {
         const achievements = await this.userservice.getAchievements(body.id);
         return achievements;
+    }
+
+    @UseGuards(JwtAuthGuard)
+    @Get('getLeaderboard')
+    async getLeaderboard(@Req() req) {
+        const leaderboard = await this.userservice.getLeaderboard(req.user.id);
+        return leaderboard;
     }
 }
