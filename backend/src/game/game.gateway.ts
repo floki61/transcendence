@@ -5,6 +5,9 @@ import { JwtService } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
 import { OnEvent } from '@nestjs/event-emitter';
 import { PrismaService } from 'src/prisma/prisma.service';
+import { ForbiddenException, UseGuards } from '@nestjs/common';
+import { FortyTwoGuard } from 'src/auth/tools/Guards';
+import { JwtAuthGuard } from 'src/auth/jwt/jwt.guard';
 
 @WebSocketGateway({ namespace: 'game', cors: true, origin: ['http://localhost:3000/game'] })
 export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
@@ -27,12 +30,24 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
         let payload: any;
         if (client.request.headers.cookie) {
             cookie = await this.parseCookies(client.request.headers.cookie);
-            payload = await this.jwt.verifyAsync(
-                cookie,
-                {
-                    secret: this.config.get('JWT_SECRET_KEY')
-                });
-            if (payload.id) {
+            try {
+                payload = await this.jwt.verifyAsync(
+                    cookie,
+                    {
+                        secret: this.config.get('JWT_SECRET_KEY')
+                    });
+            }
+            catch (e) {
+                client.emit('redirect', this.config.get('LOGIN_URL'));
+                client.disconnect();
+                return ;
+            }
+            if(!payload || !payload.id) {
+                client.emit('redirect', this.config.get('LOGIN_URL'));
+                client.disconnect();
+                return ;
+            }
+            if (payload && payload.id) {
                 console.log(`Client connected: ${payload.id} Socket: ${client.id}`);
                 if (this.connectedClients.has(payload.id)) {
                     console.log('Client already connected: ' + payload.id);
@@ -52,7 +67,9 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
             }
         }
         else {
+            client.emit('redirect', this.config.get('LOGIN_URL'));
             client.disconnect();
+            return ;
         }
     }
 
@@ -363,8 +380,6 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
     //       friendSocket.emit('playRequest', { playerId });
     //     }
     // }
-
-
     @SubscribeMessage('gameMode')
     async game(client: Socket, data) {
         if(!this.connectedClients.has(this.getByValue(this.connectedClients, client)))
