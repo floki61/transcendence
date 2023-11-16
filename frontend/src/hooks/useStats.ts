@@ -44,6 +44,16 @@ export const useStats = () => {
 				}
 			}
 		};
+		const getStatsByMode = async (userId:string, mode: string, SetData: any) => {
+			try {
+				const res = await axios.post("http://localhost:4000/getStats", {id: userId, mode}, {
+					withCredentials: true,
+				})
+				SetData(res.data);
+			} catch (error) {
+				console.log("getStats failed", error);
+			}
+		}
 	
-	return {stats, SetStats, getStats};
+	return {stats, SetStats, getStats, getStatsByMode};
 }

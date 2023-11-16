@@ -1,11 +1,12 @@
 "use client";
 
 import Chatbar from "@/components/Chatbar";
-import { useState } from "react";
-
+import { useEffect, useState } from "react";
+import { FriendType } from "@/hooks/useRooms";
 import { MdGroupAdd } from "react-icons/md";
 import Link from "next/link";
 import { useRooms } from "@/hooks/useRooms";
+import { getTime } from '@/components/getTime';
 
 
 export default function ChatLayout({
@@ -13,8 +14,62 @@ export default function ChatLayout({
 }: {
   children: React.ReactNode;
 }) {
-  const { friends, chatbar } = useRooms();
   const [roomDiv, SetRoomDiv] = useState(false);
+	const [friends, setFriends] = useState<FriendType[]>([]);
+  const { chatbar, getUsers, getRooms } = useRooms();
+
+  useEffect(() => {
+    const fetchData = async () => {
+      await getUsers(friends, setFriends);
+      await getRooms(friends, setFriends);
+    }
+    fetchData();
+  }, []);
+	if (friends) {
+		friends.forEach((friend) => {
+			if (!friend.lastMessageDate)
+				friend.lastMessageDate = "just created"
+			else {
+				const Date1 = new Date(friend.lastMessageDate);
+				const Date2 = new Date();
+				const time = getTime(Date1, Date2);
+
+				if (time.minutes < 1)
+					friend.lastMessageDate = "few seconds ago";
+				else if (time.hours < 1) {
+					if (time.minutes == 1)
+						friend.lastMessageDate = String(time.minutes) + " minute ago";
+					else
+						friend.lastMessageDate = String(time.minutes) + " minutes ago";
+				}
+				else if (time.days < 1) {
+					if (time.hours == 1)
+						friend.lastMessageDate = String(time.hours) + " hour ago";
+					else
+						friend.lastMessageDate = String(time.hours) + " hours ago";
+				}
+				else if (time.weeks < 1) {
+					if (time.days == 1)
+						friend.lastMessageDate = "yesterday";
+					else
+						friend.lastMessageDate = String(time.days) + " days ago";
+				}
+				else if (time.months < 1) {
+					if (time.weeks == 1)
+						friend.lastMessageDate = String(time.weeks) + " week ago";
+					else
+						friend.lastMessageDate = String(time.weeks) + " weeks ago";
+				}
+				else if (time.months > 1) {
+					if (time.months == 1)
+						friend.lastMessageDate = String(time.months) + " month ago";
+					else
+						friend.lastMessageDate = String(time.months) + " months ago";
+				}
+			}
+		})
+	}
+  console.log({friends});
 
   return (
     <div className="flex h-full text-white">
@@ -31,7 +86,7 @@ export default function ChatLayout({
             Create Room
           </Link>
         </div>
-        {friends &&
+        {friends && friends.length > 0 &&
           friends.map((friend, index) => (
             <Link
               key={index}

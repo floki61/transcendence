@@ -7,9 +7,10 @@ import { ChatSettings } from "@/components/ChatSettings";
 import { IoSend } from "react-icons/io5";
 import { useRooms } from "@/hooks/useRooms";
 import { usePathname } from "next/navigation";
-import { useEffect, useRef, useLayoutEffect } from "react";
+import { useState, useEffect, useRef, useLayoutEffect } from "react";
 import JoinRooms from "@/components/JoinRooms";
 import { useRoomInfo } from "@/hooks/useRoomInfo";
+import { FriendType } from "@/hooks/useRooms";
 
 const Convo = ({ params }: { params: any }) => {
   const {
@@ -26,14 +27,14 @@ const Convo = ({ params }: { params: any }) => {
     socket,
     handleKeyDown,
   } = useChat(params.id);
-  const { friends, chatbar } = useRooms();
-  const {visible, id, role, r_name, r_id, dm} = useRoomInfo({friends: friends, rid: params.id, user: user.user});
+  const {visible, id, role, r_name, r_id, dm} = useRoomInfo({rid: params.id, user: user.user});
   const lastMeassgeRef = useRef<any>(null);
   const pathName = usePathname();
   let friendId;
 
   useEffect(() => {
-    getMessages(pathName.split("/").at(-1) as string);
+    if (user.user && user.user.id) 
+      getMessages(pathName.split("/").at(-1) as string);
   }, [pathName, socket]);
 
   useEffect(() => {
@@ -241,7 +242,6 @@ const Convo = ({ params }: { params: any }) => {
           status="Online"
           chat={chat}
           visibility={visible as any}
-          id={id as any}
           input={input}
           user={user.user}
           rid={r_id}
