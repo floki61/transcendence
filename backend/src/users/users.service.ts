@@ -391,12 +391,26 @@ export class UsersService {
 	}
 
 	async getFriendRequests(userId: string) {
-		return await this.prisma.friendShip.findMany({
+		let friendrequest = await this.prisma.friendShip.findMany({
 			where: {
 				friendId: userId,
 				status: 'PENDING',
 			},
+			include: {
+				user: true,
+			},
 		});
+		// for (let i = 0; i < friendrequest.length; i++) {
+		// 	let friend = friendrequest[i];
+		// 	let user = await this.prisma.user.findUnique({
+		// 		where: {
+		// 			id: friend.userId,
+		// 		},
+		// 	});
+		// 	delete user.status;
+		// 	friendrequest[i] = { ...friend, ...user };
+		// }
+		return friendrequest;
 	}
 
 	async getFriendProfile(userId: string, id: string) {
