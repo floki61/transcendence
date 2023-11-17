@@ -348,8 +348,28 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
 
     async matchPlayers() {
         while (this.matchmakingQueue.length >= 2) {
-            const player1 = this.matchmakingQueue.shift();
-            const player2 = this.matchmakingQueue.shift();
+            let player1 = null;
+            let player2 = null;
+            for (let i = 0; i < this.matchmakingQueue.length - 1; i++) {
+                for (let j = i + 1; j < this.matchmakingQueue.length; j++) {
+                    const mode1 = this.gameService.Queue.get(this.matchmakingQueue[i]).gameMode;
+                    const mode2 = this.gameService.Queue.get(this.matchmakingQueue[j]).gameMode;
+    
+                    if (mode1 === mode2) {
+                        player1 = this.matchmakingQueue[i];
+                        player2 = this.matchmakingQueue[j];
+                        break;
+                    }
+                }
+                if (player1 && player2)
+                    break;
+            }
+            if (!player1 || !player2) {
+                console.log('No matching players found.');
+                break;
+            }
+            this.matchmakingQueue = this.matchmakingQueue.filter(playerId => playerId !== player1 && playerId !== player2);
+            console.log(this.matchmakingQueue);
             console.log('Matching players', player1, player2);
             console.log(this.gameService.Queue.get(player1).gameMode);
             var game = await this.prisma.game.create({
@@ -366,6 +386,7 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
             this.startLiveGame(player1, player2);
         }
     }
+
 
     getByValue(map, searchValue) {
         for (let [key, value] of map.entries()) {
