@@ -30,14 +30,8 @@ let JwtStrategy = exports.JwtStrategy = class JwtStrategy extends (0, passport_1
         });
         this.prisma = prisma;
         this.config = config;
-        console.log("lawalo");
     }
     async validate(payload) {
-        if (!payload.id) {
-            console.log("lawalo ajemi");
-            throw new common_1.ForbiddenException('token invalid or not exist');
-        }
-        console.log("daz");
         return this.prisma.user.findUnique({
             where: {
                 id: payload.id,

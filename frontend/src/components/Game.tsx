@@ -14,7 +14,7 @@ const GamePage = () => {
     const [gameResult, setGameResult] = useState(null);
     const [botGame, setBotGame] = useState(false);
     const [client, setClient] = useState(false);
-
+    const test = useRef<HTMLDivElement>(null);
     useEffect(() => {
         if (!socket) return;
         let canvas: any;
@@ -124,13 +124,15 @@ const GamePage = () => {
                 }
             };
         };
-        const mp5 = new p5(sketch, p5Ref.current);
-        return mp5.remove;
+        if(test && test.current) {
+            const mp5 = new p5(sketch, test.current);
+            return mp5.remove;
+        }
         }),[];
 
         return (
         // <div>
-        <div>
+        <div ref={test}>
             {/* Render the canvas here */}
         </div>
     );
