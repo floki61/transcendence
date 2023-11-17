@@ -114,7 +114,6 @@ export default function layout({ params, children }: { params: any; children: Re
 	useEffect(() => {
 		const getFriend = async () => {
 			try {
-				// console.log("id------------", id);
 				const res = await axios.post("http://localhost:4000/getFriendProfile", { id: params.id }, {
 					withCredentials: true,
 				})
@@ -179,14 +178,17 @@ export default function layout({ params, children }: { params: any; children: Re
 										)}
 									</div>
 								</div>
-								<h3 className='text-xl'>{friend.user.userName}</h3>
+								<div className='flex items-center gap-3'>
+									<h3 className='text-xl lowercase'>{friend.user.userName}</h3>
+									<h3 className={`${friend.user.status === "OFFLINE" ? "text-red-600" : "text-[#00A83F]"}`}>( {friend.user.status} )</h3>
+								</div>
 							</div>
 							{params.id !== user.user?.id && friend.isfriend === "notfriend" && !request && !accept && (
 								<div className='flex justify-end'>
 									<ProfileButton color="bg-primecl" text="Add Friend" icon={MdGroupAdd} action={SendRequest} classname='w-1/5 mb-2'/>
 								</div>
 							)}
-							{params.id !== user.user?.id && friend.isfriend === "cancel" && (
+							{params.id !== user.user?.id && friend.isfriend === "cancel" && !accept && (
 								<div className='flex justify-end'>
 									<ProfileButton color="bg-[#6A6666]" text="Cancel" icon={MdOutlineCancel} action={CancelRequest} classname='w-1/5 mb-2'/>
 								</div>

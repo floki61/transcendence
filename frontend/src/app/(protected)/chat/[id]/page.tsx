@@ -48,7 +48,7 @@ const Convo = ({ params }: { params: any }) => {
     return () => {
       socket.off("message", messageHandler);
     };
-  }, [socket, chat]);
+  }, [socket]);
 
   useLayoutEffect(() => {
     if (lastMeassgeRef.current) {
