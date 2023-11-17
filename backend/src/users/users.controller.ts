@@ -67,8 +67,8 @@ export class UsersController {
     @UseGuards(JwtAuthGuard)
     @Post('cancelFriendRequest')
     async cancelFriendRequest(@Body() body: any, @Req() req) {
-        if (await this.userservice.checkFriendship(req.user.id, req.body.friendId))
-            throw new HttpException('You are already friends', HttpStatus.BAD_REQUEST);
+        // if (await this.userservice.checkFriendship(req.user.id, req.body.friendId))
+        //     throw new HttpException('You are already friends', HttpStatus.BAD_REQUEST);
         const friendrequest = await this.userservice.cancelFriendRequest(req.user.id, req.body.friendId);
 
         return friendrequest;
@@ -89,7 +89,7 @@ export class UsersController {
     }
 
     @UseGuards(JwtAuthGuard)
-    @Delete('unfriend')
+    @Post('unfriend')
     async unfriend(@Body() body: any, @Req() req) {
         console.log('unfriend', req.body.friendId, req.user.id);
         const friendrequest = await this.userservice.unfriend(req.user.id, req.body.friendId);
