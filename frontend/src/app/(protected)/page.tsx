@@ -1,8 +1,32 @@
+"use client"
+
 import Image from 'next/image'
-import Button from '@/components/Button'
+import { useContext, useEffect, useState } from 'react';
+import { InviteType } from './[id]/layout';
+import axios from 'axios';
 import Link from 'next/link'
+import { NotifBar } from '@/components/Notifications/NotifBar';
+import { UserContext } from '@/context/userContext';
 
 export default function Home() {
+	const [invites, SetInvite] = useState<InviteType[]>([]);
+  const user = useContext(UserContext);
+
+  useEffect(() => {
+		const getFriendRequest = async () => {
+			try {
+				const res = await axios.get("http://localhost:4000/getFriendRequests", {
+					withCredentials: true,
+				});
+				console.log("success", res.data);
+				SetInvite(res.data);
+			} catch (error) {
+				console.log("error");
+			}
+		}
+		getFriendRequest();
+	}, []);
+
   return (
     <div className='text-center h-full w-full flex flex-col justify-between px-4 py-2'>
       <div className=' h-[60%] flex justify-around'>
@@ -38,10 +62,18 @@ export default function Home() {
         </div>
         <div className='w-[25%] flex flex-col rounded-2xl bg-[#020C0E]'>
           <div className='h-[15%] flex items-center justify-center text-xl rounded-t-2xl bg-gradient-to-t from-[#0B2931] from-0% to-[#020C0E] to-20%'>
-            TITLE
+            Notifications
           </div>
-          <div className='flex-1 flex w-full rounded-b-2xl bg-gradient-to-t from-[#0B2931] from-0% to-[#020C0E] to-10%'>
-            content
+          <div className='overflow-scroll flex-1 flex flex-col w-full rounded-b-2xl bg-gradient-to-t from-[#0B2931] from-0% to-[#020C0E] to-10%'>
+            {user && invites && invites.map((invite, index) => (
+              <div key={index} className='w-full h-1/5 p-2'>
+                <NotifBar
+                  picture={invite.user.picture}
+                  userName={invite.user.userName}
+                  friendId={(invite.friendId !== user.user?.id) ? invite.friendId : invite.userId}
+                />
+              </div>
+            ))}
           </div>
         </div>
       </div>
