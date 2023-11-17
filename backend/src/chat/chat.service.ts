@@ -172,9 +172,9 @@ export class ChatService {
 		if (!user) {
 			throw new NotFoundException('User not found');
 		}
-		// if (!payload.name) {
-		// 	throw new NotFoundException('name not found');
-		// }
+		if (!payload.name) {
+			throw new NotFoundException('name not found');
+		}
 		var room = await this.prisma.chatRoom.create({
 			data: {
 				name: payload.name,
@@ -563,7 +563,7 @@ export class ChatService {
 		});
 		if (payload.id === null) {
 			throw new Error('ID must not be null');
-		  }		  
+		}
 		// for (let msg of message) {
 		// 	participant = await this.prisma.participant.findFirst({
 		// 		where: {
@@ -581,34 +581,34 @@ export class ChatService {
 		// return message;
 		for (let msg of message) {
 			if (msg.userId) {
-			  participant = await this.prisma.participant.findFirst({
-				where: {
-				  id: msg.userId,
-				},
-			  });
-		  
-			  if (participant) {
-				user = await this.prisma.user.findFirst({
-				  where: {
-					id: participant.uid,
-				  },
+				participant = await this.prisma.participant.findFirst({
+					where: {
+						id: msg.userId,
+					},
 				});
-		  
-				if (user) {
-				  msg = { ...msg, user: user };
+
+				if (participant) {
+					user = await this.prisma.user.findFirst({
+						where: {
+							id: participant.uid,
+						},
+					});
+
+					if (user) {
+						msg = { ...msg, user: user };
+					} else {
+						console.error(`User not found for participant ID: ${participant.uid}`);
+					}
 				} else {
-				  console.error(`User not found for participant ID: ${participant.uid}`);
+					console.error(`Participant not found for user ID: ${msg.userId}`);
 				}
-			  } else {
-				console.error(`Participant not found for user ID: ${msg.userId}`);
-			  }
 			} else {
-			  console.error('msg.userId is null or undefined');
+				console.error('msg.userId is null or undefined');
 			}
-		  }
-		  
-		  return message;
-		  
+		}
+
+		return message;
+
 	}
 
 	async changeVisibility(payload: any) {
