@@ -9,6 +9,8 @@ import QrcodeDiv from "@/components/QrcodeDiv";
 import Disable2fa from "@/components/Disable2fa";
 import { UserContext } from "@/context/userContext";
 import { userType } from "@/context/userContext";
+import { toASCII } from "punycode";
+import {toast} from 'react-toastify'; 
 
 export interface qrcodeType {
   url: string;
@@ -20,13 +22,15 @@ export default function page() {
 
   const updateUser = async () => {
     try {
-      await axios.post("http://localhost:4000/userSettings", user.user, {
+      const res = await axios.post("http://localhost:4000/userSettings", user.user, {
         withCredentials: true,
       }); // backend API endpoint
       console.log("saved with : ", user.user);
+      if (res.data === "Username already exists")
+        toast.error(res.data);
       handleSucces();
     } catch (error) {
-      console.error(error);
+      console.error("I catched : ", error);
     }
   };
 
@@ -132,7 +136,7 @@ export default function page() {
                 alt={"profile pic"}
                 width={100}
                 height={100}
-                className="rounded-full"
+                className="rounded-full aspect-square w-24 h-24 object-cover"
                 priority
               />
               <div className="flex flex-col h-full w-full items-center gap-8 justify-center mt-4">

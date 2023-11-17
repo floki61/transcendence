@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import Chatmsg from "@/components/Chatmsg";
-import { useChat } from "@/hooks/useChat";
+import { ChatType, useChat } from "@/hooks/useChat";
 import { ChatSettings } from "@/components/ChatSettings";
 import { IoSend } from "react-icons/io5";
 import { useRooms } from "@/hooks/useRooms";
@@ -40,16 +40,15 @@ const Convo = ({ params }: { params: any }) => {
   useEffect(() => {
     if (!socket) return;
     const messageHandler = (data: any) => {
-      SetChat((prevChat) => [...prevChat!, data]);
+        SetChat((prevChat: any) => [...prevChat!, data]);
     };
 
     socket.on("message", messageHandler);
 
-    // Clean up the event listener
     return () => {
       socket.off("message", messageHandler);
     };
-  }, [socket]);
+  }, [socket, chat]);
 
   useLayoutEffect(() => {
     if (lastMeassgeRef.current) {
@@ -79,7 +78,7 @@ const Convo = ({ params }: { params: any }) => {
                 alt={"friend pic"}
                 width={40}
                 height={40}
-                className="rounded-full"
+                className="rounded-full aspect-square w-10 h-10 object-cover"
               />
               <div>
                 <h2 className="text-xl">{name || r_name}</h2>

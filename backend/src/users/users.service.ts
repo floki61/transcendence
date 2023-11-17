@@ -1,4 +1,4 @@
-import { Injectable, UnauthorizedException, HttpException } from '@nestjs/common';
+import { Injectable, UnauthorizedException, HttpException , HttpStatus} from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 // import { MESSAGES } from '@nestjs/core/constants';
 import { JwtService } from '@nestjs/jwt';
@@ -16,8 +16,8 @@ export class UsersService {
 			where: {
 				id: idu,
 			},
-		});
-	}
+		}); 
+	} 
 
 	async checkIfnameExists(username: string) {
 		const user = await this.prisma.user.findUnique({
@@ -56,9 +56,9 @@ export class UsersService {
 		});
 	}
 	async updateUserName(req, data: any) {
-		// if (await this.checkIfnameExists(data))
-		// throw new UnauthorizedException('Username already exists');«
-		// throw new HttpException('Username already exists', HttpStatus.BAD_REQUEST);
+		if (await this.checkIfnameExists(data))
+			return "Username already exists";
+
 		return await this.prisma.user.update({
 			where: {
 				id: req.user.id,
@@ -132,6 +132,16 @@ export class UsersService {
 		return null;
 	}
 
+	async sendPlayRequest(userId: string, friendId: string) {
+		console.log({ userId, friendId });
+		const user = await this.prisma.user.findFirst({
+			where: {
+				id: userId,
+			}
+		});
+		return {user};
+	}
+
 	async sendFriendRequest(userId: string, friendId: string) {
 		console.log({ userId, friendId });
 		const friendrequest = await this.prisma.friendShip.create({
@@ -140,7 +150,12 @@ export class UsersService {
 				friendId,
 			}
 		});
-		return friendrequest;
+		const user = await this.prisma.user.findFirst({
+			where: {
+				id: userId,
+			}
+		});
+		return {friendrequest, user};
 	}
 
 	async cancelFriendRequest(userId: string, friendId: string) {
@@ -154,7 +169,7 @@ export class UsersService {
 			}
 		});
 		return friendrequest;
-	}
+	} 
 
 	async acceptFriendRequest(userId: string, friendId: string) {
 		const friendrequest = await this.prisma.friendShip.update({
@@ -227,6 +242,14 @@ export class UsersService {
 				status: 'REJECTED'
 			}
 		});
+		await this.prisma.friendShip.delete({
+			where: {
+				userId_friendId: {
+					userId: friendId,
+					friendId: userId,
+				}
+			},
+		}); 
 	}
 
 	async unfriend(userId: string, friendId: string) {

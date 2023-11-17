@@ -13,7 +13,6 @@ type ResultType = {
 export default function page({params}: {params: any}) {
 	let Win = {result: "W", color: "bg-[#00A83F]"};
 	let Loss = {result: "L", color: "bg-[#DC0000]"};
-	let Unset = {result: "?", color: "bg-[#848788]"};
 
 	const {stats, SetStats, getStats, getStatsByMode} = useStats();
 	const user = useContext(UserContext);
@@ -34,23 +33,27 @@ export default function page({params}: {params: any}) {
 		{result: "?", color: "bg-[#848788]"},
 		{result: "?", color: "bg-[#848788]"}
 	];
+	let hiddenArray: ResultType[] = [
+		{result: "?", color: "bg-[#848788]"},
+		{result: "?", color: "bg-[#848788]"},
+		{result: "?", color: "bg-[#848788]"},
+		{result: "?", color: "bg-[#848788]"},
+		{result: "?", color: "bg-[#848788]"}
+	];
 
 
 	useEffect(() => {
 		if (params.id) {
 			getStats(params.id);
-			getStatsByMode(params.id, "Live", SetLive);
+			getStatsByMode(params.id, "simple", SetLive);
 			getStatsByMode(params.id, "reverse", SetReverse);
-			// getStatsByMode(user.user.id, "hidden", SetHidden);
+			getStatsByMode(params.id, "hidden", SetHidden);
 		}
 	}, []);
 
-	console.log({live})
-	console.log({reverse})
-
 	if (reverse) {
 		reverse?.gamestats.map((game, index) => {
-			if (game.winnerId !== user.user?.id) {
+			if (game.winnerId === params.id) {
 				revArray[index] = Win;
 			} else {
 				revArray[index] = Loss;
@@ -60,13 +63,23 @@ export default function page({params}: {params: any}) {
 	}
 	if (live) {
 		live?.gamestats.map((game, index) => {
-			if (game.winnerId !== user.user?.id) {
+			if (game.winnerId === params.id) {
 				liveArray[index] = Win;
 			} else {
 				liveArray[index] = Loss;
 			}
 		})
 		console.log({liveArray});
+	}
+	if (hidden) {
+		hidden?.gamestats.map((game, index) => {
+			if (game.winnerId === params.id) {
+				hiddenArray[index] = Win;
+			} else {
+				hiddenArray[index] = Loss;
+			}
+		})
+		console.log({hiddenArray});
 	}
 
 
@@ -112,14 +125,14 @@ export default function page({params}: {params: any}) {
 		<div className='h-1/4 flex items-center justify-evenly'>
 			<h4 className='w-1/4'>Hidden Mode</h4>
 			<div className='flex items-center justify-evenly w-1/2'>
-				<h4>0</h4>
-				<h4>0</h4>
-				<h4>0</h4>
-				<h4>0</h4>
-				<h4>0</h4>
+			<h4>{hidden?.stats.MP}</h4>
+				<h4>{hidden?.stats.W}</h4>
+				<h4>{hidden?.stats.L}</h4>
+				<h4>{hidden?.stats.GS}</h4>
+				<h4>{hidden?.stats.GC}</h4>
 			</div>
 			<h4 className='w-1/4'>
-				<HistoryForm first={Unset} second={Unset} third={Unset} fourth={Unset} fifth={Unset}/>
+				<HistoryForm first={hiddenArray[0]} second={hiddenArray[1]} third={hiddenArray[2]} fourth={hiddenArray[3]} fifth={hiddenArray[4]}/>
 			</h4>
 		</div> 
 	</div>

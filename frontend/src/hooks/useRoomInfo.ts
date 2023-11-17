@@ -20,7 +20,7 @@ export const useRoomInfo = ({rid, user}: RoomInfoProps) => {
 		  await getRooms(friends, setFriends);
 		}
 		fetchData();
-	  }, [rid]);
+	  }, [rid, getRooms, getUsers, friends]);
 
 	if (friends) {
 		friends.map((room: any) => {

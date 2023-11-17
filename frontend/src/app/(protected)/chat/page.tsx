@@ -1,6 +1,5 @@
 "use client";
 
-import Image from "next/image";
 import Chatmsg from "@/components/Chatmsg";
 import Chatbar from "@/components/Chatbar";
 import Audio from "@/components/Audio";
