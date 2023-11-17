@@ -49,9 +49,9 @@ export const NotifBar: React.FC<NotifBarProps> = ({
 			/>
 			<span>{userName} sent you a friend request</span>
 		</div>
-		<div className='flex gap-1'>
-			<button className='rounded flex-1 bg-primecl' onClick={AcceptRequest}>accept</button>
-			<button className='rounded flex-1 ' onClick={DeclineRequest}>decline</button>
+		<div className='flex gap-2'>
+			<button className='rounded flex-1 bg-primecl cursor-pointer' onClick={AcceptRequest}>accept</button>
+			<button className='rounded flex-1 cursor-pointer border' onClick={DeclineRequest}>decline</button>
 		</div>
 	</div>
   )

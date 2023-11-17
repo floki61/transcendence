@@ -21,10 +21,11 @@ export interface ProfileType {
 	isfriend: string;
 }
 
-interface InviteType {
+export interface InviteType {
 	friendId: string;
 	userId: string;
 	status: string;
+	user: userType;
 }
 
 export default function layout({ params, children }: { params: any; children: React.ReactNode }) {

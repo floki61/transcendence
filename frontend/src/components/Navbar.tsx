@@ -2,7 +2,7 @@
 import Link from "next/link"
 import Image from "next/image"
 import { FaBell, FaSearch } from "react-icons/fa"
-import { useContext, useRef } from "react";
+import { useContext, useRef, useState } from "react";
 import { UserContext } from "@/context/userContext";
 import axios from "axios";
 import { useRouter } from "next/navigation";
@@ -58,9 +58,14 @@ export default function Navbar() {
 						  </div>
 					  </div>
 				  <div className="flex justify-evenly items-center gap-8">
-				  <Link href="/" className="py-4 flex justify-center items-center hover:rounded-t-xl hover:bg-primecl w-8 h-full">
+				  {/* <div onClick={() => {SetNotif(!notif)}} className="py-4 flex justify-center items-center hover:rounded-t-xl hover:bg-primecl w-8 h-full">
 					  <FaBell />
-				  </Link>
+					  {notif && (
+						<div className="absolute w-1/4 h-1/4 top-0 debug right-0">
+							No Notifications
+						</div>
+					  )}
+				  </div> */}
 				  <div className="flex justify-evenly items-center gap-2 p-2">
 					  <Link href={"/profile"}>
 						  <div>{user.user.userName}</div>
