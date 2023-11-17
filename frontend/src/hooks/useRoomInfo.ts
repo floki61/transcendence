@@ -12,7 +12,6 @@ export const useRoomInfo = ({rid, user}: RoomInfoProps) => {
 	const [friends, setFriends] = useState<FriendType[]>([]);
 	const { getUsers, getRooms } = useRooms();
 	let visible, id = "", role = "USER", r_name, r_id, dm;
-	console.log("Hello from room info");
 
 	useEffect(() => {
 		const fetchData = async () => {
@@ -20,7 +19,7 @@ export const useRoomInfo = ({rid, user}: RoomInfoProps) => {
 		  await getRooms(friends, setFriends);
 		}
 		fetchData();
-	  }, [rid, getRooms, getUsers, friends]);
+	  }, [rid]);
 
 	if (friends) {
 		friends.map((room: any) => {
