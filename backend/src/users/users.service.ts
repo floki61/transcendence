@@ -1,4 +1,4 @@
-import { Injectable, UnauthorizedException, HttpException , HttpStatus} from '@nestjs/common';
+import { Injectable, UnauthorizedException, HttpException, HttpStatus } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 // import { MESSAGES } from '@nestjs/core/constants';
 import { JwtService } from '@nestjs/jwt';
@@ -16,8 +16,8 @@ export class UsersService {
 			where: {
 				id: idu,
 			},
-		}); 
-	} 
+		});
+	}
 
 	async checkIfnameExists(username: string) {
 		const user = await this.prisma.user.findUnique({
@@ -139,7 +139,7 @@ export class UsersService {
 				id: userId,
 			}
 		});
-		return {user};
+		return { user };
 	}
 
 	async sendFriendRequest(userId: string, friendId: string) {
@@ -155,7 +155,7 @@ export class UsersService {
 				id: userId,
 			}
 		});
-		return {friendrequest, user};
+		return { friendrequest, user };
 	}
 
 	async cancelFriendRequest(userId: string, friendId: string) {
@@ -169,7 +169,7 @@ export class UsersService {
 			}
 		});
 		return friendrequest;
-	} 
+	}
 
 	async acceptFriendRequest(userId: string, friendId: string) {
 		const friendrequest = await this.prisma.friendShip.update({
@@ -249,7 +249,7 @@ export class UsersService {
 					friendId: userId,
 				}
 			},
-		}); 
+		});
 	}
 
 	async unfriend(userId: string, friendId: string) {
@@ -423,8 +423,8 @@ export class UsersService {
 				],
 			},
 		});
-		console.log({ user, ...await this.getLevelP(user.level), isfriend: friendship ? true : false })
-		return { user, ...await this.getLevelP(user.level), isfriend: friendship ? true : false };
+		console.log({ user, ...await this.getLevelP(user.level), isfriend: friendship ? (friendship.status === 'ACCEPTED' ? 'friend' : 'cancel') : 'notfriend' })
+		return { user, ...await this.getLevelP(user.level), isfriend: friendship ? (friendship.status === 'ACCEPTED' ? 'friend' : 'cancel') : 'notfriend' };
 	}
 
 	async getFriendProfileWithUserName(userName: string, id: string) {
@@ -451,8 +451,8 @@ export class UsersService {
 				],
 			},
 		});
-		console.log({ user, ...await this.getLevelP(user.level), isfriend: friendship ? true : false })
-		return { user, ...await this.getLevelP(user.level), isfriend: friendship ? true : false };
+		console.log({ user, ...await this.getLevelP(user.level), isfriend: friendship ? (friendship.status === 'ACCEPTED' ? 'friend' : 'cancel') : 'notfriend' })
+		return { user, ...await this.getLevelP(user.level), isfriend: friendship ? (friendship.status === 'ACCEPTED' ? 'friend' : 'cancel') : 'notfriend' };
 	}
 
 	async getAllUsers() {
