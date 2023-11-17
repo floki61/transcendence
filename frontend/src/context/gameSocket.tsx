@@ -46,7 +46,6 @@ export const GameProvider = ({ children }:{children: React.ReactNode}) => {
             socket.close()
         }
     }, [socket]);
-
     
     return (
         <GameContext.Provider value={{socket}}>

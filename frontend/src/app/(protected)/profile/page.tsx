@@ -5,7 +5,7 @@ import HistoryForm from '@/components/HistoryForm'
 import { StatsType, useStats } from '@/hooks/useStats';
 import { UserContext } from '@/context/userContext';
 
-type ResultType = {
+export type ResultType = {
 	result: string;
 	color: string;
 }
@@ -34,19 +34,23 @@ export default function page() {
 		{result: "?", color: "bg-[#848788]"},
 		{result: "?", color: "bg-[#848788]"}
 	];
+	let hiddenArray: ResultType[] = [
+		{result: "?", color: "bg-[#848788]"},
+		{result: "?", color: "bg-[#848788]"},
+		{result: "?", color: "bg-[#848788]"},
+		{result: "?", color: "bg-[#848788]"},
+		{result: "?", color: "bg-[#848788]"}
+	];
 
 
 	useEffect(() => {
 		if (user.user && user.user.id) {
 			getStats(user.user.id);
-			getStatsByMode(user.user.id, "Live", SetLive);
+			getStatsByMode(user.user.id, "simple", SetLive);
 			getStatsByMode(user.user.id, "reverse", SetReverse);
-			// getStatsByMode(user.user.id, "hidden", SetHidden);
+			getStatsByMode(user.user.id, "hidden", SetHidden);
 		}
 	}, []);
-
-	console.log({live})
-	console.log({reverse})
 
 	if (reverse) {
 		reverse?.gamestats.map((game, index) => {
@@ -67,6 +71,16 @@ export default function page() {
 			}
 		})
 		console.log({liveArray});
+	}
+	if (hidden) {
+		hidden?.gamestats.map((game, index) => {
+			if (game.winnerId === user.user?.id) {
+				hiddenArray[index] = Win;
+			} else {
+				hiddenArray[index] = Loss;
+			}
+		})
+		console.log({hiddenArray});
 	}
 
 
@@ -112,14 +126,14 @@ export default function page() {
 		<div className='h-1/4 flex items-center justify-evenly'>
 			<h4 className='w-1/4'>Hidden Mode</h4>
 			<div className='flex items-center justify-evenly w-1/2'>
-				<h4>0</h4>
-				<h4>0</h4>
-				<h4>0</h4>
-				<h4>0</h4>
-				<h4>0</h4>
+				<h4>{hidden?.stats.MP}</h4>
+				<h4>{hidden?.stats.W}</h4>
+				<h4>{hidden?.stats.L}</h4>
+				<h4>{hidden?.stats.GS}</h4>
+				<h4>{hidden?.stats.GC}</h4>
 			</div>
 			<h4 className='w-1/4'>
-				<HistoryForm first={Unset} second={Unset} third={Unset} fourth={Unset} fifth={Unset}/>
+				<HistoryForm first={hiddenArray[0]} second={hiddenArray[1]} third={hiddenArray[2]} fourth={hiddenArray[3]} fifth={hiddenArray[4]}/>
 			</h4>
 		</div> 
 	</div>

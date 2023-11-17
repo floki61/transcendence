@@ -31,7 +31,7 @@ export interface ChatType {
 
 export const useChat = (id : string) => {
   const user = useContext(UserContext);
-  const [chat, SetChat] = useState<ChatType[]>();
+  const [chat, SetChat] = useState<ChatType[]>([]);
   const [image, SetImage] = useState<string>();
   const [name, SetName] = useState<string>();
   const [showDiv, SetShowDiv] = useState(false);

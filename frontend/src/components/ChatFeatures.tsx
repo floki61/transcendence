@@ -37,6 +37,22 @@ export const ChatFeatures: React.FC<ChatFeaturesProps> = ({
 	const [visible, SetVisible] = useState("");
 	const [time, SetTimer] = useState("");
 	const [checked, setChecked] = useState("");
+	const [room, SetRoom] = useState<FriendType>();
+
+	useEffect(() => {
+		const getRoom = async () => {
+			try {
+				const res = await axios.post("http://localhost:4000/chat/getRoomById", {rid}, {
+					withCredentials: true,
+				})
+				console.log("success", res.data);
+				SetRoom(res.data);
+			} catch (error) {
+				console.log("getRoom by id failed", error);
+			}
+		}
+		getRoom();
+	}, [rid]);
 
 	const handleCheckboxChange = (participantId: string) => {
 	  setChecked(participantId);
@@ -225,23 +241,6 @@ export const ChatFeatures: React.FC<ChatFeaturesProps> = ({
 		)
 	}
 	else if (mode === "changeVisible") {
-		const [room, SetRoom] = useState<FriendType>();
-
-		useEffect(() => {
-			const getRoom = async () => {
-				try {
-					const res = await axios.post("http://localhost:4000/chat/getRoomById", {rid}, {
-						withCredentials: true,
-					})
-					console.log("success", res.data);
-					SetRoom(res.data);
-				} catch (error) {
-					console.log("getRoom by id failed", error);
-				}
-			}
-			getRoom();
-		}, []);
-
 		return (
 			<div className='bg-segundcl rounded-lg h-full py-4 flex justify-center items-center'>
 				{room && (
@@ -303,23 +302,6 @@ export const ChatFeatures: React.FC<ChatFeaturesProps> = ({
 		)
 	}
 	else if (mode === "changePasswd") {
-		const [room, SetRoom] = useState<FriendType>();
-
-		useEffect(() => {
-			const getRoom = async () => {
-				try {
-					const res = await axios.post("http://localhost:4000/chat/getRoomById", { rid }, {
-						withCredentials: true,
-					})
-					console.log("success", res.data);
-					SetRoom(res.data);
-				} catch (error) {
-					console.log("getRoom by id failed", error);
-				}
-			}
-			getRoom();
-		}, []);
-
 		return (
 			<div className='bg-segundcl rounded-lg h-full py-4 flex justify-center items-center'>
 				{room && (

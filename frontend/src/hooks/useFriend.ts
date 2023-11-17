@@ -8,6 +8,7 @@ export interface ProfileType {
 	user: userType;
 	level_P: number;
 	barPourcentage: number;
+	isfriend: boolean
 }
 
 export const useFriend = (id: string) => {
@@ -27,7 +28,7 @@ export const useFriend = (id: string) => {
 			}
 		}
 		getFriend();
-	}, []);
+	}, [id]);
 
 	return { friend, SetFriend }
 }

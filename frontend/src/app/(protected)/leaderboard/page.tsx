@@ -1,6 +1,45 @@
+"use client";
+
+import React, { useEffect, useState } from 'react'
 import Standing from "@/components/Standing"
+import axios from 'axios';
+
+interface BoardType {
+	GC: number;
+	GS: number;
+	MP: number;
+	W: number;
+	L: number;
+	level_P: number;
+	userName: string;
+	picture: string;
+	id: string;
+}
 
 export default function page() {
+	const [board, SetBoard] = useState<BoardType[]>([]);
+	let colorArray = [
+		"bg-[#FFD700]",
+		"bg-[#C0C0C0]",
+		"bg-[#CD7F32]",
+		"bg-[#6A6666]",
+	];
+
+	useEffect(() => {
+		const getLeaderBoard = async () => {
+			try {
+				const res = await axios.get("http://localhost:4000/getLeaderboard", {
+					withCredentials: true,
+				})
+				console.log(res.data);
+				SetBoard(res.data);
+			} catch (error) {
+				console.log("getLeaderBoard failed", error);
+			}
+		}
+		getLeaderBoard();
+	}, [])
+
 	return (
 	  <div className="flex flex-col p-8 py-16 h-full w-full">
 		<div className="flex justify-between h-12">
@@ -30,16 +69,19 @@ export default function page() {
 				<a className="w-1/4 flex items-center justify-center">FORM</a>
 			</div>
 			<div className="flex-1 rounded-b-xl bg-segundcl">
-				<Standing place="1" color="bg-[#FFD700]"/>
-				<Standing place="2" color="bg-[#C0C0C0]"/>
-				<Standing place="3" color="bg-[#CD7F32]"/>
-				<Standing place="4" color="bg-[#6A6666]"/>
-				<Standing place="5" color="bg-[#6A6666]"/>
-				<Standing place="6" color="bg-[#6A6666]"/>
-				<Standing place="7" color="bg-[#6A6666]"/>
-				<Standing place="8" color="bg-[#6A6666]"/>
-				<Standing place="9" color="bg-[#6A6666]"/>
-				<Standing place="10" color="bg-[#6A6666]"/>
+				{board && board.map((rank, index) => (
+					<Standing
+						place={index + 1}
+						color={colorArray[index]}
+						picture={rank.picture}
+						name={rank.userName}
+						mp={rank.MP}
+						wins={rank.W}
+						losses={rank.L}
+						level={rank.level_P}
+						id={rank.id}
+					/>
+				))}
 			</div>
 		</div>
 	  </div>

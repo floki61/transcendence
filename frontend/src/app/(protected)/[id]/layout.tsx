@@ -2,12 +2,14 @@
 
 import React from 'react'
 import { useState, useEffect } from 'react';
+import { HiDotsVertical } from "react-icons/hi";
 import { userType } from '@/context/userContext';
-import axios from 'axios';
+import { MdPeopleAlt, MdGroupAdd } from "react-icons/md";
 import Image from 'next/image';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useFriend } from '@/hooks/useFriend';
+import axios from 'axios';
 
 export interface ProfileType {
 	user: userType;
@@ -19,10 +21,21 @@ export default function layout({params, children}: {params: any; children: React
 	const {friend, SetFriend} = useFriend(params.id);
 	const pathName = usePathname();
 	
-	console.log(friend?.barPourcentage);
+	console.log({friend});
 	console.log(params);
 	if (friend && friend.user)
 		friend.user.fullName = friend.user.firstName + " " + friend.user.lastName;
+
+	const SendRequest = async () => {
+		try {
+			const res = axios.post("http://localhost:4000/sendFriendRequest", {friendId: friend?.user.id}, {
+				withCredentials: true,
+			})
+			console.log("success FriendRequest");
+		} catch (error) {
+			console.log("SendRequest failed", error);
+		}
+	}
 
     return (
 		<div className='h-full w-full p-10 overflow-hidden'>
@@ -34,17 +47,36 @@ export default function layout({params, children}: {params: any; children: React
 				  alt={"profile pic"}
 				  height={140}
 				  width={140}
-				  className='rounded-full'
+				  className="rounded-full aspect-square w-36 h-36 object-cover"
 				/>
 				<div className='w-3/5 h-full flex flex-col justify-between px-4'>
-				  <h2 className='text-2xl'>{friend.user.fullName}</h2>
-				  <h3 className='text-xl'>{friend.user.userName}</h3>
-				  <div className='relative w-full bg-[#6A6666] rounded-xl text-center text-black self-end'>
-					{friend && (
-						<div className={`bg-quatrocl w-[${friend.barPourcentage}%] h-full rounded-xl absolute top-0 left-0`}></div>
+					<div className='flex flex-col gap-1'>
+						<div className='flex justify-between'>
+							<h2 className='text-3xl'>{friend.user.fullName}</h2>
+							<div>
+								<HiDotsVertical size={30}/>
+							</div>
+						</div>
+						<h3 className='text-xl'>{friend.user.userName}</h3>
+					</div>
+					{friend && !friend.isfriend && (
+						<button className='bg-primecl rounded-lg w-1/5 self-end text-lg flex items-center justify-center gap-4 mb-2' onClick={SendRequest}>
+							<MdGroupAdd size={25}/>
+							Add Friend
+						</button>
 					)}
-					<p className='text-black text-center z-10 relative text-xl font-medium'>Level {friend.level_P}</p>
-				  </div>
+					{friend && friend.isfriend && (
+						<button className='bg-primecl rounded-lg w-1/5 self-end text-lg flex items-center justify-center gap-4 mb-2' onClick={SendRequest}>
+							<MdPeopleAlt size={25}/>
+							Friends
+						</button>
+					)}
+					<div className='relative w-full bg-[#6A6666] rounded-xl text-center text-black self-end'>
+						{friend && (
+							<div className={`bg-quatrocl w-[${friend.barPourcentage}%] h-full rounded-xl absolute top-0 left-0`}></div>
+						)}
+						<p className='text-black text-center z-10 relative text-xl font-medium'>Level {friend.level_P}</p>
+				 	</div>
 				</div>
 				<div className='w-[25%] text-center'>chart</div>
 			  </div>
@@ -57,9 +89,9 @@ export default function layout({params, children}: {params: any; children: React
 				  className='absolute place-self-end'
 				/>
 				<div className='w-[60%] h-[12%] rounded-t-xl bg-primecl flex items-center'>
-				  <Link href={`/${params.id}`} className={`${pathName === "/" + params.id ? 'bg-gradient-to-t from-[#000000] from-0% to-segundcl to-100% ' : ''} hover:bg-gradient-to-t hover:from-[#000000] hover:from-0% hover:to-segundcl hover:to-100% hover:rounded-tl-xl w-1/3 text-2xl text-center h-full flex justify-center items-center border-r border-segundcl`}>Stats</Link>
+				  <Link href={`/${params.id}`} className={`${pathName === "/" + params.id ? 'bg-gradient-to-t from-[#000000] from-0% to-segundcl to-100% rounded-tl-xl' : ''} hover:bg-gradient-to-t hover:from-[#000000] hover:from-0% hover:to-segundcl hover:to-100% hover:rounded-tl-xl w-1/3 text-2xl text-center h-full flex justify-center items-center border-r border-segundcl`}>Stats</Link>
 				  <Link href={`/${params.id}/achievements`} className={`${pathName === "/" + params.id + "/achievements" ? 'bg-gradient-to-t from-[#000000] from-0% to-segundcl to-100% ' : ''} hover:bg-gradient-to-t hover:from-[#000000] hover:from-0% hover:to-segundcl hover:to-100% w-1/3 text-2xl text-center h-full flex justify-center items-center border-r border-segundcl`}>Achievements</Link>
-				  <Link href={`/${params.id}/history`} className={`${pathName === "/" + params.id + "/history" ? 'bg-gradient-to-t from-[#000000] from-0% to-segundcl to-100% ' : ''} hover:bg-gradient-to-t hover:from-[#000000] hover:from-0% hover:to-segundcl hover:to-100% hover:rounded-tr-xl w-1/3 text-2xl text-center h-full flex justify-center items-center`}>History</Link>
+				  <Link href={`/${params.id}/history`} className={`${pathName === "/" + params.id + "/history" ? 'bg-gradient-to-t from-[#000000] from-0% to-segundcl to-100% rounded-tr-xl' : ''} hover:bg-gradient-to-t hover:from-[#000000] hover:from-0% hover:to-segundcl hover:to-100% hover:rounded-tr-xl w-1/3 text-2xl text-center h-full flex justify-center items-center`}>History</Link>
 				</div>
 				<div className='px-16 w-full flex-1 rounded-xl'>
 				  <div className='h-full w-full rounded-xl bg-segundcl'>

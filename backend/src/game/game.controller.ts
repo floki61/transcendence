@@ -6,6 +6,7 @@ import { GameService } from './game.service';
 import { UsersService } from 'src/users/users.service';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 
+
 @Controller()
 export class GameController {
 	constructor(private gameService: GameService,
@@ -22,8 +23,9 @@ export class GameController {
 			throw new HttpException('You are in game', HttpStatus.BAD_REQUEST);
 		if (await this.gameService.checkingIfInGame(req.body.friendId))
 			throw new HttpException('Your friend is in game', HttpStatus.BAD_REQUEST);
+		const friendrequest = await this.userservice.sendPlayRequest(req.user.id, req.body.friendId);
 		this.gamegtw.server.to(req.body.friendId).emit('PlayRequest', req.user.id);
-		return { message: 'Play request sent successfully' };
+		return {friendrequest, message: 'Play request sent successfully' };
 	}
 	@UseGuards(JwtAuthGuard)
 	@Post('acceptPlayRequest')

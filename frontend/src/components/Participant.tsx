@@ -60,7 +60,7 @@ export const Participant: React.FC<ParticipantProps> = ({
 			alt={"user pic"}
 			width={50}
 			height={50}
-			className='rounded-full'
+			className="rounded-full aspect-square w-12 h-12 object-cover"
 		/>
 		<p className='text-white text-xl'>{name}</p>
 		{checkbox && !many && (
