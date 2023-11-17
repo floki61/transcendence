@@ -70,17 +70,19 @@ export default function page() {
 			</div>
 			<div className="flex-1 rounded-b-xl bg-segundcl">
 				{board && board.map((rank, index) => (
-					<Standing
-						place={index + 1}
-						color={colorArray[index]}
-						picture={rank.picture}
-						name={rank.userName}
-						mp={rank.MP}
-						wins={rank.W}
-						losses={rank.L}
-						level={rank.level_P}
-						id={rank.id}
-					/>
+					<div key={index}>
+						<Standing
+							place={index + 1}
+							color={colorArray[index]}
+							picture={rank.picture}
+							name={rank.userName}
+							mp={rank.MP}
+							wins={rank.W}
+							losses={rank.L}
+							level={rank.level_P}
+							id={rank.id}
+						/>
+					</div>
 				))}
 			</div>
 		</div>

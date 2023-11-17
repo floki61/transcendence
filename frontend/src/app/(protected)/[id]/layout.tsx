@@ -4,12 +4,13 @@ import React from 'react'
 import { useState, useEffect } from 'react';
 import { HiDotsVertical } from "react-icons/hi";
 import { userType } from '@/context/userContext';
-import { MdPeopleAlt, MdGroupAdd } from "react-icons/md";
+import { MdPeopleAlt, MdGroupAdd, MdOutlineCancel } from "react-icons/md";
 import Image from 'next/image';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useFriend } from '@/hooks/useFriend';
 import axios from 'axios';
+import { ProfileButton } from '@/components/ProfileButton';
 
 export interface ProfileType {
 	user: userType;
@@ -17,8 +18,17 @@ export interface ProfileType {
 	barPourcentage: number;
 }
 
+interface InviteType {
+	friendId: string;
+	userId: string;
+	status: string;
+}
+
 export default function layout({params, children}: {params: any; children: React.ReactNode}) {
 	const {friend, SetFriend} = useFriend(params.id);
+	const [request, SetRequest] = useState(false);
+	const [accept, SetAccept] = useState(false);
+	const [invites, SetInvite] = useState<InviteType[]>([]);
 	const pathName = usePathname();
 	
 	console.log({friend});
@@ -26,16 +36,91 @@ export default function layout({params, children}: {params: any; children: React
 	if (friend && friend.user)
 		friend.user.fullName = friend.user.firstName + " " + friend.user.lastName;
 
+	useEffect(() => {
+		const getFriendRequest = async () => {
+			try {
+				const res = await axios.get("http://localhost:4000/getFriendRequests", {
+					withCredentials: true,
+				});
+				console.log("success", res.data);
+				SetInvite(res.data);
+			} catch (error) {
+				console.log("error");
+			}
+		}
+		getFriendRequest();
+	}, []);
+
 	const SendRequest = async () => {
 		try {
-			const res = axios.post("http://localhost:4000/sendFriendRequest", {friendId: friend?.user.id}, {
+			const res = axios.post("http://localhost:4000/sendFriendRequest", {friendId: params.id}, {
 				withCredentials: true,
 			})
 			console.log("success FriendRequest");
+			SetRequest(true);
 		} catch (error) {
 			console.log("SendRequest failed", error);
 		}
 	}
+	const CancelRequest = async () => {
+		try {
+			const res = axios.post("http://localhost:4000/cancelFriendRequest", {friendId: params.id}, {
+				withCredentials: true,
+			})
+			console.log("success CancelRequest");
+			SetRequest(false);
+		} catch (error) {
+			console.log("CancelRequest failed", error);
+		}
+	}
+	const DeclineRequest = async () => {
+		try {
+			const res = axios.post("http://localhost:4000/rejecte", {friendId: params.id}, {
+				withCredentials: true,
+			})
+			console.log("success DeclineRequest");
+			SetAccept(false);
+			SetRequest(false);
+		} catch (error) {
+			console.log("DeclineRequest failed", error);
+		}
+	}
+	const AcceptRequest = async () => {
+		try {
+			const res = axios.post("http://localhost:4000/acc", {friendId: params.id}, {
+				withCredentials: true,
+			})
+			console.log("success AcceptRequest");
+			SetAccept(false);
+			SetRequest(false);
+		} catch (error) {
+			console.log("DeclineRequest failed", error);
+		}
+	}
+
+	const handleRequest = async (action: string) => {
+		if (action === "Add")
+			await SendRequest();
+		else if (action === "Cancel")
+			await CancelRequest();
+		else if (action === "Decline")
+			await DeclineRequest();
+		else if (action === "accept")
+			await AcceptRequest();
+	}
+
+	useEffect(() => {
+		if (invites) {
+			invites.map((invite) => {
+				if ((invite.userId === params.id || invite.friendId === params.id) && invite.status === "PENDING") {
+					SetAccept(true);
+					SetRequest(true);
+				} 
+			})
+		}
+	}, [invites])
+
+	console.log(friend?.isfriend, " ", accept, " ", request);
 
     return (
 		<div className='h-full w-full p-10 overflow-hidden'>
@@ -59,17 +144,26 @@ export default function layout({params, children}: {params: any; children: React
 						</div>
 						<h3 className='text-xl'>{friend.user.userName}</h3>
 					</div>
-					{friend && !friend.isfriend && (
-						<button className='bg-primecl rounded-lg w-1/5 self-end text-lg flex items-center justify-center gap-4 mb-2' onClick={SendRequest}>
-							<MdGroupAdd size={25}/>
-							Add Friend
-						</button>
+					{!friend.isfriend && !request && !accept && (
+						<div className='flex justify-end'>
+							<ProfileButton color="bg-primecl" text="Add Friend" icon={MdGroupAdd} action={SendRequest}/>
+						</div>
 					)}
-					{friend && friend.isfriend && (
-						<button className='bg-primecl rounded-lg w-1/5 self-end text-lg flex items-center justify-center gap-4 mb-2' onClick={SendRequest}>
-							<MdPeopleAlt size={25}/>
-							Friends
-						</button>
+					{!friend.isfriend && request && !accept && (
+						<div className='flex justify-end'>
+							<ProfileButton color="bg-[#6A6666]" text="Cancel" icon={MdOutlineCancel} action={CancelRequest}/>
+						</div>
+					)}
+					{accept && request && (
+						<div className='flex justify-end gap-3'>
+							<ProfileButton color="bg-primecl" text="Accept" icon={MdPeopleAlt} action={AcceptRequest}/>
+							<ProfileButton color="bg-[#6A6666]" text="Decline" icon={MdOutlineCancel} action={DeclineRequest}/>
+						</div>
+					)}
+					{friend.isfriend && !request && !accept && (
+						<div className='flex justify-end'>
+							<ProfileButton color="bg-primecl" text="Friends" icon={MdPeopleAlt} />
+						</div>
 					)}
 					<div className='relative w-full bg-[#6A6666] rounded-xl text-center text-black self-end'>
 						{friend && (
