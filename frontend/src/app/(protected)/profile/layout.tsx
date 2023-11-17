@@ -7,14 +7,30 @@ import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import axios from "axios";
-import { ProfileType } from "../[id]/layout";
+import { InviteType, ProfileType } from "../[id]/layout";
 
 export default function page(
   { children }: { children: React.ReactNode },
   { params }: { params: any }
 ) {
   const [user, SetUser] = useState<ProfileType>();
+  const [followers, SetFollowers] = useState<InviteType[]>([]);
   const pathName = usePathname();
+
+  useEffect(() => {
+    const getFollwers = async () => {
+      try {
+        const res = await axios.get("http://localhost:4000/getFriends", {
+          withCredentials: true,
+        });
+        console.log("success", res.data);
+        SetFollowers(res.data);
+      } catch (error) {
+        console.log("get Friend profile failed.", error);
+      }
+    };
+    getFollwers();
+  }, []);
 
   useEffect(() => {
     const getFriend = async () => {
@@ -66,12 +82,19 @@ export default function page(
               </div>
             </div>
             <div className="w-[25%] text-center">
-              {/* <RadarChart
-                captions={captions}
-                data={data}
-                size={450}
-              /> */}
-              chart
+              {followers && followers.map((follower, index) => (
+                <div key={index} className="w-full bg-primecl debug h-full flex items-center gap-2">
+                    <Image
+                      src={follower.user.picture}
+                      alt="friend pic"
+                      height={30}
+                      width={30}
+                      className="rounded-full aspect-square w-8 h-8 object-cover"
+                    />
+                    <span>{follower.user.userName}</span>
+                    <span className={`${follower.user.status === "OFFLINE" ? "text-red-600" : "text-[#00A83F]"}`}>( {follower.user.status} )</span>
+                </div>
+              ))}
             </div>
           </div>
           <div className="flex-1 flex flex-col items-center relative">
