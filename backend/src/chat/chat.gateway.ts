@@ -105,7 +105,6 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
 		this.updateChatRooms({ uid: message.uid });
 		return message;
 	}
-
 	// @UseGuards(WsGuard)
 	// payload depand on rid uid and password
 	@OnEvent('joinRoom')
