@@ -31,7 +31,7 @@ export interface ChatType {
 
 export const useChat = (id : string) => {
   const user = useContext(UserContext);
-  const [chat, SetChat] = useState<ChatType[]>();
+  const [chat, SetChat] = useState<ChatType[]>([]);
   const [image, SetImage] = useState<string>();
   const [name, SetName] = useState<string>();
   const [showDiv, SetShowDiv] = useState(false);
@@ -41,25 +41,27 @@ export const useChat = (id : string) => {
 
   const getMessages = async (roomId: string) => {
     if (!socket) return;
-    try {
-      console.log("calling get mesages for ", roomId);
-      const res = await axios.post(
-        "http://localhost:4000/chat/getMessages",
-        {
-          rid: roomId,
-        },
-        {
-          withCredentials: true,
-        }
-      );
-      const data = res.data;
-      console.log("oki", data);
-      // if (data.length > 0) {
-        // updatedChat = data.map((item: any) => item);
-        SetChat(data.map((item: any) => item));
-      // }
-    } catch (error) {
-      console.log("getMessages failed");
+    if (roomId) {
+      try {
+        console.log("calling get mesages for ", roomId);
+        const res = await axios.post(
+          "http://localhost:4000/chat/getMessages",
+          {
+            rid: roomId,
+          },
+          {
+            withCredentials: true,
+          }
+        );
+        const data = res.data;
+        console.log("oki", data);
+        // if (data.length > 0) {
+          // updatedChat = data.map((item: any) => item);
+          SetChat(data.map((item: any) => item));
+        // }
+      } catch (error) {
+        console.log("getMessages failed");
+      }
     }
   };
 

@@ -1,10 +1,9 @@
 "use client";
 
-import Image from "next/image";
-import Chatmsg from "./Chatmsg";
 import axios from "axios";
 import { ChatType } from "@/hooks/useChat";
 import { userType } from "@/context/userContext";
+import { useRouter } from "next/navigation";
 
 export interface ConvoProps {
   picture: string;
@@ -12,21 +11,23 @@ export interface ConvoProps {
   status: string;
   chat: ChatType[] | undefined;
   visibility: string;
-  id: string;
   input: any;
   user: userType | undefined | null;
   rid: string | undefined,
 }
 
-const JoinRooms: React.FC<ConvoProps> = ({ picture, name, status, chat, visibility, id, input, user, rid }) => {
-
+const JoinRooms: React.FC<ConvoProps> = ({ picture, name, status, chat, visibility, input, user, rid }) => {
+  const router = useRouter()
   const joinGroup = async () => {
-    if (input) {
+      let password;
+      if (input && input.current)
+        password = input.current.value;
+      console.log(user?.id, rid, password);
       try {
         const res = await axios.post(
           "http://localhost:4000/chat/joinRoom",
           {
-            password: input.current.value,
+            password,
             uid: user?.id,
             rid,
           },
@@ -35,10 +36,11 @@ const JoinRooms: React.FC<ConvoProps> = ({ picture, name, status, chat, visibili
           }
         );
         console.log(res.data);
+        router.push("/chat");
+
       } catch (error) {
         console.log("Join group failed", error);
       }
-    }
   };
 
   const handleKeyDown = (event: any) => {

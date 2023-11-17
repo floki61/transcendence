@@ -8,6 +8,7 @@ export interface ProfileType {
 	user: userType;
 	level_P: number;
 	barPourcentage: number;
+	isfriend: boolean
 }
 
 export const useFriend = (id: string) => {
@@ -16,7 +17,8 @@ export const useFriend = (id: string) => {
 	useEffect(() => {
 		const getFriend = async () => {
 			try {
-				const res = await axios.post("http://localhost:4000/getFriendProfile", {id},{
+				console.log("id------------", id);
+				const res = await axios.post("http://localhost:4000/getFriendProfile", { id }, {
 					withCredentials: true,
 				})
 				console.log("success", res.data);
@@ -26,7 +28,7 @@ export const useFriend = (id: string) => {
 			}
 		}
 		getFriend();
-	}, []);
-	
-	return {friend, SetFriend}
+	}, [id]);
+
+	return { friend, SetFriend }
 }

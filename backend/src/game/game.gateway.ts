@@ -3,7 +3,7 @@ import { Server, Socket } from 'socket.io';
 import { GameService } from './game.service';
 import { JwtService } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
-import { OnEvent } from '@nestjs/event-emitter';
+import { EventEmitter2, OnEvent } from '@nestjs/event-emitter';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { ForbiddenException, UseGuards } from '@nestjs/common';
 import { FortyTwoGuard } from 'src/auth/tools/Guards';
@@ -14,7 +14,8 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
     constructor(private readonly gameService: GameService,
         private jwt: JwtService,
         private config: ConfigService,
-        private prisma: PrismaService) {
+        private prisma: PrismaService,
+        private event: EventEmitter2) {
         setInterval(() => this.matchPlayers(), 1000);
     }
 
@@ -40,12 +41,12 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
             catch (e) {
                 client.emit('redirect', this.config.get('LOGIN_URL'));
                 client.disconnect();
-                return ;
+                return;
             }
-            if(!payload || !payload.id) {
+            if (!payload || !payload.id) {
                 client.emit('redirect', this.config.get('LOGIN_URL'));
                 client.disconnect();
-                return ;
+                return;
             }
             if (payload && payload.id) {
                 console.log(`Client connected: ${payload.id} Socket: ${client.id}`);
@@ -63,21 +64,22 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
                             status: 'INGAME',
                         }
                     });
+                    this.event.emit('StatusEvent', { id: payload.id, status: 'INGAME', socket: client.id });
                 }
             }
         }
         else {
             client.emit('redirect', this.config.get('LOGIN_URL'));
             client.disconnect();
-            return ;
+            return;
         }
     }
 
     async handleDisconnect(client: Socket) {
         let cookie: string;
         let payload: any;
-        if(!this.connectedClients.has(this.getByValue(this.connectedClients, client)))
-            return ;
+        if (!this.connectedClients.has(this.getByValue(this.connectedClients, client)))
+            return;
         if (client.request.headers.cookie) {
             cookie = await this.parseCookies(client.request.headers.cookie);
             payload = await this.jwt.verifyAsync(
@@ -88,7 +90,7 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
             );
             if (payload.id) {
                 console.log(`Client disconnected: ${payload.id} Socket: ${client.id}`);
-                if(this.gameService.Queue.get(payload.id) && this.gameService.Queue.get(payload.id).gameType === 'Bot') {
+                if (this.gameService.Queue.get(payload.id) && this.gameService.Queue.get(payload.id).gameType === 'Bot') {
                     this.gameService.Queue.get(payload.id).status = 'finished';
                 }
                 else if (this.gameService.Queue.get(payload.id) && this.gameService.Queue.get(payload.id).status === 'playing' && this.gameService.Queue.get(payload.id).gameType === 'Live') {
@@ -134,9 +136,10 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
                             id: payload.id,
                         },
                         data: {
-                            status: 'OFFLINE',
+                            status: 'ONLINE',
                         },
                     });
+                    this.event.emit('StatusEvent', { id: payload.id, status: 'ONLINE', socket: client.id });
                     this.gameService.endgameForStatus(payload.id);
                 }
             }
@@ -277,7 +280,7 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
                     break;
                 }
             }
-            if(this.gameService.Queue.get(player1).gameMode === 'hidden') {
+            if (this.gameService.Queue.get(player1).gameMode === 'hidden') {
                 if (this.gameService.Queue.get(player1).gameData.ball.x < this.gameService.Queue.get(player1).gameData.canvasWidth / 3 ||
                     this.gameService.Queue.get(player1).gameData.ball.x > this.gameService.Queue.get(player1).gameData.canvasWidth - (this.gameService.Queue.get(player1).gameData.canvasWidth / 3)) {
                     this.gameService.Queue.get(player1).gameData.ball.pos = 0;
@@ -403,8 +406,8 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
     // }
     @SubscribeMessage('gameMode')
     async game(client: Socket, data) {
-        if(!this.connectedClients.has(this.getByValue(this.connectedClients, client)))
-            return ;
+        if (!this.connectedClients.has(this.getByValue(this.connectedClients, client)))
+            return;
         const gameData = {
             Socket: client,
             gameType: data.type,

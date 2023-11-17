@@ -2,14 +2,15 @@
 
 import Image from "next/image";
 import Chatmsg from "@/components/Chatmsg";
-import { useChat } from "@/hooks/useChat";
+import { ChatType, useChat } from "@/hooks/useChat";
 import { ChatSettings } from "@/components/ChatSettings";
 import { IoSend } from "react-icons/io5";
 import { useRooms } from "@/hooks/useRooms";
 import { usePathname } from "next/navigation";
-import { useEffect, useRef, useLayoutEffect } from "react";
+import { useState, useEffect, useRef, useLayoutEffect } from "react";
 import JoinRooms from "@/components/JoinRooms";
 import { useRoomInfo } from "@/hooks/useRoomInfo";
+import { FriendType } from "@/hooks/useRooms";
 
 const Convo = ({ params }: { params: any }) => {
   const {
@@ -26,29 +27,28 @@ const Convo = ({ params }: { params: any }) => {
     socket,
     handleKeyDown,
   } = useChat(params.id);
-  const { friends, chatbar } = useRooms();
-  const {visible, id, role, r_name, r_id, dm} = useRoomInfo({friends: friends, rid: params.id, user: user.user});
+  const {visible, id, role, r_name, r_id, dm} = useRoomInfo({rid: params.id, user: user.user});
   const lastMeassgeRef = useRef<any>(null);
   const pathName = usePathname();
   let friendId;
 
   useEffect(() => {
-    getMessages(pathName.split("/").at(-1) as string);
+    if (user.user && user.user.id) 
+      getMessages(pathName.split("/").at(-1) as string);
   }, [pathName, socket]);
 
   useEffect(() => {
     if (!socket) return;
     const messageHandler = (data: any) => {
-      SetChat((prevChat) => [...prevChat!, data]);
+        SetChat((prevChat: any) => [...prevChat!, data]);
     };
 
     socket.on("message", messageHandler);
 
-    // Clean up the event listener
     return () => {
       socket.off("message", messageHandler);
     };
-  }, [socket]);
+  }, [socket, chat]);
 
   useLayoutEffect(() => {
     if (lastMeassgeRef.current) {
@@ -78,7 +78,7 @@ const Convo = ({ params }: { params: any }) => {
                 alt={"friend pic"}
                 width={40}
                 height={40}
-                className="rounded-full"
+                className="rounded-full aspect-square w-10 h-10 object-cover"
               />
               <div>
                 <h2 className="text-xl">{name || r_name}</h2>
@@ -241,7 +241,6 @@ const Convo = ({ params }: { params: any }) => {
           status="Online"
           chat={chat}
           visibility={visible as any}
-          id={id as any}
           input={input}
           user={user.user}
           rid={r_id}

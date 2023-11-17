@@ -492,18 +492,36 @@ let ChatService = exports.ChatService = class ChatService {
                 user: true,
             },
         });
+        if (payload.id === null) {
+            throw new Error('ID must not be null');
+        }
         for (let msg of message) {
-            participant = await this.prisma.participant.findFirst({
-                where: {
-                    id: msg.userId,
-                },
-            });
-            user = await this.prisma.user.findFirst({
-                where: {
-                    id: participant.uid,
-                },
-            });
-            msg = { ...msg, user: user };
+            if (msg.userId) {
+                participant = await this.prisma.participant.findFirst({
+                    where: {
+                        id: msg.userId,
+                    },
+                });
+                if (participant) {
+                    user = await this.prisma.user.findFirst({
+                        where: {
+                            id: participant.uid,
+                        },
+                    });
+                    if (user) {
+                        msg = { ...msg, user: user };
+                    }
+                    else {
+                        console.error(`User not found for participant ID: ${participant.uid}`);
+                    }
+                }
+                else {
+                    console.error(`Participant not found for user ID: ${msg.userId}`);
+                }
+            }
+            else {
+                console.error('msg.userId is null or undefined');
+            }
         }
         return message;
     }

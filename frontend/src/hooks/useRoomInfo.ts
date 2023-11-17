@@ -1,16 +1,26 @@
 import React from 'react'
 import { FriendType, useRooms } from './useRooms';
 import { userType } from '@/context/userContext';
+import { useState, useEffect } from 'react';
 
 interface RoomInfoProps {
-	friends: FriendType[] | null;
 	rid: string;
 	user: userType | null | undefined;
 }
 
-export const useRoomInfo = ({friends, rid, user}: RoomInfoProps) => {
-
+export const useRoomInfo = ({rid, user}: RoomInfoProps) => {
+	const [friends, setFriends] = useState<FriendType[]>([]);
+	const { getUsers, getRooms } = useRooms();
 	let visible, id = "", role = "USER", r_name, r_id, dm;
+	console.log("Hello from room info");
+
+	useEffect(() => {
+		const fetchData = async () => {
+		  await getUsers(friends, setFriends);
+		  await getRooms(friends, setFriends);
+		}
+		fetchData();
+	  }, [rid, getRooms, getUsers, friends]);
 
 	if (friends) {
 		friends.map((room: any) => {

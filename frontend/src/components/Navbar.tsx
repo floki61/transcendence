@@ -31,9 +31,9 @@ export default function Navbar() {
 				withCredentials: true,
 			})
 			const data = res.data;
-			console.log("success de profile", res.data.id);
+			console.log("success de profile", res.data.user.id);
 			username.current.value = '';
-			router.push(`/${data.id}`)
+			router.push(`/${data.user.id}`)
 		} catch (error) {
 			console.log("getProfile failed", error);
 		}
@@ -71,7 +71,7 @@ export default function Navbar() {
 							  alt={"floki"}
 							  width={30}
 							  height={30}
-							  className="object-fill"
+							  className="rounded-full aspect-square w-7 h-7 object-cover"
 						  />
 					  </Link>
 				  </div>

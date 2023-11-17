@@ -1,4 +1,4 @@
-import { Injectable, UnauthorizedException } from '@nestjs/common';
+import { Injectable, UnauthorizedException, HttpException, HttpStatus } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 // import { MESSAGES } from '@nestjs/core/constants';
 import { JwtService } from '@nestjs/jwt';
@@ -56,9 +56,9 @@ export class UsersService {
 		});
 	}
 	async updateUserName(req, data: any) {
-		// if (await this.checkIfnameExists(data))
-		// throw new UnauthorizedException('Username already exists');«
-		// throw new HttpException('Username already exists', HttpStatus.BAD_REQUEST);
+		if (await this.checkIfnameExists(data))
+			return "Username already exists";
+
 		return await this.prisma.user.update({
 			where: {
 				id: req.user.id,
@@ -132,6 +132,16 @@ export class UsersService {
 		return null;
 	}
 
+	async sendPlayRequest(userId: string, friendId: string) {
+		console.log({ userId, friendId });
+		const user = await this.prisma.user.findFirst({
+			where: {
+				id: userId,
+			}
+		});
+		return { user };
+	}
+
 	async sendFriendRequest(userId: string, friendId: string) {
 		console.log({ userId, friendId });
 		const friendrequest = await this.prisma.friendShip.create({
@@ -140,7 +150,12 @@ export class UsersService {
 				friendId,
 			}
 		});
-		return friendrequest;
+		const user = await this.prisma.user.findFirst({
+			where: {
+				id: userId,
+			}
+		});
+		return { friendrequest, user };
 	}
 
 	async cancelFriendRequest(userId: string, friendId: string) {
@@ -226,6 +241,14 @@ export class UsersService {
 			data: {
 				status: 'REJECTED'
 			}
+		});
+		await this.prisma.friendShip.delete({
+			where: {
+				userId_friendId: {
+					userId: friendId,
+					friendId: userId,
+				}
+			},
 		});
 	}
 
@@ -368,29 +391,82 @@ export class UsersService {
 	}
 
 	async getFriendRequests(userId: string) {
-		return await this.prisma.friendShip.findMany({
+		let friendrequest = await this.prisma.friendShip.findMany({
 			where: {
 				friendId: userId,
 				status: 'PENDING',
 			},
+			include: {
+				user: true,
+			},
 		});
+		// for (let i = 0; i < friendrequest.length; i++) {
+		// 	let friend = friendrequest[i];
+		// 	let user = await this.prisma.user.findUnique({
+		// 		where: {
+		// 			id: friend.userId,
+		// 		},
+		// 	});
+		// 	delete user.status;
+		// 	friendrequest[i] = { ...friend, ...user };
+		// }
+		return friendrequest;
 	}
 
-	async getFriendProfile(userId: string) {
+	async getFriendProfile(userId: string, id: string) {
 		const user = await this.prisma.user.findUnique({
 			where: {
 				id: userId,
 			},
 		});
-		return { user, ...await this.getLevelP(user.level) };
+		if (!user) {
+			console.log("hnaa", userId)
+			throw new HttpException('User not found', 404);
+		}
+		const friendship = await this.prisma.friendShip.findFirst({
+			where: {
+				OR: [
+					{
+						userId,
+						friendId: id,
+					},
+					{
+						userId: id,
+						friendId: userId,
+					},
+				],
+			},
+		});
+		console.log({ user, ...await this.getLevelP(user.level), isfriend: friendship ? (friendship.status === 'ACCEPTED' ? 'friend' : 'cancel') : 'notfriend' })
+		return { user, ...await this.getLevelP(user.level), isfriend: friendship ? (friendship.status === 'ACCEPTED' ? 'friend' : 'cancel') : 'notfriend' };
 	}
 
-	async getFriendProfileWithUserName(userName: string) {
-		return await this.prisma.user.findFirst({
+	async getFriendProfileWithUserName(userName: string, id: string) {
+		const user = await this.prisma.user.findFirst({
 			where: {
 				userName,
 			},
 		});
+		if (!user) {
+			console.log("machi hna")
+			throw new HttpException('User not found', 404);
+		}
+		const friendship = await this.prisma.friendShip.findFirst({
+			where: {
+				OR: [
+					{
+						userId: user.id,
+						friendId: id,
+					},
+					{
+						userId: id,
+						friendId: user.id,
+					},
+				],
+			},
+		});
+		console.log({ user, ...await this.getLevelP(user.level), isfriend: friendship ? (friendship.status === 'ACCEPTED' ? 'friend' : 'cancel') : 'notfriend' })
+		return { user, ...await this.getLevelP(user.level), isfriend: friendship ? (friendship.status === 'ACCEPTED' ? 'friend' : 'cancel') : 'notfriend' };
 	}
 
 	async getAllUsers() {
@@ -497,4 +573,49 @@ export class UsersService {
 		});
 		return achievements;
 	}
+
+	async getLeaderboard(body: any) {
+		const users = await this.prisma.user.findMany({
+			orderBy: {
+				level: 'desc',
+			},
+			include: {
+				wins: true,
+				loses: true,
+			},
+		});
+
+		for (let i = 0; i < users.length; i++) {
+			const user = users[i];
+			const levelInfo = await this.getLevelP(user.level);
+
+			const games = await this.prisma.game.findMany({
+				where: {
+					OR: [
+						{ winnerId: user.id },
+						{ loserId: user.id },
+					],
+				},
+			});
+
+			let stats = {
+				MP: 0,
+				W: 0,
+				L: 0,
+				GS: 0,
+				GC: 0,
+			};
+
+			if (games.length > 0) {
+				stats.MP = games.length;
+				stats.W = games.filter(game => game.winnerId === user.id).length;
+				stats.L = stats.MP - stats.W;
+				stats.GS = games.reduce((total, game) => total + (game.winnerId === user.id ? game.player1Score : game.player2Score), 0);
+				stats.GC = games.reduce((total, game) => total + (game.winnerId === user.id ? game.player2Score : game.player1Score), 0);
+			}
+			users[i] = { ...user, ...levelInfo, ...stats };
+		}
+		return users;
+	}
+
 }

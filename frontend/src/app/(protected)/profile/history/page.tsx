@@ -8,7 +8,6 @@ import { useState, useEffect, useContext } from "react";
 export default function page() {
   const user = useContext(UserContext);
   const {stats, SetStats, getStats } = useStats();
-  const [iter, SetIter] = useState(0);
 
   useEffect(() => {
     if (user.user) {
@@ -25,7 +24,7 @@ export default function page() {
     return (
       <div className="h-full w-full py-6 px-16">
         <div className="h-1/4 w-full ">
-          {stats && stats.gamestats?.length > 0 && iter < 4 && stats.gamestats.map((stat, index) => (
+          {stats && stats.gamestats?.length > 0 && stats.gamestats.map((stat, index) => (
             <HistoryPanel
               user={user.user}
               mode={stat.mode}
@@ -34,8 +33,7 @@ export default function page() {
               userScore={stat.player1Score}
               oppScore={stat.player2Score}
               winner={stat.winnerId}
-              iter={iter}
-              SetIter={SetIter}
+              loser={stat.loserId}
             />
           ))}
         </div>
