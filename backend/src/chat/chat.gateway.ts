@@ -49,10 +49,6 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
 					client.join(room.id);
 				});
 			}
-			// const usr = await this.chatService.findOne(payload.id);
-			// if (!(usr.status === 'INGAME'))
-			// await this.chatService.updateStatus(1, payload.id);
-			// console.log("---------- usr : ", usr.status, usr.id);
 		}
 		else {
 			client.disconnect();
@@ -72,9 +68,6 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
 			);
 			if (payload.id) {
 				this.map.delete(payload.id);
-				// const usr = await this.chatService.findOne(payload.id);
-				// await this.chatService.updateStatus(0, payload.id);
-				// console.log("out usr : ", usr.status, usr.id);
 			}
 		}
 		const rooms = this.chatService.getMyRooms(payload);
