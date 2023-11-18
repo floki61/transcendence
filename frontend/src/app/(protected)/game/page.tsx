@@ -7,7 +7,7 @@ export default function page() {
 
    return (
       <GameProvider>
-         <div className="flex justify-center">
+         <div>
             <Game />
          </div>
       </GameProvider>
