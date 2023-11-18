@@ -25,7 +25,7 @@ export class UsersGateway implements OnGatewayConnection, OnGatewayDisconnect {
 	ingame: Map<string, string> = new Map();
 
 	async handleConnection(client: any, ...args: any[]) {
-		console.log('client 1', client.id);
+		// console.log('client 1', client.id);
 
 		let cookie: string;
 		let payload: any;
@@ -41,7 +41,7 @@ export class UsersGateway implements OnGatewayConnection, OnGatewayDisconnect {
 				client.join(payload.id);
 				this.map.set(client, payload.id);
 				// this.chatService.map.set(payload.id, client);
-				console.log('payload.sub', payload.id, 'added in array', this.map.values());
+				// console.log('payload.sub', payload.id, 'added in array', this.map.values());
 				//right if payload.id is in array then update status...
 				if (this.findKeyByValue(this.ingame, payload.id) === undefined) {
 					await this.prisma.user.update({
@@ -69,7 +69,7 @@ export class UsersGateway implements OnGatewayConnection, OnGatewayDisconnect {
 	}
 
 	async handleDisconnect(client: any) {
-		console.log('client 2', client.id);
+		// console.log('client 2', client.id);
 		let cookie: string;
 		let payload: any;
 		if (client.request.headers.cookie) {
@@ -83,7 +83,7 @@ export class UsersGateway implements OnGatewayConnection, OnGatewayDisconnect {
 			if (payload.id) {
 				this.map.delete(client);
 				// this.chatService.map.delete(payload.id);
-				console.log('payload.sub', payload.id, 'removed from array', this.map.values());
+				// console.log('payload.sub', payload.id, 'removed from array', this.map.values());
 				if (this.findKeyByValue(this.map, payload.id) === undefined) {
 					await this.prisma.user.update({
 						where: {

@@ -21,18 +21,17 @@ export const NotifBar: React.FC<NotifBarProps> = ({
 }) => {
 	// const router = useRouter(); // Initialize the useRouter hook
 	const AcceptRequest = async () => {
-		if(requestType === 'play'){
+		if (requestType === 'play'){
 			try {
 				const res = await axios.post("http://localhost:4000/acceptPlayRequest", {friendId},{
 					withCredentials: true,
 				})
 				console.log("success", res.data);
-			} catch (error) {
+			}
+			catch (error) {
 				console.log("Accept Request.", error);
 			}
-			// window.location.href = 'http://localhost:3000/game?type=Friend&playerId=${friendId}';
 			window.location.href = `http://localhost:3000/game?type=Friend&mode=simple&playerId=${friendId}`;
-			// router.push(`http://localhost:3000/game?type=Bot`);
 		}
 		else {
 			try {
@@ -47,13 +46,27 @@ export const NotifBar: React.FC<NotifBarProps> = ({
 	}
 
 	const DeclineRequest = async () => {
-		try {
-			const res = await axios.post("http://localhost:4000/rejecte", {friendId},{
-				withCredentials: true,
-			})
-			console.log("success", res.data);
-		} catch (error) {
-			console.log("Decline Request.", error);
+		if (requestType === 'play'){
+			try {
+				const res = await axios.post("http://localhost:4000/rejectPlayRequest", {friendId},{
+					withCredentials: true,
+				})
+				console.log("success", res.data);
+			}
+			catch (error) {
+				console.log("declinet Request.", error);
+			}
+		}
+		else {
+			try {
+				const res = await axios.post("http://localhost:4000/rejecte", {friendId},{
+					withCredentials: true,
+				})
+				console.log("success", res.data);
+			}
+			catch (error) {
+				console.log("Decline Request.", error);
+			}
 		}
 	}
 

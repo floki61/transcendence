@@ -50,14 +50,8 @@ export class GameController {
 	@Post('rejectPlayRequest')
 	async rejectPlayRequest(@Body() body: any, @Req() req) {
 		if (req.user.id == body.friendId)
-			throw new HttpException('You can\'t reject play request from yourself', HttpStatus.BAD_REQUEST);
-		if (!await this.userservice.checkFriendship(req.user.id, body.friendId))
-			throw new HttpException('You are not friends', HttpStatus.BAD_REQUEST);
-		if (await this.gameService.checkingIfInGame(req.user.id))
-			throw new HttpException('You are in game', HttpStatus.BAD_REQUEST);
-		if (await this.gameService.checkingIfInGame(body.friendId))
-			throw new HttpException('Your friend is in game', HttpStatus.BAD_REQUEST);
-		this.gamegtw.server.to(body.friendId).emit('PlayRequestRejected', req.user.id);
+		throw new HttpException('You can\'t reject play request from yourself', HttpStatus.BAD_REQUEST);
+		this.usergtw.server.to(body.friendId).emit('PlayRequestRejected', req.user);
 		return { message: 'Play request rejected successfully' };
 	}
 }

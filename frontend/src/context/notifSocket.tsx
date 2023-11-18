@@ -34,27 +34,14 @@ export const NotifProvider = ({ children }: { children: React.ReactNode }) => {
 		if (!socket) return;
 
 		socket.off("friendRequest").on("friendRequest", (data) => {
-			// if (data.type === "friendRequest")
 			toast(
-		<NotifBar
-			picture={data.user.picture}
-			userName={data.user.userName}
-			friendId={data.user.id}
-			requestType="friend"
-		/>
+				<NotifBar
+					picture={data.user.picture}
+					userName={data.user.userName}
+					friendId={data.user.id}
+					requestType="friend"
+				/>
 			);
-			
-			// else if (data.type === "PlayRequest")
-			// 	toast(<div>
-			// 	<Image
-			// 		src={data.user.picture}
-			// 		alt="friend pic"
-			// 		height={30}
-			// 		width={30}
-			// 		className="rounded-full"
-			// 	/>
-			// 	<span>{data.user.userName} sent you a friend request</span>
-			// 	</div>)
 		});
 		socket.off("PlayRequest").on("PlayRequest", (data) => {
 			toast(
@@ -66,8 +53,13 @@ export const NotifProvider = ({ children }: { children: React.ReactNode }) => {
 					/>
 			);
 		});
-		socket.off("PlayRequestAccepted").on("PlayRequestAccepted", (data) => {
-			window.location.href = `http://localhost:3000/game?type=Friend&mode=simple&playerId=${data}`;
+		socket.off("PlayRequestAccepted").on("PlayRequestAccepted", (friendId) => {
+			window.location.href = `http://localhost:3000/game?type=Friend&mode=simple&playerId=${friendId}`;
+		});
+		socket.off("PlayRequestRejected").on("PlayRequestRejected", (friendData) => {
+			toast(
+				<span>{friendData.userName} rejecte your play request</span>
+			);
 		});
 		
 	}, [socket]);
