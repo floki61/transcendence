@@ -55,7 +55,7 @@ export class UsersController {
     @UseGuards(JwtAuthGuard)
     @Post('sendFriendRequest')
     async sendFriendRequest(@Body() body: any, @Req() req) {
-        console.log('------------------------------------',req.body)
+        console.log('------------------------------------', req.body)
         if (req.user.id == req.body.friendId)
             throw new HttpException('You can\'t send friend request to yourself', HttpStatus.BAD_REQUEST);
         if (await this.userservice.checkFriendship(req.user.id, req.body.friendId))
@@ -190,7 +190,7 @@ export class UsersController {
     @Post('getStats')
     async getStats(@Req() req, @Body() body: any) {
         const stats = await this.userservice.getStats(body);
-        console.log({ stats });
+        // console.log({ stats });
         return stats;
     }
 
