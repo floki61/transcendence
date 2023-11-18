@@ -517,7 +517,6 @@ export class UsersService {
 				]
 			},
 		});
-		console.log(userId, id)
 		// console.log({ user, ...await this.getLevelP(user.level), isfriend: friendship ? (friendship.status === 'ACCEPTED' ? 'friend' : 'cancel') : 'notfriend' })
 		return { user, ...await this.getLevelP(user.level), isfriend: friendship ? (friendship.status === 'ACCEPTED' ? 'friend' : 'cancel') : 'notfriend', ifBlocked: await this.getIfBlocked(userId, id) };
 	}
@@ -538,6 +537,7 @@ export class UsersService {
 				friendId: id,
 			},
 		});
+		console.log('isfriend:', friendship ? (friendship.status === 'ACCEPTED' ? 'friend' : 'cancel') : 'notfriend')
 		return { user, ...await this.getLevelP(user.level), isfriend: friendship ? (friendship.status === 'ACCEPTED' ? 'friend' : 'cancel') : 'notfriend', ifBlocked: await this.getIfBlocked(user.id, id) };
 	}
 
@@ -690,4 +690,16 @@ export class UsersService {
 		return users;
 	}
 
+	async getBlockedList(userId: string) {
+		const blockedList = await this.prisma.block.findMany({
+			where: {
+				uid: userId,
+			},
+			include: {
+				friend: true,
+			},
+		});
+		console.log('eheh', blockedList);
+		return blockedList;
+	}
 }
