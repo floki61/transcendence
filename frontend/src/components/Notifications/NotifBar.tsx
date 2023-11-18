@@ -71,14 +71,14 @@ export const NotifBar: React.FC<NotifBarProps> = ({
 	}
 
   return (
-	<div className='flex flex-col gap-2'>
+	<div className='flex h-full flex-col gap-2'>
 		<div className='flex items-center gap-2'>
 			<Image
-				src={picture}
+				src={picture || "placeholder.jpg"}
 				alt="friend pic"
 				height={30}
 				width={30}
-				className="rounded-full"
+				className="rounded-full aspect-square w-8 h-8 object-cover"
 			/>
 			<span>{userName} sent you a {requestType} request</span>
 		</div>
