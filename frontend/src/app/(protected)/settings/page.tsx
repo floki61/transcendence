@@ -4,12 +4,10 @@ import Button from "@/components/Button";
 import Image from "next/image";
 import axios from "axios";
 import { useEffect, useState, useRef, useContext } from "react";
-import Link from "next/link";
 import QrcodeDiv from "@/components/QrcodeDiv";
 import Disable2fa from "@/components/Disable2fa";
 import { UserContext } from "@/context/userContext";
 import { userType } from "@/context/userContext";
-import { toASCII } from "punycode";
 import {toast} from 'react-toastify'; 
 
 export interface qrcodeType {
@@ -25,12 +23,13 @@ export default function page() {
       const res = await axios.post("http://localhost:4000/userSettings", user.user, {
         withCredentials: true,
       }); // backend API endpoint
-      console.log("saved with : ", user.user);
-      if (res.data === "Username already exists")
-        toast.error(res.data);
-      handleSucces();
-    } catch (error) {
-      console.error("I catched : ", error);
+      console.log("saved with : ", res);
+      if (!res.data)
+        toast.error("Username already exists");
+      else
+        toast.success("Changes saved successfully");
+    } catch (error: any) {
+      console.error("I catched : ", error.response.data.message);
     }
   };
 

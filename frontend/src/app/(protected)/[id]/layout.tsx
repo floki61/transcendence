@@ -104,11 +104,23 @@ export default function layout({ params, children }: { params: any; children: Re
 			const res = axios.post("http://localhost:4000/unfriend", { friendId: params.id }, {
 				withCredentials: true,
 			})
-			console.log("success Unfriend");
+			// console.log("success Unfriend");
 			SetAccept(false);
 			SetRequest(false);
 		} catch (error) {
 			console.log("Unfriend failed", error);
+		}
+	}
+	const Block = async () => {
+		try {
+			const res = axios.post("http://localhost:4000/blockUser", { friendId: params.id }, {
+				withCredentials: true,
+			})
+			console.log("success Block");
+			// SetAccept(false);
+			// SetRequest(false);
+		} catch (error) {
+			console.log("Block failed", error);
 		}
 	}
 
@@ -118,17 +130,15 @@ export default function layout({ params, children }: { params: any; children: Re
 				const res = await axios.post("http://localhost:4000/getFriendProfile", { id: params.id }, {
 					withCredentials: true,
 				})
-				console.log("success", res.data);
+				// console.log("success", res.data);
 				SetFriend(res.data);
 			} catch (error) {
 				console.log("get Friend profile failed.", error);
 			}
 		}
 		getFriend();
-	}, [SendRequest, CancelRequest, DeclineRequest, AcceptRequest, Unfriend]);
+	}, [SendRequest, CancelRequest, DeclineRequest, AcceptRequest, Unfriend, Block]);
 
-	console.log({ friend });
-	console.log(params);
 	if (friend && friend.user)
 		friend.user.fullName = friend.user.firstName + " " + friend.user.lastName;
 
@@ -143,7 +153,7 @@ export default function layout({ params, children }: { params: any; children: Re
 		}
 	}, [invites])
 
-	console.log(friend?.isfriend, " ", accept, " ", request);
+	// console.log(friend?.isfriend, " ", accept, " ", request);
 
 	return (
 		<div className='h-full w-full p-10 overflow-hidden'>
@@ -169,7 +179,7 @@ export default function layout({ params, children }: { params: any; children: Re
 												)}
 												{options && (
 													<div className='flex w-full justify-between'>
-														<ProfileButton color="bg-red-600" text="Block" icon={ImBlocked} classname='w-[48%]'/>
+														<ProfileButton color="bg-red-600" text="Block" icon={ImBlocked} classname='w-[48%]' action={Block}/>
 														<div onClick={() => {SetOptions(!options)}}>
 															<HiDotsVertical size={30} />
 														</div>
@@ -194,7 +204,7 @@ export default function layout({ params, children }: { params: any; children: Re
 									<ProfileButton color="bg-[#6A6666]" text="Cancel" icon={MdOutlineCancel} action={CancelRequest} classname='w-1/5 mb-2'/>
 								</div>
 							)}
-							{accept && request && (
+							{params.id !== user.user?.id && accept && request && (
 								<div className='flex justify-end gap-3'>
 									<ProfileButton color="bg-primecl" text="Accept" icon={MdPeopleAlt} action={AcceptRequest} classname='w-1/5 mb-2'/>
 									<ProfileButton color="bg-[#6A6666]" text="Decline" icon={MdOutlineCancel} action={DeclineRequest} classname='w-1/5 mb-2'/>

@@ -81,7 +81,7 @@ export default function page(
                 </p>
               </div>
             </div>
-            <div className="w-[25%] text-center">
+            {/* <div className="w-[25%] text-center">
               {followers && followers.map((follower, index) => (
                 <div key={index} className="w-full bg-primecl debug h-full flex items-center gap-2">
                     <Image
@@ -95,7 +95,7 @@ export default function page(
                     <span className={`${follower.user.status === "OFFLINE" ? "text-red-600" : "text-[#00A83F]"}`}>( {follower.user.status} )</span>
                 </div>
               ))}
-            </div>
+            </div> */}
           </div>
           <div className="flex-1 flex flex-col items-center relative">
             <Image

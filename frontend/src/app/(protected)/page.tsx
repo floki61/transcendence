@@ -48,7 +48,7 @@ export default function Home() {
                 priority
               />
             </div>
-            <div className='flex flex-col items-center justify-around px-4 w-[40%] bg-gradient-to-t from-[#0B2931] from-0% to-[#020C0E] to-10% rounded-br-xl border-l-4 border-primecl'>
+            <div className='flex flex-col items-center justify-around px-4 w-[40%] bg-gradient-to-t from-[#0B2931] from-0% to-[#020C0E] to-10% rounded-br-xl border-l-4 border-segundcl'>
               <h3 className='text-3xl'>START A GAME NOW</h3>
               <p className='text-xl px-8'>Play a quick game versus a random opponent on the default mode</p>
               <Link
@@ -69,6 +69,7 @@ export default function Home() {
               <div key={index} className='w-full h-1/5 p-2'>
                 <NotifBar
                   picture={invite.user.picture}
+                  requestType='friend'
                   userName={invite.user.userName}
                   friendId={(invite.friendId !== user.user?.id) ? invite.friendId : invite.userId}
                 />
