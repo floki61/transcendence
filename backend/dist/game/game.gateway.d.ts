@@ -3,13 +3,15 @@ import { Server, Socket } from 'socket.io';
 import { GameService } from './game.service';
 import { JwtService } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
+import { EventEmitter2 } from '@nestjs/event-emitter';
 import { PrismaService } from 'src/prisma/prisma.service';
 export declare class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
     private readonly gameService;
     private jwt;
     private config;
     private prisma;
-    constructor(gameService: GameService, jwt: JwtService, config: ConfigService, prisma: PrismaService);
+    private event;
+    constructor(gameService: GameService, jwt: JwtService, config: ConfigService, prisma: PrismaService, event: EventEmitter2);
     server: Server;
     private gameStarted;
     private connectedClients;

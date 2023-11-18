@@ -18,6 +18,7 @@ export const GameProvider = ({ children }:{children: React.ReactNode}) => {
     const query = useSearchParams();
     const type = query.get('type');
     const mode = query.get('mode');
+    const friendId = query.get('playerId') || '';
  
     useEffect(() => {
         const newSocket = io('http://localhost:4000/game', {
@@ -35,6 +36,7 @@ export const GameProvider = ({ children }:{children: React.ReactNode}) => {
         const game = {
             type,
             mode,
+            friendId,
         }
         socket.on('connect', () => {
             socket.emit('gameMode', game);

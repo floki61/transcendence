@@ -93,7 +93,7 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
                 if (this.gameService.Queue.get(payload.id) && this.gameService.Queue.get(payload.id).gameType === 'Bot') {
                     this.gameService.Queue.get(payload.id).status = 'finished';
                 }
-                else if (this.gameService.Queue.get(payload.id) && this.gameService.Queue.get(payload.id).status === 'playing' && this.gameService.Queue.get(payload.id).gameType === 'Live') {
+                else if (this.gameService.Queue.get(payload.id) && this.gameService.Queue.get(payload.id).status === 'playing') {
                     var player1;
                     var player2;
                     if (this.gameService.Queue.get(payload.id).leader) {
@@ -176,7 +176,7 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
                     this.gameService.Queue.get(id).Socket.emit('gameResult', 'Loser');
             }
         }
-        else if (this.gameService.Queue.get(id).gameType === 'Live') {
+        else {
             if (this.gameService.Queue.get(id).gameData.score.left === 5) {
                 if (this.gameService.Queue.get(id))
                     this.gameService.Queue.get(id).Socket.emit('gameResult', 'Winner');
@@ -350,6 +350,7 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
     // }
 
     async matchPlayers() {
+        // console.log('--------------',this.matchmakingQueue,'-----------------------');
         while (this.matchmakingQueue.length >= 2) {
             let player1 = null;
             let player2 = null;
@@ -404,6 +405,7 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
     //       friendSocket.emit('playRequest', { playerId });
     //     }
     // }
+
     @SubscribeMessage('gameMode')
     async game(client: Socket, data) {
         if (!this.connectedClients.has(this.getByValue(this.connectedClients, client)))
@@ -414,7 +416,7 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
             gameMode: data.mode,
             status: 'waiting',
             gameData: this.gameService.getGameData(),
-            playWith: '',
+            playWith: data.friendId,
             leader: false,
             gameId: '',
         }
@@ -424,16 +426,24 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
             this.startBotGame(playerId);
         else if (data.type === 'Live')
             this.matchmakingQueue.push(playerId);
-        // else if(data.type === 'Friend') {
-        //     if(this.gameService.Queue.has(data.friendId)) {
-        //         const friendData = this.gameService.Queue.get(data.friendId);
-        //         if (friendData.gameType === 'Friend' && friendData.playWith === playerId) {
-        //             this.startFriendGame(playerId, data.friendId);
-        //         }
-        //     }
-        //     else {
-        //         // this.sendPlayRequest(playerId, data.friendId);
-        //     }
-        // }
+        else if(data.type === 'Friend') {
+            if(this.gameService.Queue.has(data.friendId)) {
+                const friendData = this.gameService.Queue.get(data.friendId);
+                if (friendData.gameType === 'Friend' && friendData.playWith === playerId) {
+                    var game = await this.prisma.game.create({
+                        data: {
+                            mode: this.gameService.Queue.get(playerId).gameMode,
+                            player1Id: playerId,
+                            player2Id: gameData.playWith,
+                            player1Score: 0,
+                            player2Score: 0,
+                        }
+                    })
+                    this.gameService.Queue.get(playerId).gameId = game.id;
+                    this.gameService.Queue.get(gameData.playWith).gameId = game.id;
+                    this.startLiveGame(playerId, data.friendId);
+                }
+            }
+        }
     }
 }
