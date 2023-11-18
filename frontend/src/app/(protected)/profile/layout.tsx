@@ -7,7 +7,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import axios from "axios";
-import { InviteType, ProfileType } from "../[id]/layout";
+import { InviteType, ProfileType } from "../user/[id]/layout";
 
 export default function page(
   { children }: { children: React.ReactNode },
@@ -67,7 +67,7 @@ export default function page(
                 <div className="flex justify-between">
                   <h2 className="text-3xl">{user.user.fullName}</h2>
                   <Link href="/settings">
-                    <FaEdit size={30}/>
+                    <FaEdit size={30} />
                   </Link>
                 </div>
                 <h3 className="text-xl">{user.user.userName}</h3>
@@ -81,7 +81,7 @@ export default function page(
                 </p>
               </div>
             </div>
-            <div className="w-[25%] text-center">
+            {/* <div className="w-[25%] text-center">
               {followers && followers.map((follower, index) => (
                 <div key={index} className="w-full bg-primecl debug h-full flex items-center gap-2">
                     <Image
@@ -95,7 +95,7 @@ export default function page(
                     <span className={`${follower.user.status === "OFFLINE" ? "text-red-600" : "text-[#00A83F]"}`}>( {follower.user.status} )</span>
                 </div>
               ))}
-            </div>
+            </div> */}
           </div>
           <div className="flex-1 flex flex-col items-center relative">
             <Image

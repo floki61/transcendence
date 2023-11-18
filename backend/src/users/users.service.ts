@@ -145,7 +145,6 @@ export class UsersService {
 	}
 
 	async sendFriendRequest(userId: string, friendId: string) {
-		console.log({ userId, friendId });
 		const friendrequest = await this.prisma.friendShip.create({
 			data: {
 				userId,
@@ -157,6 +156,7 @@ export class UsersService {
 				id: userId,
 			}
 		});
+		console.log({ friendrequest, user });
 		return { friendrequest, user };
 	}
 
@@ -255,7 +255,7 @@ export class UsersService {
 					friendId: userId,
 				}
 			},
-		});
+		}); 
 	}
 
 	async unfriend(userId: string, friendId: string) {
@@ -505,11 +505,18 @@ export class UsersService {
 		}
 		const friendship = await this.prisma.friendShip.findFirst({
 			where: {
-				userId,
-				friendId: id,
+				OR: [
+					{
+						userId: id,
+						friendId: userId,
+					},
+					{
+						userId,
+						friendId: id,
+					}
+				]
 			},
 		});
-		console.log('isfriend:', friendship ? (friendship.status === 'ACCEPTED' ? 'friend' : 'cancel') : 'notfriend')
 		// console.log({ user, ...await this.getLevelP(user.level), isfriend: friendship ? (friendship.status === 'ACCEPTED' ? 'friend' : 'cancel') : 'notfriend' })
 		return { user, ...await this.getLevelP(user.level), isfriend: friendship ? (friendship.status === 'ACCEPTED' ? 'friend' : 'cancel') : 'notfriend', ifBlocked: await this.getIfBlocked(userId, id) };
 	}

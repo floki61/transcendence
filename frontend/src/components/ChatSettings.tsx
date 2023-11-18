@@ -17,15 +17,37 @@ export const ChatSettings: React.FC<ChatSettingsProps> = ({
 	friendId,
 }
 ) => {
-	// console.log(role);
-	// console.log(id);
+
+	const Challenge = async () => {
+		console.log(friendId);
+		try {
+			const res = await axios.post("http://localhost:4000/sendPlaydRequest", {friendId}, {
+				withCredentials: true,
+			});
+			console.log("success Challenge");
+		} catch (error) {
+			console.log("Challenge failed", error);
+		}
+	}
+	const Block = async () => {
+		try {
+			const res = axios.post("http://localhost:4000/blockUser", { friendId }, {
+				withCredentials: true,
+			})
+			console.log("success Block");
+			// SetAccept(false);
+			// SetRequest(false);
+		} catch (error) {
+			console.log("Block failed", error);
+		}
+	}
 
 	if (role === "USER" && dm) {
 		return (
 			<div className="text-white text-sm font-light border-2 border-quatrocl absolute top-10 right-3 w-full h-28 rounded-md bg-terserocl flex flex-col">
-			  <Link href={`/${friendId}`} as={`/${friendId}`} className="cursor-pointer hover:bg-segundcl rounded-t-md border-b-2 border-quatrocl w-full px-2 flex items-center h-1/3">View Profile</Link>
-			  <p className="cursor-pointer hover:bg-segundcl border-b-2 border-quatrocl w-full px-2 flex items-center h-1/3">Block</p>
-			  <p className="cursor-pointer hover:bg-segundcl rounded-b-md w-full px-2 flex items-center h-1/3">Invite</p>
+			  <Link href={`/user/${friendId}`} as={`/user/${friendId}`} className="cursor-pointer hover:bg-segundcl rounded-t-md border-b-2 border-quatrocl w-full px-2 flex items-center h-1/3">View Profile</Link>
+			  <p className="cursor-pointer hover:bg-segundcl border-b-2 border-quatrocl w-full px-2 flex items-center h-1/3" onClick={Block}>Block</p>
+			  <p className="cursor-pointer hover:bg-segundcl rounded-b-md w-full px-2 flex items-center h-1/3" onClick={Challenge}>Invite</p>
 		  </div>
 		)
 	}
@@ -34,7 +56,7 @@ export const ChatSettings: React.FC<ChatSettingsProps> = ({
 			<div className="text-white text-sm font-light border-2 border-quatrocl absolute top-10 right-3 w-full h-28 rounded-md bg-terserocl flex flex-col">
 			  <Link href={`/chat/${id}/viewParticipants`} as={`/chat/${id}/viewParticipants`} className="cursor-pointer hover:bg-segundcl rounded-t-md border-b-2 border-quatrocl w-full px-2 flex items-center h-1/2">View Participants</Link>
 			  <Link href={`/chat/${id}/leaveRoom`} as={`/chat/${id}/leaveRoom`} className="cursor-pointer hover:bg-segundcl w-full px-2 flex items-center h-1/2">Leave the room</Link>
-		  </div>
+		  	</div>
 		)
 	}
 	else if (role === "ADMIN") {
