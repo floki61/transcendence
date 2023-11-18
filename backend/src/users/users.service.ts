@@ -2,6 +2,7 @@ import { Injectable, UnauthorizedException, HttpException, HttpStatus } from '@n
 import { ConfigService } from '@nestjs/config';
 // import { MESSAGES } from '@nestjs/core/constants';
 import { JwtService } from '@nestjs/jwt';
+import { ChatService } from 'src/chat/chat.service';
 import { PrismaService } from 'src/prisma/prisma.service';
 
 
@@ -9,7 +10,8 @@ import { PrismaService } from 'src/prisma/prisma.service';
 export class UsersService {
 	constructor(private jwt: JwtService,
 		private config: ConfigService,
-		private prisma: PrismaService) { }
+		private prisma: PrismaService,
+	) { }
 
 	async getUser(idu: string) {
 		return await this.prisma.user.findUnique({
@@ -318,6 +320,31 @@ export class UsersService {
 				fid: friendId,
 			}
 		});
+		const chatroom = await this.prisma.chatRoom.findFirst({
+			where: {
+				AND: [
+					{
+						participants: {
+							some: {
+								uid: {
+									in: [userId, friendId],
+								},
+							},
+						},
+					},
+					{
+						is_DM: true
+					},
+				],
+			}
+		});
+		if (chatroom) {
+			await this.prisma.chatRoom.delete({
+				where: {
+					id: chatroom.id,
+				}
+			});
+		}
 		return block;
 	}
 
@@ -344,6 +371,9 @@ export class UsersService {
 				}
 			}
 		});
+		if (!await this.checkFriendship(userId, friendId)) {
+			await this.creatChatRoom(userId, friendId);
+		}
 		return block;
 	}
 
@@ -392,7 +422,7 @@ export class UsersService {
 		// 		id: friendRequests?.friendId
 		// 	},
 		// });
-		return {friendRequests};
+		return { friendRequests };
 	}
 
 	async getFriendRequests(userId: string) {
