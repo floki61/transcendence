@@ -64,7 +64,7 @@ export declare class UsersService {
         isDeleted: boolean;
         createdAt: Date;
         updatedAt: Date;
-    }>;
+    } | "Username already exists">;
     updateUserPhoneNumber(req: any, data: any): Promise<{
         id: string;
         userName: string;
@@ -124,13 +124,55 @@ export declare class UsersService {
     }>;
     getUserNameWithId(id: string): Promise<string>;
     getPictureWithId(id: string): Promise<string>;
+    sendPlayRequest(userId: string, friendId: string): Promise<{
+        user: {
+            id: string;
+            userName: string;
+            level: number;
+            firstName: string;
+            lastName: string;
+            status: import(".prisma/client").$Enums.Stts;
+            email: string;
+            picture: string;
+            country: string;
+            phoneNumber: string;
+            accessToken: string;
+            password: string;
+            twoFactorAuthenticationSecret: string;
+            isTwoFactorAuthenticationEnabled: boolean;
+            isDeleted: boolean;
+            createdAt: Date;
+            updatedAt: Date;
+        };
+    }>;
     sendFriendRequest(userId: string, friendId: string): Promise<{
-        id: string;
-        userId: string;
-        friendId: string;
-        status: import(".prisma/client").$Enums.Status;
-        createdAt: Date;
-        updatedAt: Date;
+        friendrequest: {
+            id: string;
+            userId: string;
+            friendId: string;
+            status: import(".prisma/client").$Enums.Status;
+            createdAt: Date;
+            updatedAt: Date;
+        };
+        user: {
+            id: string;
+            userName: string;
+            level: number;
+            firstName: string;
+            lastName: string;
+            status: import(".prisma/client").$Enums.Stts;
+            email: string;
+            picture: string;
+            country: string;
+            phoneNumber: string;
+            accessToken: string;
+            password: string;
+            twoFactorAuthenticationSecret: string;
+            isTwoFactorAuthenticationEnabled: boolean;
+            isDeleted: boolean;
+            createdAt: Date;
+            updatedAt: Date;
+        };
     }>;
     cancelFriendRequest(userId: string, friendId: string): Promise<{
         id: string;
@@ -210,15 +252,36 @@ export declare class UsersService {
         createdAt: Date;
         updatedAt: Date;
     }[]>;
-    getFriendRequests(userId: string): Promise<{
+    getFriendRequests(userId: string): Promise<({
+        user: {
+            id: string;
+            userName: string;
+            level: number;
+            firstName: string;
+            lastName: string;
+            status: import(".prisma/client").$Enums.Stts;
+            email: string;
+            picture: string;
+            country: string;
+            phoneNumber: string;
+            accessToken: string;
+            password: string;
+            twoFactorAuthenticationSecret: string;
+            isTwoFactorAuthenticationEnabled: boolean;
+            isDeleted: boolean;
+            createdAt: Date;
+            updatedAt: Date;
+        };
+    } & {
         id: string;
         userId: string;
         friendId: string;
         status: import(".prisma/client").$Enums.Status;
         createdAt: Date;
         updatedAt: Date;
-    }[]>;
-    getFriendProfile(userId: string): Promise<{
+    })[]>;
+    getFriendProfile(userId: string, id: string): Promise<{
+        isfriend: string;
         level_P: number;
         barPourcentage: any;
         user: {
@@ -241,24 +304,29 @@ export declare class UsersService {
             updatedAt: Date;
         };
     }>;
-    getFriendProfileWithUserName(userName: string): Promise<{
-        id: string;
-        userName: string;
-        level: number;
-        firstName: string;
-        lastName: string;
-        status: import(".prisma/client").$Enums.Stts;
-        email: string;
-        picture: string;
-        country: string;
-        phoneNumber: string;
-        accessToken: string;
-        password: string;
-        twoFactorAuthenticationSecret: string;
-        isTwoFactorAuthenticationEnabled: boolean;
-        isDeleted: boolean;
-        createdAt: Date;
-        updatedAt: Date;
+    getFriendProfileWithUserName(userName: string, id: string): Promise<{
+        isfriend: string;
+        level_P: number;
+        barPourcentage: any;
+        user: {
+            id: string;
+            userName: string;
+            level: number;
+            firstName: string;
+            lastName: string;
+            status: import(".prisma/client").$Enums.Stts;
+            email: string;
+            picture: string;
+            country: string;
+            phoneNumber: string;
+            accessToken: string;
+            password: string;
+            twoFactorAuthenticationSecret: string;
+            isTwoFactorAuthenticationEnabled: boolean;
+            isDeleted: boolean;
+            createdAt: Date;
+            updatedAt: Date;
+        };
     }>;
     getAllUsers(): Promise<{
         id: string;
@@ -335,4 +403,48 @@ export declare class UsersService {
         createdAt: Date;
         updatedAt: Date;
     }[]>;
+    getLeaderboard(body: any): Promise<({
+        wins: {
+            id: string;
+            mode: string;
+            player1Id: string;
+            player2Id: string;
+            player1Score: number;
+            player2Score: number;
+            winnerId: string;
+            loserId: string;
+            createdAt: Date;
+            updatedAt: Date;
+        }[];
+        loses: {
+            id: string;
+            mode: string;
+            player1Id: string;
+            player2Id: string;
+            player1Score: number;
+            player2Score: number;
+            winnerId: string;
+            loserId: string;
+            createdAt: Date;
+            updatedAt: Date;
+        }[];
+    } & {
+        id: string;
+        userName: string;
+        level: number;
+        firstName: string;
+        lastName: string;
+        status: import(".prisma/client").$Enums.Stts;
+        email: string;
+        picture: string;
+        country: string;
+        phoneNumber: string;
+        accessToken: string;
+        password: string;
+        twoFactorAuthenticationSecret: string;
+        isTwoFactorAuthenticationEnabled: boolean;
+        isDeleted: boolean;
+        createdAt: Date;
+        updatedAt: Date;
+    })[]>;
 }

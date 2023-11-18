@@ -161,6 +161,9 @@ let ChatService = exports.ChatService = class ChatService {
         if (!user) {
             throw new common_1.NotFoundException('User not found');
         }
+        if (!payload.name) {
+            throw new common_1.NotFoundException('name not found');
+        }
         var room = await this.prisma.chatRoom.create({
             data: {
                 name: payload.name,
