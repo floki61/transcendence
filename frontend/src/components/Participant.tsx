@@ -81,7 +81,7 @@ export const Participant: React.FC<ParticipantProps> = ({
 		</div>
 		{button && (
 			<div className='flex items-center justify-between gap-3 w-1/2 h-full text-sm'>
-				<Link href={`/${id}`} as={`/${id}`} className='border w-1/2 flex justify-center items-center rounded-lg bg-primecl h-1/2'>View Profile</Link>
+				<Link href={`/user/${id}`} as={`/user/${id}`} className='border w-1/2 flex justify-center items-center rounded-lg bg-primecl h-1/2'>View Profile</Link>
 				<button className='w-1/2 rounded-lg bg-primecl h-1/2 border' onClick={Challenge}>Challenge</button>
 			</div>
 		)}

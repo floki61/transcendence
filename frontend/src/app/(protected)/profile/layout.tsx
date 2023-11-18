@@ -7,7 +7,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import axios from "axios";
-import { InviteType, ProfileType } from "../[id]/layout";
+import { InviteType, ProfileType } from "../user/[id]/layout";
 
 export default function page(
   { children }: { children: React.ReactNode },
@@ -67,7 +67,7 @@ export default function page(
                 <div className="flex justify-between">
                   <h2 className="text-3xl">{user.user.fullName}</h2>
                   <Link href="/settings">
-                    <FaEdit size={30}/>
+                    <FaEdit size={30} />
                   </Link>
                 </div>
                 <h3 className="text-xl">{user.user.userName}</h3>

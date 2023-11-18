@@ -35,7 +35,7 @@ export default function Navbar() {
 			console.log("success de profile", res.data.user.id);
 			SetError("");
 			username.current.value = '';
-			router.push(`/${data.user.id}`)
+			router.push(`/user/${data.user.id}`)
 		} catch (error: any) {
 			console.log("getProfile failed", error.response.data.message);
 			username.current.value = '';
