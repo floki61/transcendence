@@ -245,13 +245,15 @@ export declare class UsersService {
     }>;
     deleteAccount(userId: string): Promise<void>;
     getFriends(userId: string): Promise<{
-        id: string;
-        userId: string;
-        friendId: string;
-        status: import(".prisma/client").$Enums.Status;
-        createdAt: Date;
-        updatedAt: Date;
-    }[]>;
+        friendRequests: {
+            id: string;
+            userId: string;
+            friendId: string;
+            status: import(".prisma/client").$Enums.Status;
+            createdAt: Date;
+            updatedAt: Date;
+        }[];
+    }>;
     getFriendRequests(userId: string): Promise<({
         user: {
             id: string;

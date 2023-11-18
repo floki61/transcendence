@@ -13,3 +13,7 @@ html, body{
 .debug>*{
   border: 1px solid blue !important;  
 }
+
+.no-scroll {
+  overflow: hidden;
+}

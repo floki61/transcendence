@@ -360,7 +360,7 @@ let UsersService = exports.UsersService = class UsersService {
                 ],
             },
         });
-        return friendRequests;
+        return { friendRequests };
     }
     async getFriendRequests(userId) {
         let friendrequest = await this.prisma.friendShip.findMany({
