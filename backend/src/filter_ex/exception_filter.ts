@@ -53,7 +53,7 @@ export class ExceptionsFilter implements ExceptionFilter {
       const status = exception.status;
       response.status(status).json({
         message: exception.message,
-        error: exception.response.error,
+        error: exception.response?.error,
         statusCode: status,
       });
     }

@@ -2,6 +2,7 @@ import { Injectable, UnauthorizedException, HttpException, HttpStatus } from '@n
 import { ConfigService } from '@nestjs/config';
 // import { MESSAGES } from '@nestjs/core/constants';
 import { JwtService } from '@nestjs/jwt';
+import { ChatService } from 'src/chat/chat.service';
 import { PrismaService } from 'src/prisma/prisma.service';
 
 
@@ -9,7 +10,8 @@ import { PrismaService } from 'src/prisma/prisma.service';
 export class UsersService {
 	constructor(private jwt: JwtService,
 		private config: ConfigService,
-		private prisma: PrismaService) { }
+		private prisma: PrismaService,
+	) { }
 
 	async getUser(idu: string) {
 		return await this.prisma.user.findUnique({
@@ -143,7 +145,6 @@ export class UsersService {
 	}
 
 	async sendFriendRequest(userId: string, friendId: string) {
-		console.log({ userId, friendId });
 		const friendrequest = await this.prisma.friendShip.create({
 			data: {
 				userId,
@@ -155,6 +156,7 @@ export class UsersService {
 				id: userId,
 			}
 		});
+		console.log({ friendrequest, user });
 		return { friendrequest, user };
 	}
 
@@ -185,22 +187,26 @@ export class UsersService {
 		});
 		if (await this.prisma.chatRoom.findFirst({
 			where: {
+				is_DM: true,
 				AND: [
 					{
 						participants: {
 							some: {
-								uid: {
-									in: [userId, friendId],
-								},
+								uid: userId,
 							},
 						},
 					},
 					{
-						is_DM: true
+						participants: {
+							some: {
+								uid: friendId,
+							},
+						},
 					},
 				],
 			}
 		})) {
+			console.log("hnaa-------------------------------------")
 			return { friendrequest };
 		}
 		const chatRoom = this.creatChatRoom(userId, friendId);
@@ -249,7 +255,7 @@ export class UsersService {
 					friendId: userId,
 				}
 			},
-		});
+		}); 
 	}
 
 	async unfriend(userId: string, friendId: string) {
@@ -318,6 +324,34 @@ export class UsersService {
 				fid: friendId,
 			}
 		});
+		const chatroom = await this.prisma.chatRoom.findFirst({
+			where: {
+				is_DM: true,
+				AND: [
+					{
+						participants: {
+							some: {
+								uid: userId,
+							},
+						},
+					},
+					{
+						participants: {
+							some: {
+								uid: friendId,
+							},
+						},
+					},
+				],
+			}
+		});
+		if (chatroom) {
+			await this.prisma.chatRoom.delete({
+				where: {
+					id: chatroom.id,
+				}
+			});
+		}
 		return block;
 	}
 
@@ -344,6 +378,9 @@ export class UsersService {
 				}
 			}
 		});
+		if (!await this.checkFriendship(userId, friendId)) {
+			await this.creatChatRoom(userId, friendId);
+		}
 		return block;
 	}
 
@@ -386,13 +423,30 @@ export class UsersService {
 					},
 				],
 			},
+			include: {
+				user: true,
+				friend: true,
+			},
 		});
+		// for (let i = 0; i < friendRequests.length; i++) {
+		// 	let friend = friendRequests[i];
+		// 	let user = await this.prisma.user.findUnique({
+		// 		where: {
+		// 			id: friend.userId,
+		// 		},
+		// 		include: {
+
+		// 	});
+		// 	delete user.status;
+		// 	friendRequests[i] = { ...friend, ...user };
+		// }
+
 		// const user = await this.prisma.user.findUnique({
 		// 	where: {
 		// 		id: friendRequests?.friendId
 		// 	},
 		// });
-		return {friendRequests};
+		return { friendRequests };
 	}
 
 	async getFriendRequests(userId: string) {
@@ -415,7 +469,28 @@ export class UsersService {
 		// 	delete user.status;
 		// 	friendrequest[i] = { ...friend, ...user };
 		// }
+
 		return friendrequest;
+	}
+
+	async getIfBlocked(userId: string, friendId: string) {
+		const blocked = await this.prisma.block.findFirst({
+			where: {
+				OR: [
+					{
+						uid: userId,
+						fid: friendId,
+					},
+					{
+						uid: friendId,
+						fid: userId,
+					},
+				],
+			},
+		});
+		if (blocked)
+			return true;
+		return false;
 	}
 
 	async getFriendProfile(userId: string, id: string) {
@@ -432,18 +507,18 @@ export class UsersService {
 			where: {
 				OR: [
 					{
-						userId,
-						friendId: id,
-					},
-					{
 						userId: id,
 						friendId: userId,
 					},
-				],
+					{
+						userId,
+						friendId: id,
+					}
+				]
 			},
 		});
 		// console.log({ user, ...await this.getLevelP(user.level), isfriend: friendship ? (friendship.status === 'ACCEPTED' ? 'friend' : 'cancel') : 'notfriend' })
-		return { user, ...await this.getLevelP(user.level), isfriend: friendship ? (friendship.status === 'ACCEPTED' ? 'friend' : 'cancel') : 'notfriend' };
+		return { user, ...await this.getLevelP(user.level), isfriend: friendship ? (friendship.status === 'ACCEPTED' ? 'friend' : 'cancel') : 'notfriend', ifBlocked: await this.getIfBlocked(userId, id) };
 	}
 
 	async getFriendProfileWithUserName(userName: string, id: string) {
@@ -458,20 +533,12 @@ export class UsersService {
 		}
 		const friendship = await this.prisma.friendShip.findFirst({
 			where: {
-				OR: [
-					{
-						userId: user.id,
-						friendId: id,
-					},
-					{
-						userId: id,
-						friendId: user.id,
-					},
-				],
+				userId: user.id,
+				friendId: id,
 			},
 		});
-		// console.log({ user, ...await this.getLevelP(user.level), isfriend: friendship ? (friendship.status === 'ACCEPTED' ? 'friend' : 'cancel') : 'notfriend' })
-		return { user, ...await this.getLevelP(user.level), isfriend: friendship ? (friendship.status === 'ACCEPTED' ? 'friend' : 'cancel') : 'notfriend' };
+		console.log('isfriend:', friendship ? (friendship.status === 'ACCEPTED' ? 'friend' : 'cancel') : 'notfriend')
+		return { user, ...await this.getLevelP(user.level), isfriend: friendship ? (friendship.status === 'ACCEPTED' ? 'friend' : 'cancel') : 'notfriend', ifBlocked: await this.getIfBlocked(user.id, id) };
 	}
 
 	async getAllUsers() {
@@ -623,4 +690,16 @@ export class UsersService {
 		return users;
 	}
 
+	async getBlockedList(userId: string) {
+		const blockedList = await this.prisma.block.findMany({
+			where: {
+				uid: userId,
+			},
+			include: {
+				friend: true,
+			},
+		});
+		console.log('eheh', blockedList);
+		return blockedList;
+	}
 }
