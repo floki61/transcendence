@@ -207,4 +207,11 @@ export class UsersController {
         const leaderboard = await this.userservice.getLeaderboard(req.user.id);
         return leaderboard;
     }
+
+    @UseGuards(JwtAuthGuard)
+    @Get('getBlockedList')
+    async getBlockedList(@Req() req) {
+        const blockedList = await this.userservice.getBlockedList(req.user.id);
+        return blockedList;
+    }
 }
