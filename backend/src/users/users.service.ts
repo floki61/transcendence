@@ -387,7 +387,12 @@ export class UsersService {
 				],
 			},
 		});
-		return friendRequests;
+		// const user = await this.prisma.user.findUnique({
+		// 	where: {
+		// 		id: friendRequests?.friendId
+		// 	},
+		// });
+		return {friendRequests};
 	}
 
 	async getFriendRequests(userId: string) {
