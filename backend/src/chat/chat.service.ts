@@ -551,6 +551,38 @@ export class ChatService {
 		return room;
 	}
 
+	async getBlockedUsers(uid: any) {
+		const user = await this.prisma.user.findUnique({
+			where: {
+				id: uid,
+			},
+		});
+		if (!user) {
+			throw new NotFoundException('User not found');
+		}
+		const blocked = await this.prisma.block.findMany({
+			where: {
+				OR: [
+					{
+						uid: uid,
+					},
+					{
+						fid: uid,
+					}
+				]
+			},
+		});
+		let blockedUsers = [];
+		for (let block of blocked) {
+			if (block.uid === uid) {
+				blockedUsers.push(block.fid);
+			} else {
+				blockedUsers.push(block.uid);
+			}
+		}
+		return blocked;
+	}
+
 	async getMessages(payload: any) {
 		var user;
 		var participant;
@@ -594,9 +626,11 @@ export class ChatService {
 							id: participant.uid,
 						},
 					});
-
 					if (user) {
-						msg = { ...msg, user: user };
+						const blocked = await this.getBlockedUsers(user.id);
+						msg = { ...msg, user: user, ...blocked };
+						// console.log(msg);
+						// console.log(blocked);
 					} else {
 						console.error(`User not found for participant ID: ${participant.uid}`);
 					}

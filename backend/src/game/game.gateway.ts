@@ -332,8 +332,8 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
         this.gameService.Queue.get(player2).status = 'playing';
         this.gameService.Queue.get(player2).playWith = player1;
         console.log('Live game started');
-        this.gameService.Queue.get(player1).Socket.emit('startGame', this.gameService.Queue.get(player1).gameData);
-        this.gameService.Queue.get(player2).Socket.emit('startGame', this.gameService.Queue.get(player1).gameData);
+        this.gameService.Queue.get(player1).Socket.emit('startGame', {data: this.gameService.Queue.get(player1).gameData, mode: this.gameService.Queue.get(player1).gameMode});
+        this.gameService.Queue.get(player2).Socket.emit('startGame', {data: this.gameService.Queue.get(player1).gameData, mode: this.gameService.Queue.get(player1).gameMode});
         this.moveBall(player1, player2);
     }
 

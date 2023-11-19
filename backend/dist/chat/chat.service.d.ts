@@ -118,6 +118,13 @@ export declare class ChatService {
         createdAt: Date;
         updatedAt: Date;
     }[]>;
+    getBlockedUsers(uid: any): Promise<{
+        id: string;
+        uid: string;
+        fid: string;
+        createdAt: Date;
+        updatedAt: Date;
+    }[]>;
     getMessages(payload: any): Promise<({
         user: {
             id: string;
