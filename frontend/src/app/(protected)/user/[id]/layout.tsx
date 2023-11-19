@@ -27,6 +27,7 @@ export interface InviteType {
   userId: string;
   status: string;
   user: userType;
+  friend: userType;
 }
 
 export default function layout({
