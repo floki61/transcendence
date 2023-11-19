@@ -499,6 +499,7 @@ export class ChatService {
 	}
 
 	async getMyRooms(payload: any) {
+		
 		const rooms = await this.prisma.chatRoom.findMany({
 			where: {
 				participants: {

@@ -21,6 +21,8 @@ export const useRoomInfo = ({rid, user}: RoomInfoProps) => {
 		fetchData();
 	  }, [rid]);
 
+	  console.log({friends})
+
 	if (friends) {
 		friends.map((room: any) => {
 			if (room.id === rid) {
