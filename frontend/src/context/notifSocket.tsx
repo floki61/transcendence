@@ -58,7 +58,7 @@ export const NotifProvider = ({ children }: { children: React.ReactNode }) => {
 		});
 		socket.off("PlayRequestRejected").on("PlayRequestRejected", (friendData) => {
 			toast(
-				<span>{friendData.userName} rejecte your play request</span>
+				<span>{friendData.userName} rejected your play request</span>
 			);
 		});
 		
