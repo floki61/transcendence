@@ -140,7 +140,6 @@ let UsersService = exports.UsersService = class UsersService {
         return { user };
     }
     async sendFriendRequest(userId, friendId) {
-        console.log({ userId, friendId });
         const friendrequest = await this.prisma.friendShip.create({
             data: {
                 userId,
@@ -152,6 +151,7 @@ let UsersService = exports.UsersService = class UsersService {
                 id: userId,
             }
         });
+        console.log({ friendrequest, user });
         return { friendrequest, user };
     }
     async cancelFriendRequest(userId, friendId) {
@@ -179,22 +179,26 @@ let UsersService = exports.UsersService = class UsersService {
         });
         if (await this.prisma.chatRoom.findFirst({
             where: {
+                is_DM: true,
                 AND: [
                     {
                         participants: {
                             some: {
-                                uid: {
-                                    in: [userId, friendId],
-                                },
+                                uid: userId,
                             },
                         },
                     },
                     {
-                        is_DM: true
+                        participants: {
+                            some: {
+                                uid: friendId,
+                            },
+                        },
                     },
                 ],
             }
         })) {
+            console.log("hnaa-------------------------------------");
             return { friendrequest };
         }
         const chatRoom = this.creatChatRoom(userId, friendId);
@@ -303,6 +307,34 @@ let UsersService = exports.UsersService = class UsersService {
                 fid: friendId,
             }
         });
+        const chatroom = await this.prisma.chatRoom.findFirst({
+            where: {
+                is_DM: true,
+                AND: [
+                    {
+                        participants: {
+                            some: {
+                                uid: userId,
+                            },
+                        },
+                    },
+                    {
+                        participants: {
+                            some: {
+                                uid: friendId,
+                            },
+                        },
+                    },
+                ],
+            }
+        });
+        if (chatroom) {
+            await this.prisma.chatRoom.delete({
+                where: {
+                    id: chatroom.id,
+                }
+            });
+        }
         return block;
     }
     async unblockUser(userId, friendId) {
@@ -328,6 +360,9 @@ let UsersService = exports.UsersService = class UsersService {
                 }
             }
         });
+        if (!await this.checkFriendship(userId, friendId)) {
+            await this.creatChatRoom(userId, friendId);
+        }
         return block;
     }
     async deleteAccount(userId) {
@@ -359,6 +394,10 @@ let UsersService = exports.UsersService = class UsersService {
                     },
                 ],
             },
+            include: {
+                user: true,
+                friend: true,
+            },
         });
         return { friendRequests };
     }
@@ -374,6 +413,25 @@ let UsersService = exports.UsersService = class UsersService {
         });
         return friendrequest;
     }
+    async getIfBlocked(userId, friendId) {
+        const blocked = await this.prisma.block.findFirst({
+            where: {
+                OR: [
+                    {
+                        uid: userId,
+                        fid: friendId,
+                    },
+                    {
+                        uid: friendId,
+                        fid: userId,
+                    },
+                ],
+            },
+        });
+        if (blocked)
+            return true;
+        return false;
+    }
     async getFriendProfile(userId, id) {
         const user = await this.prisma.user.findUnique({
             where: {
@@ -388,17 +446,17 @@ let UsersService = exports.UsersService = class UsersService {
             where: {
                 OR: [
                     {
-                        userId,
-                        friendId: id,
-                    },
-                    {
                         userId: id,
                         friendId: userId,
                     },
-                ],
+                    {
+                        userId,
+                        friendId: id,
+                    }
+                ]
             },
         });
-        return { user, ...await this.getLevelP(user.level), isfriend: friendship ? (friendship.status === 'ACCEPTED' ? 'friend' : 'cancel') : 'notfriend' };
+        return { user, ...await this.getLevelP(user.level), isfriend: friendship ? (friendship.status === 'ACCEPTED' ? 'friend' : 'cancel') : 'notfriend', ifBlocked: await this.getIfBlocked(userId, id) };
     }
     async getFriendProfileWithUserName(userName, id) {
         const user = await this.prisma.user.findFirst({
@@ -412,19 +470,12 @@ let UsersService = exports.UsersService = class UsersService {
         }
         const friendship = await this.prisma.friendShip.findFirst({
             where: {
-                OR: [
-                    {
-                        userId: user.id,
-                        friendId: id,
-                    },
-                    {
-                        userId: id,
-                        friendId: user.id,
-                    },
-                ],
+                userId: user.id,
+                friendId: id,
             },
         });
-        return { user, ...await this.getLevelP(user.level), isfriend: friendship ? (friendship.status === 'ACCEPTED' ? 'friend' : 'cancel') : 'notfriend' };
+        console.log('isfriend:', friendship ? (friendship.status === 'ACCEPTED' ? 'friend' : 'cancel') : 'notfriend');
+        return { user, ...await this.getLevelP(user.level), isfriend: friendship ? (friendship.status === 'ACCEPTED' ? 'friend' : 'cancel') : 'notfriend', ifBlocked: await this.getIfBlocked(user.id, id) };
     }
     async getAllUsers() {
         return await this.prisma.user.findMany();
@@ -564,6 +615,18 @@ let UsersService = exports.UsersService = class UsersService {
             users[i] = { ...user, ...levelInfo, ...stats };
         }
         return users;
+    }
+    async getBlockedList(userId) {
+        const blockedList = await this.prisma.block.findMany({
+            where: {
+                uid: userId,
+            },
+            include: {
+                friend: true,
+            },
+        });
+        console.log('eheh', blockedList);
+        return blockedList;
     }
 };
 exports.UsersService = UsersService = __decorate([

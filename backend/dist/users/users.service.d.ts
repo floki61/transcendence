@@ -245,7 +245,46 @@ export declare class UsersService {
     }>;
     deleteAccount(userId: string): Promise<void>;
     getFriends(userId: string): Promise<{
-        friendRequests: {
+        friendRequests: ({
+            user: {
+                id: string;
+                userName: string;
+                level: number;
+                firstName: string;
+                lastName: string;
+                status: import(".prisma/client").$Enums.Stts;
+                email: string;
+                picture: string;
+                country: string;
+                phoneNumber: string;
+                accessToken: string;
+                password: string;
+                twoFactorAuthenticationSecret: string;
+                isTwoFactorAuthenticationEnabled: boolean;
+                isDeleted: boolean;
+                createdAt: Date;
+                updatedAt: Date;
+            };
+            friend: {
+                id: string;
+                userName: string;
+                level: number;
+                firstName: string;
+                lastName: string;
+                status: import(".prisma/client").$Enums.Stts;
+                email: string;
+                picture: string;
+                country: string;
+                phoneNumber: string;
+                accessToken: string;
+                password: string;
+                twoFactorAuthenticationSecret: string;
+                isTwoFactorAuthenticationEnabled: boolean;
+                isDeleted: boolean;
+                createdAt: Date;
+                updatedAt: Date;
+            };
+        } & {
             id: string;
             userId: string;
             friendId: string;
@@ -282,8 +321,10 @@ export declare class UsersService {
         createdAt: Date;
         updatedAt: Date;
     })[]>;
+    getIfBlocked(userId: string, friendId: string): Promise<boolean>;
     getFriendProfile(userId: string, id: string): Promise<{
         isfriend: string;
+        ifBlocked: boolean;
         level_P: number;
         barPourcentage: any;
         user: {
@@ -308,6 +349,7 @@ export declare class UsersService {
     }>;
     getFriendProfileWithUserName(userName: string, id: string): Promise<{
         isfriend: string;
+        ifBlocked: boolean;
         level_P: number;
         barPourcentage: any;
         user: {
@@ -446,6 +488,33 @@ export declare class UsersService {
         twoFactorAuthenticationSecret: string;
         isTwoFactorAuthenticationEnabled: boolean;
         isDeleted: boolean;
+        createdAt: Date;
+        updatedAt: Date;
+    })[]>;
+    getBlockedList(userId: string): Promise<({
+        friend: {
+            id: string;
+            userName: string;
+            level: number;
+            firstName: string;
+            lastName: string;
+            status: import(".prisma/client").$Enums.Stts;
+            email: string;
+            picture: string;
+            country: string;
+            phoneNumber: string;
+            accessToken: string;
+            password: string;
+            twoFactorAuthenticationSecret: string;
+            isTwoFactorAuthenticationEnabled: boolean;
+            isDeleted: boolean;
+            createdAt: Date;
+            updatedAt: Date;
+        };
+    } & {
+        id: string;
+        uid: string;
+        fid: string;
         createdAt: Date;
         updatedAt: Date;
     })[]>;
