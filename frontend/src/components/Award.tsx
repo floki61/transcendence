@@ -2,10 +2,13 @@ import Image from "next/image";
 
 interface AwardProps {
   picture?: string;
-  filled?: boolean
+  filled?: boolean;
+  className: string;
+  height: number;
+  width: number;
 }
 
-export const Award: React.FC<AwardProps> = ({ picture, filled }) => {
+export const Award: React.FC<AwardProps> = ({ picture, filled, className, height, width }) => {
   return (
 	<div>
 		{filled && picture && (
@@ -103,9 +106,9 @@ export const Award: React.FC<AwardProps> = ({ picture, filled }) => {
 			<Image
 				src={picture}
 				alt="award"
-				height={30}
-				width={30}
-				className="absolute top-[40%] left-[30%]"
+				height={height}
+				width={width}
+				className={`absolute ${className}`}
 			/>
 			</div>
 		)}
