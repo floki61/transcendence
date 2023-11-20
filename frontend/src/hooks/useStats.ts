@@ -32,7 +32,6 @@ export const useStats = () => {
 	const [stats, SetStats] = useState<StatsType | null>(null);
 
 		const getStats = async (userId: string) => {
-			console.log({userId});
 			if (userId) {
 				try {
 					const res = await axios.post("http://localhost:4000/getStats", {id : userId}, {

@@ -34,7 +34,6 @@ export default function Navbar() {
           }
         );
         const data = res.data;
-        console.log("success de profile", res.data.user.id);
         SetError("");
         username.current.value = "";
         router.push(`/user/${data.user.id}`);

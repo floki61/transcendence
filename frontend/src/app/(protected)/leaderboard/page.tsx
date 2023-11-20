@@ -31,7 +31,6 @@ export default function page() {
 				const res = await axios.get("http://localhost:4000/getLeaderboard", {
 					withCredentials: true,
 				})
-				console.log(res.data);
 				SetBoard(res.data);
 			} catch (error) {
 				console.log("getLeaderBoard failed", error);

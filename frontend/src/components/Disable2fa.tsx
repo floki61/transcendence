@@ -22,14 +22,13 @@ const Disable2fa : React.FC<Disable2faProps> = ({
 		try {
 			await axios.post("http://localhost:4000/2fa/turn-off", 0, {
 					withCredentials: true,
-				}); // backend API endpoint
+				});
 			} catch (error) {
 				console.error("error a zbi");
 			}
 		};
 
 	const handleDisable = () => {
-		// handleQrCode();
 		turnOff();
 		handleQrCode();
 	}

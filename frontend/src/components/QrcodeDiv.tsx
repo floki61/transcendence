@@ -41,7 +41,7 @@ const QrcodeDiv: React.FC<QrcodeProps> = ({
 			await axios.post("http://localhost:4000/2fa/turn-on",
 				{twoFactorAuthenticationCode: input} , {
 				withCredentials: true,
-				}); // backend API endpoint
+				});
 			} catch (error) {
 				console.error("error a turning on 2fa");
 			}

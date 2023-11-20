@@ -26,7 +26,6 @@ export const NotifBar: React.FC<NotifBarProps> = ({
 				const res = await axios.post("http://localhost:4000/acceptPlayRequest", {friendId},{
 					withCredentials: true,
 				})
-				console.log("success", res.data);
 			}
 			catch (error) {
 				console.log("Accept Request.", error);
@@ -38,7 +37,6 @@ export const NotifBar: React.FC<NotifBarProps> = ({
 				const res = await axios.post("http://localhost:4000/acc", {friendId},{
 					withCredentials: true,
 				})
-				console.log("success", res.data);
 			} catch (error) {
 				console.log("Accept Request.", error);
 			}
@@ -51,7 +49,6 @@ export const NotifBar: React.FC<NotifBarProps> = ({
 				const res = await axios.post("http://localhost:4000/rejectPlayRequest", {friendId},{
 					withCredentials: true,
 				})
-				console.log("success", res.data);
 			}
 			catch (error) {
 				console.log("declinet Request.", error);
@@ -62,7 +59,6 @@ export const NotifBar: React.FC<NotifBarProps> = ({
 				const res = await axios.post("http://localhost:4000/rejecte", {friendId},{
 					withCredentials: true,
 				})
-				console.log("success", res.data);
 			}
 			catch (error) {
 				console.log("Decline Request.", error);

@@ -44,14 +44,11 @@ const Standing: React.FC<StandingProps> = ({
 		{result: "?", color: "bg-[#848788]"}
 	];
 
-
 	useEffect(() => {
 		if (id) {
 			getStats(id);
 		}
 	}, []);
-
-	// console.log({stats})
 
 	if (stats) {
 		stats?.gamestats.map((game, index) => {
@@ -61,7 +58,6 @@ const Standing: React.FC<StandingProps> = ({
 				resArray[index] = Loss;
 			}
 		})
-		console.log(name, " : ", {resArray});
 	}
 	
 	if (place >= 4)

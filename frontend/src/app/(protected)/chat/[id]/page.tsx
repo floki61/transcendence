@@ -5,12 +5,10 @@ import Chatmsg from "@/components/Chatmsg";
 import { ChatType, useChat } from "@/hooks/useChat";
 import { ChatSettings } from "@/components/ChatSettings";
 import { IoSend } from "react-icons/io5";
-import { useRooms } from "@/hooks/useRooms";
 import { usePathname } from "next/navigation";
 import { useState, useEffect, useRef, useLayoutEffect } from "react";
 import JoinRooms from "@/components/JoinRooms";
 import { useRoomInfo } from "@/hooks/useRoomInfo";
-import { FriendType } from "@/hooks/useRooms";
 
 const Convo = ({ params }: { params: any }) => {
   const {

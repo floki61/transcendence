@@ -69,7 +69,6 @@ export default function ChatLayout({
 			}
 		})
 	}
-  console.log({friends});
 
   return (
     <div className="flex h-full text-white">

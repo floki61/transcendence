@@ -38,7 +38,6 @@ export default function layout({
   children: React.ReactNode;
 }) {
   const user = useContext(UserContext);
-  // const { friend, SetFriend } = useFriend(params.id);
   const [request, SetRequest] = useState(false);
   const [accept, SetAccept] = useState(false);
   const [options, SetOptions] = useState(false);
@@ -53,7 +52,6 @@ export default function layout({
         const res = await axios.get("http://localhost:4000/getFriendRequests", {
           withCredentials: true,
         });
-        console.log("success", res.data);
         SetInvite(res.data);
       } catch (error) {
         console.log("error");
@@ -71,7 +69,6 @@ export default function layout({
           withCredentials: true,
         }
       );
-      console.log("success FriendRequest");
       SetRequest(true);
       if (friend) friend.isfriend = "cancel";
     } catch (error) {
@@ -87,7 +84,6 @@ export default function layout({
           withCredentials: true,
         }
       );
-      console.log("success CancelRequest");
       SetRequest(false);
       if (friend) friend.isfriend = "notfriend";
     } catch (error) {
@@ -103,7 +99,6 @@ export default function layout({
           withCredentials: true,
         }
       );
-      console.log("success DeclineRequest");
       SetAccept(false);
       SetRequest(false);
       if (friend) friend.isfriend = "notfriend";
@@ -120,7 +115,6 @@ export default function layout({
           withCredentials: true,
         }
       );
-      console.log("success AcceptRequest");
       SetAccept(false);
       SetRequest(false);
       if (friend) friend.isfriend = "friend";
@@ -154,7 +148,6 @@ export default function layout({
           withCredentials: true,
         }
       );
-      console.log("success Block");
       router.push("/");
       // SetAccept(false);
       // SetRequest(false);
@@ -174,7 +167,6 @@ export default function layout({
       );
       if (res.data.ifBlocked) router.push("/not-found");
       else SetFriend(res.data);
-      console.log("success", res.data);
     } catch (error) {
       console.log("get Friend profile failed.", error);
     }

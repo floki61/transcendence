@@ -51,13 +51,9 @@ export default function Login() {
         </div>
         <div className="flex flex-1 flex-col justify-between">
           <div className="flex flex-col max-md:w-full items-center text-2xl gap-4 max-md:text-xl">
-            {/* <Button
-              text="Log in"
-              className="bg-black rounded-3xl w-96 max-md:w-[70%]  h-14 cursor-pointer text-white"
-            /> */}
             <Link
               href={process.env.NEXT_PUBLIC_SERVER_URL + "/login/google"}
-              className="flex items-center justify-center gap-3 text-black bg-white border rounded-3xl w-96 max-md:w-[70%] max-md:p-4 h-14 cursor-pointer"
+              className="flex items-center justify-center gap-3 bg-black border rounded-3xl w-96 max-md:w-[70%] max-md:p-4 h-14 cursor-pointer"
             >
             Log in with Google
             </Link>
