@@ -118,10 +118,10 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
                             id: this.gameService.Queue.get(payload.id).gameId,
                         },
                         data: {
-                            player1Score: this.gameService.Queue.get(payload.id).gameData.score.left,
-                            player2Score: this.gameService.Queue.get(payload.id).gameData.score.right,
-                            winnerId: player2,
-                            loserId: player1,
+                            player1Score: 5,
+                            player2Score: 0,
+                            winnerId: this.gameService.Queue.get(payload.id).playWith,
+                            loserId: payload.id,
                         }
                     });
                 }
@@ -426,10 +426,10 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
             this.startBotGame(playerId);
         else if (data.type === 'Live')
             this.matchmakingQueue.push(playerId);
-        else if(data.type === 'Friend') {
+        else if(data.type === 'Friend' && data.friendId !== playerId) {
             if(this.gameService.Queue.has(data.friendId)) {
                 const friendData = this.gameService.Queue.get(data.friendId);
-                if (friendData.gameType === 'Friend' && friendData.playWith === playerId) {
+                if (friendData.gameType === 'Friend' && friendData.status === 'waiting' &&friendData.playWith === playerId) {
                     var game = await this.prisma.game.create({
                         data: {
                             mode: this.gameService.Queue.get(playerId).gameMode,
