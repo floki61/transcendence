@@ -499,7 +499,7 @@ export class ChatService {
 	}
 
 	async getMyRooms(payload: any) {
-		
+
 		const rooms = await this.prisma.chatRoom.findMany({
 			where: {
 				participants: {
@@ -591,7 +591,17 @@ export class ChatService {
 				rid: payload.rid,
 			},
 			include: {
-				user: true,
+				user: {
+					select: {
+						user: {
+							select: {
+								id: true,
+								userName: true,
+								picture: true,
+							},
+						},
+					},
+				},
 			},
 		});
 		if (payload.id === null) {
