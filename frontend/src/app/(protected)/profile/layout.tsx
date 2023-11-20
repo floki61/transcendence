@@ -26,6 +26,7 @@ export default function page(
 ) {
   const [user, SetUser] = useState<ProfileType>();
   const [followers, SetFollowers] = useState<ListType>();
+  const [blocked, setBlocked] = useState<ListType>();
   const pathName = usePathname();
   let fella;
 
@@ -42,6 +43,21 @@ export default function page(
       }
     };
     getFollwers();
+  }, []);
+
+  useEffect(() => {
+    const getBlockedList = async () => {
+      try {
+        const res = await axios.get("http://localhost:4000/getBlockedList", {
+          withCredentials: true,
+        });
+        console.log("success", res.data);
+        SetFollowers(res.data);
+      } catch (error) {
+        console.log("get Friend profile failed.", error);
+      }
+    };
+    getBlockedList();
   }, []);
 
   useEffect(() => {
@@ -68,11 +84,12 @@ export default function page(
         <div className="h-full w-full flex flex-col gap-16">
           <div className="flex gap-4 h-[22%]">
             <Image
-              src={user.user.picture}
+              src={user.user.picture || "/placeholder.jpg"}
               alt={"profile pic"}
               height={140}
               width={140}
               className="rounded-full aspect-square w-36 h-36 object-cover"
+              priority
             />
             <div className="w-3/5 h-full flex flex-col justify-between px-4">
               <div className="flex flex-col gap-1">
@@ -127,7 +144,7 @@ export default function page(
                 alt="trophy"
                 width={170}
                 height={170}
-                className="absolute place-self-end"
+                className="absolute place-self-end z-10 animate-pulse"
                 priority
               />
             )}
@@ -137,7 +154,7 @@ export default function page(
                 alt="table"
                 width={170}
                 height={170}
-                className="absolute place-self-end"
+                className="absolute place-self-end opacity-70"
                 priority
               />
             )}

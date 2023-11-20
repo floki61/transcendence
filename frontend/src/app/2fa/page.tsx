@@ -12,6 +12,7 @@ export default function Forgotps() {
   const router = useRouter();
 
   const [input, setInput] = useState("");
+  const [loading, setLoading] = useState(false);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
@@ -22,6 +23,7 @@ export default function Forgotps() {
   };
 
   const send2fa = async (e: any) => {
+    setLoading(true);
     e.preventDefault();
     try {
       const response = await axios.post(
@@ -36,6 +38,7 @@ export default function Forgotps() {
       } else toast.error("Wrong authentication code");
     } catch (error) {
       toast.error("Login failed");
+      setLoading(false);
     }
   };
 
@@ -81,7 +84,8 @@ export default function Forgotps() {
             value={input}
           />
           <Button
-            text="Send"
+            disabled={loading}
+            text={loading ? "Sending..." : "Send"}
             className="bg-black text-white rounded-3xl w-3/4 max-xl:w-[70%]  h-14 cursor-pointer"
           />
         </div>

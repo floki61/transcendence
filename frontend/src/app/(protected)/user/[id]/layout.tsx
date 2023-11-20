@@ -337,13 +337,36 @@ export default function layout({
             <div className="w-[25%] text-center">chart</div>
           </div>
           <div className="flex-1 flex flex-col items-center relative">
-            <Image
-              src="/paddle.png"
-              alt="paddle"
-              width={170}
-              height={170}
-              className="absolute place-self-end"
-            />
+          {pathName === "/profile" && (
+              <Image
+                src="/paddle.png"
+                alt="paddle"
+                width={170}
+                height={170}
+                className="absolute place-self-end"
+                priority
+              />
+            )}
+            {pathName === "/user/" + params.id + "/achievements" && (
+              <Image
+                src="/trophy.png"
+                alt="trophy"
+                width={170}
+                height={170}
+                className="absolute place-self-end"
+                priority
+              />
+            )}
+            {pathName === "/user/" + params.id + "/history" && (
+              <Image
+                src="/table.png"
+                alt="table"
+                width={170}
+                height={170}
+                className="absolute place-self-end"
+                priority
+              />
+            )}
             <div className="w-[60%] h-[12%] rounded-t-xl bg-primecl flex items-center">
               <Link
                 href={`/user/${params.id}`}
