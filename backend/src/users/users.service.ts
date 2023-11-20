@@ -486,7 +486,7 @@ export class UsersService {
 						fid: userId,
 					},
 				],
-			},
+			},  
 		});
 		if (blocked)
 			return true;
