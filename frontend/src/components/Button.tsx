@@ -9,14 +9,14 @@ interface ButtonProps extends StylingProps {
 	text: string;
 	children?: React.ReactNode
 	onClick?(e:any) : any,
-
+	disabled?: boolean,
 }
 
-const Button: React.FC<ButtonProps> = ({ text, className ,children, onClick }) => {
+const Button: React.FC<ButtonProps> = ({ text, className ,children, onClick, disabled }) => {
 	const classes = `${className}`;
 
 	return (
-		<button type="submit" className={classes} onClick={onClick}>
+		<button type="submit" className={classes} onClick={onClick} disabled={disabled}>
 			{children}
 			{text}</button>
 	);

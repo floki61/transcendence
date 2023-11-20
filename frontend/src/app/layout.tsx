@@ -3,6 +3,7 @@ import 'react-toastify/dist/ReactToastify.css';
 import type { Metadata } from 'next'
 import { Inter } from 'next/font/google'
 import { Rubik } from 'next/font/google'
+import { ToastContainer } from 'react-toastify';
 
 const inter = Inter({ subsets: ['latin'] })
 const rubik = Rubik({ subsets: ['latin'] })
@@ -19,7 +20,10 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body className={rubik.className}>{children}</body>
+      <body className={rubik.className}>
+        <ToastContainer />
+        {children}
+      </body>
     </html>
   )
 }

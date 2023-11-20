@@ -291,7 +291,7 @@ export declare class UsersService {
             status: import(".prisma/client").$Enums.Status;
             createdAt: Date;
             updatedAt: Date;
-        }[];
+        })[];
     }>;
     getFriendRequests(userId: string): Promise<({
         user: {

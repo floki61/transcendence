@@ -43,7 +43,7 @@ const QrcodeDiv: React.FC<QrcodeProps> = ({
 				withCredentials: true,
 				}); // backend API endpoint
 			} catch (error) {
-				console.error("error a zbi");
+				console.error("error a turning on 2fa");
 			}
 		}
 		else

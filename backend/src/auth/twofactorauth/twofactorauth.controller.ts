@@ -50,7 +50,7 @@ export class TwoFactorAuthController {
 	@UseGuards(TwoFaAuthGuard)
 	@Post('2fa/authenticate')
 	@HttpCode(200)
-	async authenticate(@Req() req, @Body() body) {
+	async authenticate(@Req() req, @Body() body) { 
 		try {
 			const isCodeValid = await this.twoFactorAuth.isTwoFactorAuthenticationCodeValid(body.twoFactorAuthenticationCode, req.user);
 			if (!isCodeValid)
