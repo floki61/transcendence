@@ -8,14 +8,26 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import axios from "axios";
 import { InviteType, ProfileType } from "../user/[id]/layout";
+import { userType } from "@/context/userContext";
+
+export interface ListType {
+  friendRequests : {
+    friendId: string;
+    userId: string;
+    status: string;
+    user: userType;
+    friend: userType;
+  } [];
+}
 
 export default function page(
   { children }: { children: React.ReactNode },
   { params }: { params: any }
 ) {
   const [user, SetUser] = useState<ProfileType>();
-  const [followers, SetFollowers] = useState<InviteType[]>([]);
+  const [followers, SetFollowers] = useState<ListType>();
   const pathName = usePathname();
+  let fella;
 
   useEffect(() => {
     const getFollwers = async () => {
@@ -81,31 +93,54 @@ export default function page(
                 </p>
               </div>
             </div>
-            {/* <div className="w-[25%] text-center">
-              {followers && followers.map((follower, index) => (
-                <div key={index} className="w-full bg-primecl debug h-full flex items-center gap-2">
+            <div className="w-[25%] text-center h-full overflow-scroll rounded-md bg-primecl">
+              <h2 className="bg-segundcl">Friend List</h2>
+              {followers && followers.friendRequests.map((follower, index) => (
+                <div key={index} className="w-full bg-primecl h-1/3 flex items-center gap-2 border-b border-segundcl px-2">
                     <Image
-                      src={follower.user.picture}
+                      src={follower.user.id !== user.user.id ? follower.user.picture : follower.friend.picture}
                       alt="friend pic"
                       height={30}
                       width={30}
                       className="rounded-full aspect-square w-8 h-8 object-cover"
                     />
-                    <span>{follower.user.userName}</span>
-                    <span className={`${follower.user.status === "OFFLINE" ? "text-red-600" : "text-[#00A83F]"}`}>( {follower.user.status} )</span>
+                    <span>{follower.user.id !== user.user.id ? follower.user.userName : follower.friend.userName}</span>
+                    <span className={`flex justify-end w-full`}>( {follower.user.id !== user.user.id ? follower.user.status : follower.friend.status} )</span>
                 </div>
               ))}
-            </div> */}
+            </div>
           </div>
           <div className="flex-1 flex flex-col items-center relative">
-            <Image
-              src="/paddle.png"
-              alt="paddle"
-              width={170}
-              height={170}
-              className="absolute place-self-end"
-              priority
-            />
+            {pathName === "/profile" && (
+              <Image
+                src="/paddle.png"
+                alt="paddle"
+                width={170}
+                height={170}
+                className="absolute place-self-end"
+                priority
+              />
+            )}
+            {pathName === "/profile/achievements" && (
+              <Image
+                src="/trophy.png"
+                alt="trophy"
+                width={170}
+                height={170}
+                className="absolute place-self-end"
+                priority
+              />
+            )}
+            {pathName === "/profile/history" && (
+              <Image
+                src="/table.png"
+                alt="table"
+                width={170}
+                height={170}
+                className="absolute place-self-end"
+                priority
+              />
+            )}
             <div className="w-[60%] h-[12%] rounded-t-xl bg-primecl flex items-center">
               <Link
                 href="/profile"

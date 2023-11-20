@@ -22,7 +22,7 @@ export interface userType {
 type UserContextType = {
 	user: userType | undefined | null;
 	setUser: React.Dispatch<React.SetStateAction<userType | undefined | null>>;
-  };
+};
 
 export const UserContext = createContext<UserContextType>({
 	user: null,

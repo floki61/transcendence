@@ -66,6 +66,7 @@ const Convo = ({ params }: { params: any }) => {
         friendId = chatie.user?.uid;
     })
   }
+  console.log(chat);
 
   if (dm) {
     return (
@@ -100,7 +101,7 @@ const Convo = ({ params }: { params: any }) => {
                   fill="#CAD2D5"
                 />
               </svg>
-              {showDiv && <ChatSettings dm={dm} role={role} id={params.id} friendId={friendId}/>}
+              {showDiv && <ChatSettings dm={dm} role={role} id={params.id} friendId={id}/>}
             </div>
           </div>
           <div className="flex flex-col flex-1 bg-segundcl py-2 overflow-scroll">

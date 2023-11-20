@@ -37,7 +37,6 @@ export default function Navbar() {
 			username.current.value = '';
 			router.push(`/user/${data.user.id}`)
 		} catch (error: any) {
-			console.log("getProfile failed", error.response.data.message);
 			username.current.value = '';
 			SetError("border border-red-600");
 			toast.error("This username doesn't exist");
