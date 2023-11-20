@@ -5,10 +5,12 @@ import { useState, useEffect } from "react";
 import { FaEdit } from "react-icons/fa";
 import Image from "next/image";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import axios from "axios";
 import { InviteType, ProfileType } from "../user/[id]/layout";
 import { userType } from "@/context/userContext";
+import { ProfileButton } from "@/components/ProfileButton";
+import { MdPeopleAlt } from "react-icons/md";
 
 export interface ListType {
   friendRequests : {
@@ -20,15 +22,23 @@ export interface ListType {
   } [];
 }
 
+export interface BlockType {
+  friendId: string;
+  fid: string;
+  status: string;
+  friend: userType;
+}
+
 export default function page(
   { children }: { children: React.ReactNode },
   { params }: { params: any }
 ) {
   const [user, SetUser] = useState<ProfileType>();
   const [followers, SetFollowers] = useState<ListType>();
-  const [blocked, setBlocked] = useState<ListType>();
+  const [blocked, setBlocked] = useState<BlockType[]>();
+  const [list, setList] = useState(false);
   const pathName = usePathname();
-  let fella;
+  const router = useRouter();
 
   useEffect(() => {
     const getFollwers = async () => {
@@ -51,10 +61,10 @@ export default function page(
         const res = await axios.get("http://localhost:4000/getBlockedList", {
           withCredentials: true,
         });
-        console.log("success", res.data);
-        SetFollowers(res.data);
+        console.log("success BlockList", res.data);
+        setBlocked(res.data);
       } catch (error) {
-        console.log("get Friend profile failed.", error);
+        console.log("get Block profile failed.", error);
       }
     };
     getBlockedList();
@@ -74,6 +84,17 @@ export default function page(
     };
     getFriend();
   }, []);
+
+  const UnblockFriend = async (friendId: string) => {
+    try {
+      const res = await axios.post("http://localhost:4000/unblockUser", {friendId}, {
+        withCredentials: true,
+      })
+      router.push("/profile")
+    } catch (error) {
+      console.log("Error Unblocking user.", error);
+    }
+  }
 
   if (user && user.user)
     user.user.fullName = user.user.firstName + " " + user.user.lastName;
@@ -111,8 +132,11 @@ export default function page(
               </div>
             </div>
             <div className="w-[25%] text-center h-full overflow-scroll rounded-md bg-primecl">
-              <h2 className="bg-segundcl">Friend List</h2>
-              {followers && followers.friendRequests.map((follower, index) => (
+              <div className="flex items-center justify-around bg-segundcl border-b border-quatrocl">
+                <h2 className="bg-segundcl w-1/2 border-r border-quatrocl cursor-pointer" onClick={() => {setList(false)}}>Friend List</h2>
+                <h2 className="bg-segundcl w-1/2 cursor-pointer" onClick={() => {setList(true)}}>Block List</h2>
+              </div>
+              {!list && followers && followers.friendRequests && followers.friendRequests.map((follower, index) => (
                 <div key={index} className="w-full bg-primecl h-1/3 flex items-center gap-2 border-b border-segundcl px-2">
                     <Image
                       src={follower.user.id !== user.user.id ? follower.user.picture : follower.friend.picture}
@@ -123,6 +147,21 @@ export default function page(
                     />
                     <span>{follower.user.id !== user.user.id ? follower.user.userName : follower.friend.userName}</span>
                     <span className={`flex justify-end w-full`}>( {follower.user.id !== user.user.id ? follower.user.status : follower.friend.status} )</span>
+                </div>
+              ))}
+              {list && blocked && blocked.map((block, index) => (
+                <div key={index} className="w-full bg-primecl h-1/3 flex items-center gap-2 border-b border-segundcl px-2">
+                    <Image
+                      src={block.friend.picture}
+                      alt="friend pic"
+                      height={30}
+                      width={30}
+                      className="rounded-full aspect-square w-8 h-8 object-cover"
+                    />
+                    <span>{block.friend.userName}</span>
+                    <div className="flex justify-end w-full" onClick={() => {UnblockFriend(block.friend.id)}}>
+                      <ProfileButton color="bg-red-600" text="Unblock" icon={MdPeopleAlt}></ProfileButton>
+                    </div>
                 </div>
               ))}
             </div>
