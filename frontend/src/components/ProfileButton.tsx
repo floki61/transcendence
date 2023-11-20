@@ -5,7 +5,7 @@ interface ProfileButtonProps {
 	color: string;
 	text: string;
 	icon: IconType;
-	action?(): any;
+	action?(e?: any): any;
 	classname?: string;
 }
 

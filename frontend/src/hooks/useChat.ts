@@ -18,6 +18,7 @@ export interface ChatType {
     role: string;
     uid: string;
     updateAt: string;
+    picture: string;
   };
   createdAt: string;
   id: string;
