@@ -22,8 +22,7 @@ export default function page() {
     try {
       const res = await axios.post("http://localhost:4000/userSettings", user.user, {
         withCredentials: true,
-      }); // backend API endpoint
-      console.log("saved with : ", res);
+      });
       if (!res.data)
         toast.error("Username already exists");
       else
@@ -38,8 +37,6 @@ export default function page() {
       if (user && user.user) {
         const formData = new FormData();
         formData.append('avatar', user.user.picture);
-      
-        console.log("ha ach ansift : ", user.user.picture);
         await axios.post("http://localhost:4000/upload", formData, {
           withCredentials: true,
           headers: {
@@ -67,7 +64,6 @@ export default function page() {
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files.length === 1 && user) {
       setImageUrl(URL.createObjectURL(e.target.files[0]));
-      console.log("3chiri : " , URL.createObjectURL(e.target.files[0]));
       if (user.user)
         user.user.picture = URL.createObjectURL(e.target.files[0]);
       updateProfilePic();
@@ -84,15 +80,14 @@ export default function page() {
   const [showDiv, setShowDiv] = useState(false);
 
   const handleQrCode = () => {
-    console.log(showDiv);
     setShowDiv(true);
   };
+
   const handleDeleteAccount = async () => {
     try {
       const res = await axios.post("http://localhost:4000/deleteAccount", {id: user.user?.id},{
 			  withCredentials: true,
 		  });
-      console.log("delete success", res.data);
       window.location.href = 'http://localhost:3000/login';
     } catch (error) {
       console.log("delete failed", error);

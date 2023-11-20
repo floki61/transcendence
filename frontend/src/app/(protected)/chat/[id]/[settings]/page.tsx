@@ -4,8 +4,6 @@ import React, { useEffect } from 'react'
 import { useState } from 'react';
 import axios from 'axios';
 import { userType } from '@/context/userContext';
-import Button from '@/components/Button';
-import { Participant } from '@/components/Participant';
 import { ChatFeatures } from '@/components/ChatFeatures';
 import { useRouter } from 'next/navigation';
 
@@ -24,7 +22,6 @@ export default function page({params} : {params: any}) {
           withCredentials: true,
         })
         const data = res.data;
-        console.log(res.data);
         SetParticipants(data.map((user: any) => user));
       } catch (error) {
         console.log("add Participant failed");
@@ -40,7 +37,6 @@ export default function page({params} : {params: any}) {
           withCredentials: true,
         })
         const data = res.data;
-        console.log(res.data);
         SetUsers(data.map((user: any) => user));
       } catch (error) {
         console.log("add Participant failed");

@@ -14,15 +14,9 @@ export default function page({params}: {params: any}) {
 
   useEffect(() => {
     if (params) {
-      console.log(params.id);
       getStats(params.id);
     }
   }, [params]);
-
-  if (stats)
-    console.log("The stats we got : ", stats);
-  else
-    console.log("baqi walo");
 
     return (
       <div className="h-full w-full py-6 px-16">

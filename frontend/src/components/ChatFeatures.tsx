@@ -45,7 +45,6 @@ export const ChatFeatures: React.FC<ChatFeaturesProps> = ({
 				const res = await axios.post("http://localhost:4000/chat/getRoomById", {rid}, {
 					withCredentials: true,
 				})
-				console.log("success", res.data);
 				SetRoom(res.data);
 			} catch (error) {
 				console.log("getRoom by id failed", error);
@@ -66,7 +65,6 @@ export const ChatFeatures: React.FC<ChatFeaturesProps> = ({
 				const res = await axios.post("http://localhost:4000/chat/addParticipant", { uids: selected, rid, }, {
 					withCredentials: true,
 				})
-				console.log("success", res.data);
 				router.push(`/chat/${rid}`);
 			} catch (error) {
 				console.log("addParticipants failed.", error);
@@ -74,11 +72,9 @@ export const ChatFeatures: React.FC<ChatFeaturesProps> = ({
 		}
 		else if (mode === "kick") {
 			try {
-				console.log(selected[0]);
 				const res = await axios.post("http://localhost:4000/chat/kickUser", { id: selected[0], rid }, {
 					withCredentials: true,
 				})
-				console.log("success", res.data);
 				router.push(`/chat/${rid}`);
 			} catch (error) {
 				console.log("kickuser failed.", error);
@@ -86,11 +82,9 @@ export const ChatFeatures: React.FC<ChatFeaturesProps> = ({
 		}
 		else if (mode === "mute") {
 			try {
-				console.log(selected[0]);
 				const res = await axios.post("http://localhost:4000/chat/muteUser", {duration: time, uid: selected[0], rid }, {
 					withCredentials: true,
 				})
-				console.log("success", res.data);
 				router.push(`/chat/${rid}`);
 			} catch (error) {
 				console.log("mute user failed.", error);
@@ -101,7 +95,6 @@ export const ChatFeatures: React.FC<ChatFeaturesProps> = ({
 				const res = await axios.post("http://localhost:4000/chat/banUser", { uid: selected[0], rid }, {
 					withCredentials: true,
 				})
-				console.log("success", res.data);
 				router.push(`/chat/${rid}`);
 			} catch (error) {
 				console.log("banuser failed.", error);
@@ -112,7 +105,6 @@ export const ChatFeatures: React.FC<ChatFeaturesProps> = ({
 				const res = await axios.post("http://localhost:4000/chat/giveAdmin", { uid: selected[0], rid }, {
 					withCredentials: true,
 				})
-				console.log("success", res.data);
 				router.push(`/chat/${rid}`);
 			} catch (error) {
 				console.log("giveAdmin failed.", error);
@@ -123,7 +115,6 @@ export const ChatFeatures: React.FC<ChatFeaturesProps> = ({
 				const res = await axios.post("http://localhost:4000/chat/deleteRoom", { uid: selected[0], rid }, {
 					withCredentials: true,
 				})
-				console.log("success", res.data);
 				router.push("/");
 			} catch (error) {
 				console.log("deleteRoom failed.", error);
@@ -134,7 +125,6 @@ export const ChatFeatures: React.FC<ChatFeaturesProps> = ({
 				const res = await axios.post("http://localhost:4000/chat/leaveRoom", { uid: user.user?.id, rid }, {
 					withCredentials: true,
 				})
-				console.log("success", res.data);
 				router.push("/");
 			} catch (error) {
 				console.log("leaveRoom failed.", error);
@@ -147,7 +137,6 @@ export const ChatFeatures: React.FC<ChatFeaturesProps> = ({
 					const res = await axios.post("http://localhost:4000/chat/changeRoomName", { name: inputValue, rid }, {
 						withCredentials: true,
 					})
-					console.log("success", res.data);
 					router.push(`/chat/${rid}`);
 				} catch (error) {
 					console.log("changeName failed.", error);
@@ -163,7 +152,6 @@ export const ChatFeatures: React.FC<ChatFeaturesProps> = ({
 				const res = await axios.post("http://localhost:4000/chat/changeVisibility", {password: pass, visibility: visible, rid }, {
 					withCredentials: true,
 				})
-				console.log("success", res.data);
 				router.push(`/chat/${rid}`);
 			} catch (error) {
 				console.log("changeVisibility failed.", error);
@@ -178,7 +166,6 @@ export const ChatFeatures: React.FC<ChatFeaturesProps> = ({
 				const res = await axios.post("http://localhost:4000/chat/changePassword", {password: pass, rid }, {
 					withCredentials: true,
 				})
-				console.log("success", res.data);
 				router.push(`/chat/${rid}`);
 			} catch (error) {
 				console.log("changePassword failed.", error);

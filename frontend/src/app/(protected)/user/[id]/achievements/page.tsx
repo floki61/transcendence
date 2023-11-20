@@ -27,7 +27,6 @@ export default function page({params}: {params: any}) {
               withCredentials: true,
             }
           );
-          console.log("success ", res.data);
           setTrophy(res.data);
         } catch (error) {
           console.log("getAwards failed");

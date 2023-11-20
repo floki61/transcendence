@@ -28,7 +28,6 @@ export const useRooms = () => {
 					setFriends(data);
 					setChatbar(true);
 				}
-				console.log("In getUsers : ", {data});
 			} catch (error) {
 				console.log("getMyRooms failed");
 			}
@@ -46,7 +45,6 @@ export const useRooms = () => {
 						return [...prev, ...uniqueRooms]
 					});
 					setChatbar(true);
-					console.log("In getRooms : ", {data});
 				}
 			} catch (error) {
 				console.log("getallrooms failed");

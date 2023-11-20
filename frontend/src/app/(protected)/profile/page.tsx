@@ -60,7 +60,6 @@ export default function page() {
 				revArray[index] = Loss;
 			}
 		})
-		console.log({revArray});
 	}
 	if (live) {
 		live?.gamestats.map((game, index) => {
@@ -70,7 +69,6 @@ export default function page() {
 				liveArray[index] = Loss;
 			}
 		})
-		console.log({liveArray});
 	}
 	if (hidden) {
 		hidden?.gamestats.map((game, index) => {
@@ -80,9 +78,7 @@ export default function page() {
 				hiddenArray[index] = Loss;
 			}
 		})
-		console.log({hiddenArray});
 	}
-
 
   return (
 	<div className='py-6 px-16 text-xl h-full'>

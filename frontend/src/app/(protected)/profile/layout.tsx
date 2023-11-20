@@ -46,7 +46,6 @@ export default function page(
         const res = await axios.get("http://localhost:4000/getFriends", {
           withCredentials: true,
         });
-        console.log("success", res.data);
         SetFollowers(res.data);
       } catch (error) {
         console.log("get Friend profile failed.", error);
@@ -61,7 +60,6 @@ export default function page(
         const res = await axios.get("http://localhost:4000/getBlockedList", {
           withCredentials: true,
         });
-        console.log("success BlockList", res.data);
         setBlocked(res.data);
       } catch (error) {
         console.log("get Block profile failed.", error);
@@ -76,7 +74,6 @@ export default function page(
         const res = await axios.get("http://localhost:4000/profile", {
           withCredentials: true,
         });
-        console.log("success", res.data);
         SetUser(res.data);
       } catch (error) {
         console.log("get Friend profile failed.", error);

@@ -19,8 +19,6 @@ const Chatbar: React.FC<ChatProps> = ({ name, text, time, image, visible, dm }) 
 	else
 		msg = text;
 
-	console.log(name);
-
 	return (
 		<div className="flex justify-between border-t border-primecl py-3 hover:bg-quatrocl/40 px-4">
 			<div className="flex gap-3 flex-1">
