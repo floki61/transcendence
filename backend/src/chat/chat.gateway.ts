@@ -155,6 +155,14 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
 		return rooms;
 	}
 
+	@OnEvent('joinroom')
+	joinroom(@MessageBody() payload: any) {
+		if (this.map.has(payload.userId))
+			this.map.get(payload.userId).join(payload.chatRoom.id);
+		if (this.map.has(payload.friendId))
+			this.map.get(payload.friendId).join(payload.chatRoom.id);
+	}
+
 	// @SubscribeMessage('createRoom')
 	// async createRoom(@MessageBody() payload: any, @ConnectedSocket() client: Socket) {
 	// 	// console.log('payload', payload);

@@ -1,5 +1,6 @@
 import { Injectable, UnauthorizedException, HttpException, HttpStatus } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
+import { EventEmitter2 } from '@nestjs/event-emitter';
 // import { MESSAGES } from '@nestjs/core/constants';
 import { JwtService } from '@nestjs/jwt';
 import { ChatService } from 'src/chat/chat.service';
@@ -11,6 +12,7 @@ export class UsersService {
 	constructor(private jwt: JwtService,
 		private config: ConfigService,
 		private prisma: PrismaService,
+		private event: EventEmitter2,
 	) { }
 
 	async getUser(idu: string) {
@@ -232,6 +234,7 @@ export class UsersService {
 				rid: chatRoom.id,
 			}
 		});
+		this.event.emit('joinroom', { chatRoom, userId, friendId });
 		// console.log({ userId, friendId });
 		return chatRoom;
 	}
@@ -346,6 +349,12 @@ export class UsersService {
 			}
 		});
 		if (chatroom) {
+			await this.prisma.participant.deleteMany({
+				where: {
+					rid: chatroom.id,
+				}
+			});
+			console.log("hnaa-------------------------------------")
 			await this.prisma.chatRoom.delete({
 				where: {
 					id: chatroom.id,
@@ -378,9 +387,7 @@ export class UsersService {
 				}
 			}
 		});
-		if (!await this.checkFriendship(userId, friendId)) {
-			await this.creatChatRoom(userId, friendId);
-		}
+		await this.creatChatRoom(userId, friendId);
 		return block;
 	}
 
@@ -410,7 +417,27 @@ export class UsersService {
 	}
 
 	async getFriends(userId: string) {
-		const friendRequests = await this.prisma.friendShip.findMany({
+		const blockedlist = await this.prisma.block.findMany({
+			where: {
+				OR: [
+					{
+						uid: userId,
+					},
+					{
+						fid: userId,
+					},
+				],
+			},
+		});
+		let blockedIds = [];
+		for (let i = 0; i < blockedlist.length; i++) {
+			if (blockedlist[i].uid === userId)
+				blockedIds.push(blockedlist[i].fid);
+			else
+				blockedIds.push(blockedlist[i].uid);
+		}
+
+		let friendRequests = await this.prisma.friendShip.findMany({
 			where: {
 				OR: [
 					{
@@ -428,6 +455,23 @@ export class UsersService {
 				friend: true,
 			},
 		});
+
+		for (let friend of friendRequests) {
+			if (friend.userId === userId) {
+				friend.user = friend.friend;
+				delete friend.friend;
+			}
+			else {
+				friend.user = friend.user;
+				delete friend.friend;
+			}
+			// if (blockedIds.includes(friend.user.id)) {
+
+			// }
+
+		}
+		friendRequests = friendRequests.filter(friend => !blockedIds.includes(friend.user.id));
+		// console.log(friendRequests);
 		// for (let i = 0; i < friendRequests.length; i++) {
 		// 	let friend = friendRequests[i];
 		// 	let user = await this.prisma.user.findUnique({
@@ -699,7 +743,6 @@ export class UsersService {
 				friend: true,
 			},
 		});
-		console.log('eheh', blockedList);
 		return blockedList;
 	}
 }
