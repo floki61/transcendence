@@ -7,12 +7,12 @@ import axios from "axios";
 import Link from "next/link";
 import { NotifBar } from "@/components/Notifications/NotifBar";
 import { UserContext } from "@/context/userContext";
-import { Carousel } from "@/components/Carousel";
 import { MdOutlineKeyboardDoubleArrowLeft } from "react-icons/md";
 import { MdOutlineKeyboardDoubleArrowRight } from "react-icons/md";
 
 export default function Home() {
   const [invites, SetInvite] = useState<InviteType[]>([]);
+  const [anime, setAnime] = useState(true);
   const [slides, setSlides] = useState([
     {
       title: "REVERSE MODE",
@@ -24,14 +24,14 @@ export default function Home() {
     {
       title: "LIVE MODE",
       image: "/livemode.png",
-      text: "Face random players around the globe, and prove that you are on the master of ping pong",
+      text: "Face random players around the globe, and prove that you are the master of ping pong",
       link: "game?type=Live&mode=simple",
       width: 200,
     },
     {
       title: "HIDDEN MODE",
       image: "/blackhole.png",
-      text: "If you can't see it, this doesn't mean that it doesn't exist. Let's see if you can match a mode that challenge your senses",
+      text: "If you can't see it, this doesn't mean that it doesn't exist. Let's see if you can handle a mode that challenge your senses",
       link: "game?type=Live&mode=hidden",
       width: 235,
     },
@@ -41,10 +41,18 @@ export default function Home() {
   const MoveLeft = () => {
     const newSlides = [slides[2], slides[0], slides[1]];
     setSlides(newSlides);
+    setAnime(true);
+    setTimeout(() => {
+      setAnime(false);
+    }, 2000); 
   };
   const MoveRight = () => {
     const newSlides = [slides[1], slides[2], slides[0]];
     setSlides(newSlides);
+    setAnime(true);
+    setTimeout(() => {
+      setAnime(false);
+    }, 2000); 
   };
 
   useEffect(() => {
@@ -139,7 +147,7 @@ export default function Home() {
         >
           <MdOutlineKeyboardDoubleArrowLeft size={50} />
         </div>
-        <div className="w-1/3 h-full flex flex-col items-center justify-around rounded-xl bg-gradient-to-t from-[#0B2931] from-0% to-[#020C0E] to-20% absolute blur-sm">
+        <div className="w-1/3 h-full flex flex-col items-center justify-around rounded-xl bg-gradient-to-t from-[#0B2931] from-0% to-[#020C0E] to-20% absolute blur-sm pointer-events-none">
           <div className="flex justify-around w-full">
             <Image
               src={slides[0].image}
@@ -159,7 +167,7 @@ export default function Home() {
             Play
           </Link>
         </div>
-        <div className="w-[40%] h-full flex flex-col items-center justify-around rounded-xl bg-gradient-to-t from-[#0B2931] from-0% to-[#020C0E] to-20% z-10 absolute left-[30%] right-[30%] border border-quatrocl">
+        <div className={`w-[40%] h-full flex flex-col items-center justify-around rounded-xl bg-gradient-to-t from-[#0B2931] from-0% to-[#020C0E] to-20% z-10 absolute left-[30%] right-[30%] border border-quatrocl ${anime ? "animate-appear" : ""}`}>
           <div className="flex justify-around w-full">
             <Image
               src={slides[1].image}
@@ -179,7 +187,7 @@ export default function Home() {
             Play
           </Link>
         </div>
-        <div className="w-1/3 h-full flex flex-col items-center justify-around rounded-xl bg-gradient-to-t from-[#0B2931] from-0% to-[#020C0E] to-20% absolute right-4 blur-sm">
+        <div className="w-1/3 h-full flex flex-col items-center justify-around rounded-xl bg-gradient-to-t from-[#0B2931] from-0% to-[#020C0E] to-20% absolute right-4 blur-sm pointer-events-none">
           <div className="flex justify-around w-full">
             <Image
               src={slides[2].image}
