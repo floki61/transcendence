@@ -5,7 +5,7 @@ import axios from "axios";
 import { useEffect, useRef, useState } from "react";
 import { useChat as chatSocket } from "@/context/chatSocket";
 import { useContext } from "react";
-import { UserContext } from "@/context/userContext";
+import { UserContext, userType } from "@/context/userContext";
 
 export interface ChatType {
   user: {
@@ -18,7 +18,7 @@ export interface ChatType {
     role: string;
     uid: string;
     updateAt: string;
-    picture: string;
+    user: userType;
   };
   createdAt: string;
   id: string;

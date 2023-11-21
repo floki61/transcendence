@@ -136,7 +136,7 @@ const Convo = ({ params }: { params: any }) => {
                 >
                   <Chatmsg
                     room={false}
-                    picture={chatie.user?.picture}
+                    picture={chatie.user?.user?.picture}
                     text={chatie.msg}
                     time={chatie.msgTime.substring(11, 16)}
                     className={`flex justify-between ${
@@ -223,6 +223,8 @@ const Convo = ({ params }: { params: any }) => {
                   key={index}
                 >
                   <Chatmsg
+                    room={(chatie.user?.uid === user.user?.id || user.user?.id === chatie.uid) ? false : true}
+                    picture={chatie.user?.user?.picture}
                     text={chatie.msg}
                     time={chatie.msgTime.substring(11, 16)}
                     className={`flex justify-between ${
