@@ -23,9 +23,9 @@ export default function page() {
       const res = await axios.post("http://localhost:4000/userSettings", user.user, {
         withCredentials: true,
       });
-      if (!res.data)
-        toast.error("Username already exists");
-      else
+      // if (!res.data)
+      //   toast.error("Username already exists");
+      // else
         toast.success("Changes saved successfully");
     } catch (error: any) {
       console.error("I catched : ", error.response.data.message);

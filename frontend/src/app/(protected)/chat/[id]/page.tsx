@@ -9,6 +9,8 @@ import { usePathname } from "next/navigation";
 import { useState, useEffect, useRef, useLayoutEffect } from "react";
 import JoinRooms from "@/components/JoinRooms";
 import { useRoomInfo } from "@/hooks/useRoomInfo";
+import axios from "axios";
+import { userType } from "@/context/userContext";
 
 const Convo = ({ params }: { params: any }) => {
   const {
@@ -27,11 +29,11 @@ const Convo = ({ params }: { params: any }) => {
   } = useChat(params.id);
   const {visible, id, role, r_name, r_id, dm} = useRoomInfo({rid: params.id, user: user.user});
   const lastMeassgeRef = useRef<any>(null);
+  const [participants, SetParticipants] = useState<userType[]>();
   const pathName = usePathname();
   let friendId;
 
   useEffect(() => {
-    if (user.user && user.user.id) 
       getMessages(pathName.split("/").at(-1) as string);
   }, [pathName, socket]);
 
@@ -47,6 +49,21 @@ const Convo = ({ params }: { params: any }) => {
       socket.off("message", messageHandler);
     };
   }, [socket]);
+
+  useEffect(() => {
+    const getParticipants = async () => {
+      try {
+        const res = await axios.post("http://localhost:4000/chat/getParticipants", {rid: params.id},{
+          withCredentials: true,
+        })
+        const data = res.data;
+        SetParticipants(data);
+      } catch (error) {
+        console.log("add Participant failed");
+      }
+    }
+    getParticipants();
+  }, []);
 
   useLayoutEffect(() => {
     if (lastMeassgeRef.current) {
@@ -71,19 +88,21 @@ const Convo = ({ params }: { params: any }) => {
       <div className="h-full w-full flex">
         <div className="h-full flex-1 flex flex-col justify-between">
           <div className="px-4 py-2 flex items-center justify-between bg-primecl">
-            <div className="flex items-center gap-4">
-              <Image
-                src={(image as string) || "/placeholder.jpg"}
-                alt={"friend pic"}
-                width={40}
-                height={40}
-                className="rounded-full aspect-square w-10 h-10 object-cover"
-              />
-              <div>
-                <h2 className="text-xl">{name || r_name}</h2>
-                <h3 className="text-sm font-light lowercase">{user.user?.status}</h3>
+            {participants && (
+              <div className="flex items-center gap-4">
+                <Image
+                  src={(participants[0].picture as string) || "/placeholder.jpg"}
+                  alt={"friend pic"}
+                  width={40}
+                  height={40}
+                  className="rounded-full aspect-square w-10 h-10 object-cover"
+                />
+                  <div>
+                    <h2 className="text-xl">{participants[0]?.userName}</h2>
+                    <h3 className="text-sm font-light lowercase">{participants[0]?.status}</h3>
+                  </div>
               </div>
-            </div>
+            )}
             <div className="flex gap-8 relative w-[17%] h-full items-center justify-end">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -99,7 +118,7 @@ const Convo = ({ params }: { params: any }) => {
                   fill="#CAD2D5"
                 />
               </svg>
-              {showDiv && <ChatSettings dm={dm} role={role} id={params.id} friendId={id}/>}
+              {showDiv && participants && <ChatSettings dm={dm} role={role} id={params.id} friendId={participants[0]?.id}/>}
             </div>
           </div>
           <div className="flex flex-col flex-1 bg-segundcl py-2 overflow-scroll">
@@ -116,8 +135,8 @@ const Convo = ({ params }: { params: any }) => {
                   key={index}
                 >
                   <Chatmsg
-                    room={(chatie.user?.uid !== user.user?.id) ? true : false}
-                    picture={chatie.user.picture}
+                    room={false}
+                    picture={chatie.user?.picture}
                     text={chatie.msg}
                     time={chatie.msgTime.substring(11, 16)}
                     className={`flex justify-between ${

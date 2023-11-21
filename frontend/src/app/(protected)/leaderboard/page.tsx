@@ -69,7 +69,7 @@ export default function page() {
 			</div>
 			<div className="flex-1 rounded-b-xl bg-segundcl">
 				{board && board.map((rank, index) => (
-					<div key={index}>
+					<div key={index} className='h-[10%]'>
 						<Standing
 							place={index + 1}
 							color={colorArray[index]}
