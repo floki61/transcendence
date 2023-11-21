@@ -27,7 +27,7 @@ export class UsersService {
 				userName: username,
 			},
 		});
-		console.log(user);
+		// console.log(user, 'hhhhh');
 		return user ? true : false;
 	}
 	async updateUser(req, data: any) {
@@ -37,7 +37,7 @@ export class UsersService {
 			this.updateUserPhoneNumber(req, data);
 		if (data.country)
 			this.updateUserCountry(req, data);
-		await this.prisma.user.update({
+		return await this.prisma.user.update({
 			where: {
 				id: req.user.id,
 			},
@@ -255,7 +255,7 @@ export class UsersService {
 					friendId: userId,
 				}
 			},
-		}); 
+		});
 	}
 
 	async unfriend(userId: string, friendId: string) {
@@ -486,7 +486,7 @@ export class UsersService {
 						fid: userId,
 					},
 				],
-			},  
+			},
 		});
 		if (blocked)
 			return true;

@@ -592,14 +592,8 @@ export class ChatService {
 			},
 			include: {
 				user: {
-					select: {
-						user: {
-							select: {
-								id: true,
-								userName: true,
-								picture: true,
-							},
-						},
+					include: {
+						user: true,
 					},
 				},
 			},
