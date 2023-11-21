@@ -13,13 +13,13 @@ import { ProfileButton } from "@/components/ProfileButton";
 import { MdPeopleAlt } from "react-icons/md";
 
 export interface ListType {
-  friendRequests : {
+  friendRequests: {
     friendId: string;
     userId: string;
     status: string;
     user: userType;
     friend: userType;
-  } [];
+  }[];
 }
 
 export interface BlockType {
@@ -84,14 +84,18 @@ export default function page(
 
   const UnblockFriend = async (friendId: string) => {
     try {
-      const res = await axios.post("http://localhost:4000/unblockUser", {friendId}, {
-        withCredentials: true,
-      })
-      router.push("/profile")
+      const res = await axios.post(
+        "http://localhost:4000/unblockUser",
+        { friendId },
+        {
+          withCredentials: true,
+        }
+      );
+      router.push("/profile");
     } catch (error) {
       console.log("Error Unblocking user.", error);
     }
-  }
+  };
 
   if (user && user.user)
     user.user.fullName = user.user.firstName + " " + user.user.lastName;
@@ -130,24 +134,73 @@ export default function page(
             </div>
             <div className="w-[25%] text-center h-full overflow-scroll rounded-md bg-primecl">
               <div className="flex items-center justify-around bg-segundcl border-b border-quatrocl">
-                <h2 className="bg-segundcl w-1/2 border-r border-quatrocl cursor-pointer" onClick={() => {setList(false)}}>Friend List</h2>
-                <h2 className="bg-segundcl w-1/2 cursor-pointer" onClick={() => {setList(true)}}>Block List</h2>
+                <h2
+                  className="bg-segundcl w-1/2 border-r border-quatrocl cursor-pointer"
+                  onClick={() => {
+                    setList(false);
+                  }}
+                >
+                  Friend List
+                </h2>
+                <h2
+                  className="bg-segundcl w-1/2 cursor-pointer"
+                  onClick={() => {
+                    setList(true);
+                  }}
+                >
+                  Block List
+                </h2>
               </div>
-              {!list && followers && followers.friendRequests && followers.friendRequests.map((follower, index) => (
-                <div key={index} className="w-full bg-primecl h-1/3 flex items-center gap-2 border-b border-segundcl px-2">
+              {!list &&
+                followers &&
+                followers.friendRequests &&
+                followers.friendRequests.map((follower, index) => (
+                  <div
+                    key={index}
+                    className="w-full bg-primecl h-1/3 flex items-center gap-2 border-b border-segundcl px-2"
+                  >
                     <Image
-                      src={follower.user.id !== user.user.id ? follower.user.picture : follower.friend.picture}
+                      src={
+                        follower.user.id !== user.user.id
+                          ? follower.user.picture
+                          : follower.friend.picture
+                      }
                       alt="friend pic"
                       height={30}
                       width={30}
                       className="rounded-full aspect-square w-8 h-8 object-cover"
                     />
-                    <span>{follower.user.id !== user.user.id ? follower.user.userName : follower.friend.userName}</span>
-                    <span className={`flex justify-end w-full`}>( {follower.user.id !== user.user.id ? follower.user.status : follower.friend.status} )</span>
-                </div>
-              ))}
-              {list && blocked && blocked.map((block, index) => (
-                <div key={index} className="w-full bg-primecl h-1/3 flex items-center gap-2 border-b border-segundcl px-2">
+                    <span>
+                      {follower.user.id !== user.user.id
+                        ? follower.user.userName
+                        : follower.friend.userName}
+                    </span>
+                    <span
+                      className={`flex justify-end w-full ${
+                        follower.user.id !== user.user.id
+                          ? follower.user.status !== "OFFLINE"
+                            ? "text-[#00A83F]"
+                            : "text-red-600"
+                          : follower.friend.status !== "OFFLINE"
+                          ? "text-[#00A83F]"
+                          : "text-red-600"
+                      }`}
+                    >
+                      ({" "}
+                      {follower.user.id !== user.user.id
+                        ? follower.user.status
+                        : follower.friend.status}{" "}
+                      )
+                    </span>
+                  </div>
+                ))}
+              {list &&
+                blocked &&
+                blocked.map((block, index) => (
+                  <div
+                    key={index}
+                    className="w-full bg-primecl h-1/3 flex items-center gap-2 border-b border-segundcl px-2"
+                  >
                     <Image
                       src={block.friend.picture}
                       alt="friend pic"
@@ -156,11 +209,20 @@ export default function page(
                       className="rounded-full aspect-square w-8 h-8 object-cover"
                     />
                     <span>{block.friend.userName}</span>
-                    <div className="flex justify-end w-full" onClick={() => {UnblockFriend(block.friend.id)}}>
-                      <ProfileButton color="bg-red-600" text="Unblock" icon={MdPeopleAlt}></ProfileButton>
+                    <div
+                      className="flex justify-end w-full"
+                      onClick={() => {
+                        UnblockFriend(block.friend.id);
+                      }}
+                    >
+                      <ProfileButton
+                        color="bg-red-600"
+                        text="Unblock"
+                        icon={MdPeopleAlt}
+                      ></ProfileButton>
                     </div>
-                </div>
-              ))}
+                  </div>
+                ))}
             </div>
           </div>
           <div className="flex-1 flex flex-col items-center relative">
