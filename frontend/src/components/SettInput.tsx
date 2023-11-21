@@ -1,7 +1,5 @@
 "use client";
 
-import { faEye, faEyeDropper } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useEffect, useState, useRef } from "react";
 
 interface SettinputProps {

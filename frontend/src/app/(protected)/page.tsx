@@ -7,6 +7,9 @@ import axios from "axios";
 import Link from "next/link";
 import { NotifBar } from "@/components/Notifications/NotifBar";
 import { UserContext } from "@/context/userContext";
+import { Carousel } from "@/components/Carousel";
+import { MdOutlineKeyboardDoubleArrowLeft } from "react-icons/md";
+import { MdOutlineKeyboardDoubleArrowRight } from "react-icons/md";
 
 export default function Home() {
   const [invites, SetInvite] = useState<InviteType[]>([]);
@@ -97,8 +100,9 @@ export default function Home() {
           </div>
         </div>
       </div>
-      <div className="h-[38%] w-full px-4 flex gap-2">
-        <div className="w-1/3 flex flex-col items-center justify-around rounded-xl bg-gradient-to-t from-[#0B2931] from-0% to-[#020C0E] to-20%">
+      <div className="h-[38%] w-full px-4 flex justify-between gap-2 relative">
+        <div className="flex items-center z-20 absolute top-[50%] bottom-[50%]"><MdOutlineKeyboardDoubleArrowLeft size={50}/></div>
+        <div className="w-1/3 h-full flex flex-col items-center justify-around rounded-xl bg-gradient-to-t from-[#0B2931] from-0% to-[#020C0E] to-20% absolute blur-sm">
           <h2>LIVE MODE 1</h2>
           <Link
             href={"game?type=Live&mode=simple"}
@@ -107,7 +111,7 @@ export default function Home() {
             Play
           </Link>
         </div>
-        <div className="w-1/3 flex flex-col items-center justify-around rounded-xl bg-gradient-to-t from-[#0B2931] from-0% to-[#020C0E] to-20%">
+        <div className="w-[40%] h-full flex flex-col items-center justify-around rounded-xl bg-gradient-to-t from-[#0B2931] from-0% to-[#020C0E] to-20% z-10 absolute left-[30%] right-[30%] border border-quatrocl">
           <h2>REVERSE MODE 2</h2>
           <Link
             href={"game?type=Live&mode=reverse"}
@@ -116,7 +120,7 @@ export default function Home() {
             Play
           </Link>
         </div>
-        <div className="w-1/3 flex flex-col items-center justify-around rounded-xl bg-gradient-to-t from-[#0B2931] from-0% to-[#020C0E] to-20%">
+        <div className="w-1/3 h-full flex flex-col items-center justify-around rounded-xl bg-gradient-to-t from-[#0B2931] from-0% to-[#020C0E] to-20% absolute right-4 blur-sm">
           <h2>HIDDEN MODE 3</h2>
           <Link
             href={"game?type=Live&mode=hidden"}
@@ -125,6 +129,8 @@ export default function Home() {
             Play
           </Link>
         </div>
+        <div className="flex items-center z-20 absolute top-[50%] bottom-[50%] right-4"><MdOutlineKeyboardDoubleArrowRight size={50}/></div>
+        {/* <Carousel /> */}
       </div>
     </div>
   );

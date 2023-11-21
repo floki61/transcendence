@@ -65,7 +65,7 @@ const Standing: React.FC<StandingProps> = ({
 
 	if (place <= 10) {
 		return (
-		  <div className='h-[10%] flex items-center border-t-2 border-primecl py-1'>
+		  <div className='h-full flex items-center border-t-2 border-primecl py-1'>
 			  <div className='flex w-1/4 items-center justify-around pl-6 h-full'>
 				  <div className={`${color} rounded-lg w-8 text-center flex items-center justify-center h-8`}>{place}</div>
 				  <Image
