@@ -13,33 +13,38 @@ import { MdOutlineKeyboardDoubleArrowRight } from "react-icons/md";
 
 export default function Home() {
   const [invites, SetInvite] = useState<InviteType[]>([]);
-  const user = useContext(UserContext);
-  const slides = [
-    {
-      title: "LIVE MODE",
-      image: "/livemode.png",
-      text: "Face random players around the globe, and prove that you are on the master of ping pong",
-    },
+  const [slides, setSlides] = useState([
     {
       title: "REVERSE MODE",
       image: "/reverse.png",
       text: "Bored of the default mode, why don't you try a game with different rules. Start a game to find out !!",
+      link: "game?type=Live&mode=reverse",
+      width: 150,
+    },
+    {
+      title: "LIVE MODE",
+      image: "/livemode.png",
+      text: "Face random players around the globe, and prove that you are on the master of ping pong",
+      link: "game?type=Live&mode=simple",
+      width: 200,
     },
     {
       title: "HIDDEN MODE",
-      image: "hidden.png",
+      image: "/blackhole.png",
       text: "If you can't see it, this doesn't mean that it doesn't exist. Let's see if you can match a mode that challenge your senses",
+      link: "game?type=Live&mode=hidden",
+      width: 235,
     },
-  ];
+  ]);
+  const user = useContext(UserContext);
 
   const MoveLeft = () => {
-    console.log("hello");
-    [slides[0], slides[1], slides[2]] = [slides[1], slides[2], slides[0]];
-    console.log(slides);
+    const newSlides = [slides[2], slides[0], slides[1]];
+    setSlides(newSlides);
   };
   const MoveRight = () => {
-    [slides[0], slides[1], slides[2]] = [slides[2], slides[0], slides[1]];
-    console.log(slides);
+    const newSlides = [slides[1], slides[2], slides[0]];
+    setSlides(newSlides);
   };
 
   useEffect(() => {
@@ -135,27 +140,60 @@ export default function Home() {
           <MdOutlineKeyboardDoubleArrowLeft size={50} />
         </div>
         <div className="w-1/3 h-full flex flex-col items-center justify-around rounded-xl bg-gradient-to-t from-[#0B2931] from-0% to-[#020C0E] to-20% absolute blur-sm">
-          <h2>{slides[0].title}</h2>
+          <div className="flex justify-around w-full">
+            <Image
+              src={slides[0].image}
+              alt="slide image"
+              width={slides[0].width}
+              height={slides[0].width}
+            />
+            <div className="flex flex-col gap-2 items-center justify-center w-1/2">
+              <h2 className="text-xl text-quatrocl">{slides[0].title}</h2>
+              <p className="text-sm">{slides[0].text}</p>
+            </div>
+          </div>
           <Link
-            href={"game?type=Live&mode=simple"}
+            href={slides[0].link}
             className="border flex items-center justify-center border-white text-center rounded-3xl w-[30%] h-12 opacity-95 cursor-pointer bg-primecl shadow-[0px 4px 4px 0px rgba(0, 0, 0, 0.25)] transition ease-in-out delay-150 hover:scale-105 duration-300"
           >
             Play
           </Link>
         </div>
         <div className="w-[40%] h-full flex flex-col items-center justify-around rounded-xl bg-gradient-to-t from-[#0B2931] from-0% to-[#020C0E] to-20% z-10 absolute left-[30%] right-[30%] border border-quatrocl">
-          <h2>{slides[1].title}</h2>
+          <div className="flex justify-around w-full">
+            <Image
+              src={slides[1].image}
+              alt="slide image"
+              width={slides[1].width}
+              height={slides[1].width}
+            />
+            <div className="flex flex-col gap-2 items-center justify-center w-1/2">
+              <h2 className="text-xl text-quatrocl">{slides[1].title}</h2>
+              <p>{slides[1].text}</p>
+            </div>
+          </div>
           <Link
-            href={"game?type=Live&mode=reverse"}
+            href={slides[1].link}
             className="border flex items-center justify-center border-white text-center rounded-3xl w-[30%] h-12 opacity-95 cursor-pointer bg-primecl shadow-[0px 4px 4px 0px rgba(0, 0, 0, 0.25)] transition ease-in-out delay-150 hover:scale-105 duration-300"
           >
             Play
           </Link>
         </div>
         <div className="w-1/3 h-full flex flex-col items-center justify-around rounded-xl bg-gradient-to-t from-[#0B2931] from-0% to-[#020C0E] to-20% absolute right-4 blur-sm">
-          <h2>{slides[2].title}</h2>
+          <div className="flex justify-around w-full">
+            <Image
+              src={slides[2].image}
+              alt="slide image"
+              width={slides[2].width}
+              height={slides[2].width}
+            />
+            <div className="flex flex-col gap-2 items-center justify-center w-1/2">
+              <h2 className="text-xl text-quatrocl">{slides[2].title}</h2>
+              <p className="text-sm">{slides[2].text}</p>
+            </div>
+          </div>
           <Link
-            href={"game?type=Live&mode=hidden"}
+            href={slides[2].link}
             className="border flex items-center justify-center border-white text-center rounded-3xl w-[30%] h-12 opacity-95 cursor-pointer bg-primecl shadow-[0px 4px 4px 0px rgba(0, 0, 0, 0.25)] transition ease-in-out delay-150 hover:scale-105 duration-300"
           >
             Play
