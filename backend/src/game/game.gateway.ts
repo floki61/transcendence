@@ -8,6 +8,7 @@ import { PrismaService } from 'src/prisma/prisma.service';
 import { ForbiddenException, UseGuards } from '@nestjs/common';
 import { FortyTwoGuard } from 'src/auth/tools/Guards';
 import { JwtAuthGuard } from 'src/auth/jwt/jwt.guard';
+import { UsersService } from 'src/users/users.service';
 
 @WebSocketGateway({ namespace: 'game', cors: true, origin: ['http://localhost:3000/game'] })
 export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
@@ -15,7 +16,8 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
         private jwt: JwtService,
         private config: ConfigService,
         private prisma: PrismaService,
-        private event: EventEmitter2) {
+        private event: EventEmitter2,
+        private userService: UsersService) {
         setInterval(() => this.matchPlayers(), 1000);
     }
 
@@ -304,11 +306,24 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
             this.gameService.Queue.get(id).Socket.emit('paddlesUpdate', this.gameService.Queue.get(id).gameData);
     }
 
-    private startBotGame(id) {
+    private async startBotGame(id) {
         console.log(id, this.gameService.Queue.get(id).status);
         if (this.gameService.Queue.get(id).status === 'waiting') {
             this.gameService.Queue.get(id).status = 'playing';
-            this.connectedClients.get(id).emit('startBotGame', this.gameService.Queue.get(id).gameData);
+            const userData = {
+                player1: {
+                    img: await this.userService.getPictureWithId(id),
+                    name: await this.userService.getUserNameWithId(id),
+                    level: await this.userService.getLevelWithId(id),
+                },
+                player2: {
+                    img: '/boot.png',
+                    name: 'Bot',
+                    level: '999',
+                },
+                mode: 'Bot',
+            }
+            this.connectedClients.get(id).emit('startBotGame', {gameData: this.gameService.Queue.get(id).gameData, userData: userData, pos: 'left'});
             console.log('Bot game started');
             this.moveBotBall(id);
         }
