@@ -21,8 +21,7 @@ const GamePage = () => {
         let canvas: any;
         const sketch = (p: p5) => {
             p.setup = () => {
-                canvas = p.createCanvas(p.windowWidth / 2, p.windowHeight / 2);
-                // canvas.position((p.windowWidth - canvas.width) / 2, (p.windowHeight - canvas.height) / 2);
+                canvas = p.createCanvas(window.innerWidth / 2, window.innerHeight / 2);
                 canvas.addClass("border-4 rounded-md bg-gray-800");
                 canvas.style('border-color', '#213e46');
             };
@@ -30,7 +29,6 @@ const GamePage = () => {
                 p.resizeCanvas(p.windowWidth / 2, p.windowHeight / 2);
                 if(gameDataRef.current)
                     updatePaddles(p, gameDataRef.current);
-                // centerCanvas();
             };
 
             const centerCanvas = () => {
