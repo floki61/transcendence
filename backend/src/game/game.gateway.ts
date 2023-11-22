@@ -100,7 +100,7 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
                         player1 = payload.id;
                         player2 = this.gameService.Queue.get(payload.id).playWith;
                         if (this.gameService.Queue.get(player2))
-                            this.gameService.Queue.get(player2).Socket.emit('gameResult', 'Winner');
+                            this.gameService.Queue.get(player2).Socket.emit('gameResult', 'You won!');
                         this.gameService.Queue.get(player1).status = 'finished';
                         this.gameService.Queue.get(player2).status = 'finished';
                     }
@@ -108,7 +108,7 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
                         player1 = this.gameService.Queue.get(payload.id).playWith;
                         player2 = payload.id;
                         if (this.gameService.Queue.get(player1))
-                            this.gameService.Queue.get(player1).Socket.emit('gameResult', 'Winner');
+                            this.gameService.Queue.get(player1).Socket.emit('gameResult', 'You won!');
                         this.gameService.Queue.get(player2).status = 'finished';
                         this.gameService.Queue.get(player1).status = 'finished';
                     }
@@ -168,23 +168,23 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
         if (this.gameService.Queue.get(id).gameType === 'Bot') {
             if (this.gameService.Queue.get(id)) {
                 if (this.gameService.Queue.get(id).gameData.score.left === 5)
-                    this.gameService.Queue.get(id).Socket.emit('gameResult', 'Winner');
+                    this.gameService.Queue.get(id).Socket.emit('gameResult', 'You won');
                 else
-                    this.gameService.Queue.get(id).Socket.emit('gameResult', 'Loser');
+                    this.gameService.Queue.get(id).Socket.emit('gameResult', 'You lost');
             }
         }
         else {
             if (this.gameService.Queue.get(id).gameData.score.left === 5) {
                 if (this.gameService.Queue.get(id))
-                    this.gameService.Queue.get(id).Socket.emit('gameResult', 'Winner');
+                    this.gameService.Queue.get(id).Socket.emit('gameResult', 'You won');
                 if (this.gameService.Queue.get(id2))
-                    this.gameService.Queue.get(id2).Socket.emit('gameResult', 'Loser');
+                    this.gameService.Queue.get(id2).Socket.emit('gameResult', 'You lost');
             }
             else {
                 if (this.gameService.Queue.get(id))
-                    this.gameService.Queue.get(id).Socket.emit('gameResult', 'Loser');
+                    this.gameService.Queue.get(id).Socket.emit('gameResult', 'You lost');
                 if (this.gameService.Queue.get(id2))
-                    this.gameService.Queue.get(id2).Socket.emit('gameResult', 'Winner');
+                    this.gameService.Queue.get(id2).Socket.emit('gameResult', 'You won');
             }
         }
     }
