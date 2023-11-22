@@ -1,10 +1,8 @@
 "use client"
-import React, { useEffect, useRef, useState } from 'react';
+import React, { memo, useEffect, useRef, useState } from 'react';
 import p5 from 'p5';
 import { useGame } from '@/context/gameSocket';
 import {leftPaddle, rightPaddle, ball, leftScore, rightScore, updatePaddles, updateBallData,updateScore } from '@/gameLogic/gameLogic';
-import { CLIENT_RENEG_LIMIT } from 'tls';
-import { Changa } from 'next/font/google';
 import Image from 'next/image'
 
 interface usersData {
@@ -21,17 +19,13 @@ interface usersData {
     mode: string;
 }
 
-
 const GamePage = () => {
-    const p5Ref = useRef();
     const {socket} = useGame();
-    const gameDataRef = useRef(null);
-    const [count, setCount] = useState(false);
+    const [liveGame, setLiveGame] = useState(false);
     const [gameResult, setGameResult] = useState(null);
     const [botGame, setBotGame] = useState(false);
     const [client, setClient] = useState(false);
     const test = useRef<HTMLDivElement>(null);
-    const [mode, setMode] = useState("");
     const [usersData, setUsersData] = useState<usersData>();
     const playersDiv = document.getElementById('players');
 
@@ -51,16 +45,22 @@ const GamePage = () => {
                 if (playersDiv)
                     playersDiv.style.width = `${p.width}px`;
             };
-
+            socket.on('userData', (data) => {
+                setUsersData(data);
+            })
+            socket.on('startBotGame', (data) => {
+                setUsersData(data.userData);
+                updatePaddles(p, data.gameData);
+                updateBallData(p, data.gameData);
+                setBotGame(true);
+            })
             socket.on('startGame', (data) => {
-                gameDataRef.current = data.data;
-                updatePaddles(p, data.data);
-                updateBallData(p, data.data);
-                setMode(data.mode);
-                setCount(true);
+                setUsersData(data.userData);
+                updatePaddles(p, data.gameData);
+                updateBallData(p, data.gameData);
+                setLiveGame(true);
             });
             socket.on('paddlesUpdate', (data) => {
-                gameDataRef.current = data;
                 updatePaddles(p, data);
             });
             socket.on('updateBall', (data) => {
@@ -71,15 +71,8 @@ const GamePage = () => {
             socket.on('gameResult', (data) => {
                 setGameResult(data);
                 setBotGame(false);
-                setCount(false);
+                setLiveGame(false);
             });
-            socket.on('startBotGame', (data) => {
-                console.log("startBotGame");
-                updatePaddles(p, data.gameData);
-                updateBallData(p, data.gameData);
-                setUsersData(data.userData);
-                setBotGame(true);
-            })
             socket.on('alreadyConnected', (data) => {
                 setClient(true);
             })
@@ -87,22 +80,35 @@ const GamePage = () => {
                 if(client) {
                     p.background('#151515');
                     p.fill(255);
+                    p.fill(255, 255, 255, 30);
                     p.textSize(34);
                     p.textAlign(p.CENTER, p.CENTER);
                     p.text("already in game", p.width / 2, p.height / 2);
                 }
-                else if(count || botGame) {
+                else if(liveGame || botGame) {
                     p.background('#151515');
                     p.stroke("#213D46");
                     p.strokeWeight(2);
-                    p.line(p.width / 2, 0, p.width / 2, p.height);
-                    p.fill("#213D46");
-                    p.textSize(128);
-                    p.textAlign(p.CENTER, p.CENTER);
-                    p.text(leftScore, p.width / 4, p.height / 2);
-                    p.text(rightScore, (p.width / 4) * 3, p.height / 2);
-                    p.fill("#213D46");
+                    if(usersData?.mode === "hidden") {
+                        p.line(p.width / 4, 0, p.width / 4, p.height);
+                        p.line((p.width / 4) * 3, 0, (p.width / 4) * 3, p.height);
+                    }
+                    else
+                        p.line(p.width / 2, 0, p.width / 2, p.height);
                     p.noStroke();
+                    p.fill("#213D46");
+                    p.textAlign(p.CENTER, p.CENTER);
+                    p.fill(255, 255, 255, 30);
+                    if(usersData?.mode === "hidden") {
+                        p.textSize(28);
+                        p.text(`${leftScore} - ${rightScore}`, p.width / 2, 30);
+                    }
+                    else {
+                        p.textSize(192);
+                        p.text(leftScore, p.width / 4, p.height / 2);
+                        p.text(rightScore, (p.width / 4) * 3, p.height / 2);
+                    }
+                    p.fill("#213D46");
                     p.rectMode(p.CENTER);
                     p.rect(leftPaddle.x, leftPaddle.y, leftPaddle.width, leftPaddle.height);
                     p.rect(rightPaddle.x, rightPaddle.y, rightPaddle.width, rightPaddle.height);
@@ -121,11 +127,12 @@ const GamePage = () => {
                 else {
                     p.background('#151515');
                     p.fill(255);
+                    p.fill(255, 255, 255, 60);
                     p.textSize(34);
                     p.textAlign(p.CENTER, p.CENTER);
-                    p.text("waiting for players...", p.width / 2, p.height / 2);
+                    p.text("Waiting for another player", p.width / 2, p.height / 2);
                 }
-                if(count && leftPaddle.x && rightPaddle.x) {
+                if(liveGame && leftPaddle.x && rightPaddle.x) {
                     if (p.keyIsDown(p.UP_ARROW))
                         socket.emit("paddlesUpdate", "UP");
                     else if(p.keyIsDown(p.DOWN_ARROW))
@@ -154,9 +161,6 @@ const GamePage = () => {
                     <p className=''>{usersData?.player1 && usersData.player1.name}</p>
                     <span className="text-xs">{usersData?.player1 && `lvl ${usersData.player1.level}`}</span>
                 </div>
-            </div>
-            <div className='flex items-center'>
-                <span> {leftScore} - {rightScore}</span>
             </div>
             <div className='flex items-center'>
                 <div className='flex flex-col items-center mr-4'>

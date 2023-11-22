@@ -23,9 +23,7 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
 
     @WebSocketServer()
     server: Server;
-    private gameStarted = false;
     private connectedClients: Map<string, Socket> = new Map<string, Socket>();
-    // gameService.Queue: Map<string, {Socket: Socket, gameType: string, gameMode: string, status: string, gameData: any, playWith: string, leader: boolean, gameId: string}> = new Map<string, {Socket: Socket, gameType: string,gameMode: string, status: string, gameData: any, playWith: string, leader: boolean, gameId: string}>();
     private matchmakingQueue: string[] = [];
 
     async handleConnection(client: Socket) {
@@ -147,9 +145,6 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
             }
         }
     }
-
-    // @OnEvent('checkgame')
-
 
     private parseCookies(cookieHeader: string | undefined): string {
         const cookies: Record<string, string> = {};
@@ -283,8 +278,8 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
                 }
             }
             if (this.gameService.Queue.get(player1).gameMode === 'hidden') {
-                if (this.gameService.Queue.get(player1).gameData.ball.x < this.gameService.Queue.get(player1).gameData.canvasWidth / 3 ||
-                    this.gameService.Queue.get(player1).gameData.ball.x > this.gameService.Queue.get(player1).gameData.canvasWidth - (this.gameService.Queue.get(player1).gameData.canvasWidth / 3)) {
+                if (this.gameService.Queue.get(player1).gameData.ball.x < this.gameService.Queue.get(player1).gameData.canvasWidth / 4 ||
+                    this.gameService.Queue.get(player1).gameData.ball.x > this.gameService.Queue.get(player1).gameData.canvasWidth - (this.gameService.Queue.get(player1).gameData.canvasWidth / 4)) {
                     this.gameService.Queue.get(player1).gameData.ball.pos = 0;
                 }
                 else
@@ -340,32 +335,32 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
 
     }
 
-    private startLiveGame(player1: string, player2: string) {
+    private async startLiveGame(player1: string, player2: string) {
         this.gameService.Queue.get(player1).status = 'playing';
         this.gameService.Queue.get(player1).playWith = player2;
         this.gameService.Queue.get(player1).leader = true;
         this.gameService.Queue.get(player2).status = 'playing';
         this.gameService.Queue.get(player2).playWith = player1;
+        const userData = {
+            player1: {
+                img: await this.userService.getPictureWithId(player1),
+                name: await this.userService.getUserNameWithId(player1),
+                level: await this.userService.getLevelWithId(player1),
+            },
+            player2: {
+                img: await this.userService.getPictureWithId(player2),
+                name: await this.userService.getUserNameWithId(player2),
+                level: await this.userService.getLevelWithId(player2),
+            },
+            mode: this.gameService.Queue.get(player1).gameMode,
+        }
         console.log('Live game started');
-        this.gameService.Queue.get(player1).Socket.emit('startGame', {data: this.gameService.Queue.get(player1).gameData, mode: this.gameService.Queue.get(player1).gameMode});
-        this.gameService.Queue.get(player2).Socket.emit('startGame', {data: this.gameService.Queue.get(player1).gameData, mode: this.gameService.Queue.get(player1).gameMode});
+        this.gameService.Queue.get(player1).Socket.emit('startGame', {gameData: this.gameService.Queue.get(player1).gameData, userData: userData,pos: 'left'});
+        this.gameService.Queue.get(player2).Socket.emit('startGame', {gameData: this.gameService.Queue.get(player1).gameData, userData: userData,pos: 'right'});
         this.moveBall(player1, player2);
     }
 
-    // private startFriendGame(player1: string, player2: string) {
-    //     this.gameService.Queue.get(player1).status = 'playing';
-    //     this.gameService.Queue.get(player1).playWith = player2;
-    //     this.gameService.Queue.get(player1).leader = true;
-    //     this.gameService.Queue.get(player2).status = 'playing';
-    //     this.gameService.Queue.get(player2).playWith = player1;
-    //     console.log('Friend game started');
-    //     this.gameService.Queue.get(player1).Socket.emit('startGame', this.gameService.Queue.get(player1).gameData);
-    //     this.gameService.Queue.get(player2).Socket.emit('startGame', this.gameService.Queue.get(player1).gameData);
-    //     this.moveBall(player1, player2);
-    // }
-
     async matchPlayers() {
-        // console.log('--------------',this.matchmakingQueue,'-----------------------');
         while (this.matchmakingQueue.length >= 2) {
             let player1 = null;
             let player2 = null;
@@ -414,13 +409,6 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
         }
     }
 
-    // private sendPlayRequest(playerId: string, friendId: string) {
-    //     const friendSocket = this.gameService.Queue.get(friendId)?.Socket;
-    //     if (friendSocket) {
-    //       friendSocket.emit('playRequest', { playerId });
-    //     }
-    // }
-
     @SubscribeMessage('gameMode')
     async game(client: Socket, data) {
         if (!this.connectedClients.has(this.getByValue(this.connectedClients, client)))
@@ -439,8 +427,18 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
         this.gameService.Queue.set(playerId, gameData);
         if (data.type === 'Bot')
             this.startBotGame(playerId);
-        else if (data.type === 'Live')
+        else if (data.type === 'Live') {
+            const userData = {
+                player1: {
+                    img: await this.userService.getPictureWithId(playerId),
+                    name: await this.userService.getUserNameWithId(playerId),
+                    level: await this.userService.getLevelWithId(playerId),
+                },
+                mode: gameData.gameMode,
+            }
+            client.emit('userData', userData);
             this.matchmakingQueue.push(playerId);
+        }
         else if(data.type === 'Friend' && data.friendId !== playerId) {
             if(this.gameService.Queue.has(data.friendId)) {
                 const friendData = this.gameService.Queue.get(data.friendId);
