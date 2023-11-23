@@ -1,6 +1,6 @@
 "use client"
 import Game from '@/components/Game';
-import {GameProvider} from "@/context/gameSocket"
+import { GameProvider } from "@/context/gameSocket"
 
 export default function page() {
 
@@ -13,4 +13,3 @@ export default function page() {
       </GameProvider>
    );
 }
- 
