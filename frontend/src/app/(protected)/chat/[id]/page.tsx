@@ -241,7 +241,7 @@ const Convo = ({ params }: { params: any }) => {
                 key={params.id}
                 type="text"
                 ref={input}
-                onKeyDown={handleKeyDown}
+                onKeyDown={(e: any) => {if (input.current && input.current.value.trim() !== ''){handleKeyDown(e)}}}
                 placeholder="Type a message"
                 className="bg-terserocl rounded-md p-2 px-4 w-5/6 outline-none"
               />
