@@ -39,15 +39,15 @@ export default function page() {
   return (
     <div className="w-full h-full">
       <div className="flex items-center justify-around h-1/2 px-4">
-        <Award filled={trophy[0]?.alreadyAchieved} picture="/newcomer.png" name={trophy[0]?.achivementName}/>
-        <Award filled={trophy[1]?.alreadyAchieved} picture="/3wins.png" name={trophy[1]?.achivementName}/>
-        <Award filled={trophy[2]?.alreadyAchieved} picture="/cyborg.png" name={trophy[2]?.achivementName}/>
-        <Award filled={trophy[3]?.alreadyAchieved} picture="/octopus.png" name={trophy[3]?.achivementName}/>
+        <Award filled={trophy[0]?.alreadyAchieved} picture="/newcomer.png" name={trophy[0]?.achivementName} />
+        <Award filled={trophy[1]?.alreadyAchieved} picture="/3wins.png" name={trophy[1]?.achivementName} />
+        <Award filled={trophy[2]?.alreadyAchieved} picture="/cyborg.png" name={trophy[2]?.achivementName} />
+        <Award filled={trophy[3]?.alreadyAchieved} picture="/octopus.png" name={trophy[3]?.achivementName} />
       </div>
       <div className="flex items-center justify-around h-1/2 px-4">
-        <Award filled={trophy[4]?.alreadyAchieved} picture="/Ping_Pong-removebg-preview (1).png" name={trophy[4]?.achivementName}/>
-        <Award filled={trophy[5]?.alreadyAchieved} picture="/champ.png" name={trophy[5]?.achivementName}/>
-        <Award filled={trophy[6]?.alreadyAchieved} picture="/spider.png" name={trophy[6]?.achivementName}/>
+        <Award filled={trophy[4]?.alreadyAchieved} picture="/Ping_Pong-removebg-preview (1).png" name={trophy[4]?.achivementName} />
+        <Award filled={trophy[5]?.alreadyAchieved} picture="/champ.png" name={trophy[5]?.achivementName} />
+        <Award filled={trophy[6]?.alreadyAchieved} picture="/spider.png" name={trophy[6]?.achivementName} />
       </div>
     </div>
   );

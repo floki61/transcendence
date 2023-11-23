@@ -80,7 +80,7 @@ const GamePage = () => {
                 setClient(true);
             })
             p.draw = () => {
-                if(client) {
+                if (client) {
                     p.background('#151515');
                     p.fill(255);
                     p.fill(255, 255, 255, 30);
@@ -115,7 +115,7 @@ const GamePage = () => {
                     p.rectMode(p.CENTER);
                     p.rect(leftPaddle.x, leftPaddle.y, leftPaddle.width, leftPaddle.height);
                     p.rect(rightPaddle.x, rightPaddle.y, rightPaddle.width, rightPaddle.height);
-                    if(ball.pos === 1)
+                    if (ball.pos === 1)
                         p.fill('#151515');
                     p.noStroke();
                     p.ellipse(ball.x, ball.y, ball.radius * 2);
@@ -160,22 +160,22 @@ const GamePage = () => {
                 if(liveGame && leftPaddle.x && rightPaddle.x) {
                     if (p.keyIsDown(p.UP_ARROW))
                         socket.emit("paddlesUpdate", "UP");
-                    else if(p.keyIsDown(p.DOWN_ARROW))
+                    else if (p.keyIsDown(p.DOWN_ARROW))
                         socket.emit("paddlesUpdate", "DOWN");
                 }
-                else if(botGame && leftPaddle.x && rightPaddle.x) {
+                else if (botGame && leftPaddle.x && rightPaddle.x) {
                     if (p.keyIsDown(p.UP_ARROW))
                         socket.emit("paddleBotUpdate", "UP");
-                    else if(p.keyIsDown(p.DOWN_ARROW))
+                    else if (p.keyIsDown(p.DOWN_ARROW))
                         socket.emit("paddleBotUpdate", "DOWN");
                 }
             };
         };
-        if(test && test.current) {
+        if (test && test.current) {
             const mp5 = new p5(sketch, test.current);
             return mp5.remove;
         }
-    }),[];
+    }), [];
 
     return (
         <div className='flex flex-col items-center justify-center h-screen'>

@@ -11,6 +11,7 @@ import { max } from 'class-validator';
 import { UsersGateway } from './users.gateway';
 import { get } from 'http';
 import { Response } from 'express';
+import * as fs from 'fs';
 // import { clearConfigCache } from 'prettier';
 
 @Controller()
@@ -106,12 +107,15 @@ export class UsersController {
         storage: diskStorage({
             destination: './uploads',
             filename: (req: any, avatar, cb) => {
-                console.log("salam khoi")
+
                 const Name = req.user.id;
                 if (extname(avatar.originalname) !== '.png' && extname(avatar.originalname) !== '.jpg' && extname(avatar.originalname) !== '.jpeg' && extname(avatar.originalname) !== '.gif') {
                     return cb(new HttpException('Only images are allowed', HttpStatus.BAD_REQUEST), '')
                 }
-                return cb(null, `${Name}${extname(avatar.originalname)}`);
+                if (fs.existsSync(`./uploads/${Name}.jpeg`)) {
+                    fs.unlinkSync(`./uploads/${Name}.jpeg`);
+                }
+                return cb(null, `${Name}.jpeg`);
             }
         })
     }))
