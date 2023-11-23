@@ -204,6 +204,20 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
                     if (this.gameService.Queue.get(id))
                         await this.determineGameResult(id);
                     this.gameService.Queue.get(id).status = 'finished';
+                    if (this.gameService.checkAchievements(
+                        await this.prisma.achivement.findMany({
+                            where: {
+                                uid: id,
+                            }
+                        }), 'Bot')) {
+                        await this.prisma.achivement.create({
+                            data: {
+                                uid: id,
+                                achivementName: 'Bot',
+                                alreadyAchieved: true,
+                            }
+                        });
+                    }
                     break;
                 }
             }
@@ -268,7 +282,7 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
                             }
                         }
                     });
-                    this.gameService.handleAchievements(game.winnerId);
+                    this.gameService.handleAchievements(game);
 
                     console.log('game over');
                     await this.determineGameResult(player1, player2);
@@ -318,7 +332,7 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
                 },
                 mode: 'Bot',
             }
-            this.connectedClients.get(id).emit('startBotGame', {gameData: this.gameService.Queue.get(id).gameData, userData: userData, pos: 'left'});
+            this.connectedClients.get(id).emit('startBotGame', { gameData: this.gameService.Queue.get(id).gameData, userData: userData, pos: 'left' });
             console.log('Bot game started');
             this.moveBotBall(id);
         }
@@ -355,8 +369,8 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
             mode: this.gameService.Queue.get(player1).gameMode,
         }
         console.log('Live game started');
-        this.gameService.Queue.get(player1).Socket.emit('startGame', {gameData: this.gameService.Queue.get(player1).gameData, userData: userData,pos: 'left'});
-        this.gameService.Queue.get(player2).Socket.emit('startGame', {gameData: this.gameService.Queue.get(player1).gameData, userData: userData,pos: 'right'});
+        this.gameService.Queue.get(player1).Socket.emit('startGame', { gameData: this.gameService.Queue.get(player1).gameData, userData: userData, pos: 'left' });
+        this.gameService.Queue.get(player2).Socket.emit('startGame', { gameData: this.gameService.Queue.get(player1).gameData, userData: userData, pos: 'right' });
         this.moveBall(player1, player2);
     }
 
@@ -368,7 +382,7 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
                 for (let j = i + 1; j < this.matchmakingQueue.length; j++) {
                     const mode1 = this.gameService.Queue.get(this.matchmakingQueue[i]).gameMode;
                     const mode2 = this.gameService.Queue.get(this.matchmakingQueue[j]).gameMode;
-    
+
                     if (mode1 === mode2) {
                         player1 = this.matchmakingQueue[i];
                         player2 = this.matchmakingQueue[j];
@@ -439,10 +453,10 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
             client.emit('userData', userData);
             this.matchmakingQueue.push(playerId);
         }
-        else if(data.type === 'Friend' && data.friendId !== playerId) {
-            if(this.gameService.Queue.has(data.friendId)) {
+        else if (data.type === 'Friend' && data.friendId !== playerId) {
+            if (this.gameService.Queue.has(data.friendId)) {
                 const friendData = this.gameService.Queue.get(data.friendId);
-                if (friendData.gameType === 'Friend' && friendData.status === 'waiting' &&friendData.playWith === playerId) {
+                if (friendData.gameType === 'Friend' && friendData.status === 'waiting' && friendData.playWith === playerId) {
                     var game = await this.prisma.game.create({
                         data: {
                             mode: this.gameService.Queue.get(playerId).gameMode,

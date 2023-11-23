@@ -174,7 +174,8 @@ export class GameService {
         return false;
     }
 
-    async handleAchievements(id: string) {
+    async handleAchievements(body: any) {
+        let id = body.winnerId;
         const user = await this.prisma.user.findUnique({
             where: {
                 id: id
@@ -191,7 +192,7 @@ export class GameService {
                 }
             });
             if (user.wins.length >= 1) {
-                if (await this.checkAchievements(achivement, id, '1 win')) {
+                if (await this.checkAchievements(achivement, '1 win')) {
                     await this.prisma.achivement.create({
                         data: {
                             achivementName: '1 win',
@@ -203,7 +204,7 @@ export class GameService {
             }
 
             if (user.wins.length >= 3) {
-                if (await this.checkAchievements(achivement, id, '3 wins')) {
+                if (await this.checkAchievements(achivement, '3 wins')) {
                     await this.prisma.achivement.create({
                         data: {
                             achivementName: '3 wins',
@@ -214,7 +215,7 @@ export class GameService {
                 }
             }
             if (user.wins.length >= 5) {
-                if (await this.checkAchievements(achivement, id, '5 wins')) {
+                if (await this.checkAchievements(achivement, '5 wins')) {
                     await this.prisma.achivement.create({
                         data: {
                             achivementName: '5 wins',
@@ -225,7 +226,7 @@ export class GameService {
                 }
             }
             if (user.wins.length >= 10) {
-                if (await this.checkAchievements(achivement, id, '10 wins')) {
+                if (await this.checkAchievements(achivement, '10 wins')) {
                     await this.prisma.achivement.create({
                         data: {
                             achivementName: '10 wins',
@@ -235,10 +236,46 @@ export class GameService {
                     });
                 }
             }
+            if (await this.checkAchievements(achivement, 'First win')) {
+                await this.prisma.achivement.create({
+                    data: {
+                        achivementName: 'First win',
+                        uid: id,
+                        alreadyAchieved: true,
+                    }
+                });
+            }
+            if (body.player2Score === 0) {
+                if (await this.checkAchievements(achivement, 'Perfect win')) {
+                    await this.prisma.achivement.create({
+                        data: {
+                            achivementName: 'Perfect win',
+                            uid: id,
+                            alreadyAchieved: true,
+                        }
+                    });
+                }
+                if (await this.checkAchievements(
+                    await this.prisma.achivement.findMany({
+                        where: {
+                            uid: body.loserId,
+                        }
+                    }), 'kho lbhaym')) {
+                    await this.prisma.achivement.create({
+                        data: {
+                            achivementName: 'kho lbhaym',
+                            uid: body.loserId,
+                            alreadyAchieved: true,
+                        }
+                    });
+
+                }
+
+            }
         }
     }
 
-    async checkAchievements(payload: any, id: string, achivement: string) {
+    async checkAchievements(payload: any, achivement: string) {
         for (let ach of payload) {
             if (ach.achivementName === achivement && ach.alreadyAchieved) {
                 return 0;
