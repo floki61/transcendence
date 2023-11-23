@@ -2,13 +2,13 @@
 import React, { useEffect, useRef, useState } from 'react';
 import p5 from 'p5';
 import { useGame } from '@/context/gameSocket';
-import {leftPaddle, rightPaddle, ball, leftScore, rightScore, updatePaddles, updateBallData,updateScore } from '@/gameLogic/gameLogic';
+import { leftPaddle, rightPaddle, ball, leftScore, rightScore, updatePaddles, updateBallData, updateScore } from '@/gameLogic/gameLogic';
 import { CLIENT_RENEG_LIMIT } from 'tls';
 import { Changa } from 'next/font/google';
 
 const GamePage = () => {
     const p5Ref = useRef();
-    const {socket} = useGame();
+    const { socket } = useGame();
     const gameDataRef = useRef(null);
     const [count, setCount] = useState(false);
     const [gameResult, setGameResult] = useState(null);
@@ -28,7 +28,7 @@ const GamePage = () => {
             };
             p.windowResized = () => {
                 p.resizeCanvas(p.windowWidth / 2, p.windowHeight / 2);
-                if(gameDataRef.current)
+                if (gameDataRef.current)
                     updatePaddles(p, gameDataRef.current);
                 // centerCanvas();
             };
@@ -49,9 +49,9 @@ const GamePage = () => {
             });
             socket.on('updateBall', (data) => {
                 updateBallData(p, data);
-                updateScore(data);    
-                if(botGame)
-                   updatePaddles(p, data);
+                updateScore(data);
+                if (botGame)
+                    updatePaddles(p, data);
             });
             socket.on('gameResult', (data) => {
                 setGameResult(data);
@@ -71,14 +71,14 @@ const GamePage = () => {
                 setClient(true);
             })
             p.draw = () => {
-                if(client) {
+                if (client) {
                     p.background('#151515');
                     p.fill(255);
                     p.textSize(34);
                     p.textAlign(p.CENTER, p.CENTER);
                     p.text("already in game", p.width / 2, p.height / 2);
                 }
-                else if(count || botGame) {
+                else if (count || botGame) {
                     p.background('#151515');
                     p.stroke("#213D46");
                     p.strokeWeight(2);
@@ -93,7 +93,7 @@ const GamePage = () => {
                     p.rectMode(p.CENTER);
                     p.rect(leftPaddle.x, leftPaddle.y, leftPaddle.width, leftPaddle.height);
                     p.rect(rightPaddle.x, rightPaddle.y, rightPaddle.width, rightPaddle.height);
-                    if(ball.pos === 1)
+                    if (ball.pos === 1)
                         p.fill('#151515');
                     p.noStroke();
                     p.ellipse(ball.x, ball.y, ball.radius * 2);
@@ -112,28 +112,28 @@ const GamePage = () => {
                     p.textAlign(p.CENTER, p.CENTER);
                     p.text("waiting for players...", p.width / 2, p.height / 2);
                 }
-                if(count && leftPaddle.x && rightPaddle.x) {
+                if (count && leftPaddle.x && rightPaddle.x) {
                     if (p.keyIsDown(p.UP_ARROW))
                         socket.emit("paddlesUpdate", "UP");
-                    else if(p.keyIsDown(p.DOWN_ARROW))
+                    else if (p.keyIsDown(p.DOWN_ARROW))
                         socket.emit("paddlesUpdate", "DOWN");
                 }
-                else if(botGame && leftPaddle.x && rightPaddle.x) {
+                else if (botGame && leftPaddle.x && rightPaddle.x) {
                     if (p.keyIsDown(p.UP_ARROW))
                         socket.emit("paddleBotUpdate", "UP");
-                    else if(p.keyIsDown(p.DOWN_ARROW))
+                    else if (p.keyIsDown(p.DOWN_ARROW))
                         socket.emit("paddleBotUpdate", "DOWN");
                 }
             };
         };
-        if(test && test.current) {
+        if (test && test.current) {
             const mp5 = new p5(sketch, test.current);
             return mp5.remove;
         }
-    }),[];
+    }), [];
 
     return (
-        <div className='flex flex-col items-center justify-center h-screen no-scroll'>
+        <div className='flex flex-col items-center justify-center h-screen'>
             <div ref={test}>
                 {/* Render the canvas here */}
             </div>

@@ -33,13 +33,11 @@ export class UsersService {
 		return user ? true : false;
 	}
 	async updateUser(req, data: any) {
-		if (data.userName)
-			this.updateUserName(req, data.userName);
 		if (data.phoneNumber)
 			this.updateUserPhoneNumber(req, data);
 		if (data.country)
 			this.updateUserCountry(req, data);
-		return await this.prisma.user.update({
+		await this.prisma.user.update({
 			where: {
 				id: req.user.id,
 			},
@@ -47,6 +45,7 @@ export class UsersService {
 				picture: data.picture,
 			},
 		});
+		return await this.updateUserName(req, data.userName);
 	}
 
 	async updateUserPicture(req, data: any) {
@@ -60,7 +59,14 @@ export class UsersService {
 		});
 	}
 	async updateUserName(req, data: any) {
-		if (await this.checkIfnameExists(data))
+		const user = await this.prisma.user.findUnique({
+			where: {
+				id: req.user.id,
+			},
+		});
+		if (user.userName === data)
+			return "done";
+		else if (await this.checkIfnameExists(data))
 			return "Username already exists";
 
 		return await this.prisma.user.update({
