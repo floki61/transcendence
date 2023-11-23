@@ -24,6 +24,9 @@ let ball = {
     pos: 0,
 };
 let leftScore = 0, rightScore = 0;
+let gameState = false;
+let gameResult = "";
+
 
 
 //live game 
@@ -53,6 +56,12 @@ function updateScore(data: any) {
     rightScore = data.score.right;
 }
 
+function finishGame() {
+    gameState = true;
+}
+ function setGameResult(data: any) {
+    gameResult = data;
+ }
 //bot game
 // function initGame(p: p5) {
 //     leftPaddle.width = 10;
@@ -204,4 +213,4 @@ function moveRightPaddle(p: p5) {
         rightPaddle.y += rightPaddle.speed;
 }
 
-export { initGame, updatePaddle, updateBall, moveRightPaddle, leftPaddle, rightPaddle, ball, leftScore, rightScore, updatePaddles, updateBallData, updateScore, resizeGameData};
+export { initGame, updatePaddle, updateBall, moveRightPaddle, leftPaddle, rightPaddle, ball, leftScore, rightScore, updatePaddles, updateBallData, updateScore, resizeGameData, finishGame, gameState, gameResult, setGameResult};
