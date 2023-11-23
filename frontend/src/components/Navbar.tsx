@@ -64,7 +64,7 @@ export default function Navbar() {
             </svg>
           </Link>
           <div
-            className={`${error} rounded-2xl w-64 h-9 flex items-center justify-between p-4 mb-2 bg-primecl`}
+            className={`${error} rounded-2xl w-64 h-9 flex items-center justify-between p-3 mb-2 bg-primecl`}
           >
             <input
               type="text"

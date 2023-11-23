@@ -125,7 +125,7 @@ export default function page(
               </div>
               <div className="w-full bg-[#6A6666] relative rounded-xl text-center text-black self-end">
                 <div
-                  className={`bg-quatrocl w-[${user.barPourcentage}%] h-full rounded-xl absolute top-0 left-0`}
+                  className={`bg-quatrocl w-[(${Math.round(user.barPourcentage)}%] h-full rounded-xl absolute top-0 left-0`}
                 ></div>
                 <p className="text-black text-center z-10 relative text-xl font-medium">
                   Level {user.level_P}

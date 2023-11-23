@@ -192,6 +192,9 @@ export default function layout({
     }
   }, [invites]);
 
+  if (friend)
+    console.log((Math.ceil(friend.barPourcentage)));
+
   return (
     <div className="h-full w-full p-10 overflow-hidden">
       {friend && friend.user && (
@@ -203,6 +206,7 @@ export default function layout({
               height={140}
               width={140}
               className="rounded-full aspect-square w-36 h-36 object-cover"
+              priority
             />
             <div className="w-3/5 h-full flex flex-col justify-between px-4">
               <div className="flex flex-col gap-1">
@@ -318,7 +322,7 @@ export default function layout({
               <div className="relative w-full bg-[#6A6666] rounded-xl text-center text-black self-end">
                 {friend && (
                   <div
-                    className={`bg-quatrocl w-[${friend.barPourcentage}%] h-full rounded-xl absolute top-0 left-0`}
+                    className={`bg-quatrocl w-[${String(Math.ceil(friend.barPourcentage))}%] h-full rounded-xl absolute top-0 left-0`}
                   ></div>
                 )}
                 <p className="text-black text-center z-10 relative text-xl font-medium">
@@ -345,7 +349,7 @@ export default function layout({
                 alt="trophy"
                 width={170}
                 height={170}
-                className="absolute place-self-end"
+                className="absolute z-10 place-self-end"
                 priority
               />
             )}

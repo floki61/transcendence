@@ -142,6 +142,22 @@ export class UsersService {
 		return null;
 	}
 
+	async getLevelWithId(id: string) {
+		if (!id)
+			return null;
+		const user = await this.prisma.user.findUnique({
+			where: {
+				id,
+			},
+		});
+		if (user) {
+			const level = await this.getLevelP(user.level);
+			console.log(level);
+			return level.level_P;
+		}
+		return null;
+	}
+
 	async sendPlayRequest(userId: string, friendId: string) {
 		console.log({ userId, friendId });
 		const user = await this.prisma.user.findFirst({

@@ -32,8 +32,6 @@ export const ChatSettings: React.FC<ChatSettingsProps> = ({
 			const res = axios.post("http://localhost:4000/blockUser", { friendId }, {
 				withCredentials: true,
 			})
-			// SetAccept(false);
-			// SetRequest(false);
 		} catch (error) {
 			console.log("Block failed", error);
 		}
@@ -62,6 +60,7 @@ export const ChatSettings: React.FC<ChatSettingsProps> = ({
 				<Link href={`/chat/${id}/viewParticipants`} as={`/chat/${id}/viewParticipants`} className="cursor-pointer hover:bg-segundcl rounded-t-md border-b-2 border-quatrocl w-full px-2 flex items-center h-1/5">View Participants</Link>
 				<Link href={`/chat/${id}/muteParticipant`} as={`/chat/${id}/muteParticipant`} className="cursor-pointer hover:bg-segundcl border-b-2 border-quatrocl w-full px-2 flex items-center h-1/5">Mute a Participant</Link>
 				<Link href={`/chat/${id}/banParticipant`} as={`chat/${id}/banParticipant`} className="cursor-pointer hover:bg-segundcl border-b-2 border-quatrocl w-full px-2 flex items-center h-1/5">Ban a Participant</Link>
+				<Link href={`/chat/${id}/unbanParticipant`} as={`/chat/${id}/unbanParticipant`} className="cursor-pointer hover:bg-segundcl border-b-2 border-quatrocl w-full px-2 flex items-center h-[11%]">UnBan a Participant</Link>
 				<Link href={`/chat/${id}/kickParticipant`} as={`/chat/${id}/kickParticipant`} className="cursor-pointer hover:bg-segundcl border-b-2 border-quatrocl w-full px-2 flex items-center h-1/5">Kick a Participant</Link>
 				<Link href={`/chat/${id}/leaveRoom`} as={`/chat/${id}/leaveRoom`} className="cursor-pointer hover:bg-segundcl rounded-b-md w-full px-2 flex items-center h-1/5">Leave the Room</Link>
 			</div>
@@ -74,6 +73,7 @@ export const ChatSettings: React.FC<ChatSettingsProps> = ({
 				<Link href={`/chat/${id}/addParticipants`} as={`/chat/${id}/addParticipants`} className="cursor-pointer hover:bg-segundcl border-b-2 border-quatrocl w-full px-2 flex items-center h-[11%]">Add Participants</Link>
 				<Link href={`/chat/${id}/muteParticipant`} as={`/chat/${id}/muteParticipant`}  className="cursor-pointer hover:bg-segundcl border-b-2 border-quatrocl w-full px-2 flex items-center h-[11%]">Mute a Participant</Link>
 				<Link href={`/chat/${id}/banParticipant`} as={`/chat/${id}/banParticipant`} className="cursor-pointer hover:bg-segundcl border-b-2 border-quatrocl w-full px-2 flex items-center h-[11%]">Ban a Participant</Link>
+				<Link href={`/chat/${id}/unbanParticipant`} as={`/chat/${id}/unbanParticipant`} className="cursor-pointer hover:bg-segundcl border-b-2 border-quatrocl w-full px-2 flex items-center h-[11%]">UnBan a Participant</Link>
 				<Link href={`/chat/${id}/kickParticipant`} as={`/chat/${id}/kickParticipant`}  className="cursor-pointer hover:bg-segundcl border-b-2 border-quatrocl w-full px-2 flex items-center h-[11%]">Kick a Participant</Link>
 				<Link href={`/chat/${id}/deleteRoom`} as={`/chat/${id}/deleteRoom`} className="cursor-pointer hover:bg-segundcl border-b-2 border-quatrocl w-full px-2 flex items-center h-[11%]">Delete the Room</Link>
 				<Link href={`/chat/${id}/changeRoomName`} as={`/chat/${id}/changeRoomName`} className="cursor-pointer hover:bg-segundcl border-b-2 border-quatrocl w-full px-2 flex items-center h-[11%]">Change Room Name</Link>

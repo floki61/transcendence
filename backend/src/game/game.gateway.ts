@@ -8,6 +8,7 @@ import { PrismaService } from 'src/prisma/prisma.service';
 import { ForbiddenException, UseGuards } from '@nestjs/common';
 import { FortyTwoGuard } from 'src/auth/tools/Guards';
 import { JwtAuthGuard } from 'src/auth/jwt/jwt.guard';
+import { UsersService } from 'src/users/users.service';
 
 @WebSocketGateway({ namespace: 'game', cors: true, origin: ['http://localhost:3000/game'] })
 export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
@@ -15,15 +16,14 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
         private jwt: JwtService,
         private config: ConfigService,
         private prisma: PrismaService,
-        private event: EventEmitter2) {
+        private event: EventEmitter2,
+        private userService: UsersService) {
         setInterval(() => this.matchPlayers(), 1000);
     }
 
     @WebSocketServer()
     server: Server;
-    private gameStarted = false;
     private connectedClients: Map<string, Socket> = new Map<string, Socket>();
-    // gameService.Queue: Map<string, {Socket: Socket, gameType: string, gameMode: string, status: string, gameData: any, playWith: string, leader: boolean, gameId: string}> = new Map<string, {Socket: Socket, gameType: string,gameMode: string, status: string, gameData: any, playWith: string, leader: boolean, gameId: string}>();
     private matchmakingQueue: string[] = [];
 
     async handleConnection(client: Socket) {
@@ -100,7 +100,7 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
                         player1 = payload.id;
                         player2 = this.gameService.Queue.get(payload.id).playWith;
                         if (this.gameService.Queue.get(player2))
-                            this.gameService.Queue.get(player2).Socket.emit('gameResult', 'Winner');
+                            this.gameService.Queue.get(player2).Socket.emit('gameResult', 'You won!');
                         this.gameService.Queue.get(player1).status = 'finished';
                         this.gameService.Queue.get(player2).status = 'finished';
                     }
@@ -108,7 +108,7 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
                         player1 = this.gameService.Queue.get(payload.id).playWith;
                         player2 = payload.id;
                         if (this.gameService.Queue.get(player1))
-                            this.gameService.Queue.get(player1).Socket.emit('gameResult', 'Winner');
+                            this.gameService.Queue.get(player1).Socket.emit('gameResult', 'You won!');
                         this.gameService.Queue.get(player2).status = 'finished';
                         this.gameService.Queue.get(player1).status = 'finished';
                     }
@@ -146,9 +146,6 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
         }
     }
 
-    // @OnEvent('checkgame')
-
-
     private parseCookies(cookieHeader: string | undefined): string {
         const cookies: Record<string, string> = {};
         if (cookieHeader) {
@@ -171,23 +168,23 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
         if (this.gameService.Queue.get(id).gameType === 'Bot') {
             if (this.gameService.Queue.get(id)) {
                 if (this.gameService.Queue.get(id).gameData.score.left === 5)
-                    this.gameService.Queue.get(id).Socket.emit('gameResult', 'Winner');
+                    this.gameService.Queue.get(id).Socket.emit('gameResult', 'You won');
                 else
-                    this.gameService.Queue.get(id).Socket.emit('gameResult', 'Loser');
+                    this.gameService.Queue.get(id).Socket.emit('gameResult', 'You lost');
             }
         }
         else {
             if (this.gameService.Queue.get(id).gameData.score.left === 5) {
                 if (this.gameService.Queue.get(id))
-                    this.gameService.Queue.get(id).Socket.emit('gameResult', 'Winner');
+                    this.gameService.Queue.get(id).Socket.emit('gameResult', 'You won');
                 if (this.gameService.Queue.get(id2))
-                    this.gameService.Queue.get(id2).Socket.emit('gameResult', 'Loser');
+                    this.gameService.Queue.get(id2).Socket.emit('gameResult', 'You lost');
             }
             else {
                 if (this.gameService.Queue.get(id))
-                    this.gameService.Queue.get(id).Socket.emit('gameResult', 'Loser');
+                    this.gameService.Queue.get(id).Socket.emit('gameResult', 'You lost');
                 if (this.gameService.Queue.get(id2))
-                    this.gameService.Queue.get(id2).Socket.emit('gameResult', 'Winner');
+                    this.gameService.Queue.get(id2).Socket.emit('gameResult', 'You won');
             }
         }
     }
@@ -281,8 +278,8 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
                 }
             }
             if (this.gameService.Queue.get(player1).gameMode === 'hidden') {
-                if (this.gameService.Queue.get(player1).gameData.ball.x < this.gameService.Queue.get(player1).gameData.canvasWidth / 3 ||
-                    this.gameService.Queue.get(player1).gameData.ball.x > this.gameService.Queue.get(player1).gameData.canvasWidth - (this.gameService.Queue.get(player1).gameData.canvasWidth / 3)) {
+                if (this.gameService.Queue.get(player1).gameData.ball.x < this.gameService.Queue.get(player1).gameData.canvasWidth / 4 ||
+                    this.gameService.Queue.get(player1).gameData.ball.x > this.gameService.Queue.get(player1).gameData.canvasWidth - (this.gameService.Queue.get(player1).gameData.canvasWidth / 4)) {
                     this.gameService.Queue.get(player1).gameData.ball.pos = 0;
                 }
                 else
@@ -304,11 +301,24 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
             this.gameService.Queue.get(id).Socket.emit('paddlesUpdate', this.gameService.Queue.get(id).gameData);
     }
 
-    private startBotGame(id) {
+    private async startBotGame(id) {
         console.log(id, this.gameService.Queue.get(id).status);
         if (this.gameService.Queue.get(id).status === 'waiting') {
             this.gameService.Queue.get(id).status = 'playing';
-            this.connectedClients.get(id).emit('startBotGame', this.gameService.Queue.get(id).gameData);
+            const userData = {
+                player1: {
+                    img: await this.userService.getPictureWithId(id),
+                    name: await this.userService.getUserNameWithId(id),
+                    level: await this.userService.getLevelWithId(id),
+                },
+                player2: {
+                    img: '/boot.png',
+                    name: 'Bot',
+                    level: '999',
+                },
+                mode: 'Bot',
+            }
+            this.connectedClients.get(id).emit('startBotGame', {gameData: this.gameService.Queue.get(id).gameData, userData: userData, pos: 'left'});
             console.log('Bot game started');
             this.moveBotBall(id);
         }
@@ -325,32 +335,32 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
 
     }
 
-    private startLiveGame(player1: string, player2: string) {
+    private async startLiveGame(player1: string, player2: string) {
         this.gameService.Queue.get(player1).status = 'playing';
         this.gameService.Queue.get(player1).playWith = player2;
         this.gameService.Queue.get(player1).leader = true;
         this.gameService.Queue.get(player2).status = 'playing';
         this.gameService.Queue.get(player2).playWith = player1;
+        const userData = {
+            player1: {
+                img: await this.userService.getPictureWithId(player1),
+                name: await this.userService.getUserNameWithId(player1),
+                level: await this.userService.getLevelWithId(player1),
+            },
+            player2: {
+                img: await this.userService.getPictureWithId(player2),
+                name: await this.userService.getUserNameWithId(player2),
+                level: await this.userService.getLevelWithId(player2),
+            },
+            mode: this.gameService.Queue.get(player1).gameMode,
+        }
         console.log('Live game started');
-        this.gameService.Queue.get(player1).Socket.emit('startGame', {data: this.gameService.Queue.get(player1).gameData, mode: this.gameService.Queue.get(player1).gameMode});
-        this.gameService.Queue.get(player2).Socket.emit('startGame', {data: this.gameService.Queue.get(player1).gameData, mode: this.gameService.Queue.get(player1).gameMode});
+        this.gameService.Queue.get(player1).Socket.emit('startGame', {gameData: this.gameService.Queue.get(player1).gameData, userData: userData,pos: 'left'});
+        this.gameService.Queue.get(player2).Socket.emit('startGame', {gameData: this.gameService.Queue.get(player1).gameData, userData: userData,pos: 'right'});
         this.moveBall(player1, player2);
     }
 
-    // private startFriendGame(player1: string, player2: string) {
-    //     this.gameService.Queue.get(player1).status = 'playing';
-    //     this.gameService.Queue.get(player1).playWith = player2;
-    //     this.gameService.Queue.get(player1).leader = true;
-    //     this.gameService.Queue.get(player2).status = 'playing';
-    //     this.gameService.Queue.get(player2).playWith = player1;
-    //     console.log('Friend game started');
-    //     this.gameService.Queue.get(player1).Socket.emit('startGame', this.gameService.Queue.get(player1).gameData);
-    //     this.gameService.Queue.get(player2).Socket.emit('startGame', this.gameService.Queue.get(player1).gameData);
-    //     this.moveBall(player1, player2);
-    // }
-
     async matchPlayers() {
-        // console.log('--------------',this.matchmakingQueue,'-----------------------');
         while (this.matchmakingQueue.length >= 2) {
             let player1 = null;
             let player2 = null;
@@ -399,13 +409,6 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
         }
     }
 
-    // private sendPlayRequest(playerId: string, friendId: string) {
-    //     const friendSocket = this.gameService.Queue.get(friendId)?.Socket;
-    //     if (friendSocket) {
-    //       friendSocket.emit('playRequest', { playerId });
-    //     }
-    // }
-
     @SubscribeMessage('gameMode')
     async game(client: Socket, data) {
         if (!this.connectedClients.has(this.getByValue(this.connectedClients, client)))
@@ -424,8 +427,18 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
         this.gameService.Queue.set(playerId, gameData);
         if (data.type === 'Bot')
             this.startBotGame(playerId);
-        else if (data.type === 'Live')
+        else if (data.type === 'Live') {
+            const userData = {
+                player1: {
+                    img: await this.userService.getPictureWithId(playerId),
+                    name: await this.userService.getUserNameWithId(playerId),
+                    level: await this.userService.getLevelWithId(playerId),
+                },
+                mode: gameData.gameMode,
+            }
+            client.emit('userData', userData);
             this.matchmakingQueue.push(playerId);
+        }
         else if(data.type === 'Friend' && data.friendId !== playerId) {
             if(this.gameService.Queue.has(data.friendId)) {
                 const friendData = this.gameService.Queue.get(data.friendId);
@@ -447,3 +460,4 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
         }
     }
 }
+

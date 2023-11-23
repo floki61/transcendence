@@ -43,12 +43,12 @@ export default function page() {
         await axios.post("http://localhost:4000/upload", formData, {
           withCredentials: true,
           headers: {
-            'Content-Type': 'multipart/form-data', // Set the content type to multipart/form-data
+            'Content-Type': 'multipart/form-data',
           },
         });
       }
     } catch (error) {
-      console.error(error);
+
     }
   };
 
