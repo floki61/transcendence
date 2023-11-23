@@ -183,6 +183,7 @@ export const ChatFeatures: React.FC<ChatFeaturesProps> = ({
 			}
 		}
 	}
+	console.log({users});
 
 	if (mode === "delete" || mode === "leave") {
 		return (
