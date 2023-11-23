@@ -102,7 +102,7 @@ export default function ChatLayout({
               />
             </Link>
           ))}
-        {!chatbar && <p>Maendakch meamn tdwi ghyrha</p>}
+        {!chatbar && <p>Start a conversation</p>}
       </div>
       <div className="flex flex-1 overflow-hidden">
         <div className="flex-1 w-2/3">{children}</div>

@@ -7,6 +7,7 @@ import { useRouter } from 'next/navigation';
 import { useContext } from 'react';
 import { UserContext } from '@/context/userContext';
 import { FriendType } from '@/hooks/useRooms';
+import { toast } from 'react-toastify';
 
 interface ChatFeaturesProps {
 	users: userType[] | undefined;
@@ -77,7 +78,7 @@ export const ChatFeatures: React.FC<ChatFeaturesProps> = ({
 				})
 				router.push(`/chat/${rid}`);
 			} catch (error) {
-				console.log("kickuser failed.", error);
+				toast.error("You can't kick an owner");
 			}
 		}
 		else if (mode === "mute") {
@@ -93,6 +94,16 @@ export const ChatFeatures: React.FC<ChatFeaturesProps> = ({
 		else if (mode === "ban") {
 			try {
 				const res = await axios.post("http://localhost:4000/chat/banUser", { uid: selected[0], rid }, {
+					withCredentials: true,
+				})
+				router.push(`/chat/${rid}`);
+			} catch (error) {
+				console.log("banuser failed.", error);
+			}
+		}
+		else if (mode === "unban") {
+			try {
+				const res = await axios.post("http://localhost:4000/chat/unbanUser", { uid: selected[0], rid }, {
 					withCredentials: true,
 				})
 				router.push(`/chat/${rid}`);

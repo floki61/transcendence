@@ -6,6 +6,7 @@ import axios from 'axios';
 import { userType } from '@/context/userContext';
 import { ChatFeatures } from '@/components/ChatFeatures';
 import { useRouter } from 'next/navigation';
+import { toast } from 'react-toastify';
 
 export default function page({params} : {params: any}) {
 	
@@ -24,7 +25,7 @@ export default function page({params} : {params: any}) {
         const data = res.data;
         SetParticipants(data.map((user: any) => user));
       } catch (error) {
-        console.log("add Participant failed");
+        toast.error("An error occured, make a quick refresh");
       }
     }
     getParticipants();
@@ -39,7 +40,7 @@ export default function page({params} : {params: any}) {
         const data = res.data;
         SetUsers(data.map((user: any) => user));
       } catch (error) {
-        console.log("add Participant failed");
+        toast.error("An error occured, make a quick refresh");
       }
     }
     getAllUsers();
@@ -103,6 +104,22 @@ export default function page({params} : {params: any}) {
           rid={params.id}
           SetSelected={SetSelected}
           mode="ban"
+        />
+      </div>
+    )
+  }
+  else if (feature === "unbanParticipant") {
+    return (
+      <div className='p-8 h-full w-full'>
+        <ChatFeatures
+          users={participants}
+          title = "UnBan Participants in the room"
+          button='UnBan'
+          checkbox={true}
+          selected={selected}
+          rid={params.id}
+          SetSelected={SetSelected}
+          mode="unban"
         />
       </div>
     )
