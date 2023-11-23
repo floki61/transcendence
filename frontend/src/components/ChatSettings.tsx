@@ -59,8 +59,8 @@ export const ChatSettings: React.FC<ChatSettingsProps> = ({
 			<div className="text-white text-sm font-light border-2 border-quatrocl absolute top-10 right-3 w-full h-48 rounded-md bg-terserocl flex flex-col">
 				<Link href={`/chat/${id}/viewParticipants`} as={`/chat/${id}/viewParticipants`} className="cursor-pointer hover:bg-segundcl rounded-t-md border-b-2 border-quatrocl w-full px-2 flex items-center h-1/5">View Participants</Link>
 				<Link href={`/chat/${id}/muteParticipant`} as={`/chat/${id}/muteParticipant`} className="cursor-pointer hover:bg-segundcl border-b-2 border-quatrocl w-full px-2 flex items-center h-1/5">Mute a Participant</Link>
-				<Link href={`/chat/${id}/banParticipant`} as={`chat/${id}/banParticipant`} className="cursor-pointer hover:bg-segundcl border-b-2 border-quatrocl w-full px-2 flex items-center h-1/5">Ban a Participant</Link>
-				<Link href={`/chat/${id}/unbanParticipant`} as={`/chat/${id}/unbanParticipant`} className="cursor-pointer hover:bg-segundcl border-b-2 border-quatrocl w-full px-2 flex items-center h-[11%]">UnBan a Participant</Link>
+				<Link href={`/chat/${id}/banParticipant`} as={`${id}/banParticipant`} className="cursor-pointer hover:bg-segundcl border-b-2 border-quatrocl w-full px-2 flex items-center h-1/5">Ban a Participant</Link>
+				<Link href={`/chat/${id}/unbanParticipant`} as={`/chat/${id}/unbanParticipant`} className="cursor-pointer hover:bg-segundcl border-b-2 border-quatrocl w-full px-2 flex items-center h-1/5">UnBan a Participant</Link>
 				<Link href={`/chat/${id}/kickParticipant`} as={`/chat/${id}/kickParticipant`} className="cursor-pointer hover:bg-segundcl border-b-2 border-quatrocl w-full px-2 flex items-center h-1/5">Kick a Participant</Link>
 				<Link href={`/chat/${id}/leaveRoom`} as={`/chat/${id}/leaveRoom`} className="cursor-pointer hover:bg-segundcl rounded-b-md w-full px-2 flex items-center h-1/5">Leave the Room</Link>
 			</div>
