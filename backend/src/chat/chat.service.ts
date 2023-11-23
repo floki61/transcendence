@@ -932,4 +932,16 @@ export class ChatService {
 			},
 		});
 	}
+
+	async getBannedUsers(body: any) {
+		return await this.prisma.participant.findMany({
+			where: {
+				rid: body.rid,
+				isBanned: true,
+			},
+			include: {
+				user: true,
+			},
+		});
+	}
 }
