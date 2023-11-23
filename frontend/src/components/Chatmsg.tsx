@@ -26,11 +26,13 @@ const Chatmsg: React.FC<MsgProps> = ({
     <div className="flex gap-2">
       {room && (
         <Image
+          loader={() => picture || "/placeholder.jpg"}
           src={picture || "/placeholder.jpg"}
           alt="friend pic"
           height={30}
           width={30}
           className="rounded-full aspect-square w-8 h-8 object-cover"
+          unoptimized
         />
       )}
       <div className={`${classes}`}>

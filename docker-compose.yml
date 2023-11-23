@@ -22,8 +22,8 @@ services:
     depends_on:
       - db
     volumes:
-      - /Users/omar/tran/backend/src:/backend/src
-      - /Users/omar/tran/backend/uploads:/backend/uploads
+      - /Users/abayar/Desktop/tran/backend/src:/backend/src
+      - /Users/abayar/Desktop/tran/backend/uploads:/backend/uploads
   frontend:
     container_name: frontend
     env_file:
@@ -35,7 +35,7 @@ services:
     depends_on:
       - backend
     volumes:
-      - /Users/omar/tran/frontend/src:/frontend/src
+      - /Users/abayar/Desktop/tran/frontend/src:/frontend/src
 
 volumes:
   vdb:

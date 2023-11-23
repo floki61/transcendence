@@ -164,6 +164,7 @@ export default function Home() {
               alt="slide image"
               width={slides[0].width}
               height={slides[0].width}
+              className="aspect-square"
             />
             <div className="flex flex-col gap-2 items-center justify-center w-1/2">
               <h2 className="text-xl text-quatrocl">{slides[0].title}</h2>
@@ -178,9 +179,8 @@ export default function Home() {
           </Link>
         </div>
         <div
-          className={`w-[40%] h-full flex flex-col items-center justify-around rounded-xl bg-gradient-to-t from-[#0B2931] from-0% to-[#020C0E] to-20% z-10 absolute left-[30%] right-[30%] border border-quatrocl ${
-            anime ? "animate-appear" : ""
-          }`}
+          className={`w-[40%] h-full flex flex-col items-center justify-around rounded-xl bg-gradient-to-t from-[#0B2931] from-0% to-[#020C0E] to-20% z-10 absolute left-[30%] right-[30%] border border-quatrocl ${anime ? "animate-appear" : ""
+            }`}
         >
           <div className="flex justify-around w-full">
             <Image
@@ -188,6 +188,7 @@ export default function Home() {
               alt="slide image"
               width={slides[1].width}
               height={slides[1].width}
+              className="aspect-square"
             />
             <div className="flex flex-col gap-2 items-center justify-center w-1/2">
               <h2 className="text-xl text-quatrocl">{slides[1].title}</h2>
@@ -208,6 +209,7 @@ export default function Home() {
               alt="slide image"
               width={slides[2].width}
               height={slides[2].width}
+              className="aspect-square"
             />
             <div className="flex flex-col gap-2 items-center justify-center w-1/2">
               <h2 className="text-xl text-quatrocl">{slides[2].title}</h2>
