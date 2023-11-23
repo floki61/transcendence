@@ -26,7 +26,7 @@ export class ChatService {
 	map = new Map();
 
 	async create(createChatDto: CreateChatDto, client: Socket) {
-		var message = { ...createChatDto };
+		var message: any = { ...createChatDto };
 		console.log(createChatDto);
 
 		const participant = await this.prisma.participant.findUnique({
@@ -70,7 +70,12 @@ export class ChatService {
 				lastMessageDate: new Date(),
 			},
 		});
-		message = { ...message, msgTime: mssg.msgTime };
+		const usr = await this.prisma.user.findUnique({
+			where: {
+				id: participant.uid,
+			},
+		});
+		message = { ...message, msgTime: mssg.msgTime, user: usr };
 		console.log(message);
 		return message;
 	}
