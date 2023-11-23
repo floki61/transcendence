@@ -1,5 +1,4 @@
-import Loginput from "@/components/Loginput";
-import Button from "@/components/Button";
+import { ImGoogle } from "react-icons/im";
 import Image from "next/image";
 import Link from "next/link";
 
@@ -14,7 +13,7 @@ export default function Login() {
         className="object-cover max-md:hidden"
         priority={true}
       />
-      <form className="flex py-12 max-md:py-3  max-md:px-3 flex-col flex-1 h-full items-center gap-5 ">
+      <form className="flex py-12 max-md:py-3  max-md:px-3 flex-col flex-1 h-full items-center justify-around gap-5">
         <svg
           xmlns="http://www.w3.org/2000/svg"
           width="48"
@@ -29,33 +28,16 @@ export default function Login() {
         </svg>
         <div className="text-black text-center">
           <h1 className="text-5xl font-bold tracking-wider">WELCOME BACK</h1>
-          <h3 className="text-xl font-light">Please enter your details</h3>
+          <h3 className="text-xl font-light">Please select a login option</h3>
         </div>
-        <div className="flex mt-12 flex-col w-5/12 max-xl:w-2/3 max-md:w-full gap-16 text-black ">
-          <Loginput holder="Email" type="text" />
-          <Loginput holder="Password" type="password" />
-        </div>
-        <div className="flex mb-14 text-black w-5/12 max-xl:w-2/3 max-md:w-full justify-between ">
-          <div className="flex gap-1">
-            <input
-              className="bg-slate-300 flex gap-1"
-              type="checkbox"
-              name={"Remember me"}
-              value={"checked"}
-            ></input>
-            <label htmlFor={String("Remember me")}>Remember me</label>
-          </div>
-          <Link href={"forgotps"} className="cursor-pointer underline">
-            Forgot password ?
-          </Link>
-        </div>
-        <div className="flex flex-1 flex-col justify-between">
+        <div className="flex flex-1 flex-col justify-center items-center">
           <div className="flex flex-col max-md:w-full items-center text-2xl gap-4 max-md:text-xl">
             <Link
               href={process.env.NEXT_PUBLIC_SERVER_URL + "/login/google"}
-              className="flex items-center justify-center gap-3 bg-black border rounded-3xl w-96 max-md:w-[70%] max-md:p-4 h-14 cursor-pointer"
+              className="flex items-center justify-center gap-3 text-white bg-black border rounded-3xl w-96 max-md:w-[70%] max-md:p-4 h-14 cursor-pointer"
             >
-            Log in with Google
+              <ImGoogle size={30}/>
+              Log in with Google
             </Link>
             <Link
               href={process.env.NEXT_PUBLIC_SERVER_URL + "/login"}
@@ -70,17 +52,6 @@ export default function Login() {
               />
               Log in with 42
             </Link>
-          </div>
-
-          <div className="text-black text-center">
-            <p>
-              Don't you have an account ?
-              <Link href={"signup"}>
-                <span className="cursor-pointer underline font-semibold">
-                  Sign up
-                </span>
-              </Link>
-            </p>
           </div>
         </div>
       </form>

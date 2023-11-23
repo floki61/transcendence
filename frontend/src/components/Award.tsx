@@ -26,7 +26,7 @@ export const Award: React.FC<AwardProps> = ({ picture, filled, name, date }) => 
             <p>{name}</p>
           </div>
           )}
-        {card && filled && (
+        {card && filled && date && (
           <div className="flex flex-col items-center justify-evenly w-full h-full" style={card ? {transform: "rotateY(180deg)"} : {}}>
             <div className="flex flex-col items-center w-1/2">
               <p className="text-xl tracking-wider text-yellow-800">TITLE</p>

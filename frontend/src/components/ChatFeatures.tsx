@@ -88,7 +88,7 @@ export const ChatFeatures: React.FC<ChatFeaturesProps> = ({
 				})
 				router.push(`/chat/${rid}`);
 			} catch (error) {
-				console.log("mute user failed.", error);
+				// console.log("mute user failed.", error);
 			}
 		}
 		else if (mode === "ban") {
