@@ -9,6 +9,7 @@ import { NotifBar } from "@/components/Notifications/NotifBar";
 import { UserContext } from "@/context/userContext";
 import { MdOutlineKeyboardDoubleArrowLeft } from "react-icons/md";
 import { MdOutlineKeyboardDoubleArrowRight } from "react-icons/md";
+import { HiArchiveBox } from "react-icons/hi2";
 
 export default function Home() {
   const [invites, SetInvite] = useState<InviteType[]>([]);
@@ -44,7 +45,7 @@ export default function Home() {
     setAnime(true);
     setTimeout(() => {
       setAnime(false);
-    }, 2000); 
+    }, 2000);
   };
   const MoveRight = () => {
     const newSlides = [slides[1], slides[2], slides[0]];
@@ -52,7 +53,7 @@ export default function Home() {
     setAnime(true);
     setTimeout(() => {
       setAnime(false);
-    }, 2000); 
+    }, 2000);
   };
 
   useEffect(() => {
@@ -105,7 +106,8 @@ export default function Home() {
             <div className="flex flex-col items-center justify-around px-4 w-[40%] bg-gradient-to-t from-[#0B2931] from-0% to-[#020C0E] to-10% rounded-br-xl border-l-4 border-segundcl">
               <h3 className="text-3xl">START A GAME NOW</h3>
               <p className="text-xl px-8">
-                Play a quick game versus a random opponent on the default mode
+                If you want something challening, then try beating an incarnated
+                Fan Zhendong
               </p>
               <Link
                 href={"/game?type=Bot"}
@@ -122,7 +124,7 @@ export default function Home() {
           </div>
           <div className="overflow-scroll flex-1 flex flex-col w-full rounded-b-2xl bg-gradient-to-t from-[#0B2931] from-0% to-[#020C0E] to-10%">
             {user &&
-              invites &&
+              invites.length !== 0 &&
               invites.map((invite, index) => (
                 <div key={index} className="w-full h-1/5 p-2">
                   <NotifBar
@@ -137,6 +139,14 @@ export default function Home() {
                   />
                 </div>
               ))}
+            {invites.length === 0 && (
+              <div className="w-full h-full flex flex-col gap-3 items-center justify-center">
+                <HiArchiveBox size={50} />
+                <p className="text-white text-sm">
+                  You currently have no notifications
+                </p>
+              </div>
+            )}
           </div>
         </div>
       </div>
@@ -167,7 +177,11 @@ export default function Home() {
             Play
           </Link>
         </div>
-        <div className={`w-[40%] h-full flex flex-col items-center justify-around rounded-xl bg-gradient-to-t from-[#0B2931] from-0% to-[#020C0E] to-20% z-10 absolute left-[30%] right-[30%] border border-quatrocl ${anime ? "animate-appear" : ""}`}>
+        <div
+          className={`w-[40%] h-full flex flex-col items-center justify-around rounded-xl bg-gradient-to-t from-[#0B2931] from-0% to-[#020C0E] to-20% z-10 absolute left-[30%] right-[30%] border border-quatrocl ${
+            anime ? "animate-appear" : ""
+          }`}
+        >
           <div className="flex justify-around w-full">
             <Image
               src={slides[1].image}
