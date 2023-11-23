@@ -2,7 +2,7 @@
 import React, { memo, useEffect, useRef, useState } from 'react';
 import p5 from 'p5';
 import { useGame } from '@/context/gameSocket';
-import {leftPaddle, rightPaddle, ball, leftScore, rightScore, updatePaddles, updateBallData,updateScore } from '@/gameLogic/gameLogic';
+import {gameState, finishGame, setGameResult, gameResult, leftPaddle, rightPaddle, ball, leftScore, rightScore, updatePaddles, updateBallData,updateScore } from '@/gameLogic/gameLogic';
 import Image from 'next/image'
 
 interface usersData {
@@ -20,9 +20,8 @@ interface usersData {
 }
 
 const GamePage = () => {
-    const {socket} = useGame();
+    const { socket } = useGame();
     const [liveGame, setLiveGame] = useState(false);
-    const [gameResult, setGameResult] = useState(null);
     const [botGame, setBotGame] = useState(false);
     const [client, setClient] = useState(false);
     const test = useRef<HTMLDivElement>(null);
@@ -35,7 +34,7 @@ const GamePage = () => {
         let canvas: any;
         const sketch = (p: p5) => {
             p.setup = () => {
-                canvas = p.createCanvas(window.innerWidth / 2, window.innerHeight / 2);
+                canvas = p.createCanvas(p.windowWidth / 2, p.windowHeight / 2);
                 canvas.addClass("border-4 rounded-md bg-gray-800");
                 canvas.style('border-color', borderColor);
                 if (playersDiv)
@@ -68,59 +67,18 @@ const GamePage = () => {
             });
             socket.on('updateBall', (data) => {
                 updateBallData(p, data);
-                updateScore(data);    
+                updateScore(data);
                 updatePaddles(p, data);
             });
             socket.on('gameResult', (data) => {
+                finishGame();
                 setGameResult(data);
-                setBotGame(false);
-                setLiveGame(false);
             });
             socket.on('alreadyConnected', (data) => {
                 setClient(true);
             })
             p.draw = () => {
-                if(client) {
-                    p.background('#151515');
-                    p.fill(255);
-                    p.fill(255, 255, 255, 30);
-                    p.textSize(34);
-                    p.textAlign(p.CENTER, p.CENTER);
-                    p.text("already in game", p.width / 2, p.height / 2);
-                }
-                else if(liveGame || botGame) {
-                    p.background('#151515');
-                    p.stroke("#213D46");
-                    p.strokeWeight(2);
-                    if(usersData?.mode === "hidden") {
-                        p.line(p.width / 4, 0, p.width / 4, p.height);
-                        p.line((p.width / 4) * 3, 0, (p.width / 4) * 3, p.height);
-                    }
-                    else
-                        p.line(p.width / 2, 0, p.width / 2, p.height);
-                    p.noStroke();
-                    p.fill("#213D46");
-                    p.textAlign(p.CENTER, p.CENTER);
-                    p.fill(255, 255, 255, 30);
-                    if(usersData?.mode === "hidden") {
-                        p.textSize(28);
-                        p.text(`${leftScore} - ${rightScore}`, p.width / 2, 30);
-                    }
-                    else {
-                        p.textSize(192);
-                        p.text(leftScore, p.width / 4, p.height / 2);
-                        p.text(rightScore, (p.width / 4) * 3, p.height / 2);
-                    }
-                    p.fill("#213D46");
-                    p.rectMode(p.CENTER);
-                    p.rect(leftPaddle.x, leftPaddle.y, leftPaddle.width, leftPaddle.height);
-                    p.rect(rightPaddle.x, rightPaddle.y, rightPaddle.width, rightPaddle.height);
-                    if(ball.pos === 1)
-                        p.fill('#151515');
-                    p.noStroke();
-                    p.ellipse(ball.x, ball.y, ball.radius * 2);
-                }
-                else if (gameResult) {
+                if (gameState) {
                     p.background('#151515');
                     p.fill(255);
                     p.textSize(34);
@@ -149,6 +107,46 @@ const GamePage = () => {
                             p.text(`${leftScore} - ${rightScore + 1}`, p.width / 2, p.height / 2 + 20);
                     }
                 }
+                else if(client) {
+                    p.background('#151515');
+                    p.fill(255);
+                    p.fill(255, 255, 255, 30);
+                    p.textSize(34);
+                    p.textAlign(p.CENTER, p.CENTER);
+                    p.text("already in game", p.width / 2, p.height / 2);
+                }
+                else if (liveGame || botGame) {
+                    p.background('#151515');
+                    p.stroke("#213D46");
+                    p.strokeWeight(2);
+                    if (usersData?.mode === "hidden") {
+                        p.line(p.width / 4, 0, p.width / 4, p.height);
+                        p.line((p.width / 4) * 3, 0, (p.width / 4) * 3, p.height);
+                    }
+                    else
+                        p.line(p.width / 2, 0, p.width / 2, p.height);
+                    p.noStroke();
+                    p.fill("#213D46");
+                    p.textAlign(p.CENTER, p.CENTER);
+                    p.fill(255, 255, 255, 30);
+                    if (usersData?.mode === "hidden") {
+                        p.textSize(28);
+                        p.text(`${leftScore} - ${rightScore}`, p.width / 2, 30);
+                    }
+                    else {
+                        p.textSize(192);
+                        p.text(leftScore, p.width / 4, p.height / 2);
+                        p.text(rightScore, (p.width / 4) * 3, p.height / 2);
+                    }
+                    p.fill("#213D46");
+                    p.rectMode(p.CENTER);
+                    p.rect(leftPaddle.x, leftPaddle.y, leftPaddle.width, leftPaddle.height);
+                    p.rect(rightPaddle.x, rightPaddle.y, rightPaddle.width, rightPaddle.height);
+                    if (ball.pos === 1)
+                        p.fill('#151515');
+                    p.noStroke();
+                    p.ellipse(ball.x, ball.y, ball.radius * 2);
+                }
                 else {
                     p.background('#151515');
                     p.fill(255);
@@ -157,52 +155,52 @@ const GamePage = () => {
                     p.textAlign(p.CENTER, p.CENTER);
                     p.text("Waiting for another player", p.width / 2, p.height / 2);
                 }
-                if(liveGame && leftPaddle.x && rightPaddle.x) {
+                if(!gameState && liveGame && leftPaddle.x && rightPaddle.x) {
                     if (p.keyIsDown(p.UP_ARROW))
                         socket.emit("paddlesUpdate", "UP");
-                    else if(p.keyIsDown(p.DOWN_ARROW))
+                    else if (p.keyIsDown(p.DOWN_ARROW))
                         socket.emit("paddlesUpdate", "DOWN");
                 }
-                else if(botGame && leftPaddle.x && rightPaddle.x) {
+                else if(!gameState && botGame && leftPaddle.x && rightPaddle.x) {
                     if (p.keyIsDown(p.UP_ARROW))
                         socket.emit("paddleBotUpdate", "UP");
-                    else if(p.keyIsDown(p.DOWN_ARROW))
+                    else if (p.keyIsDown(p.DOWN_ARROW))
                         socket.emit("paddleBotUpdate", "DOWN");
                 }
             };
         };
-        if(test && test.current) {
+        if (test && test.current) {
             const mp5 = new p5(sketch, test.current);
             return mp5.remove;
         }
-    }),[];
+    }), [];
 
     return (
-        <div className='flex flex-col items-center justify-center h-screen'>
-        <div id='players' className='flex justify-between items-center mb-6 '>
-            <div className='flex items-center'>
-                <Image src={usersData?.player1?.img || "/placeholder.jpg"} alt='Player 1' className='rounded-full' width={70} height={70} />
-                <div className='flex flex-col items-center ml-4'>
-                    <p className='text-lg'>{usersData?.player1 && usersData.player1.name}</p>
-                    <span className="text-xs">{usersData?.player1 && `lvl ${usersData.player1.level}`}</span>
+        <div className='flex flex-col items-center justify-center h-full'>
+            <div id='players' className='flex justify-between items-center mb-6 '>
+                <div className='flex items-center'>
+                    <Image loader={() => usersData?.player1?.img || "/placeholder.jpg"} src={usersData?.player1?.img || "/placeholder.jpg"} alt='Player 1' className='rounded-full aspect-square w-16 h-16 object-cover' width={70} height={70} unoptimized />
+                    <div className='flex flex-col items-center ml-4'>
+                        <p className='text-lg'>{usersData?.player1 && usersData.player1.name}</p>
+                        <span className="text-xs">{usersData?.player1 && `lvl ${usersData.player1.level}`}</span>
+                    </div>
+                </div>
+                <div className='flex items-center'>
+                    <div className='flex flex-col items-center mr-4'>
+                        <p className='text-lg'>{usersData?.player2 && usersData.player2.name}</p>
+                        <span className='text-xs'>{usersData?.player2 && `lvl ${usersData.player2.level}`}</span>
+                    </div>
+                    <Image loader={() => usersData?.player2?.img || "/placeholder.jpg"} src={usersData?.player2?.img || "/placeholder.jpg"} alt='Player 2' className='rounded-full aspect-square w-16 h-16 object-cover' width={70} height={70} unoptimized />
                 </div>
             </div>
-            <div className='flex items-center'>
-                <div className='flex flex-col items-center mr-4'>
-                    <p className='text-lg'>{usersData?.player2 && usersData.player2.name}</p>
-                    <span className='text-xs'>{usersData?.player2 && `lvl ${usersData.player2.level}`}</span>
-                </div>
-                <img src={usersData?.player2?.img || "/placeholder.jpg"} alt='Player 2' className='rounded-full' width={70} height={70}/>
+            <div className='' ref={test}></div>
+            <div className='mt-4' style={{ opacity: '0.5' }}>
+                {usersData?.mode === "Bot" && <p>! Bot mode: [Play against a bot]</p>}
+                {usersData?.mode === "simple" && <p>! Simple mode: [Classic ping pong mode. Use the arrow keys to control your paddle]</p>}
+                {usersData?.mode === "reverse" && <p>! Reverse mode: [A twist on the traditional game. Clicking up makes your paddle move down, and clicking down makes your paddle move up]</p>}
+                {usersData?.mode === "hidden" && <p>! Hidden mode: [In this mode, the ball remains hidden until it gets close to your paddle]</p>}
             </div>
         </div>
-        <div className='' ref={test}></div>
-        <div className='mt-4' style={{opacity: '0.5'}}>
-            {usersData?.mode === "Bot" && <p>! Bot mode: [Play against a bot]</p>}
-            {usersData?.mode === "simple" && <p>! Simple mode: [Classic ping pong mode. Use the arrow keys to control your paddle]</p>}
-            {usersData?.mode === "reverse" && <p>! Reverse mode: [A twist on the traditional game. Clicking up makes your paddle move down, and clicking down makes your paddle move up]</p>}
-            {usersData?.mode === "hidden" && <p>! Hidden mode: [In this mode, the ball remains hidden until it gets close to your paddle]</p>}
-        </div>
-    </div>
     )
 };
 export default GamePage;

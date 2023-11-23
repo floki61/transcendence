@@ -88,11 +88,13 @@ export default function Navbar() {
               className="rounded-full flex justify-center items-center overflow-hidden"
             >
               <Image
+                loader={() => user.user?.picture || "/placeholder.jpg"}
                 src={user.user?.picture || "/placeholder.jpg"}
                 alt={"floki"}
                 width={30}
                 height={30}
                 className="rounded-full aspect-square w-7 h-7 object-cover"
+                unoptimized
               />
             </Link>
           </div>

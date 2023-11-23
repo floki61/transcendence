@@ -21,9 +21,9 @@ export const NotifBar: React.FC<NotifBarProps> = ({
 }) => {
 	// const router = useRouter(); // Initialize the useRouter hook
 	const AcceptRequest = async () => {
-		if (requestType === 'play'){
+		if (requestType === 'play') {
 			try {
-				const res = await axios.post("http://localhost:4000/acceptPlayRequest", {friendId},{
+				const res = await axios.post("http://localhost:4000/acceptPlayRequest", { friendId }, {
 					withCredentials: true,
 				})
 			}
@@ -34,7 +34,7 @@ export const NotifBar: React.FC<NotifBarProps> = ({
 		}
 		else {
 			try {
-				const res = await axios.post("http://localhost:4000/acc", {friendId},{
+				const res = await axios.post("http://localhost:4000/acc", { friendId }, {
 					withCredentials: true,
 				})
 			} catch (error) {
@@ -44,9 +44,9 @@ export const NotifBar: React.FC<NotifBarProps> = ({
 	}
 
 	const DeclineRequest = async () => {
-		if (requestType === 'play'){
+		if (requestType === 'play') {
 			try {
-				const res = await axios.post("http://localhost:4000/rejectPlayRequest", {friendId},{
+				const res = await axios.post("http://localhost:4000/rejectPlayRequest", { friendId }, {
 					withCredentials: true,
 				})
 			}
@@ -56,7 +56,7 @@ export const NotifBar: React.FC<NotifBarProps> = ({
 		}
 		else {
 			try {
-				const res = await axios.post("http://localhost:4000/rejecte", {friendId},{
+				const res = await axios.post("http://localhost:4000/rejecte", { friendId }, {
 					withCredentials: true,
 				})
 			}
@@ -66,22 +66,24 @@ export const NotifBar: React.FC<NotifBarProps> = ({
 		}
 	}
 
-  return (
-	<div className='flex h-full flex-col gap-2'>
-		<div className='flex items-center gap-2'>
-			<Image
-				src={picture || "placeholder.jpg"}
-				alt="friend pic"
-				height={30}
-				width={30}
-				className="rounded-full aspect-square w-8 h-8 object-cover"
-			/>
-			<span>{userName} sent you a {requestType} request</span>
+	return (
+		<div className='flex h-full flex-col gap-2'>
+			<div className='flex items-center gap-2'>
+				<Image
+					loader={() => picture || "placeholder.jpg"}
+					src={picture || "placeholder.jpg"}
+					alt="friend pic"
+					height={30}
+					width={30}
+					className="rounded-full aspect-square w-8 h-8 object-cover"
+					unoptimized
+				/>
+				<span>{userName} sent you a {requestType} request</span>
+			</div>
+			<div className='flex gap-2'>
+				<button className='rounded flex-1 bg-primecl cursor-pointer' onClick={AcceptRequest}>accept</button>
+				<button className='rounded flex-1 cursor-pointer border' onClick={DeclineRequest}>decline</button>
+			</div>
 		</div>
-		<div className='flex gap-2'>
-			<button className='rounded flex-1 bg-primecl cursor-pointer' onClick={AcceptRequest}>accept</button>
-			<button className='rounded flex-1 cursor-pointer border' onClick={DeclineRequest}>decline</button>
-		</div>
-	</div>
-  )
+	)
 }

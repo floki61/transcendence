@@ -27,7 +27,7 @@ export const HistoryPanel: React.FC<HistoryPanelProps> = ({
 
 	let result, color, oppResult, oppColor, lScore, rScore;
 	(winner === user?.id) ? opp = loser : opp = winner;
-	const {friend, SetFriend} = useFriend(opp);
+	const { friend, SetFriend } = useFriend(opp);
 
 	(loser === user?.id) ? result = "L" : result = "W";
 	(loser === user?.id) ? color = "bg-[#DC0000]" : color = "bg-[#00A83F]";
@@ -41,20 +41,22 @@ export const HistoryPanel: React.FC<HistoryPanelProps> = ({
 		(loser !== user?.id) ? lScore = userScore : lScore = oppScore;
 		(loser !== user?.id) ? rScore = oppScore : rScore = userScore;
 	}
-	
+
 	if (index < 4) {
 		return (
 			<div className='w-full h-full'>
 				{friend && user && (
 					<div className={`${index != 3 ? "border-b-4 border-primecl" : ""} w-full h-full flex items-center gap-8`}>
 						<h4 className='capitalize text-2xl text-center w-[20%]'>{mode} Mode</h4>
-						<BoxForm  result={result} color={color}/>
+						<BoxForm result={result} color={color} />
 						<Image
+							loader={() => user.picture || "/placeholder.jpg"}
 							src={user.picture || "/placeholder.jpg"}
 							alt="user pic"
 							height={75}
 							width={75}
 							className='rounded-full p-2 aspect-square w-16 h-16 object-cover'
+							unoptimized
 						/>
 						<div className='flex h-full w-[20%] items-center justify-evenly text-4xl'>
 							<p>{lScore}</p>
@@ -62,13 +64,15 @@ export const HistoryPanel: React.FC<HistoryPanelProps> = ({
 							<p>{rScore}</p>
 						</div>
 						<Image
+							loader={() => friend.user.picture || "/placeholder.jpg"}
 							src={friend.user.picture || "/placeholder.jpg"}
 							alt="user pic"
 							height={75}
 							width={75}
 							className='rounded-full p-2 aspect-square w-16 h-16 object-cover'
+							unoptimized
 						/>
-						<BoxForm result={oppResult} color={oppColor}/>
+						<BoxForm result={oppResult} color={oppColor} />
 						<p className='text-3xl text-center w-[15%]'>{result === "W" ? "+" : "-"}30xp</p>
 					</div>
 				)}

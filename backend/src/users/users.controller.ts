@@ -11,6 +11,8 @@ import { max } from 'class-validator';
 import { UsersGateway } from './users.gateway';
 import { get } from 'http';
 import { Response } from 'express';
+import * as fs from 'fs';
+import { PrismaService } from 'src/prisma/prisma.service';
 // import { clearConfigCache } from 'prettier';
 
 @Controller()
@@ -19,6 +21,7 @@ export class UsersController {
         private jwt: JwtService,
         private userservice: UsersService,
         private usergtw: UsersGateway,
+        private prisma: PrismaService,
     ) { }
 
     @UseGuards(JwtAuthGuard)
@@ -106,17 +109,37 @@ export class UsersController {
         storage: diskStorage({
             destination: './uploads',
             filename: (req: any, avatar, cb) => {
-                console.log("salam khoi")
+
                 const Name = req.user.id;
                 if (extname(avatar.originalname) !== '.png' && extname(avatar.originalname) !== '.jpg' && extname(avatar.originalname) !== '.jpeg' && extname(avatar.originalname) !== '.gif') {
                     return cb(new HttpException('Only images are allowed', HttpStatus.BAD_REQUEST), '')
                 }
-                return cb(null, `${Name}${extname(avatar.originalname)}`);
+                // check size of file
+                if (avatar.size > 1024 * 1024) {
+                    return cb(new HttpException('File too large', HttpStatus.BAD_REQUEST), '');
+                }
+                if (fs.existsSync(`./uploads/${Name}.jpeg`)) {
+                    fs.unlinkSync(`./uploads/${Name}.jpeg`);
+                }
+                return cb(null, `${Name}.jpeg`);
             }
         })
     }))
     async uploadFile(@UploadedFile(
     ) file: Express.Multer.File, @Req() req) {
+        if (file) {
+            let url = `http://localhost:4000/${req.user.id}.jpeg`;
+            await this.prisma.user.update({
+                where: {
+                    id: req.user.id,
+                },
+                data: {
+                    picture: url,
+                },
+            });
+        } else {
+            throw new HttpException('Avatar is required', HttpStatus.BAD_REQUEST);
+        }
         return file;
     }
 

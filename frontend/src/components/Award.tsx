@@ -12,8 +12,8 @@ export const Award: React.FC<AwardProps> = ({ picture, filled, name, date }) => 
   const [card, setCard] = useState(false);
 
   return (
-    <div className={`transition duration-1000 w-[15%] h-full`} style={card ? {transform: "rotateY(180deg)"} : {}}>
-      <div className={`${filled ? "" : "opacity-75 blur-sm"} w-full h-full shadow-xl flex flex-col items-center justify-center border-4 border-yellow-950 rounded-lg bg-primecl cursor-pointer`} onClick={() => {if(filled)setCard(!card)}}>
+    <div className={`transition duration-1000 w-[15%] h-full`} style={card ? { transform: "rotateY(180deg)" } : {}}>
+      <div className={`${filled ? "" : "opacity-75 blur-sm"} w-full h-full shadow-xl flex flex-col items-center justify-center border-4 border-yellow-950 rounded-lg bg-primecl cursor-pointer`} onClick={() => { if (filled) setCard(!card) }}>
         {!card && picture && (
           <div className="flex flex-col items-center">
             <Image
