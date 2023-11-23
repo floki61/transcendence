@@ -23,11 +23,13 @@ const Chatbar: React.FC<ChatProps> = ({ name, text, time, image, visible, dm }) 
 		<div className="flex justify-between border-t border-primecl py-3 hover:bg-quatrocl/40 px-4">
 			<div className="flex gap-3 flex-1">
 				<Image
+					loader={() => image || "/placeholder.jpg"}
 					src={image || "/placeholder.jpg"}
 					alt={"floki lherban"}
 					width={50}
 					height={50}
 					className="rounded-full aspect-square object-cover h-12 w-12"
+					unoptimized
 				/>
 				<div className="flex flex-col w-full max-w-[230px]">
 					<h2 className="text-xl truncate break-all">{name}</h2>

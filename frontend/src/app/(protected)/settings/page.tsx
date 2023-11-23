@@ -35,22 +35,6 @@ export default function page() {
     }
   };
 
-  const updateProfilePic = async () => {
-    try {
-      if (user && user.user) {
-        const formData = new FormData();
-        formData.append('avatar', user.user.picture);
-        await axios.post("http://localhost:4000/upload", formData, {
-          withCredentials: true,
-          headers: {
-            'Content-Type': 'multipart/form-data',
-          },
-        });
-      }
-    } catch (error) {
-
-    }
-  };
 
   const hnadleChange = (e: any) => {
     const { name, value } = e.target;
@@ -62,23 +46,43 @@ export default function page() {
     user.setUser(newUser as userType);
   };
 
-  const [imageUrl, setImageUrl] = useState<string | undefined>(user.user?.picture);
+  const [imageUrl, setImageUrl] = useState<string>(user.user ? user.user.picture : "/placeholder.jpg");
 
-  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files && e.target.files.length === 1 && user) {
-      setImageUrl(URL.createObjectURL(e.target.files[0]));
-      if (user.user)
-        user.user.picture = URL.createObjectURL(e.target.files[0]);
-      updateProfilePic();
+  useEffect(() => {
+    if (user && user.user && user.user.picture) {
+      setImageUrl(user.user.picture);
+    }
+  }, [user]);
+
+  const handleImageChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files && e.target.files.length === 1 && user && user.user) {
+      // check file size
+      if (e.target.files[0].size > 1024 * 1024) {
+        toast.error('Image size must be less than 1MB');
+        return;
+      }
+      // check file type (only images allowed)
+      if (!e.target.files[0].type.startsWith('image')) {
+        toast.error('Only images are allowed');
+        return;
+      }
+      try {
+        const formData = new FormData();
+        formData.append('avatar', e.target.files[0]);
+        await axios.post("http://localhost:4000/upload", formData, {
+          withCredentials: true,
+          headers: {
+            'Content-Type': 'multipart/form-data',
+          },
+        });
+        setImageUrl(URL.createObjectURL(e.target.files[0]));
+        toast.success('Image uploaded successfully');
+      } catch (error: any) {
+        toast.error(error?.response?.data.message);
+
+      }
     }
   };
-
-  const hiddenFileInput = useRef<HTMLInputElement>(null);
-  const handleClick = (e: any) => {
-    if (hiddenFileInput.current)
-      hiddenFileInput.current.click();
-  };
-
 
   const [showDiv, setShowDiv] = useState(false);
 
@@ -129,11 +133,13 @@ export default function page() {
           <div className="flex flex-col w-1/2 border-r-4 border-primecl justify-center items-center my-6 gap-6">
             <div className="flex flex-col items-center gap-3 h-1/2 w-full mt-4">
               <Image
-                src={user.user.picture || "/placeholder.jpg"}
+                loader={() => imageUrl}
+                src={imageUrl}
                 alt={"profile pic"}
                 width={100}
                 height={100}
                 className="rounded-full aspect-square w-24 h-24 object-cover"
+                unoptimized
                 priority
               />
               <div className="flex flex-col h-full w-full items-center gap-8 justify-center mt-4">
@@ -141,22 +147,20 @@ export default function page() {
                   text="CHOOSE AN AVATAR"
                   className="border border-white rounded-3xl w-2/5 p-2 h-12 opacity-80 cursor-pointer bg-primecl shadow-[0px 4px 4px 0px rgba(0, 0, 0, 0.25)]  transition ease-in-out delay-150 hover:scale-105 duration-300"
                 />
-                <button
-                  type="submit"
-                  className="border border-white rounded-3xl w-2/5 p-3 h-12 opacity-80 cursor-pointer bg-primecl shadow-[0px 4px 4px 0px rgba(0, 0, 0, 0.25)]  transition ease-in-out delay-150 hover:scale-105 duration-300"
-                  onClick={handleClick}
+                <label
+                  htmlFor="picture"
+                  className="border text-center border-white rounded-3xl w-2/5 p-3 h-12 opacity-80 cursor-pointer bg-primecl shadow-[0px 4px 4px 0px rgba(0, 0, 0, 0.25)]  transition ease-in-out delay-150 hover:scale-105 duration-300"
                 >
                   UPLOAD A PICTURE
-                  <input
-                    type="file"
-                    onChange={handleImageChange}
-                    ref={hiddenFileInput}
-                    name="picture"
-                    placeholder="UPLOAD A PHOTO"
-                    className="hidden"
-                    accept="image/png, image/jpg, image/jpeg, image/gif"
-                  />
-                </button>
+                </label>
+                <input
+                  type="file"
+                  onChange={handleImageChange}
+                  name="picture"
+                  id="picture"
+                  className="hidden"
+                  accept="image/png, image/jpg, image/jpeg, image/gif"
+                />
               </div>
             </div>
             <div className="w-2/3 border-t-4 border-primecl mt-4">

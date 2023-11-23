@@ -44,7 +44,6 @@ export class ChatController {
         return user;
     }
 
-
     @Roles('ADMIN', 'OWNER')
     @UseGuards(JwtAuthGuard, RolesGuard)
     @Post('unbanUser')

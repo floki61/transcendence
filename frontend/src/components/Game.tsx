@@ -2,7 +2,7 @@
 import React, { memo, useEffect, useRef, useState } from 'react';
 import p5 from 'p5';
 import { useGame } from '@/context/gameSocket';
-import {leftPaddle, rightPaddle, ball, leftScore, rightScore, updatePaddles, updateBallData,updateScore } from '@/gameLogic/gameLogic';
+import { leftPaddle, rightPaddle, ball, leftScore, rightScore, updatePaddles, updateBallData, updateScore } from '@/gameLogic/gameLogic';
 import Image from 'next/image'
 
 interface usersData {
@@ -20,7 +20,7 @@ interface usersData {
 }
 
 const GamePage = () => {
-    const {socket} = useGame();
+    const { socket } = useGame();
     const [liveGame, setLiveGame] = useState(false);
     const [gameResult, setGameResult] = useState(null);
     const [botGame, setBotGame] = useState(false);
@@ -68,7 +68,7 @@ const GamePage = () => {
             });
             socket.on('updateBall', (data) => {
                 updateBallData(p, data);
-                updateScore(data);    
+                updateScore(data);
                 updatePaddles(p, data);
             });
             socket.on('gameResult', (data) => {
@@ -88,11 +88,11 @@ const GamePage = () => {
                     p.textAlign(p.CENTER, p.CENTER);
                     p.text("already in game", p.width / 2, p.height / 2);
                 }
-                else if(liveGame || botGame) {
+                else if (liveGame || botGame) {
                     p.background('#151515');
                     p.stroke("#213D46");
                     p.strokeWeight(2);
-                    if(usersData?.mode === "hidden") {
+                    if (usersData?.mode === "hidden") {
                         p.line(p.width / 4, 0, p.width / 4, p.height);
                         p.line((p.width / 4) * 3, 0, (p.width / 4) * 3, p.height);
                     }
@@ -102,7 +102,7 @@ const GamePage = () => {
                     p.fill("#213D46");
                     p.textAlign(p.CENTER, p.CENTER);
                     p.fill(255, 255, 255, 30);
-                    if(usersData?.mode === "hidden") {
+                    if (usersData?.mode === "hidden") {
                         p.textSize(28);
                         p.text(`${leftScore} - ${rightScore}`, p.width / 2, 30);
                     }
@@ -125,14 +125,14 @@ const GamePage = () => {
                     p.fill(255);
                     p.textSize(34);
                     p.textAlign(p.CENTER, p.CENTER);
-                    if(gameResult === "You won")
+                    if (gameResult === "You won")
                         p.fill('#00af50');
                     else
                         p.fill('#e55217');
                     if ((gameResult as string).endsWith('!')) {
                         p.fill('#00af50');
                         p.text(gameResult, p.width / 2, p.height / 2 - 25);
-                        if(playerPos === 'left')
+                        if (playerPos === 'left')
                             p.text("5 - 0", p.width / 2, p.height / 2 + 20);
                         else
                             p.text("0 - 5", p.width / 2, p.height / 2 + 20);
@@ -157,7 +157,7 @@ const GamePage = () => {
                     p.textAlign(p.CENTER, p.CENTER);
                     p.text("Waiting for another player", p.width / 2, p.height / 2);
                 }
-                if(liveGame && leftPaddle.x && rightPaddle.x) {
+                if (liveGame && leftPaddle.x && rightPaddle.x) {
                     if (p.keyIsDown(p.UP_ARROW))
                         socket.emit("paddlesUpdate", "UP");
                     else if (p.keyIsDown(p.DOWN_ARROW))
@@ -178,31 +178,31 @@ const GamePage = () => {
     }), [];
 
     return (
-        <div className='flex flex-col items-center justify-center h-screen'>
-        <div id='players' className='flex justify-between items-center mb-6 '>
-            <div className='flex items-center'>
-                <Image src={usersData?.player1?.img || "/placeholder.jpg"} alt='Player 1' className='rounded-full' width={70} height={70} />
-                <div className='flex flex-col items-center ml-4'>
-                    <p className='text-lg'>{usersData?.player1 && usersData.player1.name}</p>
-                    <span className="text-xs">{usersData?.player1 && `lvl ${usersData.player1.level}`}</span>
+        <div className='flex flex-col items-center justify-center h-full'>
+            <div id='players' className='flex justify-between items-center mb-6 '>
+                <div className='flex items-center'>
+                    <Image loader={() => usersData?.player1?.img || "/placeholder.jpg"} src={usersData?.player1?.img || "/placeholder.jpg"} alt='Player 1' className='rounded-full aspect-square w-16 h-16 object-cover' width={70} height={70} unoptimized />
+                    <div className='flex flex-col items-center ml-4'>
+                        <p className='text-lg'>{usersData?.player1 && usersData.player1.name}</p>
+                        <span className="text-xs">{usersData?.player1 && `lvl ${usersData.player1.level}`}</span>
+                    </div>
+                </div>
+                <div className='flex items-center'>
+                    <div className='flex flex-col items-center mr-4'>
+                        <p className='text-lg'>{usersData?.player2 && usersData.player2.name}</p>
+                        <span className='text-xs'>{usersData?.player2 && `lvl ${usersData.player2.level}`}</span>
+                    </div>
+                    <Image loader={() => usersData?.player2?.img || "/placeholder.jpg"} src={usersData?.player2?.img || "/placeholder.jpg"} alt='Player 2' className='rounded-full aspect-square w-16 h-16 object-cover' width={70} height={70} unoptimized />
                 </div>
             </div>
-            <div className='flex items-center'>
-                <div className='flex flex-col items-center mr-4'>
-                    <p className='text-lg'>{usersData?.player2 && usersData.player2.name}</p>
-                    <span className='text-xs'>{usersData?.player2 && `lvl ${usersData.player2.level}`}</span>
-                </div>
-                <img src={usersData?.player2?.img || "/placeholder.jpg"} alt='Player 2' className='rounded-full' width={70} height={70}/>
+            <div className='' ref={test}></div>
+            <div className='mt-4' style={{ opacity: '0.5' }}>
+                {usersData?.mode === "Bot" && <p>! Bot mode: [Play against a bot]</p>}
+                {usersData?.mode === "simple" && <p>! Simple mode: [Classic ping pong mode. Use the arrow keys to control your paddle]</p>}
+                {usersData?.mode === "reverse" && <p>! Reverse mode: [A twist on the traditional game. Clicking up makes your paddle move down, and clicking down makes your paddle move up]</p>}
+                {usersData?.mode === "hidden" && <p>! Hidden mode: [In this mode, the ball remains hidden until it gets close to your paddle]</p>}
             </div>
         </div>
-        <div className='' ref={test}></div>
-        <div className='mt-4' style={{opacity: '0.5'}}>
-            {usersData?.mode === "Bot" && <p>! Bot mode: [Play against a bot]</p>}
-            {usersData?.mode === "simple" && <p>! Simple mode: [Classic ping pong mode. Use the arrow keys to control your paddle]</p>}
-            {usersData?.mode === "reverse" && <p>! Reverse mode: [A twist on the traditional game. Clicking up makes your paddle move down, and clicking down makes your paddle move up]</p>}
-            {usersData?.mode === "hidden" && <p>! Hidden mode: [In this mode, the ball remains hidden until it gets close to your paddle]</p>}
-        </div>
-    </div>
     )
 };
 export default GamePage;

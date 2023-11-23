@@ -106,12 +106,14 @@ export default function page(
         <div className="h-full w-full flex flex-col gap-16">
           <div className="flex gap-4 h-[22%]">
             <Image
+              loader={() => user.user.picture || "/placeholder.jpg"}
               src={user.user.picture || "/placeholder.jpg"}
               alt={"profile pic"}
               height={140}
               width={140}
               className="rounded-full aspect-square w-36 h-36 object-cover"
               priority
+              unoptimized
             />
             <div className="w-3/5 h-full flex flex-col justify-between px-4">
               <div className="flex flex-col gap-1">
@@ -125,7 +127,10 @@ export default function page(
               </div>
               <div className="w-full bg-[#6A6666] relative rounded-xl text-center text-black self-end">
                 <div
-                  className={`bg-quatrocl w-[(${Math.round(user.barPourcentage)}%] h-full rounded-xl absolute top-0 left-0`}
+                  className={`bg-quatrocl h-full rounded-xl absolute inset-0`}
+                  style={{
+                    width: `${String(Math.ceil(user.barPourcentage))}%`,
+                  }}
                 ></div>
                 <p className="text-black text-center z-10 relative text-xl font-medium">
                   Level {user.level_P}
@@ -160,6 +165,7 @@ export default function page(
                     className="w-full bg-primecl h-1/3 flex items-center gap-2 border-b border-segundcl px-2"
                   >
                     <Image
+                      loader={() => follower.user.id !== user.user.id ? follower.user.picture : follower.friend.picture}
                       src={
                         follower.user.id !== user.user.id
                           ? follower.user.picture
@@ -169,6 +175,7 @@ export default function page(
                       height={30}
                       width={30}
                       className="rounded-full aspect-square w-8 h-8 object-cover"
+                      unoptimized
                     />
                     <span>
                       {follower.user.id !== user.user.id
@@ -176,15 +183,14 @@ export default function page(
                         : follower.friend.userName}
                     </span>
                     <span
-                      className={`flex justify-end w-full ${
-                        follower.user.id !== user.user.id
-                          ? follower.user.status !== "OFFLINE"
-                            ? "text-[#00A83F]"
-                            : "text-red-600"
-                          : follower.friend.status !== "OFFLINE"
+                      className={`flex justify-end w-full ${follower.user.id !== user.user.id
+                        ? follower.user.status !== "OFFLINE"
                           ? "text-[#00A83F]"
                           : "text-red-600"
-                      }`}
+                        : follower.friend.status !== "OFFLINE"
+                          ? "text-[#00A83F]"
+                          : "text-red-600"
+                        }`}
                     >
                       ({" "}
                       {follower.user.id !== user.user.id
@@ -202,11 +208,13 @@ export default function page(
                     className="w-full bg-primecl h-1/3 flex items-center gap-2 border-b border-segundcl px-2"
                   >
                     <Image
+                      loader={() => block.friend.picture}
                       src={block.friend.picture}
                       alt="friend pic"
                       height={30}
                       width={30}
                       className="rounded-full aspect-square w-8 h-8 object-cover"
+                      unoptimized
                     />
                     <span>{block.friend.userName}</span>
                     <div
@@ -252,38 +260,35 @@ export default function page(
                 alt="table"
                 width={170}
                 height={170}
-                className="absolute place-self-end opacity-70"
+                className="absolute place-self-end opacity-70 aspect-square"
                 priority
               />
             )}
             <div className="w-[60%] h-[12%] rounded-t-xl bg-primecl flex items-center">
               <Link
                 href="/profile"
-                className={`${
-                  pathName === "/profile"
-                    ? "bg-gradient-to-t from-[#000000] from-0% to-segundcl to-100% rounded-tl-xl"
-                    : ""
-                } hover:bg-gradient-to-t hover:from-[#000000] hover:from-0% hover:to-segundcl hover:to-100% hover:rounded-tl-xl w-1/3 text-2xl text-center h-full flex justify-center items-center border-r border-segundcl`}
+                className={`${pathName === "/profile"
+                  ? "bg-gradient-to-t from-[#000000] from-0% to-segundcl to-100% rounded-tl-xl"
+                  : ""
+                  } hover:bg-gradient-to-t hover:from-[#000000] hover:from-0% hover:to-segundcl hover:to-100% hover:rounded-tl-xl w-1/3 text-2xl text-center h-full flex justify-center items-center border-r border-segundcl`}
               >
                 Stats
               </Link>
               <Link
                 href="/profile/achievements"
-                className={`${
-                  pathName === "/profile/achievements"
-                    ? "bg-gradient-to-t from-[#000000] from-0% to-segundcl to-100% "
-                    : ""
-                } hover:bg-gradient-to-t hover:from-[#000000] hover:from-0% hover:to-segundcl hover:to-100% w-1/3 text-2xl text-center h-full flex justify-center items-center border-r border-segundcl`}
+                className={`${pathName === "/profile/achievements"
+                  ? "bg-gradient-to-t from-[#000000] from-0% to-segundcl to-100% "
+                  : ""
+                  } hover:bg-gradient-to-t hover:from-[#000000] hover:from-0% hover:to-segundcl hover:to-100% w-1/3 text-2xl text-center h-full flex justify-center items-center border-r border-segundcl`}
               >
                 Achievements
               </Link>
               <Link
                 href="/profile/history"
-                className={`${
-                  pathName === "/profile/history"
-                    ? "bg-gradient-to-t from-[#000000] from-0% to-segundcl to-100% rounded-tr-xl"
-                    : ""
-                } hover:bg-gradient-to-t hover:from-[#000000] hover:from-0% hover:to-segundcl hover:to-100% hover:rounded-tr-xl w-1/3 text-2xl text-center h-full flex justify-center items-center`}
+                className={`${pathName === "/profile/history"
+                  ? "bg-gradient-to-t from-[#000000] from-0% to-segundcl to-100% rounded-tr-xl"
+                  : ""
+                  } hover:bg-gradient-to-t hover:from-[#000000] hover:from-0% hover:to-segundcl hover:to-100% hover:rounded-tr-xl w-1/3 text-2xl text-center h-full flex justify-center items-center`}
               >
                 History
               </Link>
