@@ -2,7 +2,7 @@
 import React, { memo, useEffect, useRef, useState } from 'react';
 import p5 from 'p5';
 import { useGame } from '@/context/gameSocket';
-import {leftPaddle, rightPaddle, ball, leftScore, rightScore, updatePaddles, updateBallData,updateScore } from '@/gameLogic/gameLogic';
+import {gameState, finishGame, setGameResult, gameResult, leftPaddle, rightPaddle, ball, leftScore, rightScore, updatePaddles, updateBallData,updateScore } from '@/gameLogic/gameLogic';
 import Image from 'next/image'
 
 interface usersData {
@@ -22,7 +22,6 @@ interface usersData {
 const GamePage = () => {
     const {socket} = useGame();
     const [liveGame, setLiveGame] = useState(false);
-    const [gameResult, setGameResult] = useState(null);
     const [botGame, setBotGame] = useState(false);
     const [client, setClient] = useState(false);
     const test = useRef<HTMLDivElement>(null);
@@ -35,7 +34,7 @@ const GamePage = () => {
         let canvas: any;
         const sketch = (p: p5) => {
             p.setup = () => {
-                canvas = p.createCanvas(window.innerWidth / 2, window.innerHeight / 2);
+                canvas = p.createCanvas(p.windowWidth / 2, p.windowHeight / 2);
                 canvas.addClass("border-4 rounded-md bg-gray-800");
                 canvas.style('border-color', borderColor);
                 if (playersDiv)
@@ -72,15 +71,43 @@ const GamePage = () => {
                 updatePaddles(p, data);
             });
             socket.on('gameResult', (data) => {
+                finishGame();
                 setGameResult(data);
-                setBotGame(false);
-                setLiveGame(false);
             });
             socket.on('alreadyConnected', (data) => {
                 setClient(true);
             })
             p.draw = () => {
-                if (client) {
+                if (gameState) {
+                    p.background('#151515');
+                    p.fill(255);
+                    p.textSize(34);
+                    p.textAlign(p.CENTER, p.CENTER);
+                    if(gameResult === "You won")
+                        p.fill('#00af50');
+                    else
+                        p.fill('#e55217');
+                    if ((gameResult as string).endsWith('!')) {
+                        p.fill('#00af50');
+                        p.text(gameResult, p.width / 2, p.height / 2 - 25);
+                        if(playerPos === 'left')
+                            p.text("5 - 0", p.width / 2, p.height / 2 + 20);
+                        else
+                            p.text("0 - 5", p.width / 2, p.height / 2 + 20);
+                    }
+                    else {
+                        p.text(gameResult, p.width / 2, p.height / 2 - 25);
+                        if (gameResult === 'You lost' && playerPos === 'left')
+                            p.text(`${leftScore} - ${rightScore + 1}`, p.width / 2, p.height / 2 + 20);
+                        else if (gameResult === 'You lost' && playerPos === 'right')
+                            p.text(`${leftScore + 1} - ${rightScore}`, p.width / 2, p.height / 2 + 20);
+                        else if (gameResult === 'You won' && playerPos === 'left')
+                            p.text(`${leftScore + 1} - ${rightScore}`, p.width / 2, p.height / 2 + 20);
+                        else if (gameResult === 'You won' && playerPos === 'right')
+                            p.text(`${leftScore} - ${rightScore + 1}`, p.width / 2, p.height / 2 + 20);
+                    }
+                }
+                else if(client) {
                     p.background('#151515');
                     p.fill(255);
                     p.fill(255, 255, 255, 30);
@@ -120,35 +147,6 @@ const GamePage = () => {
                     p.noStroke();
                     p.ellipse(ball.x, ball.y, ball.radius * 2);
                 }
-                else if (gameResult) {
-                    p.background('#151515');
-                    p.fill(255);
-                    p.textSize(34);
-                    p.textAlign(p.CENTER, p.CENTER);
-                    if(gameResult === "You won")
-                        p.fill('#00af50');
-                    else
-                        p.fill('#e55217');
-                    if ((gameResult as string).endsWith('!')) {
-                        p.fill('#00af50');
-                        p.text(gameResult, p.width / 2, p.height / 2 - 25);
-                        if(playerPos === 'left')
-                            p.text("5 - 0", p.width / 2, p.height / 2 + 20);
-                        else
-                            p.text("0 - 5", p.width / 2, p.height / 2 + 20);
-                    }
-                    else {
-                        p.text(gameResult, p.width / 2, p.height / 2 - 25);
-                        if (gameResult === 'You lost' && playerPos === 'left')
-                            p.text(`${leftScore} - ${rightScore + 1}`, p.width / 2, p.height / 2 + 20);
-                        else if (gameResult === 'You lost' && playerPos === 'right')
-                            p.text(`${leftScore + 1} - ${rightScore}`, p.width / 2, p.height / 2 + 20);
-                        else if (gameResult === 'You won' && playerPos === 'left')
-                            p.text(`${leftScore + 1} - ${rightScore}`, p.width / 2, p.height / 2 + 20);
-                        else if (gameResult === 'You won' && playerPos === 'right')
-                            p.text(`${leftScore} - ${rightScore + 1}`, p.width / 2, p.height / 2 + 20);
-                    }
-                }
                 else {
                     p.background('#151515');
                     p.fill(255);
@@ -157,13 +155,13 @@ const GamePage = () => {
                     p.textAlign(p.CENTER, p.CENTER);
                     p.text("Waiting for another player", p.width / 2, p.height / 2);
                 }
-                if(liveGame && leftPaddle.x && rightPaddle.x) {
+                if(!gameState && liveGame && leftPaddle.x && rightPaddle.x) {
                     if (p.keyIsDown(p.UP_ARROW))
                         socket.emit("paddlesUpdate", "UP");
                     else if (p.keyIsDown(p.DOWN_ARROW))
                         socket.emit("paddlesUpdate", "DOWN");
                 }
-                else if (botGame && leftPaddle.x && rightPaddle.x) {
+                else if(!gameState && botGame && leftPaddle.x && rightPaddle.x) {
                     if (p.keyIsDown(p.UP_ARROW))
                         socket.emit("paddleBotUpdate", "UP");
                     else if (p.keyIsDown(p.DOWN_ARROW))
