@@ -229,7 +229,6 @@ export default function Home() {
         >
           <MdOutlineKeyboardDoubleArrowRight size={50} />
         </div>
-        {/* <Carousel /> */}
       </div>
     </div>
   );

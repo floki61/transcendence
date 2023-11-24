@@ -8,7 +8,7 @@ import { ChatFeatures } from '@/components/ChatFeatures';
 import { useRouter } from 'next/navigation';
 import { toast } from 'react-toastify';
 
-export default function page({params} : {params: any}) {
+export default function Page({params} : {params: any}) {
 	
   const [users, SetUsers] = useState<userType[]>();
   const [participants, SetParticipants] = useState<userType[]>();
@@ -29,7 +29,7 @@ export default function page({params} : {params: any}) {
       }
     }
     getParticipants();
-  }, []);
+  }, [params.id]);
 
   useEffect(() => {
     const getAllUsers = async () => {
@@ -44,7 +44,7 @@ export default function page({params} : {params: any}) {
       }
     }
     getAllUsers();
-  }, []);
+  }, [params.id]);
 
   if (feature === "viewParticipants") {
     return (

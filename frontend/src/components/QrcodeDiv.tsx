@@ -8,11 +8,13 @@ import axios from 'axios'
 
 interface QrcodeProps {
 	state: boolean;
+	twofactor: boolean;
 	OnClick(e: boolean): any;
 }
 
 const QrcodeDiv: React.FC<QrcodeProps> = ({
 	state,
+	twofactor,
 	OnClick,
 }) => {
 
@@ -24,7 +26,6 @@ const QrcodeDiv: React.FC<QrcodeProps> = ({
 		  const res = await axios.get("http://localhost:4000/2fa/generate", {
 			withCredentials: true,
 		  });
-		  console.log("qrcode :" ,res.data);
 		  setQrCode(res.data);
 		} catch (error) {
 		  console.error(error);
@@ -42,12 +43,11 @@ const QrcodeDiv: React.FC<QrcodeProps> = ({
 				{twoFactorAuthenticationCode: input} , {
 				withCredentials: true,
 				});
+				OnClick(!state);
 			} catch (error) {
-				console.error("error a turning on 2fa");
+				console.error("error turning on 2fa");
 			}
 		}
-		else
-		  console.log("rah masiftch")
 	};
 
 	  const [input, setInput] = useState('');
@@ -88,7 +88,7 @@ const QrcodeDiv: React.FC<QrcodeProps> = ({
 				 		<Button
 				 			text="Send"
 				 			className="border border-white text-white rounded-3xl w-1/3 p-2 h-12 opacity-80 cursor-pointer bg-primecl shadow-[0px 4px 4px 0px rgba(0, 0, 0, 0.25)]  transition ease-in-out delay-150 hover:scale-105 duration-300"
-				 			onClick={sendQrCode}
+				 			onClick={() => {sendQrCode();handleQrCode();twofactor=true;}}
 				 		/>
 					</div>
 				</div>

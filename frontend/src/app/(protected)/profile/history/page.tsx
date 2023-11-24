@@ -5,7 +5,7 @@ import { UserContext } from "@/context/userContext";
 import { useStats } from "@/hooks/useStats";
 import { useState, useEffect, useContext } from "react";
 
-export default function page() {
+export default function Page() {
   const user = useContext(UserContext);
   const {stats, SetStats, getStats } = useStats();
 

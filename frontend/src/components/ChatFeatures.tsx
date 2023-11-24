@@ -257,7 +257,7 @@ export const ChatFeatures: React.FC<ChatFeaturesProps> = ({
 								<option value="PRIVATE">Private</option>
 							</select>
 							{visible === room.visibility && (
-								<p className='text-red-600 text-sm'>This action won't apply as the room visibility is no different that the previous</p>
+								<p className='text-red-600 text-sm'>This action wont apply as the room visibility is no different that the previous</p>
 							)}
 							{visible !== room.visibility && visible !== "" && room.visibility === "PROTECTED" && (
 								<input
