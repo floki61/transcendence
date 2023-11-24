@@ -14,7 +14,7 @@ export interface qrcodeType {
   url: string;
 }
 
-export default function page() {
+export default function Page() {
 
   const user = useContext(UserContext);
 
@@ -104,26 +104,10 @@ export default function page() {
     }
   }
 
-  let classes = "";
-
-  if (showDiv)
-    classes = "blur pointer-events-none";
-  else
-    classes = "";
-
-  let butText = "";
-
-  if (user) {
-    if (user.user?.isTwoFactorAuthenticationEnabled === true)
-      butText = "DISABLE 2FA";
-    else
-      butText = "ENABLE 2FA";
-  }
-
   return (
     <div className="h-full">
       {user && user.user && (
-        <div className={`${classes} flex rounded-2xl bg-segundcl h-[90%] m-8`}>
+        <div className={`${showDiv ? "blur pointer-events-none" : ""} flex rounded-2xl bg-segundcl h-[90%] m-8`}>
           <div className="flex flex-col w-1/2 border-r-4 border-primecl justify-center items-center my-6 gap-6">
             <div className="flex flex-col items-center gap-3 h-1/2 w-full mt-4">
               <Image
@@ -162,7 +146,7 @@ export default function page() {
             </div>
             <div className="flex flex-col items-center gap-8 h-1/2 w-full">
               <Button
-                text={butText}
+                text={user.user?.isTwoFactorAuthenticationEnabled === true ? "DISABLE 2FA" : "ENABLE 2FA"}
                 className="border border-white rounded-3xl w-2/5 p-3 text-center h-12 opacity-80 cursor-pointer bg-primecl shadow-[0px 4px 4px 0px rgba(0, 0, 0, 0.25)] transition ease-in-out delay-150 hover:scale-105 duration-300"
                 onClick={handleQrCode}
               />
@@ -221,7 +205,7 @@ export default function page() {
         </div>
       )}
       {showDiv && user.user?.isTwoFactorAuthenticationEnabled === false && (
-        <QrcodeDiv state={showDiv} OnClick={setShowDiv} />
+        <QrcodeDiv state={showDiv} OnClick={setShowDiv} twofactor={user.user.isTwoFactorAuthenticationEnabled} />
       )}
       {showDiv && user.user?.isTwoFactorAuthenticationEnabled === true && (
         <Disable2fa state={showDiv} OnClick={setShowDiv} />

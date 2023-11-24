@@ -10,7 +10,7 @@ type ResultType = {
 	color: string;
 }
 
-export default function page({params}: {params: any}) {
+export default function Page({params}: {params: any}) {
 	let Win = {result: "W", color: "bg-[#00A83F]"};
 	let Loss = {result: "L", color: "bg-[#DC0000]"};
 

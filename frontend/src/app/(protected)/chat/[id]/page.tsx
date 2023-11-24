@@ -35,7 +35,7 @@ const Convo = ({ params }: { params: any }) => {
 
   useEffect(() => {
     getMessages(pathName.split("/").at(-1) as string);
-  }, [pathName, socket]);
+  }, [pathName, socket, getMessages]);
 
   useEffect(() => {
     if (!socket) return;
@@ -48,7 +48,7 @@ const Convo = ({ params }: { params: any }) => {
     return () => {
       socket.off("message", messageHandler);
     };
-  }, [socket]);
+  }, [socket, SetChat]);
 
   useEffect(() => {
     const getParticipants = async () => {
@@ -63,7 +63,7 @@ const Convo = ({ params }: { params: any }) => {
       }
     }
     getParticipants();
-  }, []);
+  }, [params.id]);
 
   useLayoutEffect(() => {
     if (lastMeassgeRef.current) {

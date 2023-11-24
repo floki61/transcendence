@@ -30,7 +30,7 @@ export interface InviteType {
   friend: userType;
 }
 
-export default function layout({
+export default function Layout({
   params,
   children,
 }: {
@@ -190,7 +190,7 @@ export default function layout({
         }
       });
     }
-  }, [invites]);
+  }, [invites, params.id]);
 
   if (friend)
     console.log((Math.ceil(friend.barPourcentage)));

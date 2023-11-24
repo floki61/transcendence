@@ -13,7 +13,7 @@ interface AwardType {
   createdAt: string;
 }
 
-export default function page({params}: {params: any}) {
+export default function Page({params}: {params: any}) {
   const [trophy, setTrophy] = useState<AwardType[]>([]);
   const user = useContext(UserContext);
 

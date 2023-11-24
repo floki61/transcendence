@@ -1,13 +1,4 @@
-"use client";
-
-import Chatmsg from "@/components/Chatmsg";
-import Chatbar from "@/components/Chatbar";
-import Audio from "@/components/Audio";
-import Convo from "@/components/JoinRooms";
-import { useState } from "react";
-import { ConvoProps } from "@/components/JoinRooms";
-
-export default function page() {
+export default function Page() {
   return (
     <div className="flex h-full text-white">
       <div className="flex flex-1 overflow-hidden">

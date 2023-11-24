@@ -110,7 +110,6 @@ export const useChat = (id : string) => {
   }
 
   const sendMsg = () => {
-    console.log("ggfd : ", rid);
     if (input.current && input.current.value.length > 0 && input.current.value.trim() !== '') {
       socket?.emit("createChat", {
         rid,

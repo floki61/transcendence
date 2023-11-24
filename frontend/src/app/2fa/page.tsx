@@ -91,7 +91,7 @@ export default function Forgotps() {
         </div>
         <div className="text-xl">
           <p>
-            Don't you have an account ?
+            Dont you have an account ?
             <Link href={"signup"}>
               <span className="underline font-semibold cursor-pointer">
                 Sign up

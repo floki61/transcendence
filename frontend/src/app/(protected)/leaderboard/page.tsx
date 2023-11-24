@@ -16,7 +16,7 @@ interface BoardType {
 	id: string;
 }
 
-export default function page() {
+export default function Page() {
 	const [board, SetBoard] = useState<BoardType[]>([]);
 	let colorArray = [
 		"bg-[#FFD700]",

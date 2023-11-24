@@ -16,7 +16,7 @@ interface roomType {
   id?: string;
 }
 
-export default function page() {
+export default function Page() {
   const user = useContext(UserContext);
   const [success, setSuccess] = useState(false);
   const [showDiv, setShowDiv] = useState(false);
