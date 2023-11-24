@@ -189,6 +189,14 @@ export class ChatController {
         return room;
     }
 
+    @Roles('OWNER', 'ADMIN')
+    @UseGuards(JwtAuthGuard, RolesGuard)
+    @Post('getBannedUsers')
+    async getBannedUsers(@Body() body: any, @Req() req: any) {
+        const room = await this.userservice.getBannedUsers(body);
+        return room;
+    }
+
 
     // @UseGuards(JwtAuthGuard)
     // @Get('AllRooms')
