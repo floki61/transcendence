@@ -35,7 +35,7 @@ const Convo = ({ params }: { params: any }) => {
 
   useEffect(() => {
     getMessages(pathName.split("/").at(-1) as string);
-  }, [pathName, socket, getMessages]);
+  }, [pathName, socket]);
 
   useEffect(() => {
     if (!socket) return;
@@ -221,17 +221,19 @@ const Convo = ({ params }: { params: any }) => {
                       } ${chatie.msg.length > 50 ? "w-[40%]" : ""}`}
                     key={index}
                   >
-                    <Chatmsg
-                      room={(chatie.user?.uid === user.user?.id || user.user?.id === chatie.uid) ? false : true}
-                      picture={chatie.user?.user?.picture}
-                      text={chatie.msg}
-                      time={chatie.msgTime.substring(11, 16)}
-                      className={`flex justify-between ${user.user?.id === chatie.user?.uid ||
-                        user.user?.id === chatie.uid
-                        ? "self-end bg-primecl rounded-s-lg rounded-br-lg"
-                        : "bg-quatrocl rounded-e-lg rounded-bl-lg self-start"
-                        }`}
-                    />
+                    {chatie.rid === params.id && (
+                      <Chatmsg
+                        room={(chatie.user?.uid === user.user?.id || user.user?.id === chatie.uid) ? false : true}
+                        picture={chatie.user?.user?.picture}
+                        text={chatie.msg}
+                        time={chatie.msgTime.substring(11, 16)}
+                        className={`flex justify-between ${user.user?.id === chatie.user?.uid ||
+                          user.user?.id === chatie.uid
+                          ? "self-end bg-primecl rounded-s-lg rounded-br-lg"
+                          : "bg-quatrocl rounded-e-lg rounded-bl-lg self-start"
+                          }`}
+                      />
+                    )}
                   </div>
                 ))}
               <div ref={lastMeassgeRef}></div>

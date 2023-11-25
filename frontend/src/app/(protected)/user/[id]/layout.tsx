@@ -54,7 +54,6 @@ export default function Layout({
         });
         SetInvite(res.data);
       } catch (error) {
-        console.log("error");
       }
     };
     getFriendRequest();
@@ -149,8 +148,6 @@ export default function Layout({
         }
       );
       router.push("/");
-      // SetAccept(false);
-      // SetRequest(false);
     } catch (error) {
       console.log("Block failed", error);
     }
@@ -168,7 +165,6 @@ export default function Layout({
       if (res.data.ifBlocked) router.push("/not-found");
       else SetFriend(res.data);
     } catch (error) {
-      console.log("get Friend profile failed.", error);
     }
   };
   useEffect(() => {
@@ -334,7 +330,6 @@ export default function Layout({
                 </p>
               </div>
             </div>
-            <div className="w-[25%] text-center">chart</div>
           </div>
           <div className="flex-1 flex flex-col items-center relative">
             {pathName === "/profile" && (
