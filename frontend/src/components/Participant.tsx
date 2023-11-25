@@ -1,6 +1,7 @@
 import Image from 'next/image';
 import Link from 'next/link';
 import axios from 'axios';
+import { useState } from 'react';
 
 interface ParticipantProps {
 	name: string;
@@ -27,9 +28,8 @@ export const Participant: React.FC<ParticipantProps> = ({
 	SetChecked,
 	button,
 }) => {
+	const [loading, setLoading] = useState(false);
 
-
-	// selected.shift();
 	const handleCheckedBox = (userId: string) => {
 		if (selected && SetSelected) {
 			const isSelected = selected.includes(userId);
@@ -38,7 +38,6 @@ export const Participant: React.FC<ParticipantProps> = ({
 			SetSelected((prevSelected: any) => {
 				if (isSelected) {
 					// If user is already selected, remove them
-					console.log("remove : ", selected);
 					return prevSelected.filter((id: any) => id !== userId);
 				} else {
 					// If user is not selected, add them
@@ -49,24 +48,22 @@ export const Participant: React.FC<ParticipantProps> = ({
 	};
 
 	const Challenge = async () => {
+		setLoading(true);
 		try {
 			const res = await axios.post("http://localhost:4000/sendPlaydRequest", { friendId: id }, {
 				withCredentials: true,
 			});
-			console.log("success Challenge");
 		} catch (error) {
-			console.log("Challenge failed", error);
+			setLoading(false);
 		}
 	}
 
 	const handleSingleSelection = (userId: string) => {
 		if (selected && SetSelected && SetChecked) {
 			SetChecked(userId);
-			console.log("ana hna")
 			SetSelected([userId]);
 		}
 	}
-	console.log(many)
 	return (
 		<div className='flex items-center justify-between gap-6 h-full px-4'>
 			<div className='flex items-center gap-3'>

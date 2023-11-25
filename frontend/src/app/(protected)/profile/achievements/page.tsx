@@ -30,7 +30,6 @@ export default function Page() {
           );
           setTrophy(res.data);
         } catch (error) {
-          console.log("getAwards failed");
         }
       }
     };

@@ -4,6 +4,7 @@ import axios from "axios";
 import { ChatType } from "@/hooks/useChat";
 import { userType } from "@/context/userContext";
 import { useRouter } from "next/navigation";
+import { useState } from "react";
 
 export interface ConvoProps {
   picture: string;
@@ -17,12 +18,13 @@ export interface ConvoProps {
 }
 
 const JoinRooms: React.FC<ConvoProps> = ({ picture, name, status, chat, visibility, input, user, rid }) => {
-  const router = useRouter()
+  const router = useRouter();
+  const [loading, setLoading] = useState(false);
   const joinGroup = async () => {
+    setLoading(true);
       let password;
       if (input && input.current)
         password = input.current.value;
-      console.log(user?.id, rid, password);
       try {
         const res = await axios.post(
           "http://localhost:4000/chat/joinRoom",
@@ -35,11 +37,10 @@ const JoinRooms: React.FC<ConvoProps> = ({ picture, name, status, chat, visibili
             withCredentials: true,
           }
         );
-        console.log(res.data);
         router.push("/chat");
 
       } catch (error) {
-        console.log("Join group failed", error);
+        setLoading(false);
       }
   };
 
@@ -66,6 +67,7 @@ const JoinRooms: React.FC<ConvoProps> = ({ picture, name, status, chat, visibili
               onKeyDown={handleKeyDown}
             />
             <button
+              disabled={loading}
               className="border-2 rounded-xl w-1/3 h-[15%] bg-segundcl cursor-pointer transition ease-in-out delay-150 hover:scale-105 duration-300"
               onClick={joinGroup}
             >
@@ -83,6 +85,7 @@ const JoinRooms: React.FC<ConvoProps> = ({ picture, name, status, chat, visibili
               This room is public, Click on join to be part of the room
             </h1>
             <button
+              disabled={loading}
               className="border-2 rounded-xl w-1/3 h-[15%] bg-segundcl cursor-pointer transition ease-in-out delay-150 hover:scale-105 duration-300"
               onClick={joinGroup}
             >

@@ -22,7 +22,6 @@ export const useFriend = (id: string) => {
 				})
 				SetFriend(res.data);
 			} catch (error) {
-				console.log("get Friend profile failed.", error);
 			}
 		}
 		getFriend();

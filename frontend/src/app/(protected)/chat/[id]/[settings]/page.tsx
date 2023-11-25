@@ -123,10 +123,8 @@ export default function Page({ params }: { params: any }) {
             }
           );
           const data = res.data;
-          console.log(data)
           SetParticipants(data);
         } catch (error) {
-          console.log("add Participant failed");
         }
       };
       getBannedUsers();

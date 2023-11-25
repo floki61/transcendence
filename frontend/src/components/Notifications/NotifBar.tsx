@@ -5,6 +5,7 @@ import { request } from 'http';
 import { redirect } from 'next/dist/server/api-utils';
 import Image from 'next/image'
 import { useRouter } from 'next/router';
+import { useState } from 'react';
 
 interface NotifBarProps {
 	picture?: string;
@@ -19,8 +20,9 @@ export const NotifBar: React.FC<NotifBarProps> = ({
 	friendId,
 	requestType,
 }) => {
-	// const router = useRouter(); // Initialize the useRouter hook
+	const [loading, setLoading] = useState(false);
 	const AcceptRequest = async () => {
+		setLoading(true);
 		if (requestType === 'play') {
 			try {
 				const res = await axios.post("http://localhost:4000/acceptPlayRequest", { friendId }, {
@@ -28,7 +30,7 @@ export const NotifBar: React.FC<NotifBarProps> = ({
 				})
 			}
 			catch (error) {
-				console.log("Accept Request.", error);
+				setLoading(false);
 			}
 			window.location.href = `http://localhost:3000/game?type=Friend&mode=simple&playerId=${friendId}`;
 		}
@@ -38,12 +40,13 @@ export const NotifBar: React.FC<NotifBarProps> = ({
 					withCredentials: true,
 				})
 			} catch (error) {
-				console.log("Accept Request.", error);
+				setLoading(false);
 			}
 		}
 	}
 
 	const DeclineRequest = async () => {
+		setLoading(true);
 		if (requestType === 'play') {
 			try {
 				const res = await axios.post("http://localhost:4000/rejectPlayRequest", { friendId }, {
@@ -51,7 +54,7 @@ export const NotifBar: React.FC<NotifBarProps> = ({
 				})
 			}
 			catch (error) {
-				console.log("declinet Request.", error);
+				setLoading(false);
 			}
 		}
 		else {
@@ -61,7 +64,7 @@ export const NotifBar: React.FC<NotifBarProps> = ({
 				})
 			}
 			catch (error) {
-				console.log("Decline Request.", error);
+				setLoading(false);
 			}
 		}
 	}
@@ -81,8 +84,8 @@ export const NotifBar: React.FC<NotifBarProps> = ({
 				<span>{userName} sent you a {requestType} request</span>
 			</div>
 			<div className='flex gap-2'>
-				<button className='rounded flex-1 bg-primecl cursor-pointer' onClick={AcceptRequest}>accept</button>
-				<button className='rounded flex-1 cursor-pointer border' onClick={DeclineRequest}>decline</button>
+				<button className='rounded flex-1 bg-primecl cursor-pointer' disabled={loading} onClick={AcceptRequest}>accept</button>
+				<button className='rounded flex-1 cursor-pointer border' disabled={loading} onClick={DeclineRequest}>decline</button>
 			</div>
 		</div>
 	)

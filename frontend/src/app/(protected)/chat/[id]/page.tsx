@@ -59,7 +59,6 @@ const Convo = ({ params }: { params: any }) => {
         const data = res.data;
         SetParticipants(data);
       } catch (error) {
-        console.log("add Participant failed");
       }
     }
     getParticipants();
@@ -81,8 +80,7 @@ const Convo = ({ params }: { params: any }) => {
         friendId = chatie.user?.uid;
     })
   }
-  console.log(chat);
-
+  console.log({chat});
   if (dm) {
     return (
       <div className="h-full w-full flex">
@@ -221,7 +219,7 @@ const Convo = ({ params }: { params: any }) => {
                       } ${chatie.msg.length > 50 ? "w-[40%]" : ""}`}
                     key={index}
                   >
-                    {chatie.rid === params.id && (
+                    {chatie.rid === params.id && chatie.user !== null && (
                       <Chatmsg
                         room={(chatie.user?.uid === user.user?.id || user.user?.id === chatie.uid) ? false : true}
                         picture={chatie.user?.user?.picture}

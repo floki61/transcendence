@@ -44,7 +44,6 @@ export const useChat = (id : string) => {
     if (!socket) return;
     if (roomId) {
       try {
-        console.log("calling get mesages for ", roomId);
         const res = await axios.post(
           "http://localhost:4000/chat/getMessages",
           {
@@ -60,7 +59,6 @@ export const useChat = (id : string) => {
           SetChat(data.map((item: any) => item));
         // }
       } catch (error) {
-        console.log("getMessages failed");
       }
     }
   };
@@ -73,7 +71,6 @@ export const useChat = (id : string) => {
           if (chatie.user.uid != user.user?.id) id = chatie.user.uid;
         } else if (chatie.uid != user.user?.id) id = chatie.uid;
       });
-      // console.log(id);
       try {
         const res = await axios.post(
           "http://localhost:4000/getUserNameWithId",
@@ -84,7 +81,6 @@ export const useChat = (id : string) => {
         );
         SetName(res.data);
       } catch (error) {
-        console.log("error fetching username");
       }
       try {
         const res = await axios.post(
@@ -96,7 +92,6 @@ export const useChat = (id : string) => {
         );
         SetImage(res.data);
       } catch (error) {
-        console.log("error fetching picture");
       }
     }
   };

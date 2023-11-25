@@ -20,11 +20,9 @@ export default function Page() {
 
   const updateUser = async () => {
     try {
-      console.log(user.user);
       const res = await axios.post("http://localhost:4000/userSettings", user.user, {
         withCredentials: true,
       });
-      console.log(res);
       if (res.data === "Username already exists")
         toast.error("Username already exists");
       else if (res.data === "done")
@@ -32,7 +30,6 @@ export default function Page() {
       else
         toast.success("Changes saved successfully");
     } catch (error: any) {
-      console.error("I catched error");
     }
   };
 
@@ -77,7 +74,6 @@ export default function Page() {
           },
         });
         setImageUrl(URL.createObjectURL(e.target.files[0]));
-        console.log(formData);
         // user.user.picture = URL.createObjectURL(e.target.files[0]);
         toast.success('Image uploaded successfully');
       } catch (error: any) {
@@ -100,7 +96,6 @@ export default function Page() {
       });
       window.location.href = 'http://localhost:3000/login';
     } catch (error) {
-      console.log("delete failed", error);
     }
   }
 
