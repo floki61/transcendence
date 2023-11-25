@@ -62,6 +62,7 @@ export const ChatFeatures: React.FC<ChatFeaturesProps> = ({
 		if (selected.length > 1)
 			selected.shift();
 		if (mode === "add") {
+			console.log({selected})
 			try {
 				const res = await axios.post("http://localhost:4000/chat/addParticipant", { uids: selected, rid, }, {
 					withCredentials: true,
@@ -103,6 +104,7 @@ export const ChatFeatures: React.FC<ChatFeaturesProps> = ({
 		}
 		else if (mode === "unban") {
 			try {
+				console.log(selected[0], " ", rid);
 				const res = await axios.post("http://localhost:4000/chat/unbanUser", { uid: selected[0], rid }, {
 					withCredentials: true,
 				})

@@ -10,6 +10,7 @@ import { UserContext } from "@/context/userContext";
 import { MdOutlineKeyboardDoubleArrowLeft } from "react-icons/md";
 import { MdOutlineKeyboardDoubleArrowRight } from "react-icons/md";
 import { HiArchiveBox } from "react-icons/hi2";
+import { toast } from "react-toastify";
 
 export default function Home() {
   const [invites, SetInvite] = useState<InviteType[]>([]);
@@ -20,21 +21,21 @@ export default function Home() {
       image: "/reverse.png",
       text: "Bored of the default mode, why don't you try a game with different rules. Start a game to find out !!",
       link: "game?type=Live&mode=reverse",
-      width: 150,
+      width: 180,
     },
     {
       title: "LIVE MODE",
       image: "/livemode.png",
       text: "Face random players around the globe, and prove that you are the master of ping pong",
       link: "game?type=Live&mode=simple",
-      width: 200,
+      width: 180,
     },
     {
       title: "HIDDEN MODE",
       image: "/blackhole.png",
       text: "If you can't see it, this doesn't mean that it doesn't exist. Let's see if you can handle a mode that challenge your senses",
       link: "game?type=Live&mode=hidden",
-      width: 235,
+      width: 180,
     },
   ]);
   const user = useContext(UserContext);
@@ -64,7 +65,7 @@ export default function Home() {
         });
         SetInvite(res.data);
       } catch (error) {
-        console.log("error");
+        toast.error("Sending friend request failed");
       }
     };
     getFriendRequest();
