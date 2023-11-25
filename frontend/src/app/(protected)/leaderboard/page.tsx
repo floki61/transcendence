@@ -16,7 +16,7 @@ interface BoardType {
 	id: string;
 }
 
-export default function page() {
+export default function Page() {
 	const [board, SetBoard] = useState<BoardType[]>([]);
 	let colorArray = [
 		"bg-[#FFD700]",
@@ -40,7 +40,7 @@ export default function page() {
 	}, [])
 
 	return (
-	  <div className="flex flex-col p-8 py-16 h-full w-full">
+	  <div className="flex flex-col p-8 py-16 h-full w-full overflow-hidden">
 		<div className="flex justify-between h-12">
 			<div className="flex gap-3 items-center">
 				<svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 35 35" fill="none">
@@ -48,13 +48,9 @@ export default function page() {
 				</svg>
 				<h1 className="text-center text-2xl">Leaderboard</h1>
 			</div>
-			<div className="flex w-1/3 bg-primecl rounded-t-xl border-b border-segundcl">
-				<h2 className="text-center text-2xl w-1/2 h-full py-2 border-r border-segundcl">World</h2>
-				<h2 className="text-center text-2xl w-1/2 h-full py-2">Friends</h2>
-			</div>
 		</div>
 		<div className="flex-1 flex flex-col w-full">
-			<div className="h-[7.5%] w-full rounded-tl-xl bg-primecl flex">
+			<div className="h-[7.5%] w-full rounded-t-xl bg-primecl flex">
 				<div className="w-1/4 flex items-center justify-around gap-3">
 					<p>#</p>
 					<p>Playername</p>

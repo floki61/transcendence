@@ -83,7 +83,6 @@ export class ChatController {
         return room;
     }
 
-    /////////////////////////////
     @Roles('OWNER')
     @UseGuards(JwtAuthGuard, RolesGuard)
     @Post('deleteRoom')
@@ -141,7 +140,6 @@ export class ChatController {
         return room;
     }
 
-    // @Roles('OWNER', 'ADMIN', 'USER')
     @UseGuards(JwtAuthGuard)
     @Get('myRooms')
     async getMyRooms(@Req() req: any) {
@@ -159,7 +157,6 @@ export class ChatController {
     @UseGuards(JwtAuthGuard, RolesGuard)
     @Post('addParticipant')
     async addParticipant(@Body() body: any, @Req() req: any) {
-        // console.log('hahowa');
         const room = await this.userservice.addParticipant(body);
         return room;
     }
@@ -167,7 +164,6 @@ export class ChatController {
     @UseGuards(JwtAuthGuard)
     @Post('getParticipants')
     async getParticipant(@Body() body: any, @Req() req: any) {
-        // console.log('hahowa');
         const room = await this.userservice.getParticipant(body, req.user.id);
         return room;
     }
@@ -176,7 +172,6 @@ export class ChatController {
     @UseGuards(JwtAuthGuard, RolesGuard)
     @Post('getRoomById')
     async getRoomById(@Body() body: any, @Req() req: any) {
-        console.log('hahowa');
         const room = await this.userservice.getRoomById(body);
         return room;
     }
@@ -184,7 +179,6 @@ export class ChatController {
     @UseGuards(JwtAuthGuard)
     @Post('participantNotInRoom')
     async participantNotInRoom(@Body() body: any, @Req() req: any) {
-        // console.log('hahowa');
         const room = await this.userservice.participantNotInRoom(body);
         return room;
     }
@@ -193,21 +187,7 @@ export class ChatController {
     @UseGuards(JwtAuthGuard, RolesGuard)
     @Post('getBannedUsers')
     async getBannedUsers(@Body() body: any, @Req() req: any) {
-        const room = await this.userservice.getBannedUsers(body);
+        const room = await this.userservice.getBannedUsers(body, req.user.id);
         return room;
     }
-
-
-    // @UseGuards(JwtAuthGuard)
-    // @Get('AllRooms')
-    // async getAllRooms(@Req() req: any) {
-    //     const rooms = await this.userservice.getAllRooms();
-    //     // for (var room of rooms) {
-    //     //     if (room.is_DM) {
-    //     //         room.picture = await this.userservice.getUserPicture(req.user.id === room.participants[0].uid ? room.participants[1].uid : room.participants[0].uid);
-    //     //     }
-    //     //     delete room.participants;
-    //     // }
-    //     return rooms;
-    // }
 }

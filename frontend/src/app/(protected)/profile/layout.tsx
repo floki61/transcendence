@@ -29,7 +29,7 @@ export interface BlockType {
   friend: userType;
 }
 
-export default function page(
+export default function Page(
   { children }: { children: React.ReactNode },
   { params }: { params: any }
 ) {

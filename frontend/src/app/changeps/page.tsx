@@ -37,7 +37,7 @@ export default function Changeps() {
 				</div>
 				<Button text="Save" className="bg-black text-white rounded-3xl w-96 max-md:w-[70%] h-14 cursor-pointer"/>
 				<div className="text-xl my-8 max-md:text-lg">
-					<p>Don't you have an account ? 
+					<p>Dont you have an account ? 
 					<Link href={"signup"}>
 						<span className="underline font-semibold cursor-pointer">Sign up</span>
 					</Link>

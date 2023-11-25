@@ -62,6 +62,7 @@ export const ChatFeatures: React.FC<ChatFeaturesProps> = ({
 		if (selected.length > 1)
 			selected.shift();
 		if (mode === "add") {
+			console.log({selected})
 			try {
 				const res = await axios.post("http://localhost:4000/chat/addParticipant", { uids: selected, rid, }, {
 					withCredentials: true,
@@ -103,6 +104,7 @@ export const ChatFeatures: React.FC<ChatFeaturesProps> = ({
 		}
 		else if (mode === "unban") {
 			try {
+				console.log(selected[0], " ", rid);
 				const res = await axios.post("http://localhost:4000/chat/unbanUser", { uid: selected[0], rid }, {
 					withCredentials: true,
 				})
@@ -257,7 +259,7 @@ export const ChatFeatures: React.FC<ChatFeaturesProps> = ({
 								<option value="PRIVATE">Private</option>
 							</select>
 							{visible === room.visibility && (
-								<p className='text-red-600 text-sm'>This action won't apply as the room visibility is no different that the previous</p>
+								<p className='text-red-600 text-sm'>This action wont apply as the room visibility is no different that the previous</p>
 							)}
 							{visible !== room.visibility && visible !== "" && room.visibility === "PROTECTED" && (
 								<input

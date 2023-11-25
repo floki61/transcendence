@@ -30,7 +30,7 @@ export interface InviteType {
   friend: userType;
 }
 
-export default function layout({
+export default function Layout({
   params,
   children,
 }: {
@@ -54,7 +54,6 @@ export default function layout({
         });
         SetInvite(res.data);
       } catch (error) {
-        console.log("error");
       }
     };
     getFriendRequest();
@@ -149,8 +148,6 @@ export default function layout({
         }
       );
       router.push("/");
-      // SetAccept(false);
-      // SetRequest(false);
     } catch (error) {
       console.log("Block failed", error);
     }
@@ -168,7 +165,6 @@ export default function layout({
       if (res.data.ifBlocked) router.push("/not-found");
       else SetFriend(res.data);
     } catch (error) {
-      console.log("get Friend profile failed.", error);
     }
   };
   useEffect(() => {
@@ -190,7 +186,7 @@ export default function layout({
         }
       });
     }
-  }, [invites]);
+  }, [invites, params.id]);
 
   if (friend)
     console.log((Math.ceil(friend.barPourcentage)));
@@ -334,7 +330,6 @@ export default function layout({
                 </p>
               </div>
             </div>
-            <div className="w-[25%] text-center">chart</div>
           </div>
           <div className="flex-1 flex flex-col items-center relative">
             {pathName === "/profile" && (

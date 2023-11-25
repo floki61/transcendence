@@ -1,15 +1,14 @@
-"use client"
+"use client";
 
-import React, { useEffect } from 'react'
-import { useState } from 'react';
-import axios from 'axios';
-import { userType } from '@/context/userContext';
-import { ChatFeatures } from '@/components/ChatFeatures';
-import { useRouter } from 'next/navigation';
-import { toast } from 'react-toastify';
+import React, { useEffect } from "react";
+import { useState } from "react";
+import axios from "axios";
+import { userType } from "@/context/userContext";
+import { ChatFeatures } from "@/components/ChatFeatures";
+import { useRouter } from "next/navigation";
+import { toast } from "react-toastify";
 
-export default function page({params} : {params: any}) {
-	
+export default function Page({ params }: { params: any }) {
   const [users, SetUsers] = useState<userType[]>();
   const [participants, SetParticipants] = useState<userType[]>();
   const [selected, SetSelected] = useState<string[]>([""]);
@@ -19,36 +18,44 @@ export default function page({params} : {params: any}) {
   useEffect(() => {
     const getParticipants = async () => {
       try {
-        const res = await axios.post("http://localhost:4000/chat/getParticipants", {rid: params.id},{
-          withCredentials: true,
-        })
+        const res = await axios.post(
+          "http://localhost:4000/chat/getParticipants",
+          { rid: params.id },
+          {
+            withCredentials: true,
+          }
+        );
         const data = res.data;
         SetParticipants(data.map((user: any) => user));
       } catch (error) {
         toast.error("An error occured, make a quick refresh");
       }
-    }
+    };
     getParticipants();
-  }, []);
+  }, [params.id]);
 
   useEffect(() => {
     const getAllUsers = async () => {
       try {
-        const res = await axios.post("http://localhost:4000/chat/participantNotInRoom", {rid: params.id},{
-          withCredentials: true,
-        })
+        const res = await axios.post(
+          "http://localhost:4000/chat/participantNotInRoom",
+          { rid: params.id },
+          {
+            withCredentials: true,
+          }
+        );
         const data = res.data;
         SetUsers(data.map((user: any) => user));
       } catch (error) {
         toast.error("An error occured, make a quick refresh");
       }
-    }
+    };
     getAllUsers();
-  }, []);
+  }, [params.id]);
 
   if (feature === "viewParticipants") {
     return (
-      <div className='p-8 h-full w-full'>
+      <div className="p-8 h-full w-full">
         <ChatFeatures
           users={participants}
           title="Room Participants"
@@ -58,15 +65,14 @@ export default function page({params} : {params: any}) {
           mode="view"
         />
       </div>
-    )
-  }
-  else if (feature === "addParticipants") {
+    );
+  } else if (feature === "addParticipants") {
     return (
-      <div className='p-8 h-full w-full'>
+      <div className="p-8 h-full w-full">
         <ChatFeatures
           users={users}
-          title = "Add Participants to the room"
-          button='Invite'
+          title="Add Participants to the room"
+          button="Invite"
           checkbox={true}
           selected={selected}
           rid={params.id}
@@ -74,15 +80,14 @@ export default function page({params} : {params: any}) {
           mode="add"
         />
       </div>
-    )
-  }
-  else if (feature === "muteParticipant") {
+    );
+  } else if (feature === "muteParticipant") {
     return (
-      <div className='p-8 h-full w-full'>
+      <div className="p-8 h-full w-full">
         <ChatFeatures
           users={participants}
-          title = "Mute participants in the room"
-          button='Mute'
+          title="Mute participants in the room"
+          button="Mute"
           checkbox={true}
           selected={selected}
           rid={params.id}
@@ -90,15 +95,14 @@ export default function page({params} : {params: any}) {
           mode="mute"
         />
       </div>
-    )
-  }
-  else if (feature === "banParticipant") {
+    );
+  } else if (feature === "banParticipant") {
     return (
-      <div className='p-8 h-full w-full'>
+      <div className="p-8 h-full w-full">
         <ChatFeatures
           users={participants}
-          title = "Ban Participants in the room"
-          button='Ban'
+          title="Ban Participants in the room"
+          button="Ban"
           checkbox={true}
           selected={selected}
           rid={params.id}
@@ -106,15 +110,34 @@ export default function page({params} : {params: any}) {
           mode="ban"
         />
       </div>
-    )
-  }
-  else if (feature === "unbanParticipant") {
+    );
+  } else if (feature === "unbanParticipant") {
+    useEffect(() => {
+      const getBannedUsers = async () => {
+        try {
+          const res = await axios.post(
+            "http://localhost:4000/chat/getBannedUsers",
+            { rid: params.id },
+            {
+              withCredentials: true,
+            }
+          );
+          const data = res.data;
+          console.log(data)
+          SetParticipants(data);
+        } catch (error) {
+          console.log("add Participant failed");
+        }
+      };
+      getBannedUsers();
+    }, [params.id]);
+
     return (
-      <div className='p-8 h-full w-full'>
+      <div className="p-8 h-full w-full">
         <ChatFeatures
           users={participants}
-          title = "UnBan Participants in the room"
-          button='UnBan'
+          title="UnBan Participants in the room"
+          button="UnBan"
           checkbox={true}
           selected={selected}
           rid={params.id}
@@ -122,15 +145,14 @@ export default function page({params} : {params: any}) {
           mode="unban"
         />
       </div>
-    )
-  }
-  else if (feature === "kickParticipant") {
+    );
+  } else if (feature === "kickParticipant") {
     return (
-      <div className='p-8 h-full w-full'>
+      <div className="p-8 h-full w-full">
         <ChatFeatures
           users={participants}
-          title = "Kick Participants off the room"
-          button='Kick'
+          title="Kick Participants off the room"
+          button="Kick"
           checkbox={true}
           selected={selected}
           rid={params.id}
@@ -138,15 +160,14 @@ export default function page({params} : {params: any}) {
           mode="kick"
         />
       </div>
-    )
-  }
-  else if (feature === "changeRoomName") {
+    );
+  } else if (feature === "changeRoomName") {
     return (
-      <div className='p-8 h-full w-full'>
+      <div className="p-8 h-full w-full">
         <ChatFeatures
           users={participants}
-          title = "Type in the new room name"
-          button='Change'
+          title="Type in the new room name"
+          button="Change"
           checkbox={false}
           selected={selected}
           rid={params.id}
@@ -154,15 +175,14 @@ export default function page({params} : {params: any}) {
           mode="changeName"
         />
       </div>
-    )
-  }
-  else if (feature === "changeRoomVisibility") {
+    );
+  } else if (feature === "changeRoomVisibility") {
     return (
-      <div className='p-8 h-full w-full'>
+      <div className="p-8 h-full w-full">
         <ChatFeatures
           users={participants}
-          title = "Change the visibility of the room"
-          button='Change'
+          title="Change the visibility of the room"
+          button="Change"
           checkbox={false}
           selected={selected}
           rid={params.id}
@@ -170,15 +190,14 @@ export default function page({params} : {params: any}) {
           mode="changeVisible"
         />
       </div>
-    )
-  }
-  else if (feature === "changeRoomPasswd") {
+    );
+  } else if (feature === "changeRoomPasswd") {
     return (
-      <div className='p-8 h-full w-full'>
+      <div className="p-8 h-full w-full">
         <ChatFeatures
           users={participants}
-          title = "Change the password of the room"
-          button='Change'
+          title="Change the password of the room"
+          button="Change"
           checkbox={false}
           selected={selected}
           rid={params.id}
@@ -186,15 +205,14 @@ export default function page({params} : {params: any}) {
           mode="changePasswd"
         />
       </div>
-    )
-  }
-  else if (feature === "giveAdmin") {
+    );
+  } else if (feature === "giveAdmin") {
     return (
-      <div className='p-8 h-full w-full'>
+      <div className="p-8 h-full w-full">
         <ChatFeatures
           users={participants}
-          title = "Give Admin to a Participant in the room"
-          button='Give'
+          title="Give Admin to a Participant in the room"
+          button="Give"
           checkbox={true}
           selected={selected}
           rid={params.id}
@@ -202,15 +220,14 @@ export default function page({params} : {params: any}) {
           mode="give"
         />
       </div>
-    )
-  }
-  else if (feature === "deleteRoom") {
+    );
+  } else if (feature === "deleteRoom") {
     return (
-      <div className='p-8 h-full w-full'>
+      <div className="p-8 h-full w-full">
         <ChatFeatures
           users={participants}
-          title = "Are you sure that you want to delete this room ? this action will remove it permanently !"
-          button='Delete'
+          title="Are you sure that you want to delete this room ? this action will remove it permanently !"
+          button="Delete"
           checkbox={true}
           selected={selected}
           rid={params.id}
@@ -218,15 +235,14 @@ export default function page({params} : {params: any}) {
           mode="delete"
         />
       </div>
-    )
-  }
-  else if (feature === "leaveRoom") {
+    );
+  } else if (feature === "leaveRoom") {
     return (
-      <div className='p-8 h-full w-full'>
+      <div className="p-8 h-full w-full">
         <ChatFeatures
           users={participants}
-          title = "Are you sure that you want to leave this room ? this action will prohibit you from reaching this room !"
-          button='Leave'
+          title="Are you sure that you want to leave this room ? this action will prohibit you from reaching this room !"
+          button="Leave"
           checkbox={true}
           selected={selected}
           rid={params.id}
@@ -234,9 +250,8 @@ export default function page({params} : {params: any}) {
           mode="leave"
         />
       </div>
-    )
-  }
-  else {
+    );
+  } else {
     router.push("/not-found");
   }
 }
