@@ -204,20 +204,20 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
                     if (this.gameService.Queue.get(id))
                         await this.determineGameResult(id);
                     this.gameService.Queue.get(id).status = 'finished';
-                    if (this.gameService.checkAchievements(
-                        await this.prisma.achivement.findMany({
-                            where: {
-                                uid: id,
-                            }
-                        }), 'Bot')) {
-                        await this.prisma.achivement.create({
-                            data: {
-                                uid: id,
-                                achivementName: 'Bot',
-                                alreadyAchieved: true,
-                            }
-                        });
-                    }
+                    // if (this.gameService.checkAchievements(
+                    //     await this.prisma.achivement.findMany({
+                    //         where: {
+                    //             uid: id,
+                    //         }
+                    //     }), 'Bot')) {
+                    //     await this.prisma.achivement.create({
+                    //         data: {
+                    //             uid: id,
+                    //             achivementName: 'Bot',
+                    //             alreadyAchieved: true,
+                    //         }
+                    //     });
+                    // }
                     break;
                 }
             }
@@ -313,6 +313,7 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
         await this.gameService.updateBotPaddle(event, this.gameService.Queue.get(id).gameData, this.gameService.Queue.get(id).gameMode);
         if (this.gameService.Queue.get(id))
             this.gameService.Queue.get(id).Socket.emit('paddlesUpdate', this.gameService.Queue.get(id).gameData);
+        console.log('Bot paddle updated');
     }
 
     private async startBotGame(id) {

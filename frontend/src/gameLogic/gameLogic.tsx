@@ -59,6 +59,10 @@ function updateScore(data: any) {
 function finishGame() {
     gameState = true;
 }
+function initResult() {
+    gameState = false;
+    gameResult = "";
+}
  function setGameResult(data: any) {
     gameResult = data;
  }
@@ -213,4 +217,4 @@ function moveRightPaddle(p: p5) {
         rightPaddle.y += rightPaddle.speed;
 }
 
-export { initGame, updatePaddle, updateBall, moveRightPaddle, leftPaddle, rightPaddle, ball, leftScore, rightScore, updatePaddles, updateBallData, updateScore, resizeGameData, finishGame, gameState, gameResult, setGameResult};
+export { initGame, updatePaddle, updateBall, moveRightPaddle, leftPaddle, rightPaddle, ball, leftScore, rightScore, updatePaddles, updateBallData, updateScore, resizeGameData, finishGame, gameState, gameResult, setGameResult, initResult};

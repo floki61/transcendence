@@ -2,7 +2,7 @@
 import React, { memo, useEffect, useRef, useState } from 'react';
 import p5 from 'p5';
 import { useGame } from '@/context/gameSocket';
-import {gameState, finishGame, setGameResult, gameResult, leftPaddle, rightPaddle, ball, leftScore, rightScore, updatePaddles, updateBallData,updateScore } from '@/gameLogic/gameLogic';
+import {gameState, finishGame, setGameResult, gameResult, leftPaddle, rightPaddle, ball, leftScore, rightScore, updatePaddles, updateBallData,updateScore, initResult } from '@/gameLogic/gameLogic';
 import Image from 'next/image'
 
 interface usersData {
@@ -29,6 +29,7 @@ const GamePage = () => {
     const playersDiv = document.getElementById('players');
     const [borderColor, setBorderColor] = useState('#213D46');
     const [playerPos, setPlayerPos] = useState(null);
+    initResult();
     useEffect(() => {
         if (!socket) return;
         let canvas: any;
@@ -107,66 +108,68 @@ const GamePage = () => {
                             p.text(`${leftScore} - ${rightScore + 1}`, p.width / 2, p.height / 2 + 20);
                     }
                 }
-                else if(client) {
-                    p.background('#151515');
-                    p.fill(255);
-                    p.fill(255, 255, 255, 30);
-                    p.textSize(34);
-                    p.textAlign(p.CENTER, p.CENTER);
-                    p.text("already in game", p.width / 2, p.height / 2);
-                }
-                else if (liveGame || botGame) {
-                    p.background('#151515');
-                    p.stroke("#213D46");
-                    p.strokeWeight(2);
-                    if (usersData?.mode === "hidden") {
-                        p.line(p.width / 4, 0, p.width / 4, p.height);
-                        p.line((p.width / 4) * 3, 0, (p.width / 4) * 3, p.height);
+                else {
+                    if(client) {
+                        p.background('#151515');
+                        p.fill(255);
+                        p.fill(255, 255, 255, 30);
+                        p.textSize(34);
+                        p.textAlign(p.CENTER, p.CENTER);
+                        p.text("already in game", p.width / 2, p.height / 2);
                     }
-                    else
-                        p.line(p.width / 2, 0, p.width / 2, p.height);
-                    p.noStroke();
-                    p.fill("#213D46");
-                    p.textAlign(p.CENTER, p.CENTER);
-                    p.fill(255, 255, 255, 30);
-                    if (usersData?.mode === "hidden") {
-                        p.textSize(28);
-                        p.text(`${leftScore} - ${rightScore}`, p.width / 2, 30);
+                    else if (liveGame || botGame) {
+                        p.background('#151515');
+                        p.stroke("#213D46");
+                        p.strokeWeight(2);
+                        if (usersData?.mode === "hidden") {
+                            p.line(p.width / 4, 0, p.width / 4, p.height);
+                            p.line((p.width / 4) * 3, 0, (p.width / 4) * 3, p.height);
+                        }
+                        else
+                            p.line(p.width / 2, 0, p.width / 2, p.height);
+                        p.noStroke();
+                        p.fill("#213D46");
+                        p.textAlign(p.CENTER, p.CENTER);
+                        p.fill(255, 255, 255, 30);
+                        if (usersData?.mode === "hidden") {
+                            p.textSize(28);
+                            p.text(`${leftScore} - ${rightScore}`, p.width / 2, 30);
+                        }
+                        else {
+                            p.textSize(192);
+                            p.text(leftScore, p.width / 4, p.height / 2);
+                            p.text(rightScore, (p.width / 4) * 3, p.height / 2);
+                        }
+                        p.fill("#213D46");
+                        p.rectMode(p.CENTER);
+                        p.rect(leftPaddle.x, leftPaddle.y, leftPaddle.width, leftPaddle.height);
+                        p.rect(rightPaddle.x, rightPaddle.y, rightPaddle.width, rightPaddle.height);
+                        if (ball.pos === 1)
+                            p.fill('#151515');
+                        p.noStroke();
+                        p.ellipse(ball.x, ball.y, ball.radius * 2);
                     }
                     else {
-                        p.textSize(192);
-                        p.text(leftScore, p.width / 4, p.height / 2);
-                        p.text(rightScore, (p.width / 4) * 3, p.height / 2);
+                        p.background('#151515');
+                        p.fill(255);
+                        p.fill(255, 255, 255, 60);
+                        p.textSize(34);
+                        p.textAlign(p.CENTER, p.CENTER);
+                        p.text("Waiting for another player", p.width / 2, p.height / 2);
                     }
-                    p.fill("#213D46");
-                    p.rectMode(p.CENTER);
-                    p.rect(leftPaddle.x, leftPaddle.y, leftPaddle.width, leftPaddle.height);
-                    p.rect(rightPaddle.x, rightPaddle.y, rightPaddle.width, rightPaddle.height);
-                    if (ball.pos === 1)
-                        p.fill('#151515');
-                    p.noStroke();
-                    p.ellipse(ball.x, ball.y, ball.radius * 2);
-                }
-                else {
-                    p.background('#151515');
-                    p.fill(255);
-                    p.fill(255, 255, 255, 60);
-                    p.textSize(34);
-                    p.textAlign(p.CENTER, p.CENTER);
-                    p.text("Waiting for another player", p.width / 2, p.height / 2);
-                }
-                if(!gameState && liveGame && leftPaddle.x && rightPaddle.x) {
-                    if (p.keyIsDown(p.UP_ARROW))
-                        socket.emit("paddlesUpdate", "UP");
-                    else if (p.keyIsDown(p.DOWN_ARROW))
-                        socket.emit("paddlesUpdate", "DOWN");
-                }
-                else if(!gameState && botGame && leftPaddle.x && rightPaddle.x) {
-                    if (p.keyIsDown(p.UP_ARROW))
-                        socket.emit("paddleBotUpdate", "UP");
-                    else if (p.keyIsDown(p.DOWN_ARROW))
-                        socket.emit("paddleBotUpdate", "DOWN");
-                }
+                    if(botGame && leftPaddle.x && rightPaddle.x) {
+                        if (p.keyIsDown(p.UP_ARROW))
+                            socket.emit("paddleBotUpdate", "UP");
+                        else if (p.keyIsDown(p.DOWN_ARROW))
+                            socket.emit("paddleBotUpdate", "DOWN");
+                    }
+                    else if(liveGame && leftPaddle.x && rightPaddle.x) {
+                        if (p.keyIsDown(p.UP_ARROW))
+                            socket.emit("paddlesUpdate", "UP");
+                        else if (p.keyIsDown(p.DOWN_ARROW))
+                            socket.emit("paddlesUpdate", "DOWN");
+                    }
+            }
             };
         };
         if (test && test.current) {
