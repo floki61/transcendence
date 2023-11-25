@@ -27,7 +27,6 @@ export class ChatService {
 
 	async create(createChatDto: CreateChatDto, client: Socket) {
 		var message: any = { ...createChatDto };
-		console.log(createChatDto);
 
 		const participant = await this.prisma.participant.findUnique({
 			where: {
@@ -74,9 +73,13 @@ export class ChatService {
 			where: {
 				id: participant.uid,
 			},
+			include: {
+				blockSenders: true,
+				blockReceivers: true,
+			},
 		});
 		message = { ...message, msgTime: mssg.msgTime, user: usr };
-		console.log(message);
+		console.log(message.user);
 		return message;
 	}
 
@@ -634,12 +637,16 @@ export class ChatService {
 						where: {
 							id: participant.uid,
 						},
+						include: {
+							blockSenders: true,
+							blockReceivers: true,
+						}
 					});
 					if (user) {
 						const blocked = await this.getBlockedUsers(user.id);
 						msg = { ...msg, user: user, ...blocked };
-						// console.log(msg);
-						// console.log(blocked);
+						// console.log(msg.user);
+						// console.log('blocked', blocked);
 					} else {
 						console.error(`User not found for participant ID: ${participant.uid}`);
 					}
@@ -650,7 +657,7 @@ export class ChatService {
 				console.error('msg.userId is null or undefined');
 			}
 		}
-
+		console.log(message);
 		return message;
 
 	}
