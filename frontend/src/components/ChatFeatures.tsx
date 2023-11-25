@@ -48,7 +48,6 @@ export const ChatFeatures: React.FC<ChatFeaturesProps> = ({
 				})
 				SetRoom(res.data);
 			} catch (error) {
-				console.log("getRoom by id failed", error);
 			}
 		}
 		getRoom();
@@ -62,14 +61,12 @@ export const ChatFeatures: React.FC<ChatFeaturesProps> = ({
 		if (selected.length > 1)
 			selected.shift();
 		if (mode === "add") {
-			console.log({selected})
 			try {
 				const res = await axios.post("http://localhost:4000/chat/addParticipant", { uids: selected, rid, }, {
 					withCredentials: true,
 				})
 				router.push(`/chat/${rid}`);
 			} catch (error) {
-				console.log("addParticipants failed.", error);
 			}
 		}
 		else if (mode === "kick") {
@@ -89,7 +86,6 @@ export const ChatFeatures: React.FC<ChatFeaturesProps> = ({
 				})
 				router.push(`/chat/${rid}`);
 			} catch (error) {
-				// console.log("mute user failed.", error);
 			}
 		}
 		else if (mode === "ban") {
@@ -99,18 +95,15 @@ export const ChatFeatures: React.FC<ChatFeaturesProps> = ({
 				})
 				router.push(`/chat/${rid}`);
 			} catch (error) {
-				console.log("banuser failed.", error);
 			}
 		}
 		else if (mode === "unban") {
 			try {
-				console.log(selected[0], " ", rid);
 				const res = await axios.post("http://localhost:4000/chat/unbanUser", { uid: selected[0], rid }, {
 					withCredentials: true,
 				})
 				router.push(`/chat/${rid}`);
 			} catch (error) {
-				console.log("banuser failed.", error);
 			}
 		}
 		else if (mode === "give") {
@@ -120,7 +113,6 @@ export const ChatFeatures: React.FC<ChatFeaturesProps> = ({
 				})
 				router.push(`/chat/${rid}`);
 			} catch (error) {
-				console.log("giveAdmin failed.", error);
 			}
 		}
 		else if (mode === "delete") {
@@ -130,7 +122,6 @@ export const ChatFeatures: React.FC<ChatFeaturesProps> = ({
 				})
 				router.push("/");
 			} catch (error) {
-				console.log("deleteRoom failed.", error);
 			}
 		}
 		else if (mode === "leave") {
@@ -140,7 +131,6 @@ export const ChatFeatures: React.FC<ChatFeaturesProps> = ({
 				})
 				router.push("/");
 			} catch (error) {
-				console.log("leaveRoom failed.", error);
 			}
 		}
 		else if (mode === "changeName") {
@@ -152,7 +142,6 @@ export const ChatFeatures: React.FC<ChatFeaturesProps> = ({
 					})
 					router.push(`/chat/${rid}`);
 				} catch (error) {
-					console.log("changeName failed.", error);
 				}
 			}
 		}
@@ -167,7 +156,6 @@ export const ChatFeatures: React.FC<ChatFeaturesProps> = ({
 				})
 				router.push(`/chat/${rid}`);
 			} catch (error) {
-				console.log("changeVisibility failed.", error);
 			}
 		}
 		else if (mode === "changePasswd") {
@@ -181,11 +169,9 @@ export const ChatFeatures: React.FC<ChatFeaturesProps> = ({
 				})
 				router.push(`/chat/${rid}`);
 			} catch (error) {
-				console.log("changePassword failed.", error);
 			}
 		}
 	}
-	console.log({users});
 
 	if (mode === "delete" || mode === "leave") {
 		return (

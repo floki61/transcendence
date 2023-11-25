@@ -48,7 +48,6 @@ export default function Page(
         });
         SetFollowers(res.data);
       } catch (error) {
-        console.log("get Friend profile failed.", error);
       }
     };
     getFollwers();
@@ -62,7 +61,6 @@ export default function Page(
         });
         setBlocked(res.data);
       } catch (error) {
-        console.log("get Block profile failed.", error);
       }
     };
     getBlockedList();
@@ -76,7 +74,6 @@ export default function Page(
         });
         SetUser(res.data);
       } catch (error) {
-        console.log("get Friend profile failed.", error);
       }
     };
     getFriend();
@@ -93,7 +90,6 @@ export default function Page(
       );
       router.push("/profile");
     } catch (error) {
-      console.log("Error Unblocking user.", error);
     }
   };
 

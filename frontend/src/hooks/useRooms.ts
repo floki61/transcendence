@@ -29,7 +29,6 @@ export const useRooms = () => {
 					setChatbar(true);
 				}
 			} catch (error) {
-				console.log("getMyRooms failed");
 			}
 		}
 
@@ -47,7 +46,6 @@ export const useRooms = () => {
 					setChatbar(true);
 				}
 			} catch (error) {
-				console.log("getallrooms failed");
 			}
 		}
 

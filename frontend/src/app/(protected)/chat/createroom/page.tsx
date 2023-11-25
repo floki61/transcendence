@@ -92,7 +92,7 @@ export default function Page() {
           />
         )}
         <button
-		  disabled={loading}
+		      disabled={loading}
           className={`${loading ? "bg-slate-400" : "bg-primecl"} rounded-2xl border w-1/3 self-end mt-auto h-[10%]`}
           onClick={createRoom}
         >

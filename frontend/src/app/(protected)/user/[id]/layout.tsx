@@ -71,7 +71,6 @@ export default function Layout({
       SetRequest(true);
       if (friend) friend.isfriend = "cancel";
     } catch (error) {
-      console.log("SendRequest failed", error);
     }
   };
   const CancelRequest = async () => {
@@ -86,7 +85,6 @@ export default function Layout({
       SetRequest(false);
       if (friend) friend.isfriend = "notfriend";
     } catch (error) {
-      console.log("CancelRequest failed", error);
     }
   };
   const DeclineRequest = async () => {
@@ -102,7 +100,6 @@ export default function Layout({
       SetRequest(false);
       if (friend) friend.isfriend = "notfriend";
     } catch (error) {
-      console.log("DeclineRequest failed", error);
     }
   };
   const AcceptRequest = async () => {
@@ -118,7 +115,6 @@ export default function Layout({
       SetRequest(false);
       if (friend) friend.isfriend = "friend";
     } catch (error) {
-      console.log("AcceptRequest failed", error);
     }
   };
   const Unfriend = async () => {
@@ -135,7 +131,6 @@ export default function Layout({
       if (friend) friend.isfriend = "notfriend";
       getFriend();
     } catch (error) {
-      console.log("Unfriend failed", error);
     }
   };
   const Block = async () => {
@@ -149,7 +144,6 @@ export default function Layout({
       );
       router.push("/");
     } catch (error) {
-      console.log("Block failed", error);
     }
   };
 
@@ -187,9 +181,6 @@ export default function Layout({
       });
     }
   }, [invites, params.id]);
-
-  if (friend)
-    console.log((Math.ceil(friend.barPourcentage)));
 
   return (
     <div className="h-full w-full p-10 overflow-hidden">

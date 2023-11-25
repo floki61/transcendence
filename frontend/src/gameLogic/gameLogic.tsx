@@ -205,7 +205,6 @@ function updateBall(p: p5) {
    }
    ball.x += ball.xSpeed ;
    ball.y += ball.ySpeed ;
-//    console.log(ball.xSpeed, ball.ySpeed);
 }
 
 function moveRightPaddle(p: p5) {

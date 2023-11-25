@@ -5,6 +5,7 @@ import Image from 'next/image'
 import Button from './Button'
 import { useState, useEffect } from 'react'
 import axios from 'axios'
+import { faL } from '@fortawesome/free-solid-svg-icons'
 
 interface QrcodeProps {
 	state: boolean;
@@ -19,6 +20,7 @@ const QrcodeDiv: React.FC<QrcodeProps> = ({
 }) => {
 
 	const [qrcode, setQrCode] = useState<string>();
+	const [loading, setLoading] = useState(false);
 
 	useEffect(() => {
 	  const fetchData = async () => {
@@ -28,7 +30,6 @@ const QrcodeDiv: React.FC<QrcodeProps> = ({
 		  });
 		  setQrCode(res.data);
 		} catch (error) {
-		  console.error(error);
 		}
 	  };
   
@@ -38,6 +39,7 @@ const QrcodeDiv: React.FC<QrcodeProps> = ({
 	const sendQrCode = async () => {
 
 	if (input.length === 6) {
+		setLoading(true);
 		try {
 			await axios.post("http://localhost:4000/2fa/turn-on",
 				{twoFactorAuthenticationCode: input} , {
@@ -45,7 +47,7 @@ const QrcodeDiv: React.FC<QrcodeProps> = ({
 				});
 				OnClick(!state);
 			} catch (error) {
-				console.error("error turning on 2fa");
+				setLoading(false);
 			}
 		}
 	};
@@ -87,6 +89,7 @@ const QrcodeDiv: React.FC<QrcodeProps> = ({
 				 		/>
 				 		<Button
 				 			text="Send"
+							disabled={loading}
 				 			className="border border-white text-white rounded-3xl w-1/3 p-2 h-12 opacity-80 cursor-pointer bg-primecl shadow-[0px 4px 4px 0px rgba(0, 0, 0, 0.25)]  transition ease-in-out delay-150 hover:scale-105 duration-300"
 				 			onClick={() => {sendQrCode();handleQrCode();twofactor=true;}}
 				 		/>

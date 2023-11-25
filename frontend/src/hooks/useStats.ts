@@ -39,7 +39,6 @@ export const useStats = () => {
 					})
 					SetStats(res.data);
 				} catch (error) {
-					console.log("getStats failed", error);
 				}
 			}
 		};
@@ -50,7 +49,6 @@ export const useStats = () => {
 				})
 				SetData(res.data);
 			} catch (error) {
-				console.log("getStats failed", error);
 			}
 		}
 	

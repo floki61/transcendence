@@ -40,7 +40,6 @@ export const UserProvider = ({ children }: any ) => {
 			});
 			setUser(res.data);
 		  } catch (error) {
-			console.error(error);
 		  }
 		}
 	

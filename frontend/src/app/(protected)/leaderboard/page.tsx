@@ -33,7 +33,6 @@ export default function Page() {
 				})
 				SetBoard(res.data);
 			} catch (error) {
-				console.log("getLeaderBoard failed", error);
 			}
 		}
 		getLeaderBoard();

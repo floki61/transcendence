@@ -13,9 +13,9 @@ export default function Navbar() {
   const username = useRef<HTMLInputElement>(null);
   const router = useRouter();
   const [error, SetError] = useState("");
+  const [laoding, setLoading] = useState(false);
 
   const handleKeyDown = (event: any) => {
-    console.log("im here");
     if (event.key === "Enter") {
       event.preventDefault();
       handleClick();
@@ -24,6 +24,7 @@ export default function Navbar() {
 
   const handleClick = async () => {
     if (username && username.current) {
+      setLoading(true);
       try {
         const userName = username.current.value;
         const res = await axios.post(
@@ -41,6 +42,7 @@ export default function Navbar() {
         username.current.value = "";
         SetError("border border-red-600");
         toast.error("This username doesn't exist");
+        setLoading(false);
       }
     }
   };

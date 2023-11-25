@@ -24,7 +24,6 @@ const Disable2fa : React.FC<Disable2faProps> = ({
 					withCredentials: true,
 				});
 			} catch (error) {
-				console.error("error a zbi");
 			}
 		};
 

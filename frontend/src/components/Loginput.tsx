@@ -27,7 +27,7 @@ const Loginput: React.FC<LoginputProps> = ({
       />
       {type === "password" && (
         <FontAwesomeIcon
-		onClick={() => setshowPass(!showPass)}
+		      onClick={() => setshowPass(!showPass)}
           className={`w-4 absolute transition duration-400  hover:text-red-300 hover:scale-[1.1]  top-1/2 -translate-y-1/2 -right-0 cursor-pointer ${showPass ? "text-red-300" : ""}`}
           icon={faEye}
         />

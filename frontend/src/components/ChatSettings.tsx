@@ -24,7 +24,6 @@ export const ChatSettings: React.FC<ChatSettingsProps> = ({
 				withCredentials: true,
 			});
 		} catch (error) {
-			console.log("Challenge failed", error);
 		}
 	}
 	const Block = async () => {
@@ -33,7 +32,6 @@ export const ChatSettings: React.FC<ChatSettingsProps> = ({
 				withCredentials: true,
 			})
 		} catch (error) {
-			console.log("Block failed", error);
 		}
 	}
 
