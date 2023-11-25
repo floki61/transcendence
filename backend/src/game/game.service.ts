@@ -236,15 +236,15 @@ export class GameService {
                     });
                 }
             }
-            if (await this.checkAchievements(achivement, 'First win')) {
-                await this.prisma.achivement.create({
-                    data: {
-                        achivementName: 'First win',
-                        uid: id,
-                        alreadyAchieved: true,
-                    }
-                });
-            }
+            // if (await this.checkAchievements(achivement, 'First win')) {
+            //     await this.prisma.achivement.create({
+            //         data: {
+            //             achivementName: 'First win',
+            //             uid: id,
+            //             alreadyAchieved: true,
+            //         }
+            //     });
+            // }
             if (body.player2Score === 0) {
                 if (await this.checkAchievements(achivement, 'Perfect win')) {
                     await this.prisma.achivement.create({
