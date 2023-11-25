@@ -257,6 +257,10 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
                             // player2Id: this.gameService.Queue.get(player1).gameData.score.left === 5 ? player2 : player1,
                             // player1Score: this.gameService.Queue.get(player1).gameData.score.left === 5 ? 5 : this.gameService.Queue.get(player1).gameData.score.right,
                             // player2Score: this.gameService.Queue.get(player1).gameData.score.right === 5 ? this.gameService.Queue.get(player1).gameData.score.left : 5,
+                        },
+                        include: {
+                            player1: true,
+                            player2: true,
                         }
                     });
                     await this.prisma.game.update({
@@ -278,7 +282,7 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
                         },
                         data: {
                             level: {
-                                increment: 30,
+                                increment: game.player1.level < 200 ? 30 : 50,
                             }
                         }
                     });
