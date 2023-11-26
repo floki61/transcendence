@@ -328,7 +328,7 @@ export const ChatFeatures: React.FC<ChatFeaturesProps> = ({
 			<div className='bg-segundcl rounded-lg h-full py-4 flex justify-center'>
 			<section className='h-full w-1/2 flex flex-col rounded-md'>
 				<h2 className='h-[10%] flex items-center justify-center capitalize bg-primecl rounded-t-md'>{title}</h2>
-				<div className='flex-1 bg-terserocl overflow-scroll'>
+				<div className='flex-1 bg-terserocl overflow-scroll scrollbar-hide'>
 					{users && users.map((user, index) =>
 						<div key={index} className='h-[15%] border-b-2 border-primecl'>
 							<Participant
@@ -363,7 +363,7 @@ export const ChatFeatures: React.FC<ChatFeaturesProps> = ({
 			<div className='bg-segundcl rounded-lg h-full py-4 flex justify-center'>
 				<section className='h-full w-1/2 flex flex-col rounded-md'>
 					<h2 className='h-[10%] flex items-center justify-center capitalize bg-primecl rounded-t-md'>{title}</h2>
-					<div className='flex-1 bg-terserocl overflow-scroll'>
+					<div className='flex-1 bg-terserocl overflow-scroll scrollbar-hide'>
 						{users && users.map((user, index) =>
 							<div key={index} className='h-[15%] border-b-2 border-primecl'>
 								<Participant
@@ -418,7 +418,7 @@ export const ChatFeatures: React.FC<ChatFeaturesProps> = ({
 			<div className='bg-segundcl rounded-lg h-full py-4 flex justify-center'>
 				<section className='h-full w-1/2 flex flex-col rounded-md'>
 					<h2 className='h-[10%] flex items-center justify-center capitalize bg-primecl rounded-t-md'>{title}</h2>
-					<div className='flex-1 bg-terserocl overflow-scroll'>
+					<div className='flex-1 bg-terserocl overflow-scroll scrollbar-hide'>
 						{users && users.map((user, index) =>
 							<div key={index} className='h-[15%] border-b-2 border-primecl'>
 								<Participant
@@ -456,7 +456,7 @@ export const ChatFeatures: React.FC<ChatFeaturesProps> = ({
 			<div className='bg-segundcl rounded-lg h-full py-4 flex justify-center'>
 				<section className='h-full w-1/2 flex flex-col rounded-md'>
 					<h2 className='h-[10%] flex items-center justify-center capitalize bg-primecl rounded-t-md'>{title}</h2>
-					<div className='flex-1 bg-terserocl overflow-scroll'>
+					<div className='flex-1 bg-terserocl overflow-scroll scrollbar-hide'>
 						{users && users.map((user, index) =>
 							<div key={index} className='h-[15%] border-b-2 border-primecl'>
 								<Participant
