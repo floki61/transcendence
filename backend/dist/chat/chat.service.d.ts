@@ -9,12 +9,7 @@ export declare class ChatService {
     private eventEmitter;
     constructor(prisma: PrismaService, jwt: JwtService, eventEmitter: EventEmitter2);
     map: Map<any, any>;
-    create(createChatDto: CreateChatDto, client: Socket): Promise<{
-        uid: string;
-        msg: string;
-        rid: string;
-        msgTime: Date;
-    }>;
+    create(createChatDto: CreateChatDto, client: Socket): Promise<any>;
     joinRoom(payload: any): Promise<string>;
     kickUser(payload: any): Promise<string>;
     createRoom(payload: any): Promise<{
@@ -127,6 +122,41 @@ export declare class ChatService {
     }[]>;
     getMessages(payload: any): Promise<({
         user: {
+            user: {
+                blockSenders: {
+                    id: string;
+                    uid: string;
+                    fid: string;
+                    createdAt: Date;
+                    updatedAt: Date;
+                }[];
+                blockReceivers: {
+                    id: string;
+                    uid: string;
+                    fid: string;
+                    createdAt: Date;
+                    updatedAt: Date;
+                }[];
+            } & {
+                id: string;
+                userName: string;
+                level: number;
+                firstName: string;
+                lastName: string;
+                status: import(".prisma/client").$Enums.Stts;
+                email: string;
+                picture: string;
+                country: string;
+                phoneNumber: string;
+                accessToken: string;
+                password: string;
+                twoFactorAuthenticationSecret: string;
+                isTwoFactorAuthenticationEnabled: boolean;
+                isDeleted: boolean;
+                createdAt: Date;
+                updatedAt: Date;
+            };
+        } & {
             id: string;
             rid: string;
             uid: string;
@@ -222,4 +252,23 @@ export declare class ChatService {
         createdAt: Date;
         updatedAt: Date;
     }>;
+    getBannedUsers(body: any, uid: any): Promise<{
+        id: string;
+        userName: string;
+        level: number;
+        firstName: string;
+        lastName: string;
+        status: import(".prisma/client").$Enums.Stts;
+        email: string;
+        picture: string;
+        country: string;
+        phoneNumber: string;
+        accessToken: string;
+        password: string;
+        twoFactorAuthenticationSecret: string;
+        isTwoFactorAuthenticationEnabled: boolean;
+        isDeleted: boolean;
+        createdAt: Date;
+        updatedAt: Date;
+    }[]>;
 }

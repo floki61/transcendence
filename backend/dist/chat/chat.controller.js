@@ -110,12 +110,15 @@ let ChatController = exports.ChatController = class ChatController {
         return room;
     }
     async getRoomById(body, req) {
-        console.log('hahowa');
         const room = await this.userservice.getRoomById(body);
         return room;
     }
     async participantNotInRoom(body, req) {
         const room = await this.userservice.participantNotInRoom(body);
+        return room;
+    }
+    async getBannedUsers(body, req) {
+        const room = await this.userservice.getBannedUsers(body, req.user.id);
         return room;
     }
 };
@@ -309,6 +312,16 @@ __decorate([
     __metadata("design:paramtypes", [Object, Object]),
     __metadata("design:returntype", Promise)
 ], ChatController.prototype, "participantNotInRoom", null);
+__decorate([
+    (0, role_decorator_1.Roles)('OWNER', 'ADMIN'),
+    (0, common_1.UseGuards)(jwt_guard_1.JwtAuthGuard, roles_guard_1.RolesGuard),
+    (0, common_1.Post)('getBannedUsers'),
+    __param(0, (0, common_1.Body)()),
+    __param(1, (0, common_1.Req)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object, Object]),
+    __metadata("design:returntype", Promise)
+], ChatController.prototype, "getBannedUsers", null);
 exports.ChatController = ChatController = __decorate([
     (0, common_1.Controller)('chat'),
     __metadata("design:paramtypes", [config_1.ConfigService,

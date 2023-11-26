@@ -12,8 +12,7 @@ import { AuthService } from 'src/auth/auth.service';
 import { AppController } from './app.controller';
 import { AuthController } from 'src/auth/auth.controller';
 import { ChatModule } from 'src/chat/chat.module';
-import { APP_FILTER } from '@nestjs/core';
-// import { ExceptionsFilter } from 'src/filter_ex/exception_filter';
+import { APP_FILTER, APP_GUARD } from '@nestjs/core';
 import { config } from 'dotenv';
 import { MulterModule } from '@nestjs/platform-express';
 import { UsersController } from 'src/users/users.controller';
@@ -29,6 +28,7 @@ import { ChatController } from 'src/chat/chat.controller';
 import { TwoFactorAuthService } from 'src/auth/twofactorauth/twofactorauth.service';
 import { ServeStaticModule } from '@nestjs/serve-static';
 import { join } from 'path';
+import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
 
 @Module({
   imports: [
@@ -46,12 +46,21 @@ import { join } from 'path';
       rootPath: '/backend/uploads/',
       renderPath: '/backend/uploads/',
     }),
+    ThrottlerModule.forRoot([{
+      ttl: 60000,
+      limit: 20,
+    }]),
+
   ],
   controllers: [AppController, AuthController, GameController, UsersController],
   providers: [JwtService, AppService, FortyTwoStrategy, PrismaService, AuthService, ConfigService, UsersService, TwoFactorAuthService,
     {
       provide: APP_FILTER,
       useClass: ExceptionsFilter,
+    },
+    {
+      provide: APP_GUARD,
+      useClass: ThrottlerGuard,
     },
     UsersGateway,
     GameGateway,
