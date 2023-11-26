@@ -72,7 +72,7 @@ export default function ChatLayout({
 
   return (
     <div className="flex h-full text-white">
-      <div className="h-full w-1/3 flex flex-col items-center border-r-2 border-primecl overflow-scroll">
+      <div className="h-full w-1/3 flex flex-col items-center border-r-2 border-primecl overflow-scroll scrollbar-hide">
         <div className="flex w-full justify-between items-center my-2 px-4">
           <Link
             href="/chat/createroom"

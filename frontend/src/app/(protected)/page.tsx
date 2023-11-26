@@ -123,7 +123,7 @@ export default function Home() {
           <div className="h-[15%] flex items-center justify-center text-xl rounded-t-2xl bg-gradient-to-t from-[#0B2931] from-0% to-[#020C0E] to-20%">
             Notifications
           </div>
-          <div className="overflow-scroll flex-1 flex flex-col w-full rounded-b-2xl bg-gradient-to-t from-[#0B2931] from-0% to-[#020C0E] to-10%">
+          <div className="overflow-scroll scrollbar-hide flex-1 flex flex-col w-full rounded-b-2xl bg-gradient-to-t from-[#0B2931] from-0% to-[#020C0E] to-10%">
             {user &&
               invites.length !== 0 &&
               invites.map((invite, index) => (

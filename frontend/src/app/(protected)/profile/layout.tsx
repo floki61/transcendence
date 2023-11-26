@@ -133,7 +133,7 @@ export default function Page(
                 </p>
               </div>
             </div>
-            <div className="w-[25%] text-center h-full overflow-scroll rounded-md bg-primecl">
+            <div className="w-[25%] text-center h-full overflow-scroll scrollbar-hide rounded-md bg-primecl">
               <div className="flex items-center justify-around bg-segundcl border-b border-quatrocl">
                 <h2
                   className="bg-segundcl w-1/2 border-r border-quatrocl cursor-pointer"

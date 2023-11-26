@@ -121,7 +121,7 @@ const Convo = ({ params }: { params: any }) => {
               {showDiv && participants && <ChatSettings dm={dm} role={role} id={params.id} friendId={participants[0]?.id} />}
             </div>
           </div>
-          <div className="flex flex-col flex-1 bg-segundcl py-2 overflow-scroll">
+          <div className="flex flex-col flex-1 bg-segundcl py-2 overflow-scroll scrollbar-hide">
             {user.user &&
               chat &&
               chat.map((chatie, index) => (
@@ -210,7 +210,7 @@ const Convo = ({ params }: { params: any }) => {
                 {showDiv && <ChatSettings role={role} id={params.id} />}
               </div>
             </div>
-            <div className="flex flex-col flex-1 bg-segundcl py-2 overflow-scroll">
+            <div className="flex flex-col flex-1 bg-segundcl py-2 overflow-scroll scrollbar-hide">
               {user.user &&
                 chat &&
                 chat.map((chatie, index) => (
