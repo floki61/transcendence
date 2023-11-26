@@ -34,6 +34,7 @@ const exception_filter_1 = require("../filter_ex/exception_filter");
 const game_service_1 = require("../game/game.service");
 const twofactorauth_service_1 = require("../auth/twofactorauth/twofactorauth.service");
 const serve_static_1 = require("@nestjs/serve-static");
+const throttler_1 = require("@nestjs/throttler");
 let AppModule = exports.AppModule = class AppModule {
 };
 exports.AppModule = AppModule = __decorate([
@@ -53,12 +54,20 @@ exports.AppModule = AppModule = __decorate([
                 rootPath: '/backend/uploads/',
                 renderPath: '/backend/uploads/',
             }),
+            throttler_1.ThrottlerModule.forRoot([{
+                    ttl: 60000,
+                    limit: 10,
+                }]),
         ],
         controllers: [app_controller_1.AppController, auth_controller_1.AuthController, game_controller_1.GameController, users_controller_1.UsersController],
         providers: [jwt_1.JwtService, app_service_1.AppService, FortyTwoStrategy_1.FortyTwoStrategy, prisma_service_1.PrismaService, auth_service_1.AuthService, config_1.ConfigService, users_service_1.UsersService, twofactorauth_service_1.TwoFactorAuthService,
             {
                 provide: core_1.APP_FILTER,
                 useClass: exception_filter_1.ExceptionsFilter,
+            },
+            {
+                provide: core_1.APP_GUARD,
+                useClass: throttler_1.ThrottlerGuard,
             },
             users_gateway_1.UsersGateway,
             game_gateway_1.GameGateway,

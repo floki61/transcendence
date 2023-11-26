@@ -16,12 +16,7 @@ export declare class ChatGateway implements OnGatewayConnection, OnGatewayDiscon
     handleConnection(client: Socket): Promise<void>;
     handleDisconnect(client: Socket): Promise<void>;
     private parseCookies;
-    create(createChatDto: CreateChatDto, client: Socket): Promise<{
-        uid: string;
-        msg: string;
-        rid: string;
-        msgTime: Date;
-    }>;
+    create(createChatDto: CreateChatDto, client: Socket): Promise<any>;
     joinRoom(payload: any): Promise<void>;
     kickUser(payload: any): void;
     banUser(payload: any, client: Socket): void;
@@ -62,4 +57,5 @@ export declare class ChatGateway implements OnGatewayConnection, OnGatewayDiscon
         createdAt: Date;
         updatedAt: Date;
     })[]>;
+    joinroom(payload: any): void;
 }

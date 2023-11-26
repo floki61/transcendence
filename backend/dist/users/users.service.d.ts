@@ -1,11 +1,13 @@
 import { ConfigService } from '@nestjs/config';
+import { EventEmitter2 } from '@nestjs/event-emitter';
 import { JwtService } from '@nestjs/jwt';
 import { PrismaService } from 'src/prisma/prisma.service';
 export declare class UsersService {
     private jwt;
     private config;
     private prisma;
-    constructor(jwt: JwtService, config: ConfigService, prisma: PrismaService);
+    private event;
+    constructor(jwt: JwtService, config: ConfigService, prisma: PrismaService, event: EventEmitter2);
     getUser(idu: string): Promise<{
         id: string;
         userName: string;
@@ -26,7 +28,25 @@ export declare class UsersService {
         updatedAt: Date;
     }>;
     checkIfnameExists(username: string): Promise<boolean>;
-    updateUser(req: any, data: any): Promise<void>;
+    updateUser(req: any, data: any): Promise<{
+        id: string;
+        userName: string;
+        level: number;
+        firstName: string;
+        lastName: string;
+        status: import(".prisma/client").$Enums.Stts;
+        email: string;
+        picture: string;
+        country: string;
+        phoneNumber: string;
+        accessToken: string;
+        password: string;
+        twoFactorAuthenticationSecret: string;
+        isTwoFactorAuthenticationEnabled: boolean;
+        isDeleted: boolean;
+        createdAt: Date;
+        updatedAt: Date;
+    } | "done" | "Username already exists">;
     updateUserPicture(req: any, data: any): Promise<{
         id: string;
         userName: string;
@@ -64,7 +84,7 @@ export declare class UsersService {
         isDeleted: boolean;
         createdAt: Date;
         updatedAt: Date;
-    } | "Username already exists">;
+    } | "done" | "Username already exists">;
     updateUserPhoneNumber(req: any, data: any): Promise<{
         id: string;
         userName: string;
@@ -124,6 +144,7 @@ export declare class UsersService {
     }>;
     getUserNameWithId(id: string): Promise<string>;
     getPictureWithId(id: string): Promise<string>;
+    getLevelWithId(id: string): Promise<number>;
     sendPlayRequest(userId: string, friendId: string): Promise<{
         user: {
             id: string;

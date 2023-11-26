@@ -170,11 +170,11 @@ export class ChatService {
 	}
 
 	// payload depan user_id, room_name, visibility, password if protected
-	async createRoom(payload: any) {
+	async createRoom(payload: any, id: any) {
 		// console.log(payload);
 		const user = await this.prisma.user.findUnique({
 			where: {
-				id: payload.id,
+				id: id,
 			},
 		});
 		if (!user) {
@@ -191,7 +191,7 @@ export class ChatService {
 		});
 		const participant = await this.prisma.participant.create({
 			data: {
-				uid: payload.id,
+				uid: id,
 				rid: room.id,
 				role: 'OWNER',
 			},

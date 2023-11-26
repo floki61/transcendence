@@ -23,7 +23,7 @@ export class ChatController {
     @Post('createRoom')
     async createRoom(@Body() body: any, @Req() req: any) {
         // console.log("hello");
-        const user = await this.userservice.createRoom(body);
+        const user = await this.userservice.createRoom(body, req.user.id);
         return user;
     }
 

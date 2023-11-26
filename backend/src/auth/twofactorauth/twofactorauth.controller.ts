@@ -50,18 +50,12 @@ export class TwoFactorAuthController {
 	@UseGuards(TwoFaAuthGuard)
 	@Post('2fa/authenticate')
 	@HttpCode(200)
-	async authenticate(@Req() req, @Body() body) { 
-		try {
-			const isCodeValid = await this.twoFactorAuth.isTwoFactorAuthenticationCodeValid(body.twoFactorAuthenticationCode, req.user);
-			if (!isCodeValid)
-				throw new UnauthorizedException('Wrong authentication code');
-			const token = await this.authService.generateToken(req, 'jwt');
-			console.log("token");
-			return { statusCode: 200, message: 'Authenticated', jwt: token };
-		}
-		catch (error) {
-			console.error("Error validating 2FA code222:", error);
-			throw new UnauthorizedException('Error validating 2FA code');
-		}
+	async authenticate(@Req() req, @Body() body) {
+		const isCodeValid = await this.twoFactorAuth.isTwoFactorAuthenticationCodeValid(body.twoFactorAuthenticationCode, req.user);
+		if (!isCodeValid)
+			throw new UnauthorizedException('Wrong authentication code');
+		const token = await this.authService.generateToken(req, 'jwt');
+		console.log("token");
+		return { statusCode: 200, message: 'Authenticated', jwt: token };
 	}
 }

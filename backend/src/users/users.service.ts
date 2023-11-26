@@ -37,14 +37,14 @@ export class UsersService {
 			this.updateUserPhoneNumber(req, data);
 		if (data.country)
 			this.updateUserCountry(req, data);
-		await this.prisma.user.update({
-			where: {
-				id: req.user.id,
-			},
-			data: {
-				picture: data.picture,
-			},
-		});
+		// await this.prisma.user.update({
+		// 	where: {
+		// 		id: req.user.id,
+		// 	},
+		// 	data: {
+		// 		picture: data.picture,
+		// 	},
+		// });
 		return await this.updateUserName(req, data.userName);
 	}
 

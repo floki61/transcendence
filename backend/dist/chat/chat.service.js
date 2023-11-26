@@ -24,7 +24,6 @@ let ChatService = exports.ChatService = class ChatService {
     }
     async create(createChatDto, client) {
         var message = { ...createChatDto };
-        console.log(createChatDto);
         const participant = await this.prisma.participant.findUnique({
             where: {
                 uid_rid: {
@@ -65,8 +64,17 @@ let ChatService = exports.ChatService = class ChatService {
                 lastMessageDate: new Date(),
             },
         });
-        message = { ...message, msgTime: mssg.msgTime };
-        console.log(message);
+        const usr = await this.prisma.user.findUnique({
+            where: {
+                id: participant.uid,
+            },
+            include: {
+                blockSenders: true,
+                blockReceivers: true,
+            },
+        });
+        message = { ...message, msgTime: mssg.msgTime, user: usr };
+        console.log(message.user);
         return message;
     }
     async joinRoom(payload) {
@@ -524,7 +532,16 @@ let ChatService = exports.ChatService = class ChatService {
                 rid: payload.rid,
             },
             include: {
-                user: true,
+                user: {
+                    include: {
+                        user: {
+                            include: {
+                                blockSenders: true,
+                                blockReceivers: true,
+                            },
+                        }
+                    },
+                },
             },
         });
         if (payload.id === null) {
@@ -542,10 +559,15 @@ let ChatService = exports.ChatService = class ChatService {
                         where: {
                             id: participant.uid,
                         },
+                        include: {
+                            blockSenders: true,
+                            blockReceivers: true,
+                        }
                     });
                     if (user) {
                         const blocked = await this.getBlockedUsers(user.id);
                         msg = { ...msg, user: user, ...blocked };
+                        console.log('blocked', msg);
                     }
                     else {
                         console.error(`User not found for participant ID: ${participant.uid}`);
@@ -730,6 +752,7 @@ let ChatService = exports.ChatService = class ChatService {
                     role: 'USER',
                 },
             });
+            this.eventEmitter.emit('joinRoom', { uid: uid, rid: payload.rid });
         }
         return 'Added participant';
     }
@@ -786,6 +809,21 @@ let ChatService = exports.ChatService = class ChatService {
             where: {
                 id,
             },
+        });
+    }
+    async getBannedUsers(body, uid) {
+        return await this.prisma.user.findMany({
+            where: {
+                membership: {
+                    some: {
+                        rid: body.rid,
+                        isBanned: true,
+                        NOT: {
+                            uid: uid,
+                        },
+                    }
+                }
+            }
         });
     }
 };

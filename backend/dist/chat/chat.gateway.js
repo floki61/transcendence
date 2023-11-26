@@ -123,6 +123,12 @@ let ChatGateway = exports.ChatGateway = class ChatGateway {
         this.server.emit('chatRoomsUpdated', rooms);
         return rooms;
     }
+    joinroom(payload) {
+        if (this.map.has(payload.userId))
+            this.map.get(payload.userId).join(payload.chatRoom.id);
+        if (this.map.has(payload.friendId))
+            this.map.get(payload.friendId).join(payload.chatRoom.id);
+    }
 };
 __decorate([
     (0, websockets_1.WebSocketServer)(),
@@ -186,6 +192,13 @@ __decorate([
     __metadata("design:paramtypes", [Object]),
     __metadata("design:returntype", Promise)
 ], ChatGateway.prototype, "updateChatRooms", null);
+__decorate([
+    (0, event_emitter_1.OnEvent)('joinroom'),
+    __param(0, (0, websockets_1.MessageBody)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object]),
+    __metadata("design:returntype", void 0)
+], ChatGateway.prototype, "joinroom", null);
 exports.ChatGateway = ChatGateway = __decorate([
     (0, websockets_1.WebSocketGateway)({
         namespace: 'chat',
