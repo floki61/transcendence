@@ -109,17 +109,13 @@ export default function Page() {
                 loader={() => imageUrl}
                 src={imageUrl}
                 alt={"profile pic"}
-                width={100}
-                height={100}
-                className="rounded-full aspect-square w-24 h-24 object-cover"
+                width={128}
+                height={128}
+                className="rounded-full aspect-square w-32 h-32 object-cover"
                 unoptimized
                 priority
               />
-              <div className="flex flex-col h-full w-full items-center gap-8 justify-center mt-4">
-                <Button
-                  text="CHOOSE AN AVATAR"
-                  className="border border-white rounded-3xl w-2/5 p-2 h-12 opacity-80 cursor-pointer bg-primecl shadow-[0px 4px 4px 0px rgba(0, 0, 0, 0.25)]  transition ease-in-out delay-150 hover:scale-105 duration-300"
-                />
+              <div className="flex flex-col h-full w-full items-center justify-center mt-4">
                 <label
                   htmlFor="picture"
                   className="border text-center border-white rounded-3xl w-2/5 p-3 h-12 opacity-80 cursor-pointer bg-primecl shadow-[0px 4px 4px 0px rgba(0, 0, 0, 0.25)]  transition ease-in-out delay-150 hover:scale-105 duration-300"
