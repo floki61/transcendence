@@ -18,7 +18,37 @@ export interface ChatType {
     role: string;
     uid: string;
     updateAt: string;
-    user: userType;
+    picture: string;
+    blockReceivers: {
+      fid: string;
+      uid: string;
+    }[];
+    blockSenders: {
+      fid: string;
+      uid: string;
+    }[];
+    user: {
+      id: string;
+      email: string;
+      picture: string;
+      firstName: string;
+      fullName: string;
+      lastName: string;
+      userName: string;
+      phoneNumber: string;
+      level: number;
+      country: string;
+      isTwoFactorAuthenticationEnabled: boolean;
+      status: string;
+      blockReceivers: {
+        fid: string;
+        uid: string;
+      }[];
+      blockSenders: {
+        fid: string;
+        uid: string;
+      }[];
+    };
   };
   createdAt: string;
   id: string;

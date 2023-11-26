@@ -138,6 +138,9 @@ const Convo = ({ params }: { params: any }) => {
                     picture={chatie.user?.user?.picture}
                     text={chatie.msg}
                     time={chatie.msgTime.substring(11, 16)}
+                    id={chatie.user?.uid}
+                    blockReceiver={chatie.user?.user?.blockReceivers}
+                    blockSender={chatie.user?.user?.blockSenders}
                     className={`flex justify-between ${user.user?.id === chatie.user?.uid ||
                       user.user?.id === chatie.uid
                       ? "self-end bg-primecl rounded-s-lg rounded-br-lg"
@@ -222,7 +225,10 @@ const Convo = ({ params }: { params: any }) => {
                     {chatie.rid === params.id && chatie.user !== null && (
                       <Chatmsg
                         room={(chatie.user?.uid === user.user?.id || user.user?.id === chatie.uid) ? false : true}
-                        picture={chatie.user?.user?.picture}
+                        picture={chatie.user?.user?.picture || chatie.user?.picture}
+                        id={user.user?.id}
+                        blockReceiver={chatie.user?.user?.blockReceivers || chatie.user?.blockReceivers}
+                        blockSender={chatie.user?.user?.blockSenders || chatie.user?.blockSenders}
                         text={chatie.msg}
                         time={chatie.msgTime.substring(11, 16)}
                         className={`flex justify-between ${user.user?.id === chatie.user?.uid ||
