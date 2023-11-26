@@ -69,7 +69,6 @@ export default function Page() {
           holder="Room Name"
           type="text"
           onChange={handleChange}
-          value={room?.name}
           name="name"
         />
         <select
@@ -87,7 +86,6 @@ export default function Page() {
             holder="Room Password"
             type="text"
             onChange={handleChange}
-            value={room.password}
             name="password"
           />
         )}
