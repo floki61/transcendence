@@ -601,7 +601,12 @@ export class ChatService {
 			include: {
 				user: {
 					include: {
-						user: true,
+						user: {
+							include: {
+								blockSenders: true,
+								blockReceivers: true,
+							},
+						}
 					},
 				},
 			},
@@ -657,7 +662,12 @@ export class ChatService {
 				console.error('msg.userId is null or undefined');
 			}
 		}
-		console.log(message);
+		// some iss
+		// for (let msg of message) {
+		// 	if (msg.user) {
+		// 		console.log(msg.user.user);
+		// 	}
+		// }
 		return message;
 
 	}
@@ -835,6 +845,7 @@ export class ChatService {
 					role: 'USER',
 				},
 			});
+			this.eventEmitter.emit('joinRoom', { uid: uid, rid: payload.rid });
 		}
 		// const user = await this.prisma.user.findUnique({
 		// 	where: {

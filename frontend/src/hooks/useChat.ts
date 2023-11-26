@@ -30,7 +30,7 @@ export interface ChatType {
   uid: string;
 }
 
-export const useChat = (id : string) => {
+export const useChat = (id: string) => {
   const user = useContext(UserContext);
   const [chat, SetChat] = useState<ChatType[]>([]);
   const [image, SetImage] = useState<string>();
@@ -54,9 +54,10 @@ export const useChat = (id : string) => {
           }
         );
         const data = res.data;
+        // console.log('dataaaa', data);
         // if (data.length > 0) {
-          // updatedChat = data.map((item: any) => item);
-          SetChat(data.map((item: any) => item));
+        // updatedChat = data.map((item: any) => item);
+        SetChat(data.map((item: any) => item));
         // }
       } catch (error) {
       }
@@ -98,10 +99,10 @@ export const useChat = (id : string) => {
   getName();
 
   const handleKeyDown = (event: any) => {
-      if (event.key === 'Enter') {
-        event.preventDefault();
-        sendMsg();
-      }
+    if (event.key === 'Enter') {
+      event.preventDefault();
+      sendMsg();
+    }
   }
 
   const sendMsg = () => {
