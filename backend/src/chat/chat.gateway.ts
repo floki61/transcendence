@@ -14,7 +14,7 @@ import { subscribe } from 'diagnostics_channel';
 
 @WebSocketGateway({
 	namespace: 'chat',
-	cors: { origin: 'http://localhost:3000', credentials: true },
+	cors: { origin: 'http://10.12.1.6:3000', credentials: true },
 })
 export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
 	@WebSocketServer()

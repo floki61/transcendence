@@ -12,7 +12,7 @@ const BoxForm: React.FC<BoxFormPros> = ({
 	color,
 }) => {
   return (
-	<div className={`${color} w-9 h-9 rounded-[10px] text-center text-2xl flex items-center justify-center`}>
+	<div className={`${color} w-9 h-9 rounded-[10px] text-center text-2xl flex items-center justify-center 2xl:w-12 2xl:h-12 2xl:text-4xl`}>
 		{result}
 	</div>
   )

@@ -10,7 +10,7 @@ export default function Login() {
         alt={"loginpage"}
         width={500}
         height={400}
-        className="object-cover max-md:hidden"
+        className="object-cover max-md:hidden 2xl:w-[35%]"
         priority={true}
       />
       <form className="flex py-12 max-md:py-3  max-md:px-3 flex-col flex-1 h-full items-center justify-around gap-5">
@@ -27,21 +27,21 @@ export default function Login() {
           />
         </svg>
         <div className="text-black text-center">
-          <h1 className="text-5xl font-bold tracking-wider">WELCOME BACK</h1>
-          <h3 className="text-xl font-light">Please select a login option</h3>
+          <h1 className="text-5xl font-bold tracking-wider 2xl:text-8xl">WELCOME BACK</h1>
+          <h3 className="text-xl font-light 2xl:text-3xl">Please select a login option</h3>
         </div>
-        <div className="flex flex-1 flex-col justify-center items-center">
-          <div className="flex flex-col max-md:w-full items-center text-2xl gap-4 max-md:text-xl">
+        <div className="flex flex-1 flex-col justify-center items-center  2xl:w-[30%]">
+          <div className="flex flex-col max-md:w-full items-center text-2xl gap-4 max-md:text-xl 2xl:w-full">
             <Link
               href={process.env.NEXT_PUBLIC_SERVER_URL + "/login/google"}
-              className="flex items-center justify-center gap-3 text-white bg-black border rounded-3xl w-96 max-md:w-[70%] max-md:p-4 h-14 cursor-pointer"
+              className="flex items-center justify-center gap-3 text-white bg-black border rounded-3xl w-96 max-md:w-[70%] max-md:p-4 h-14 cursor-pointer 2xl:w-full 2xl:h-16"
             >
               <ImGoogle size={30}/>
               Log in with Google
             </Link>
             <Link
               href={process.env.NEXT_PUBLIC_SERVER_URL + "/login"}
-              className="flex items-center justify-center gap-3 text-black bg-white border rounded-3xl w-96 max-md:w-[70%] max-md:p-4 h-14 cursor-pointer"
+              className="flex items-center justify-center gap-3 text-black bg-white border rounded-3xl w-96 max-md:w-[70%] max-md:p-4 h-14 cursor-pointer 2xl:w-full 2xl:h-16"
             >
               <Image
                 src={"/42.png"}

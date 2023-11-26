@@ -10,7 +10,7 @@ import { FortyTwoGuard } from 'src/auth/tools/Guards';
 import { JwtAuthGuard } from 'src/auth/jwt/jwt.guard';
 import { UsersService } from 'src/users/users.service';
 
-@WebSocketGateway({ namespace: 'game', cors: true, origin: ['http://localhost:3000/game'] })
+@WebSocketGateway({ namespace: 'game', cors: true, origin: ['http://10.12.1.6:3000/game'] })
 export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
     constructor(private readonly gameService: GameService,
         private jwt: JwtService,

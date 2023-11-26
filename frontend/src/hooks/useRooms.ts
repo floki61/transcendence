@@ -20,7 +20,7 @@ export const useRooms = () => {
 
 		const getUsers = async (friends: FriendType[], setFriends: any) => {
 			try {
-				const res = await axios.get("http://localhost:4000/chat/myRooms", {
+				const res = await axios.get("http://10.12.1.6:4000/chat/myRooms", {
 					withCredentials: true
 				});
 				const data = res.data;
@@ -34,7 +34,7 @@ export const useRooms = () => {
 
 		const getRooms = async (friends: FriendType[], setFriends: any) => {
 			try {
-				const res = await axios.get("http://localhost:4000/chat/getAllRooms", {
+				const res = await axios.get("http://10.12.1.6:4000/chat/getAllRooms", {
 					withCredentials: true,
 				})
 				const data = res.data;

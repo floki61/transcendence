@@ -30,7 +30,7 @@ export default function Page() {
     try {
       if (room) {
         const res = await axios.post(
-          "http://localhost:4000/chat/createRoom",
+          "http://10.12.1.6:4000/chat/createRoom",
           room,
           {
             withCredentials: true,

@@ -80,7 +80,7 @@ export default function Page({params}: {params: any}) {
 	}
 
   return (
-	<div className='py-6 px-16 text-xl h-full'>
+	<div className='py-6 px-16 text-xl h-full 2xl:text-4xl'>
 		<div className='h-1/4 flex items-center justify-evenly border-b-4 border-primecl'>
 			<h4 className='w-1/4'>Mode</h4>
 			<div className='flex items-center justify-evenly w-1/2'>

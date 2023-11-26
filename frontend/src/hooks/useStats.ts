@@ -34,7 +34,7 @@ export const useStats = () => {
 		const getStats = async (userId: string) => {
 			if (userId) {
 				try {
-					const res = await axios.post("http://localhost:4000/getStats", {id : userId}, {
+					const res = await axios.post("http://10.12.1.6:4000/getStats", {id : userId}, {
 						withCredentials: true,
 					})
 					SetStats(res.data);
@@ -44,7 +44,7 @@ export const useStats = () => {
 		};
 		const getStatsByMode = async (userId:string, mode: string, SetData: any) => {
 			try {
-				const res = await axios.post("http://localhost:4000/getStats", {id: userId, mode}, {
+				const res = await axios.post("http://10.12.1.6:4000/getStats", {id: userId, mode}, {
 					withCredentials: true,
 				})
 				SetData(res.data);

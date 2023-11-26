@@ -53,7 +53,7 @@ const Convo = ({ params }: { params: any }) => {
   useEffect(() => {
     const getParticipants = async () => {
       try {
-        const res = await axios.post("http://localhost:4000/chat/getParticipants", { rid: params.id }, {
+        const res = await axios.post("http://10.12.1.6:4000/chat/getParticipants", { rid: params.id }, {
           withCredentials: true,
         })
         const data = res.data;

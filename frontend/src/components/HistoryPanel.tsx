@@ -46,8 +46,8 @@ export const HistoryPanel: React.FC<HistoryPanelProps> = ({
 		return (
 			<div className='w-full h-full'>
 				{friend && user && (
-					<div className={`${index != 3 ? "border-b-4 border-primecl" : ""} w-full h-full flex items-center gap-8`}>
-						<h4 className='capitalize text-2xl text-center w-[20%]'>{mode} Mode</h4>
+					<div className={`${index != 3 ? "border-b-4 border-primecl" : ""} w-full h-full flex items-center 2xl:justify-center 2xl:pr-24 gap-8`}>
+						<h4 className='capitalize text-2xl text-center w-[20%] 2xl:text-6xl'>{mode} Mode</h4>
 						<BoxForm result={result} color={color} />
 						<Image
 							loader={() => user.picture || "/placeholder.jpg"}
@@ -55,10 +55,10 @@ export const HistoryPanel: React.FC<HistoryPanelProps> = ({
 							alt="user pic"
 							height={75}
 							width={75}
-							className='rounded-full p-2 aspect-square w-16 h-16 object-cover'
+							className='rounded-full p-2 aspect-square w-16 h-16 object-cover 2xl:w-32 2xl:h-32'
 							unoptimized
 						/>
-						<div className='flex h-full w-[20%] items-center justify-evenly text-4xl'>
+						<div className='flex h-full w-[20%] items-center justify-evenly text-4xl 2xl:text-7xl'>
 							<p>{lScore}</p>
 							<p>Vs</p>
 							<p>{rScore}</p>
@@ -69,11 +69,11 @@ export const HistoryPanel: React.FC<HistoryPanelProps> = ({
 							alt="user pic"
 							height={75}
 							width={75}
-							className='rounded-full p-2 aspect-square w-16 h-16 object-cover'
+							className='rounded-full p-2 aspect-square w-16 h-16 object-cover 2xl:w-32 2xl:h-32'
 							unoptimized
 						/>
 						<BoxForm result={oppResult} color={oppColor} />
-						<p className='text-3xl text-center w-[15%]'>{result === "W" ? "+" : "-"}30xp</p>
+						<p className='text-3xl text-center w-[15%] 2xl:text-6xl'>{result === "W" ? "+" : "-"}30xp</p>
 					</div>
 				)}
 			</div>

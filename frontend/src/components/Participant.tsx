@@ -50,7 +50,7 @@ export const Participant: React.FC<ParticipantProps> = ({
 	const Challenge = async () => {
 		setLoading(true);
 		try {
-			const res = await axios.post("http://localhost:4000/sendPlaydRequest", { friendId: id }, {
+			const res = await axios.post("http://10.12.1.6:4000/sendPlaydRequest", { friendId: id }, {
 				withCredentials: true,
 			});
 		} catch (error) {

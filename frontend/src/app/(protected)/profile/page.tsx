@@ -81,20 +81,20 @@ export default function Page() {
 	}
 
   return (
-	<div className='py-6 px-16 text-xl h-full'>
+	<div className='py-6 px-16 text-xl h-full 2xl:text-4xl'>
 		<div className='h-1/4 flex items-center justify-evenly border-b-4 border-primecl'>
-			<h4 className='w-1/4'>Mode</h4>
-			<div className='flex items-center justify-evenly w-1/2'>
+			<h4 className='w-1/4 w-1/2'>Mode</h4>
+			<div className='flex items-center justify-evenly w-1/2 w-1/2'>
 				<h4>MP</h4>
 				<h4>W</h4>
 				<h4>L</h4>
 				<h4>GS</h4>
 				<h4>GC</h4>
 			</div>
-			<h4 className='w-1/4 text-center'>Form</h4>
+			<h4 className='w-1/4 text-center w-1/2'>Form</h4>
 		</div>
 		<div className='h-1/4 flex items-center justify-evenly border-b-4 border-primecl'>
-		<h4 className='w-1/4'>Default Mode</h4>
+		<h4 className='w-1/4 w-1/2'>Default Mode</h4>
 			<div className='flex items-center justify-evenly w-1/2'>
 				<h4>{live?.stats.MP}</h4>
 				<h4>{live?.stats.W}</h4>
@@ -107,8 +107,8 @@ export default function Page() {
 			</h4>
 		</div>
 		<div className='h-1/4 flex items-center justify-evenly border-b-4 border-primecl'>
-			<h4 className='w-1/4'>Reverse Mode</h4>
-			<div className='flex items-center justify-evenly w-1/2'>
+			<h4 className='w-1/4 w-1/2'>Reverse Mode</h4>
+			<div className='flex items-center justify-evenly w-1/2 w-1/2'>
 				<h4>{reverse?.stats.MP}</h4>
 				<h4>{reverse?.stats.W}</h4>
 				<h4>{reverse?.stats.L}</h4>
@@ -120,8 +120,8 @@ export default function Page() {
 			</h4>
 		</div>
 		<div className='h-1/4 flex items-center justify-evenly'>
-			<h4 className='w-1/4'>Hidden Mode</h4>
-			<div className='flex items-center justify-evenly w-1/2'>
+			<h4 className='w-1/4 w-1/2'>Hidden Mode</h4>
+			<div className='flex items-center justify-evenly w-1/2 w-1/2'>
 				<h4>{hidden?.stats.MP}</h4>
 				<h4>{hidden?.stats.W}</h4>
 				<h4>{hidden?.stats.L}</h4>

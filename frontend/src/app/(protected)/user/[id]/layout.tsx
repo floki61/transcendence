@@ -49,7 +49,7 @@ export default function Layout({
   useEffect(() => {
     const getFriendRequest = async () => {
       try {
-        const res = await axios.get("http://localhost:4000/getFriendRequests", {
+        const res = await axios.get("http://10.12.1.6:4000/getFriendRequests", {
           withCredentials: true,
         });
         SetInvite(res.data);
@@ -62,7 +62,7 @@ export default function Layout({
   const SendRequest = async () => {
     try {
       const res = axios.post(
-        "http://localhost:4000/sendFriendRequest",
+        "http://10.12.1.6:4000/sendFriendRequest",
         { friendId: params.id },
         {
           withCredentials: true,
@@ -76,7 +76,7 @@ export default function Layout({
   const CancelRequest = async () => {
     try {
       const res = axios.post(
-        "http://localhost:4000/cancelFriendRequest",
+        "http://10.12.1.6:4000/cancelFriendRequest",
         { friendId: params.id },
         {
           withCredentials: true,
@@ -90,7 +90,7 @@ export default function Layout({
   const DeclineRequest = async () => {
     try {
       const res = axios.post(
-        "http://localhost:4000/rejecte",
+        "http://10.12.1.6:4000/rejecte",
         { friendId: params.id },
         {
           withCredentials: true,
@@ -105,7 +105,7 @@ export default function Layout({
   const AcceptRequest = async () => {
     try {
       const res = axios.post(
-        "http://localhost:4000/acc",
+        "http://10.12.1.6:4000/acc",
         { friendId: params.id },
         {
           withCredentials: true,
@@ -120,7 +120,7 @@ export default function Layout({
   const Unfriend = async () => {
     try {
       const res = axios.post(
-        "http://localhost:4000/unfriend",
+        "http://10.12.1.6:4000/unfriend",
         { friendId: params.id },
         {
           withCredentials: true,
@@ -136,7 +136,7 @@ export default function Layout({
   const Block = async () => {
     try {
       const res = axios.post(
-        "http://localhost:4000/blockUser",
+        "http://10.12.1.6:4000/blockUser",
         { friendId: params.id },
         {
           withCredentials: true,
@@ -150,7 +150,7 @@ export default function Layout({
   const getFriend = async () => {
     try {
       const res = await axios.post(
-        "http://localhost:4000/getFriendProfile",
+        "http://10.12.1.6:4000/getFriendProfile",
         { id: params.id },
         {
           withCredentials: true,
@@ -193,14 +193,14 @@ export default function Layout({
               alt={"profile pic"}
               height={140}
               width={140}
-              className="rounded-full aspect-square w-36 h-36 object-cover"
+              className="rounded-full aspect-square w-36 h-36 object-cover 2xl:w-64 2xl:h-64"
               priority
               unoptimized
             />
             <div className="w-3/5 h-full flex flex-col justify-between px-4">
-              <div className="flex flex-col gap-1">
+              <div className="flex flex-col gap-1 2xl:gap-4">
                 <div className="flex justify-between">
-                  <h2 className="text-3xl">{friend.user.fullName}</h2>
+                  <h2 className="text-3xl 2xl:text-5xl">{friend.user.fullName}</h2>
                   <div className="cursos-pointer w-[42%]">
                     {params.id !== user.user?.id &&
                       friend.isfriend === "friend" && (
@@ -234,12 +234,12 @@ export default function Layout({
                   </div>
                 </div>
                 <div className="flex items-center gap-3">
-                  <h3 className="text-xl lowercase">{friend.user.userName}</h3>
+                  <h3 className="text-xl lowercase 2xl:text-3xl">{friend.user.userName}</h3>
                   <h3
                     className={`${friend.user.status === "OFFLINE"
                       ? "text-red-600"
                       : "text-[#00A83F]"
-                      }`}
+                      } 2xl:text-xl`}
                   >
                     ( {friend.user.status} )
                   </h3>
@@ -307,23 +307,23 @@ export default function Layout({
                     />
                   </div>
                 )}
-              <div className="relative w-full bg-[#6A6666] rounded-xl text-center text-black self-end">
+              <div className="relative w-full bg-[#6A6666] rounded-xl text-center text-black self-end 2xl:rounded-2x 2xl:h-10">
                 {friend && (
                   <div
-                    className={`bg-quatrocl h-full rounded-xl absolute inset-0`}
+                    className={`bg-quatrocl h-full rounded-xl 2xl:rounded-2xl absolute inset-0`}
                     style={{
                       width: `${String(Math.ceil(friend.barPourcentage))}%`,
                     }}
                   ></div>
                 )}
-                <p className="text-black text-center z-10 relative text-xl font-medium">
+                <p className="text-black text-center z-10 relative text-xl font-medium flex items-center justify-center 2xl:text-2xl">
                   Level {friend.level_P}
                 </p>
               </div>
             </div>
           </div>
           <div className="flex-1 flex flex-col items-center relative">
-            {pathName === "/profile" && (
+            {pathName === "/user/" + params.id && (
               <Image
                 src="/paddle.png"
                 alt="paddle"
@@ -359,7 +359,7 @@ export default function Layout({
                 className={`${pathName === "/user/" + params.id
                   ? "bg-gradient-to-t from-[#000000] from-0% to-segundcl to-100% rounded-tl-xl"
                   : ""
-                  } hover:bg-gradient-to-t hover:from-[#000000] hover:from-0% hover:to-segundcl hover:to-100% hover:rounded-tl-xl w-1/3 text-2xl text-center h-full flex justify-center items-center border-r border-segundcl`}
+                  } hover:bg-gradient-to-t hover:from-[#000000] hover:from-0% hover:to-segundcl hover:to-100% hover:rounded-tl-xl w-1/3 text-2xl text-center h-full flex justify-center items-center border-r border-segundcl 2xl:text-5xl`}
               >
                 Stats
               </Link>
@@ -368,7 +368,7 @@ export default function Layout({
                 className={`${pathName === "/user/" + params.id + "/achievements"
                   ? "bg-gradient-to-t from-[#000000] from-0% to-segundcl to-100% "
                   : ""
-                  } hover:bg-gradient-to-t hover:from-[#000000] hover:from-0% hover:to-segundcl hover:to-100% w-1/3 text-2xl text-center h-full flex justify-center items-center border-r border-segundcl`}
+                  } hover:bg-gradient-to-t hover:from-[#000000] hover:from-0% hover:to-segundcl hover:to-100% w-1/3 text-2xl text-center h-full flex justify-center items-center border-r border-segundcl 2xl:text-5xl`}
               >
                 Achievements
               </Link>
@@ -377,7 +377,7 @@ export default function Layout({
                 className={`${pathName === "/user/" + params.id + "/history"
                   ? "bg-gradient-to-t from-[#000000] from-0% to-segundcl to-100% rounded-tr-xl"
                   : ""
-                  } hover:bg-gradient-to-t hover:from-[#000000] hover:from-0% hover:to-segundcl hover:to-100% hover:rounded-tr-xl w-1/3 text-2xl text-center h-full flex justify-center items-center`}
+                  } hover:bg-gradient-to-t hover:from-[#000000] hover:from-0% hover:to-segundcl hover:to-100% hover:rounded-tr-xl w-1/3 text-2xl text-center h-full flex justify-center items-center 2xl:text-5xl`}
               >
                 History
               </Link>

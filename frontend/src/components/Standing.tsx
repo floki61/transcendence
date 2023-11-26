@@ -67,19 +67,19 @@ const Standing: React.FC<StandingProps> = ({
 		return (
 			<div className='h-full flex items-center border-t-2 border-primecl py-1'>
 				<div className='flex w-1/4 items-center justify-around pl-6 h-full'>
-					<div className={`${color} rounded-lg w-8 text-center flex items-center justify-center h-8`}>{place}</div>
+					<div className={`${color} rounded-lg w-8 text-center flex items-center justify-center h-8 2xl:w-12 2xl:h-12 2xl:text-xl 2xl:ml-10`}>{place}</div>
 					<Image
 						loader={() => picture || "/placeholder.jpg"}
 						src={picture || "/placeholder.jpg"}
 						alt="player pic"
 						width={35}
 						height={35}
-						className="rounded-full aspect-square w-9 h-9 object-cover"
+						className="rounded-full aspect-square w-9 h-9 2xl:w-14 2xl:h-14 object-cover"
 						unoptimized
 					/>
-					<div className='flex w-[42%]'>{name}</div>
+					<div className='flex w-[42%] 2xl:text-2xl'>{name}</div>
 				</div>
-				<div className='w-1/2 h-full text-gray-200 flex items-center justify-evenly pl-10'>
+				<div className='w-1/2 h-full text-gray-200 flex items-center justify-evenly pl-10 2xl:text-3xl'>
 					<p>{mp}</p>
 					<p>{wins}</p>
 					<p>{losses}</p>

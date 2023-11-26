@@ -25,7 +25,7 @@ const QrcodeDiv: React.FC<QrcodeProps> = ({
 	useEffect(() => {
 	  const fetchData = async () => {
 		try {
-		  const res = await axios.get("http://localhost:4000/2fa/generate", {
+		  const res = await axios.get("http://10.12.1.6:4000/2fa/generate", {
 			withCredentials: true,
 		  });
 		  setQrCode(res.data);
@@ -41,7 +41,7 @@ const QrcodeDiv: React.FC<QrcodeProps> = ({
 	if (input.length === 6) {
 		setLoading(true);
 		try {
-			await axios.post("http://localhost:4000/2fa/turn-on",
+			await axios.post("http://10.12.1.6:4000/2fa/turn-on",
 				{twoFactorAuthenticationCode: input} , {
 				withCredentials: true,
 				});
@@ -76,21 +76,22 @@ const QrcodeDiv: React.FC<QrcodeProps> = ({
 							alt="qrCode"
 							width={200}
 							height={200}
+							className="2xl:w-80 2xl:h-80"
 						/>
 					)}
-					<div className="flex flex-col justify-center items-center w-1/2">
-				 		<input className="text-center py-2 w-full h-10 rounded-md outline-quatrocl" type="text" maxLength={6} onChange={handleInputChange} value={input}/>
+					<div className="flex flex-col justify-center items-center w-2/3">
+				 		<input className="text-center py-2 w-full h-10 2xl:h-14 2xl:text-xl rounded-md outline-quatrocl" type="text" maxLength={6} onChange={handleInputChange} value={input}/>
 					</div>
 					<div className="flex justify-center items-center gap-4 w-full">
 				 		<Button
 				 			text="Cancel"
-				 			className=" text-primecl rounded-3xl w-1/3 p-2 h-12 opacity-80 cursor-pointer bg-white shadow-[0px 4px 4px 0px rgba(0, 0, 0, 0.25)]  transition ease-in-out delay-150 hover:scale-105 duration-300"
+				 			className=" text-primecl rounded-3xl w-1/3 p-2 h-12 2xl:text-xl 2xl:h-14 opacity-80 cursor-pointer bg-white shadow-[0px 4px 4px 0px rgba(0, 0, 0, 0.25)]  transition ease-in-out delay-150 hover:scale-105 duration-300"
 				 			onClick={handleQrCode}
 				 		/>
 				 		<Button
 				 			text="Send"
 							disabled={loading}
-				 			className="border border-white text-white rounded-3xl w-1/3 p-2 h-12 opacity-80 cursor-pointer bg-primecl shadow-[0px 4px 4px 0px rgba(0, 0, 0, 0.25)]  transition ease-in-out delay-150 hover:scale-105 duration-300"
+				 			className="border border-white text-white rounded-3xl w-1/3 p-2 h-12 2xl:text-xl 2xl:h-14 opacity-80 cursor-pointer bg-primecl shadow-[0px 4px 4px 0px rgba(0, 0, 0, 0.25)]  transition ease-in-out delay-150 hover:scale-105 duration-300"
 				 			onClick={() => {sendQrCode();handleQrCode();twofactor=true;}}
 				 		/>
 					</div>
