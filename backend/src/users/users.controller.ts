@@ -128,7 +128,7 @@ export class UsersController {
     async uploadFile(@UploadedFile(
     ) file: Express.Multer.File, @Req() req) {
         if (file) {
-            let url = `http://10.12.1.6:4000/${req.user.id}.jpeg`;
+            let url = `http://localhost:4000/${req.user.id}.jpeg`;
             await this.prisma.user.update({
                 where: {
                     id: req.user.id,

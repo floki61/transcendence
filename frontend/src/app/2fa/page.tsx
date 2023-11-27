@@ -27,14 +27,16 @@ export default function Forgotps() {
     e.preventDefault();
     try {
       const response = await axios.post(
-        "http://10.12.1.6:4000/2fa/authenticate",
+        "http://localhost:4000/2fa/authenticate",
         { twoFactorAuthenticationCode: input },
         {
           withCredentials: true,
         }
       );
       if (response.data.statusCode === 200) {
-        await axios.post("/api/2fa", { token: response.data.jwt }).then(() => {router.push("/")})
+        await axios.post("/api/2fa", { token: response.data.jwt }).then(() => {
+          router.push("/");
+        });
       } else toast.error("Wrong authentication code");
     } catch (error) {
       toast.error("Login failed");

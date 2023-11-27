@@ -11,7 +11,7 @@ import { OnEvent } from "@nestjs/event-emitter";
 
 @WebSocketGateway({
 	namespace: 'users',
-	cors: { origin: 'http://10.12.1.6:3000', credentials: true },
+	cors: { origin: 'http://localhost:3000', credentials: true },
 })
 export class UsersGateway implements OnGatewayConnection, OnGatewayDisconnect {
 	constructor(private readonly chatService: UsersService,
