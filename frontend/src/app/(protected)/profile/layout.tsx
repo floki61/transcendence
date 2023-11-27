@@ -43,12 +43,11 @@ export default function Page(
   useEffect(() => {
     const getFollwers = async () => {
       try {
-        const res = await axios.get("http://10.12.1.6:4000/getFriends", {
+        const res = await axios.get("http://localhost:4000/getFriends", {
           withCredentials: true,
         });
         SetFollowers(res.data);
-      } catch (error) {
-      }
+      } catch (error) {}
     };
     getFollwers();
   }, []);
@@ -56,12 +55,11 @@ export default function Page(
   useEffect(() => {
     const getBlockedList = async () => {
       try {
-        const res = await axios.get("http://10.12.1.6:4000/getBlockedList", {
+        const res = await axios.get("http://localhost:4000/getBlockedList", {
           withCredentials: true,
         });
         setBlocked(res.data);
-      } catch (error) {
-      }
+      } catch (error) {}
     };
     getBlockedList();
   }, []);
@@ -69,12 +67,11 @@ export default function Page(
   useEffect(() => {
     const getFriend = async () => {
       try {
-        const res = await axios.get("http://10.12.1.6:4000/profile", {
+        const res = await axios.get("http://localhost:4000/profile", {
           withCredentials: true,
         });
         SetUser(res.data);
-      } catch (error) {
-      }
+      } catch (error) {}
     };
     getFriend();
   }, []);
@@ -82,15 +79,14 @@ export default function Page(
   const UnblockFriend = async (friendId: string) => {
     try {
       const res = await axios.post(
-        "http://10.12.1.6:4000/unblockUser",
+        "http://localhost:4000/unblockUser",
         { friendId },
         {
           withCredentials: true,
         }
       );
       router.push("/profile");
-    } catch (error) {
-    }
+    } catch (error) {}
   };
 
   if (user && user.user)
@@ -114,9 +110,11 @@ export default function Page(
             <div className="w-3/5 h-full flex flex-col justify-between px-4">
               <div className="flex flex-col gap-1 2xl:gap-4">
                 <div className="flex justify-between">
-                  <h2 className="text-3xl 2xl:text-5xl">{user.user.fullName}</h2>
+                  <h2 className="text-3xl 2xl:text-5xl">
+                    {user.user.fullName}
+                  </h2>
                   <Link href="/settings" className="2xl:w-16">
-                    <FaEdit size={30} className={"w-full h-full"}/>
+                    <FaEdit size={30} className={"w-full h-full"} />
                   </Link>
                 </div>
                 <h3 className="text-xl 2xl:text-3xl">{user.user.userName}</h3>
@@ -161,7 +159,11 @@ export default function Page(
                     className="w-full bg-primecl h-1/3 flex items-center gap-2 2xl:gap-4 border-b border-segundcl px-2"
                   >
                     <Image
-                      loader={() => follower.user.id !== user.user.id ? follower.user.picture : follower.friend.picture}
+                      loader={() =>
+                        follower.user.id !== user.user.id
+                          ? follower.user.picture
+                          : follower.friend.picture
+                      }
                       src={
                         follower.user.id !== user.user.id
                           ? follower.user.picture
@@ -179,14 +181,15 @@ export default function Page(
                         : follower.friend.userName}
                     </span>
                     <span
-                      className={`flex justify-end w-full 2xl:text-xl ${follower.user.id !== user.user.id
-                        ? follower.user.status !== "OFFLINE"
+                      className={`flex justify-end w-full 2xl:text-xl ${
+                        follower.user.id !== user.user.id
+                          ? follower.user.status !== "OFFLINE"
+                            ? "text-[#00A83F]"
+                            : "text-red-600"
+                          : follower.friend.status !== "OFFLINE"
                           ? "text-[#00A83F]"
                           : "text-red-600"
-                        : follower.friend.status !== "OFFLINE"
-                          ? "text-[#00A83F]"
-                          : "text-red-600"
-                        }`}
+                      }`}
                     >
                       ({" "}
                       {follower.user.id !== user.user.id
@@ -212,7 +215,9 @@ export default function Page(
                       className="rounded-full aspect-square w-8 h-8 object-cover 2xl:w-14 2xl:h-14"
                       unoptimized
                     />
-                    <span className="2xl:text-2xl">{block.friend.userName}</span>
+                    <span className="2xl:text-2xl">
+                      {block.friend.userName}
+                    </span>
                     <div
                       className="flex justify-end w-full 2xl:text-xl"
                       onClick={() => {
@@ -263,28 +268,31 @@ export default function Page(
             <div className="w-[60%] h-[12%] rounded-t-xl bg-primecl flex items-center">
               <Link
                 href="/profile"
-                className={`${pathName === "/profile"
-                  ? "bg-gradient-to-t from-[#000000] from-0% to-segundcl to-100% rounded-tl-xl"
-                  : ""
-                  } hover:bg-gradient-to-t hover:from-[#000000] hover:from-0% hover:to-segundcl hover:to-100% hover:rounded-tl-xl w-1/3 text-2xl text-center h-full flex justify-center items-center border-r border-segundcl 2xl:text-5xl`}
+                className={`${
+                  pathName === "/profile"
+                    ? "bg-gradient-to-t from-[#000000] from-0% to-segundcl to-100% rounded-tl-xl"
+                    : ""
+                } hover:bg-gradient-to-t hover:from-[#000000] hover:from-0% hover:to-segundcl hover:to-100% hover:rounded-tl-xl w-1/3 text-2xl text-center h-full flex justify-center items-center border-r border-segundcl 2xl:text-5xl`}
               >
                 Stats
               </Link>
               <Link
                 href="/profile/achievements"
-                className={`${pathName === "/profile/achievements"
-                  ? "bg-gradient-to-t from-[#000000] from-0% to-segundcl to-100% "
-                  : ""
-                  } hover:bg-gradient-to-t hover:from-[#000000] hover:from-0% hover:to-segundcl hover:to-100% w-1/3 text-2xl text-center h-full flex justify-center items-center border-r border-segundcl 2xl:text-5xl`}
+                className={`${
+                  pathName === "/profile/achievements"
+                    ? "bg-gradient-to-t from-[#000000] from-0% to-segundcl to-100% "
+                    : ""
+                } hover:bg-gradient-to-t hover:from-[#000000] hover:from-0% hover:to-segundcl hover:to-100% w-1/3 text-2xl text-center h-full flex justify-center items-center border-r border-segundcl 2xl:text-5xl`}
               >
                 Achievements
               </Link>
               <Link
                 href="/profile/history"
-                className={`${pathName === "/profile/history"
-                  ? "bg-gradient-to-t from-[#000000] from-0% to-segundcl to-100% rounded-tr-xl"
-                  : ""
-                  } hover:bg-gradient-to-t hover:from-[#000000] hover:from-0% hover:to-segundcl hover:to-100% hover:rounded-tr-xl w-1/3 text-2xl text-center h-full flex justify-center items-center 2xl:text-5xl`}
+                className={`${
+                  pathName === "/profile/history"
+                    ? "bg-gradient-to-t from-[#000000] from-0% to-segundcl to-100% rounded-tr-xl"
+                    : ""
+                } hover:bg-gradient-to-t hover:from-[#000000] hover:from-0% hover:to-segundcl hover:to-100% hover:rounded-tr-xl w-1/3 text-2xl text-center h-full flex justify-center items-center 2xl:text-5xl`}
               >
                 History
               </Link>

@@ -75,7 +75,7 @@ export const useChat = (id: string) => {
     if (roomId) {
       try {
         const res = await axios.post(
-          "http://10.12.1.6:4000/chat/getMessages",
+          "http://localhost:4000/chat/getMessages",
           {
             rid: roomId,
           },
@@ -89,8 +89,7 @@ export const useChat = (id: string) => {
         // updatedChat = data.map((item: any) => item);
         SetChat(data.map((item: any) => item));
         // }
-      } catch (error) {
-      }
+      } catch (error) {}
     }
   };
 
@@ -104,45 +103,47 @@ export const useChat = (id: string) => {
       });
       try {
         const res = await axios.post(
-          "http://10.12.1.6:4000/getUserNameWithId",
+          "http://localhost:4000/getUserNameWithId",
           { id },
           {
             withCredentials: true,
           }
         );
         SetName(res.data);
-      } catch (error) {
-      }
+      } catch (error) {}
       try {
         const res = await axios.post(
-          "http://10.12.1.6:4000/getPictureWithId",
+          "http://localhost:4000/getPictureWithId",
           { id },
           {
             withCredentials: true,
           }
         );
         SetImage(res.data);
-      } catch (error) {
-      }
+      } catch (error) {}
     }
   };
   getName();
 
   const handleKeyDown = (event: any) => {
-    if (event.key === 'Enter') {
+    if (event.key === "Enter") {
       event.preventDefault();
       sendMsg();
     }
-  }
+  };
 
   const sendMsg = () => {
-    if (input.current && input.current.value.length > 0 && input.current.value.trim() !== '') {
+    if (
+      input.current &&
+      input.current.value.length > 0 &&
+      input.current.value.trim() !== ""
+    ) {
       socket?.emit("createChat", {
         rid,
         uid: user.user?.id,
         msg: input.current.value,
       });
-      input.current.value = '';
+      input.current.value = "";
     }
   };
 

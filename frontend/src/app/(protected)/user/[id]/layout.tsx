@@ -49,12 +49,11 @@ export default function Layout({
   useEffect(() => {
     const getFriendRequest = async () => {
       try {
-        const res = await axios.get("http://10.12.1.6:4000/getFriendRequests", {
+        const res = await axios.get("http://localhost:4000/getFriendRequests", {
           withCredentials: true,
         });
         SetInvite(res.data);
-      } catch (error) {
-      }
+      } catch (error) {}
     };
     getFriendRequest();
   }, []);
@@ -62,7 +61,7 @@ export default function Layout({
   const SendRequest = async () => {
     try {
       const res = axios.post(
-        "http://10.12.1.6:4000/sendFriendRequest",
+        "http://localhost:4000/sendFriendRequest",
         { friendId: params.id },
         {
           withCredentials: true,
@@ -70,13 +69,12 @@ export default function Layout({
       );
       SetRequest(true);
       if (friend) friend.isfriend = "cancel";
-    } catch (error) {
-    }
+    } catch (error) {}
   };
   const CancelRequest = async () => {
     try {
       const res = axios.post(
-        "http://10.12.1.6:4000/cancelFriendRequest",
+        "http://localhost:4000/cancelFriendRequest",
         { friendId: params.id },
         {
           withCredentials: true,
@@ -84,13 +82,12 @@ export default function Layout({
       );
       SetRequest(false);
       if (friend) friend.isfriend = "notfriend";
-    } catch (error) {
-    }
+    } catch (error) {}
   };
   const DeclineRequest = async () => {
     try {
       const res = axios.post(
-        "http://10.12.1.6:4000/rejecte",
+        "http://localhost:4000/rejecte",
         { friendId: params.id },
         {
           withCredentials: true,
@@ -99,13 +96,12 @@ export default function Layout({
       SetAccept(false);
       SetRequest(false);
       if (friend) friend.isfriend = "notfriend";
-    } catch (error) {
-    }
+    } catch (error) {}
   };
   const AcceptRequest = async () => {
     try {
       const res = axios.post(
-        "http://10.12.1.6:4000/acc",
+        "http://localhost:4000/acc",
         { friendId: params.id },
         {
           withCredentials: true,
@@ -114,13 +110,12 @@ export default function Layout({
       SetAccept(false);
       SetRequest(false);
       if (friend) friend.isfriend = "friend";
-    } catch (error) {
-    }
+    } catch (error) {}
   };
   const Unfriend = async () => {
     try {
       const res = axios.post(
-        "http://10.12.1.6:4000/unfriend",
+        "http://localhost:4000/unfriend",
         { friendId: params.id },
         {
           withCredentials: true,
@@ -130,27 +125,25 @@ export default function Layout({
       SetRequest(false);
       if (friend) friend.isfriend = "notfriend";
       getFriend();
-    } catch (error) {
-    }
+    } catch (error) {}
   };
   const Block = async () => {
     try {
       const res = axios.post(
-        "http://10.12.1.6:4000/blockUser",
+        "http://localhost:4000/blockUser",
         { friendId: params.id },
         {
           withCredentials: true,
         }
       );
       router.push("/");
-    } catch (error) {
-    }
+    } catch (error) {}
   };
 
   const getFriend = async () => {
     try {
       const res = await axios.post(
-        "http://10.12.1.6:4000/getFriendProfile",
+        "http://localhost:4000/getFriendProfile",
         { id: params.id },
         {
           withCredentials: true,
@@ -158,8 +151,7 @@ export default function Layout({
       );
       if (res.data.ifBlocked) router.push("/not-found");
       else SetFriend(res.data);
-    } catch (error) {
-    }
+    } catch (error) {}
   };
   useEffect(() => {
     getFriend();
@@ -200,7 +192,9 @@ export default function Layout({
             <div className="w-3/5 h-full flex flex-col justify-between px-4">
               <div className="flex flex-col gap-1 2xl:gap-4">
                 <div className="flex justify-between">
-                  <h2 className="text-3xl 2xl:text-5xl">{friend.user.fullName}</h2>
+                  <h2 className="text-3xl 2xl:text-5xl">
+                    {friend.user.fullName}
+                  </h2>
                   <div className="cursos-pointer w-[42%]">
                     {params.id !== user.user?.id &&
                       friend.isfriend === "friend" && (
@@ -234,12 +228,15 @@ export default function Layout({
                   </div>
                 </div>
                 <div className="flex items-center gap-3">
-                  <h3 className="text-xl lowercase 2xl:text-3xl">{friend.user.userName}</h3>
+                  <h3 className="text-xl lowercase 2xl:text-3xl">
+                    {friend.user.userName}
+                  </h3>
                   <h3
-                    className={`${friend.user.status === "OFFLINE"
-                      ? "text-red-600"
-                      : "text-[#00A83F]"
-                      } 2xl:text-xl`}
+                    className={`${
+                      friend.user.status === "OFFLINE"
+                        ? "text-red-600"
+                        : "text-[#00A83F]"
+                    } 2xl:text-xl`}
                   >
                     ( {friend.user.status} )
                   </h3>
@@ -289,24 +286,23 @@ export default function Layout({
                   />
                 </div>
               )}
-              {params.id !== user.user?.id &&
-                friend.isfriend === "friend" && (
-                  <div className="flex justify-end gap-3">
-                    <ProfileButton
-                      color="bg-primecl"
-                      text="Friends"
-                      icon={MdPeopleAlt}
-                      classname="w-1/5 mb-2"
-                    />
-                    <ProfileButton
-                      color="bg-[#6A6666]"
-                      text="Unfriend"
-                      icon={FaUserMinus}
-                      action={Unfriend}
-                      classname="w-1/5 mb-2"
-                    />
-                  </div>
-                )}
+              {params.id !== user.user?.id && friend.isfriend === "friend" && (
+                <div className="flex justify-end gap-3">
+                  <ProfileButton
+                    color="bg-primecl"
+                    text="Friends"
+                    icon={MdPeopleAlt}
+                    classname="w-1/5 mb-2"
+                  />
+                  <ProfileButton
+                    color="bg-[#6A6666]"
+                    text="Unfriend"
+                    icon={FaUserMinus}
+                    action={Unfriend}
+                    classname="w-1/5 mb-2"
+                  />
+                </div>
+              )}
               <div className="relative w-full bg-[#6A6666] rounded-xl text-center text-black self-end 2xl:rounded-2x 2xl:h-10">
                 {friend && (
                   <div
@@ -356,28 +352,31 @@ export default function Layout({
             <div className="w-[60%] h-[12%] rounded-t-xl bg-primecl flex items-center">
               <Link
                 href={`/user/${params.id}`}
-                className={`${pathName === "/user/" + params.id
-                  ? "bg-gradient-to-t from-[#000000] from-0% to-segundcl to-100% rounded-tl-xl"
-                  : ""
-                  } hover:bg-gradient-to-t hover:from-[#000000] hover:from-0% hover:to-segundcl hover:to-100% hover:rounded-tl-xl w-1/3 text-2xl text-center h-full flex justify-center items-center border-r border-segundcl 2xl:text-5xl`}
+                className={`${
+                  pathName === "/user/" + params.id
+                    ? "bg-gradient-to-t from-[#000000] from-0% to-segundcl to-100% rounded-tl-xl"
+                    : ""
+                } hover:bg-gradient-to-t hover:from-[#000000] hover:from-0% hover:to-segundcl hover:to-100% hover:rounded-tl-xl w-1/3 text-2xl text-center h-full flex justify-center items-center border-r border-segundcl 2xl:text-5xl`}
               >
                 Stats
               </Link>
               <Link
                 href={`/user/${params.id}/achievements`}
-                className={`${pathName === "/user/" + params.id + "/achievements"
-                  ? "bg-gradient-to-t from-[#000000] from-0% to-segundcl to-100% "
-                  : ""
-                  } hover:bg-gradient-to-t hover:from-[#000000] hover:from-0% hover:to-segundcl hover:to-100% w-1/3 text-2xl text-center h-full flex justify-center items-center border-r border-segundcl 2xl:text-5xl`}
+                className={`${
+                  pathName === "/user/" + params.id + "/achievements"
+                    ? "bg-gradient-to-t from-[#000000] from-0% to-segundcl to-100% "
+                    : ""
+                } hover:bg-gradient-to-t hover:from-[#000000] hover:from-0% hover:to-segundcl hover:to-100% w-1/3 text-2xl text-center h-full flex justify-center items-center border-r border-segundcl 2xl:text-5xl`}
               >
                 Achievements
               </Link>
               <Link
                 href={`/user/${params.id}/history`}
-                className={`${pathName === "/user/" + params.id + "/history"
-                  ? "bg-gradient-to-t from-[#000000] from-0% to-segundcl to-100% rounded-tr-xl"
-                  : ""
-                  } hover:bg-gradient-to-t hover:from-[#000000] hover:from-0% hover:to-segundcl hover:to-100% hover:rounded-tr-xl w-1/3 text-2xl text-center h-full flex justify-center items-center 2xl:text-5xl`}
+                className={`${
+                  pathName === "/user/" + params.id + "/history"
+                    ? "bg-gradient-to-t from-[#000000] from-0% to-segundcl to-100% rounded-tr-xl"
+                    : ""
+                } hover:bg-gradient-to-t hover:from-[#000000] hover:from-0% hover:to-segundcl hover:to-100% hover:rounded-tr-xl w-1/3 text-2xl text-center h-full flex justify-center items-center 2xl:text-5xl`}
               >
                 History
               </Link>

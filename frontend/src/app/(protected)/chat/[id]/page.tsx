@@ -27,7 +27,10 @@ const Convo = ({ params }: { params: any }) => {
     socket,
     handleKeyDown,
   } = useChat(params.id);
-  const { visible, id, role, r_name, r_id, dm } = useRoomInfo({ rid: params.id, user: user.user });
+  const { visible, id, role, r_name, r_id, dm } = useRoomInfo({
+    rid: params.id,
+    user: user.user,
+  });
   const lastMeassgeRef = useRef<any>(null);
   const [participants, SetParticipants] = useState<userType[]>();
   const pathName = usePathname();
@@ -53,14 +56,17 @@ const Convo = ({ params }: { params: any }) => {
   useEffect(() => {
     const getParticipants = async () => {
       try {
-        const res = await axios.post("http://10.12.1.6:4000/chat/getParticipants", { rid: params.id }, {
-          withCredentials: true,
-        })
+        const res = await axios.post(
+          "http://localhost:4000/chat/getParticipants",
+          { rid: params.id },
+          {
+            withCredentials: true,
+          }
+        );
         const data = res.data;
         SetParticipants(data);
-      } catch (error) {
-      }
-    }
+      } catch (error) {}
+    };
     getParticipants();
   }, [params.id]);
 
@@ -76,11 +82,10 @@ const Convo = ({ params }: { params: any }) => {
 
   if (chat) {
     chat.map((chatie) => {
-      if (chatie.user?.uid !== user.user?.id)
-        friendId = chatie.user?.uid;
-    })
+      if (chatie.user?.uid !== user.user?.id) friendId = chatie.user?.uid;
+    });
   }
-  console.log({chat});
+  console.log({ chat });
   if (dm) {
     return (
       <div className="h-full w-full flex">
@@ -90,7 +95,9 @@ const Convo = ({ params }: { params: any }) => {
               <div className="flex items-center gap-4">
                 <Image
                   loader={() => participants[0].picture || "/placeholder.jpg"}
-                  src={(participants[0].picture as string) || "/placeholder.jpg"}
+                  src={
+                    (participants[0].picture as string) || "/placeholder.jpg"
+                  }
                   alt={"friend pic"}
                   width={40}
                   height={40}
@@ -99,7 +106,9 @@ const Convo = ({ params }: { params: any }) => {
                 />
                 <div>
                   <h2 className="text-xl">{participants[0]?.userName}</h2>
-                  <h3 className="text-sm font-light lowercase">{participants[0]?.status}</h3>
+                  <h3 className="text-sm font-light lowercase">
+                    {participants[0]?.status}
+                  </h3>
                 </div>
               </div>
             )}
@@ -118,7 +127,14 @@ const Convo = ({ params }: { params: any }) => {
                   fill="#CAD2D5"
                 />
               </svg>
-              {showDiv && participants && <ChatSettings dm={dm} role={role} id={params.id} friendId={participants[0]?.id} />}
+              {showDiv && participants && (
+                <ChatSettings
+                  dm={dm}
+                  role={role}
+                  id={params.id}
+                  friendId={participants[0]?.id}
+                />
+              )}
             </div>
           </div>
           <div className="flex flex-col flex-1 bg-segundcl py-2 overflow-scroll scrollbar-hide">
@@ -126,11 +142,12 @@ const Convo = ({ params }: { params: any }) => {
               chat &&
               chat.map((chatie, index) => (
                 <div
-                  className={`${user.user?.id === chatie.user?.uid ||
+                  className={`${
+                    user.user?.id === chatie.user?.uid ||
                     user.user?.id === chatie.uid
-                    ? "self-end my-1 mx-2"
-                    : "my-1 mx-2 self-start"
-                    } ${chatie.msg.length > 50 ? "w-[40%]" : ""}`}
+                      ? "self-end my-1 mx-2"
+                      : "my-1 mx-2 self-start"
+                  } ${chatie.msg.length > 50 ? "w-[40%]" : ""}`}
                   key={index}
                 >
                   <Chatmsg
@@ -141,11 +158,12 @@ const Convo = ({ params }: { params: any }) => {
                     id={chatie.user?.uid}
                     blockReceiver={chatie.user?.user?.blockReceivers}
                     blockSender={chatie.user?.user?.blockSenders}
-                    className={`flex justify-between ${user.user?.id === chatie.user?.uid ||
+                    className={`flex justify-between ${
+                      user.user?.id === chatie.user?.uid ||
                       user.user?.id === chatie.uid
-                      ? "self-end bg-primecl rounded-s-lg rounded-br-lg"
-                      : "bg-quatrocl rounded-e-lg rounded-bl-lg self-start"
-                      }`}
+                        ? "self-end bg-primecl rounded-s-lg rounded-br-lg"
+                        : "bg-quatrocl rounded-e-lg rounded-bl-lg self-start"
+                    }`}
                   />
                 </div>
               ))}
@@ -167,8 +185,7 @@ const Convo = ({ params }: { params: any }) => {
         </div>
       </div>
     );
-  }
-  else if (!dm) {
+  } else if (!dm) {
     if (id) {
       return (
         <div
@@ -215,27 +232,42 @@ const Convo = ({ params }: { params: any }) => {
                 chat &&
                 chat.map((chatie, index) => (
                   <div
-                    className={`${user.user?.id === chatie.user?.uid ||
+                    className={`${
+                      user.user?.id === chatie.user?.uid ||
                       user.user?.id === chatie.uid
-                      ? "self-end my-1 mx-2"
-                      : "my-1 mx-2 self-start"
-                      } ${chatie.msg.length > 50 ? "w-[40%]" : ""}`}
+                        ? "self-end my-1 mx-2"
+                        : "my-1 mx-2 self-start"
+                    } ${chatie.msg.length > 50 ? "w-[40%]" : ""}`}
                     key={index}
                   >
                     {chatie.rid === params.id && chatie.user !== null && (
                       <Chatmsg
-                        room={(chatie.user?.uid === user.user?.id || user.user?.id === chatie.uid) ? false : true}
-                        picture={chatie.user?.user?.picture || chatie.user?.picture}
+                        room={
+                          chatie.user?.uid === user.user?.id ||
+                          user.user?.id === chatie.uid
+                            ? false
+                            : true
+                        }
+                        picture={
+                          chatie.user?.user?.picture || chatie.user?.picture
+                        }
                         id={user.user?.id}
-                        blockReceiver={chatie.user?.user?.blockReceivers || chatie.user?.blockReceivers}
-                        blockSender={chatie.user?.user?.blockSenders || chatie.user?.blockSenders}
+                        blockReceiver={
+                          chatie.user?.user?.blockReceivers ||
+                          chatie.user?.blockReceivers
+                        }
+                        blockSender={
+                          chatie.user?.user?.blockSenders ||
+                          chatie.user?.blockSenders
+                        }
                         text={chatie.msg}
                         time={chatie.msgTime.substring(11, 16)}
-                        className={`flex justify-between ${user.user?.id === chatie.user?.uid ||
+                        className={`flex justify-between ${
+                          user.user?.id === chatie.user?.uid ||
                           user.user?.id === chatie.uid
-                          ? "self-end bg-primecl rounded-s-lg rounded-br-lg"
-                          : "bg-quatrocl rounded-e-lg rounded-bl-lg self-start"
-                          }`}
+                            ? "self-end bg-primecl rounded-s-lg rounded-br-lg"
+                            : "bg-quatrocl rounded-e-lg rounded-bl-lg self-start"
+                        }`}
                       />
                     )}
                   </div>
@@ -247,7 +279,11 @@ const Convo = ({ params }: { params: any }) => {
                 key={params.id}
                 type="text"
                 ref={input}
-                onKeyDown={(e: any) => {if (input.current && input.current.value.trim() !== ''){handleKeyDown(e)}}}
+                onKeyDown={(e: any) => {
+                  if (input.current && input.current.value.trim() !== "") {
+                    handleKeyDown(e);
+                  }
+                }}
                 placeholder="Type a message"
                 className="bg-terserocl rounded-md p-2 px-4 w-5/6 outline-none"
               />
@@ -257,9 +293,8 @@ const Convo = ({ params }: { params: any }) => {
             </div>
           </div>
         </div>
-      )
-    }
-    else if (!id) {
+      );
+    } else if (!id) {
       return (
         <JoinRooms
           picture={image as string}
