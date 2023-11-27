@@ -55,7 +55,7 @@ export class TwoFactorAuthController {
 		if (!isCodeValid)
 			throw new UnauthorizedException('Wrong authentication code');
 		const token = await this.authService.generateToken(req, 'jwt');
-		console.log("token");
+		// console.log("token");
 		return { statusCode: 200, message: 'Authenticated', jwt: token };
 	}
 }

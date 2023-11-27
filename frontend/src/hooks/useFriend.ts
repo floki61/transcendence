@@ -17,7 +17,7 @@ export const useFriend = (id: string) => {
 	useEffect(() => {
 		const getFriend = async () => {
 			try {
-				const res = await axios.post("http://10.12.1.6:4000/getFriendProfile", { id }, {
+				const res = await axios.post("http://localhost:4000/getFriendProfile", { id }, {
 					withCredentials: true,
 				})
 				SetFriend(res.data);

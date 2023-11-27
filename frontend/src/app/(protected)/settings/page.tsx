@@ -20,7 +20,7 @@ export default function Page() {
 
   const updateUser = async () => {
     try {
-      const res = await axios.post("http://10.12.1.6:4000/userSettings", user.user, {
+      const res = await axios.post("http://localhost:4000/userSettings", user.user, {
         withCredentials: true,
       });
       if (res.data === "Username already exists")
@@ -67,7 +67,7 @@ export default function Page() {
       try {
         const formData = new FormData();
         formData.append('avatar', e.target.files[0]);
-        await axios.post("http://10.12.1.6:4000/upload", formData, {
+        await axios.post("http://localhost:4000/upload", formData, {
           withCredentials: true,
           headers: {
             'Content-Type': 'multipart/form-data',
@@ -91,10 +91,10 @@ export default function Page() {
 
   const handleDeleteAccount = async () => {
     try {
-      const res = await axios.post("http://10.12.1.6:4000/deleteAccount", { id: user.user?.id }, {
+      const res = await axios.post("http://localhost:4000/deleteAccount", { id: user.user?.id }, {
         withCredentials: true,
       });
-      window.location.href = 'http://10.12.1.6:3000/login';
+      window.location.href = 'http://localhost:3000/login';
     } catch (error) {
     }
   }

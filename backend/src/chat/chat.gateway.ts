@@ -10,11 +10,12 @@ import { JwtAuthGuard } from 'src/auth/jwt/jwt.guard';
 import { WsGuard } from 'src/auth/tools/ws.guard';
 import { EventEmitter2, OnEvent } from '@nestjs/event-emitter';
 import { subscribe } from 'diagnostics_channel';
+// import * as dotenv from 'dotenv';
 
 
 @WebSocketGateway({
 	namespace: 'chat',
-	cors: { origin: 'http://10.12.1.6:3000', credentials: true },
+	cors: { origin: `http://${process.env.MY_IP}:3000`, credentials: true },
 })
 export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
 	@WebSocketServer()
@@ -37,7 +38,7 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
 					secret: this.config.get('JWT_SECRET_KEY')
 				});
 			if (payload.id) {
-				console.log("chat socket : ", payload.id);
+				// console.log("chat socket : ", payload.id);
 				this.map.set(payload.id, client);
 			} else {
 				client.disconnect();

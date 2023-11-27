@@ -11,6 +11,7 @@ import { toast } from "react-toastify";
 export default function Page({ params }: { params: any }) {
   const [users, SetUsers] = useState<userType[]>();
   const [participants, SetParticipants] = useState<userType[]>();
+  const [bannedUsers, SetBannedUsers] = useState<userType[]>();
   const [selected, SetSelected] = useState<string[]>([""]);
   const router = useRouter();
   const feature = params.settings;
@@ -19,7 +20,7 @@ export default function Page({ params }: { params: any }) {
     const getParticipants = async () => {
       try {
         const res = await axios.post(
-          "http://10.12.1.6:4000/chat/getParticipants",
+          "http://localhost:4000/chat/getParticipants",
           { rid: params.id },
           {
             withCredentials: true,
@@ -35,10 +36,28 @@ export default function Page({ params }: { params: any }) {
   }, [params.id]);
 
   useEffect(() => {
+    const getBannedUsers = async () => {
+      try {
+        const res = await axios.post(
+          "http://localhost:4000/chat/getBannedUsers",
+          { rid: params.id },
+          {
+            withCredentials: true,
+          }
+        );
+        const data = res.data;
+        SetBannedUsers(data);
+      } catch (error) {
+      }
+    };
+    getBannedUsers();
+  }, [params.id]);
+
+  useEffect(() => {
     const getAllUsers = async () => {
       try {
         const res = await axios.post(
-          "http://10.12.1.6:4000/chat/participantNotInRoom",
+          "http://localhost:4000/chat/participantNotInRoom",
           { rid: params.id },
           {
             withCredentials: true,
@@ -112,28 +131,10 @@ export default function Page({ params }: { params: any }) {
       </div>
     );
   } else if (feature === "unbanParticipant") {
-    useEffect(() => {
-      const getBannedUsers = async () => {
-        try {
-          const res = await axios.post(
-            "http://10.12.1.6:4000/chat/getBannedUsers",
-            { rid: params.id },
-            {
-              withCredentials: true,
-            }
-          );
-          const data = res.data;
-          SetParticipants(data);
-        } catch (error) {
-        }
-      };
-      getBannedUsers();
-    }, [params.id]);
-
     return (
       <div className="p-8 h-full w-full">
         <ChatFeatures
-          users={participants}
+          users={bannedUsers}
           title="UnBan Participants in the room"
           button="UnBan"
           checkbox={true}

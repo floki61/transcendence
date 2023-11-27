@@ -25,18 +25,18 @@ export const NotifBar: React.FC<NotifBarProps> = ({
 		setLoading(true);
 		if (requestType === 'play') {
 			try {
-				const res = await axios.post("http://10.12.1.6:4000/acceptPlayRequest", { friendId }, {
+				const res = await axios.post("http://localhost:4000/acceptPlayRequest", { friendId }, {
 					withCredentials: true,
 				})
 			}
 			catch (error) {
 				setLoading(false);
 			}
-			window.location.href = `http://10.12.1.6:3000/game?type=Friend&mode=simple&playerId=${friendId}`;
+			window.location.href = `http://localhost:3000/game?type=Friend&mode=simple&playerId=${friendId}`;
 		}
 		else {
 			try {
-				const res = await axios.post("http://10.12.1.6:4000/acc", { friendId }, {
+				const res = await axios.post("http://localhost:4000/acc", { friendId }, {
 					withCredentials: true,
 				})
 			} catch (error) {
@@ -49,7 +49,7 @@ export const NotifBar: React.FC<NotifBarProps> = ({
 		setLoading(true);
 		if (requestType === 'play') {
 			try {
-				const res = await axios.post("http://10.12.1.6:4000/rejectPlayRequest", { friendId }, {
+				const res = await axios.post("http://localhost:4000/rejectPlayRequest", { friendId }, {
 					withCredentials: true,
 				})
 			}
@@ -59,7 +59,7 @@ export const NotifBar: React.FC<NotifBarProps> = ({
 		}
 		else {
 			try {
-				const res = await axios.post("http://10.12.1.6:4000/rejecte", { friendId }, {
+				const res = await axios.post("http://localhost:4000/rejecte", { friendId }, {
 					withCredentials: true,
 				})
 			}

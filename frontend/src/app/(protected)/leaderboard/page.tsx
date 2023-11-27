@@ -28,7 +28,7 @@ export default function Page() {
 	useEffect(() => {
 		const getLeaderBoard = async () => {
 			try {
-				const res = await axios.get("http://10.12.1.6:4000/getLeaderboard", {
+				const res = await axios.get("http://localhost:4000/getLeaderboard", {
 					withCredentials: true,
 				})
 				SetBoard(res.data);

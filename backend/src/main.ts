@@ -3,12 +3,14 @@ import { AppModule } from './app/app.module';
 import { FileTypeValidator, MaxFileSizeValidator, ParseFilePipe, ValidationPipe } from '@nestjs/common';
 import * as cookieParser from 'cookie-parser';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
+import { config } from "dotenv"
 
+config();
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   app.enableCors({
-    origin: "http://10.12.1.6:3000",
+    origin: `http://${process.env.MY_IP}:3000`,
     credentials: true,
   }
   );

@@ -79,7 +79,7 @@ export class ChatService {
 			},
 		});
 		message = { ...message, msgTime: mssg.msgTime, user: usr };
-		console.log(message.user);
+		// console.log(message.user);
 		return message;
 	}
 
@@ -152,7 +152,7 @@ export class ChatService {
 		if (participant.role === 'OWNER') {
 			throw new UnauthorizedException('Cannot kick owner');
 		}
-		console.log(payload);
+		// console.log(payload);
 		await this.prisma.participant.delete({
 			where: {
 				uid_rid: {
@@ -161,7 +161,7 @@ export class ChatService {
 				},
 			},
 		});
-		console.log(await this.map.size);
+		// console.log(await this.map.size);
 		if (this.map.get(payload.id)) {
 			this.map.get(payload.id).leave(payload.rid);
 		}
@@ -255,7 +255,7 @@ export class ChatService {
 			},
 		});
 		this.eventEmitter.emit('banUser', payload);
-		console.log(user);
+		// console.log(user);
 		return 'Banned user';
 	}
 
@@ -360,7 +360,7 @@ export class ChatService {
 	}
 
 	async muteUser(payload: any) {
-		console.log(payload);
+		// console.log(payload);
 		let getTime = await this.formatDate(payload.duration);
 		let participant = await this.prisma.participant.findUnique({
 			where: {
@@ -636,7 +636,7 @@ export class ChatService {
 						const blocked = await this.getBlockedUsers(user.id);
 						msg = { ...msg, user: user, ...blocked };
 						// console.log('blocked: ', msg);
-						console.log('blocked', msg);
+						// console.log('blocked', msg);
 					} else {
 						console.error(`User not found for participant ID: ${participant.uid}`);
 					}
@@ -676,7 +676,7 @@ export class ChatService {
 			}
 		}
 		if (payload.visibility === 'PROTECTED') {
-			console.log("salam");
+			// console.log("salam");
 			if (!payload.password) {
 				throw new NotFoundException('Password is required in protected room');
 			}

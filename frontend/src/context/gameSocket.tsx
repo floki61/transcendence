@@ -21,7 +21,7 @@ export const GameProvider = ({ children }:{children: React.ReactNode}) => {
     const friendId = query.get('playerId') || '';
  
     useEffect(() => {
-        const newSocket = io('http://10.12.1.6:4000/game', {
+        const newSocket = io('http://localhost:4000/game', {
             withCredentials: true,
         });
         setSocket(newSocket);
@@ -38,10 +38,10 @@ export const GameProvider = ({ children }:{children: React.ReactNode}) => {
             mode,
             friendId,
         }
-        socket.on('connect', () => {
+        socket.off('connect').on('connect', () => {
             socket.emit('gameMode', game);
         });
-        socket.on('redirect', (url) => {
+        socket.off('redirect').on('redirect', (url) => {
             window.location.href = url;
         });
         return () => {

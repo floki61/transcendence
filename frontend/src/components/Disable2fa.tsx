@@ -20,7 +20,7 @@ const Disable2fa : React.FC<Disable2faProps> = ({
 
 	const turnOff = async () => {
 		try {
-			await axios.post("http://10.12.1.6:4000/2fa/turn-off", 0, {
+			await axios.post("http://localhost:4000/2fa/turn-off", 0, {
 					withCredentials: true,
 				});
 			} catch (error) {

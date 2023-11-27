@@ -43,7 +43,7 @@ export const ChatFeatures: React.FC<ChatFeaturesProps> = ({
 	useEffect(() => {
 		const getRoom = async () => {
 			try {
-				const res = await axios.post("http://10.12.1.6:4000/chat/getRoomById", {rid}, {
+				const res = await axios.post("http://localhost:4000/chat/getRoomById", {rid}, {
 					withCredentials: true,
 				})
 				SetRoom(res.data);
@@ -62,7 +62,7 @@ export const ChatFeatures: React.FC<ChatFeaturesProps> = ({
 			selected.shift();
 		if (mode === "add") {
 			try {
-				const res = await axios.post("http://10.12.1.6:4000/chat/addParticipant", { uids: selected, rid, }, {
+				const res = await axios.post("http://localhost:4000/chat/addParticipant", { uids: selected, rid, }, {
 					withCredentials: true,
 				})
 				router.push(`/chat/${rid}`);
@@ -71,7 +71,7 @@ export const ChatFeatures: React.FC<ChatFeaturesProps> = ({
 		}
 		else if (mode === "kick") {
 			try {
-				const res = await axios.post("http://10.12.1.6:4000/chat/kickUser", { id: selected[0], rid }, {
+				const res = await axios.post("http://localhost:4000/chat/kickUser", { id: selected[0], rid }, {
 					withCredentials: true,
 				})
 				router.push(`/chat/${rid}`);
@@ -81,7 +81,7 @@ export const ChatFeatures: React.FC<ChatFeaturesProps> = ({
 		}
 		else if (mode === "mute") {
 			try {
-				const res = await axios.post("http://10.12.1.6:4000/chat/muteUser", {duration: time, uid: selected[0], rid }, {
+				const res = await axios.post("http://localhost:4000/chat/muteUser", {duration: time, uid: selected[0], rid }, {
 					withCredentials: true,
 				})
 				router.push(`/chat/${rid}`);
@@ -90,7 +90,7 @@ export const ChatFeatures: React.FC<ChatFeaturesProps> = ({
 		}
 		else if (mode === "ban") {
 			try {
-				const res = await axios.post("http://10.12.1.6:4000/chat/banUser", { uid: selected[0], rid }, {
+				const res = await axios.post("http://localhost:4000/chat/banUser", { uid: selected[0], rid }, {
 					withCredentials: true,
 				})
 				router.push(`/chat/${rid}`);
@@ -99,7 +99,7 @@ export const ChatFeatures: React.FC<ChatFeaturesProps> = ({
 		}
 		else if (mode === "unban") {
 			try {
-				const res = await axios.post("http://10.12.1.6:4000/chat/unbanUser", { uid: selected[0], rid }, {
+				const res = await axios.post("http://localhost:4000/chat/unbanUser", { uid: selected[0], rid }, {
 					withCredentials: true,
 				})
 				router.push(`/chat/${rid}`);
@@ -108,7 +108,7 @@ export const ChatFeatures: React.FC<ChatFeaturesProps> = ({
 		}
 		else if (mode === "give") {
 			try {
-				const res = await axios.post("http://10.12.1.6:4000/chat/giveAdmin", { uid: selected[0], rid }, {
+				const res = await axios.post("http://localhost:4000/chat/giveAdmin", { uid: selected[0], rid }, {
 					withCredentials: true,
 				})
 				router.push(`/chat/${rid}`);
@@ -117,7 +117,7 @@ export const ChatFeatures: React.FC<ChatFeaturesProps> = ({
 		}
 		else if (mode === "delete") {
 			try {
-				const res = await axios.post("http://10.12.1.6:4000/chat/deleteRoom", { uid: selected[0], rid }, {
+				const res = await axios.post("http://localhost:4000/chat/deleteRoom", { uid: selected[0], rid }, {
 					withCredentials: true,
 				})
 				router.push("/");
@@ -126,7 +126,7 @@ export const ChatFeatures: React.FC<ChatFeaturesProps> = ({
 		}
 		else if (mode === "leave") {
 			try {
-				const res = await axios.post("http://10.12.1.6:4000/chat/leaveRoom", { uid: user.user?.id, rid }, {
+				const res = await axios.post("http://localhost:4000/chat/leaveRoom", { uid: user.user?.id, rid }, {
 					withCredentials: true,
 				})
 				router.push("/");
@@ -137,7 +137,7 @@ export const ChatFeatures: React.FC<ChatFeaturesProps> = ({
 			if (name) {
 				try {
 					const inputValue = name.current?.value;
-					const res = await axios.post("http://10.12.1.6:4000/chat/changeRoomName", { name: inputValue, rid }, {
+					const res = await axios.post("http://localhost:4000/chat/changeRoomName", { name: inputValue, rid }, {
 						withCredentials: true,
 					})
 					router.push(`/chat/${rid}`);
@@ -151,7 +151,7 @@ export const ChatFeatures: React.FC<ChatFeaturesProps> = ({
 				pass = password.current?.value;
 			}
 			try {
-				const res = await axios.post("http://10.12.1.6:4000/chat/changeVisibility", {password: pass, visibility: visible, rid }, {
+				const res = await axios.post("http://localhost:4000/chat/changeVisibility", {password: pass, visibility: visible, rid }, {
 					withCredentials: true,
 				})
 				router.push(`/chat/${rid}`);
@@ -164,7 +164,7 @@ export const ChatFeatures: React.FC<ChatFeaturesProps> = ({
 				pass = password.current?.value;
 			}
 			try {
-				const res = await axios.post("http://10.12.1.6:4000/chat/changePassword", {password: pass, rid }, {
+				const res = await axios.post("http://localhost:4000/chat/changePassword", {password: pass, rid }, {
 					withCredentials: true,
 				})
 				router.push(`/chat/${rid}`);

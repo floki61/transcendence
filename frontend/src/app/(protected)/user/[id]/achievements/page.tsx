@@ -22,7 +22,7 @@ export default function Page({params}: {params: any}) {
       if (params) {
         try {
           const res = await axios.post(
-            "http://10.12.1.6:4000/getAchievements",
+            "http://localhost:4000/getAchievements",
             { id: params.id },
             {
               withCredentials: true,

@@ -43,7 +43,7 @@ export default function Page(
   useEffect(() => {
     const getFollwers = async () => {
       try {
-        const res = await axios.get("http://10.12.1.6:4000/getFriends", {
+        const res = await axios.get("http://localhost:4000/getFriends", {
           withCredentials: true,
         });
         SetFollowers(res.data);
@@ -56,7 +56,7 @@ export default function Page(
   useEffect(() => {
     const getBlockedList = async () => {
       try {
-        const res = await axios.get("http://10.12.1.6:4000/getBlockedList", {
+        const res = await axios.get("http://localhost:4000/getBlockedList", {
           withCredentials: true,
         });
         setBlocked(res.data);
@@ -69,7 +69,7 @@ export default function Page(
   useEffect(() => {
     const getFriend = async () => {
       try {
-        const res = await axios.get("http://10.12.1.6:4000/profile", {
+        const res = await axios.get("http://localhost:4000/profile", {
           withCredentials: true,
         });
         SetUser(res.data);
@@ -82,7 +82,7 @@ export default function Page(
   const UnblockFriend = async (friendId: string) => {
     try {
       const res = await axios.post(
-        "http://10.12.1.6:4000/unblockUser",
+        "http://localhost:4000/unblockUser",
         { friendId },
         {
           withCredentials: true,

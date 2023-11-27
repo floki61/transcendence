@@ -46,10 +46,10 @@ import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
       rootPath: '/backend/uploads/',
       renderPath: '/backend/uploads/',
     }),
-    ThrottlerModule.forRoot([{
-      ttl: 60000,
-      limit: 50,
-    }]),
+    // ThrottlerModule.forRoot([{
+    //   ttl: 60000,
+    //   limit: 60,
+    // }]),
 
   ],
   controllers: [AppController, AuthController, GameController, UsersController],
@@ -58,10 +58,10 @@ import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
       provide: APP_FILTER,
       useClass: ExceptionsFilter,
     },
-    {
-      provide: APP_GUARD,
-      useClass: ThrottlerGuard,
-    },
+    // {
+    //   provide: APP_GUARD,
+    //   useClass: ThrottlerGuard,
+    // },
     UsersGateway,
     GameGateway,
     GameService,

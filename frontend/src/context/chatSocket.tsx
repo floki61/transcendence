@@ -22,7 +22,7 @@ export const ChatProvider = ({
 	const [socket, setSocket] = useState<Socket | null>(null);
 
 	useEffect(() => {
-        const newSocket = io('http://10.12.1.6:4000/chat', {
+        const newSocket = io('http://localhost:4000/chat', {
             withCredentials: true,
         });
         setSocket(newSocket);

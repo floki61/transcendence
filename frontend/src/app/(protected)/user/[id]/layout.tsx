@@ -49,7 +49,7 @@ export default function Layout({
   useEffect(() => {
     const getFriendRequest = async () => {
       try {
-        const res = await axios.get("http://10.12.1.6:4000/getFriendRequests", {
+        const res = await axios.get("http://localhost:4000/getFriendRequests", {
           withCredentials: true,
         });
         SetInvite(res.data);
@@ -62,7 +62,7 @@ export default function Layout({
   const SendRequest = async () => {
     try {
       const res = axios.post(
-        "http://10.12.1.6:4000/sendFriendRequest",
+        "http://localhost:4000/sendFriendRequest",
         { friendId: params.id },
         {
           withCredentials: true,
@@ -76,7 +76,7 @@ export default function Layout({
   const CancelRequest = async () => {
     try {
       const res = axios.post(
-        "http://10.12.1.6:4000/cancelFriendRequest",
+        "http://localhost:4000/cancelFriendRequest",
         { friendId: params.id },
         {
           withCredentials: true,
@@ -90,7 +90,7 @@ export default function Layout({
   const DeclineRequest = async () => {
     try {
       const res = axios.post(
-        "http://10.12.1.6:4000/rejecte",
+        "http://localhost:4000/rejecte",
         { friendId: params.id },
         {
           withCredentials: true,
@@ -105,7 +105,7 @@ export default function Layout({
   const AcceptRequest = async () => {
     try {
       const res = axios.post(
-        "http://10.12.1.6:4000/acc",
+        "http://localhost:4000/acc",
         { friendId: params.id },
         {
           withCredentials: true,
@@ -120,7 +120,7 @@ export default function Layout({
   const Unfriend = async () => {
     try {
       const res = axios.post(
-        "http://10.12.1.6:4000/unfriend",
+        "http://localhost:4000/unfriend",
         { friendId: params.id },
         {
           withCredentials: true,
@@ -136,7 +136,7 @@ export default function Layout({
   const Block = async () => {
     try {
       const res = axios.post(
-        "http://10.12.1.6:4000/blockUser",
+        "http://localhost:4000/blockUser",
         { friendId: params.id },
         {
           withCredentials: true,
@@ -150,7 +150,7 @@ export default function Layout({
   const getFriend = async () => {
     try {
       const res = await axios.post(
-        "http://10.12.1.6:4000/getFriendProfile",
+        "http://localhost:4000/getFriendProfile",
         { id: params.id },
         {
           withCredentials: true,

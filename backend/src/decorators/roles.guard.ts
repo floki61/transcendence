@@ -16,8 +16,8 @@ export class RolesGuard implements CanActivate {
 		const request = context.switchToHttp().getRequest();
 		const body = request.body;
 		const user = request.user;
-		console.log(user.id)
-		console.log(body.rid);
+		// console.log(user.id)
+		// console.log(body.rid);
 		const participant = await this.prima.participant.findFirst({
 			where: {
 				uid: user.id,
@@ -26,7 +26,7 @@ export class RolesGuard implements CanActivate {
 		});
 
 		const userType = participant.role;
-		console.log('userType', userType);
+		// console.log('userType', userType);
 		if (!roles.some(r => r === userType))
 			throw new ForbiddenException('Forbidden');
 		return true;

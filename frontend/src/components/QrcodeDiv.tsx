@@ -25,7 +25,7 @@ const QrcodeDiv: React.FC<QrcodeProps> = ({
 	useEffect(() => {
 	  const fetchData = async () => {
 		try {
-		  const res = await axios.get("http://10.12.1.6:4000/2fa/generate", {
+		  const res = await axios.get("http://localhost:4000/2fa/generate", {
 			withCredentials: true,
 		  });
 		  setQrCode(res.data);
@@ -41,7 +41,7 @@ const QrcodeDiv: React.FC<QrcodeProps> = ({
 	if (input.length === 6) {
 		setLoading(true);
 		try {
-			await axios.post("http://10.12.1.6:4000/2fa/turn-on",
+			await axios.post("http://localhost:4000/2fa/turn-on",
 				{twoFactorAuthenticationCode: input} , {
 				withCredentials: true,
 				});

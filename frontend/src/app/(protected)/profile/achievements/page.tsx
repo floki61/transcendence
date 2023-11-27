@@ -22,7 +22,7 @@ export default function Page() {
       if (user.user) {
         try {
           const res = await axios.post(
-            "http://10.12.1.6:4000/getAchievements",
+            "http://localhost:4000/getAchievements",
             { id: user.user.id },
             {
               withCredentials: true,
