@@ -73,8 +73,7 @@ export default function Page() {
       try {
         const formData = new FormData();
         formData.append("avatar", e.target.files[0]);
-        process.env.NEXT_PUBLIC_SERVER_URL +
-          (await axios.post("/upload", formData, {
+          (await axios.post(process.env.NEXT_PUBLIC_SERVER_URL + "/upload", formData, {
             withCredentials: true,
             headers: {
               "Content-Type": "multipart/form-data",
