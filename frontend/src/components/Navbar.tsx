@@ -28,7 +28,7 @@ export default function Navbar() {
       try {
         const userName = username.current.value;
         const res = await axios.post(
-          "http://localhost:4000/getFriendProfileWithUserName",
+          process.env.NEXT_PUBLIC_SERVER_URL + "/getFriendProfileWithUserName",
           { userName },
           {
             withCredentials: true,

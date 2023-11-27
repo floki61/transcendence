@@ -286,6 +286,7 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
                             }
                         }
                     });
+                    // console.log(game.player1Score)
                     this.gameService.handleAchievements(game);
 
                     console.log('game over');

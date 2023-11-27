@@ -30,14 +30,14 @@ export default function Page() {
     try {
       if (room) {
         const res = await axios.post(
-          "http://localhost:4000/chat/createRoom",
+          process.env.NEXT_PUBLIC_SERVER_URL + "/chat/createRoom",
           room,
           {
             withCredentials: true,
           }
         );
         toast.success("Room Created");
-		router.push("/chat");
+        router.push("/chat");
       }
     } catch (error) {
       toast.error("An error occured while creating the room");
@@ -90,8 +90,10 @@ export default function Page() {
           />
         )}
         <button
-		      disabled={loading}
-          className={`${loading ? "bg-slate-400" : "bg-primecl"} rounded-2xl border w-1/3 self-end mt-auto h-[10%]`}
+          disabled={loading}
+          className={`${
+            loading ? "bg-slate-400" : "bg-primecl"
+          } rounded-2xl border w-1/3 self-end mt-auto h-[10%]`}
           onClick={createRoom}
         >
           Save

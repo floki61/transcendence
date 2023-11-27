@@ -169,7 +169,9 @@ export default function Home() {
               className="aspect-square 2xl:w-[30%]"
             />
             <div className="flex flex-col gap-2 2xl:gap-6 items-center justify-center w-1/2">
-              <h2 className="text-xl text-quatrocl 2xl:text-3xl">{slides[0].title}</h2>
+              <h2 className="text-xl text-quatrocl 2xl:text-3xl">
+                {slides[0].title}
+              </h2>
               <p className="text-sm 2xl:text-2xl">{slides[0].text}</p>
             </div>
           </div>
@@ -181,8 +183,9 @@ export default function Home() {
           </Link>
         </div>
         <div
-          className={`w-[40%] h-full flex flex-col items-center justify-around rounded-xl bg-gradient-to-t from-[#0B2931] from-0% to-[#020C0E] to-20% z-10 absolute left-[30%] right-[30%] border border-quatrocl ${anime ? "animate-appear" : ""
-            }`}
+          className={`w-[40%] h-full flex flex-col items-center justify-around rounded-xl bg-gradient-to-t from-[#0B2931] from-0% to-[#020C0E] to-20% z-10 absolute left-[30%] right-[30%] border border-quatrocl ${
+            anime ? "animate-appear" : ""
+          }`}
         >
           <div className="flex justify-around w-full">
             <Image
@@ -193,7 +196,9 @@ export default function Home() {
               className="aspect-square  2xl:w-[30%]"
             />
             <div className="flex flex-col gap-2 2xl:gap-6 items-center justify-center w-1/2">
-              <h2 className="text-xl text-quatrocl 2xl:text-3xl">{slides[1].title}</h2>
+              <h2 className="text-xl text-quatrocl 2xl:text-3xl">
+                {slides[1].title}
+              </h2>
               <p className="text-sm 2xl:text-2xl">{slides[1].text}</p>
             </div>
           </div>
@@ -214,7 +219,9 @@ export default function Home() {
               className="aspect-square  2xl:w-[30%]"
             />
             <div className="flex flex-col gap-2 2xl:gap-6 items-center justify-center w-1/2">
-              <h2 className="text-xl text-quatrocl 2xl:text-2xl">{slides[2].title}</h2>
+              <h2 className="text-xl text-quatrocl 2xl:text-2xl">
+                {slides[2].title}
+              </h2>
               <p className="text-sm 2xl:text-2xl">{slides[2].text}</p>
             </div>
           </div>
