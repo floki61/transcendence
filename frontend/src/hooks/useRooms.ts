@@ -20,9 +20,12 @@ export const useRooms = () => {
 
   const getUsers = async (friends: FriendType[], setFriends: any) => {
     try {
-      const res = await axios.get("http://localhost:4000/chat/myRooms", {
-        withCredentials: true,
-      });
+      const res = await axios.get(
+        process.env.NEXT_PUBLIC_SERVER_URL + "/chat/myRooms",
+        {
+          withCredentials: true,
+        }
+      );
       const data = res.data;
       if (data.length > 0) {
         setFriends(data);
@@ -33,9 +36,12 @@ export const useRooms = () => {
 
   const getRooms = async (friends: FriendType[], setFriends: any) => {
     try {
-      const res = await axios.get("http://localhost:4000/chat/getAllRooms", {
-        withCredentials: true,
-      });
+      const res = await axios.get(
+        process.env.NEXT_PUBLIC_SERVER_URL + "/chat/getAllRooms",
+        {
+          withCredentials: true,
+        }
+      );
       const data = res.data;
       if (data && data.length > 0) {
         setFriends((prev: any) => {

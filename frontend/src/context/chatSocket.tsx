@@ -17,7 +17,7 @@ export const ChatProvider = ({ children }: { children: React.ReactNode }) => {
   const [socket, setSocket] = useState<Socket | null>(null);
 
   useEffect(() => {
-    const newSocket = io("http://localhost:4000/chat", {
+    const newSocket = io(process.env.NEXT_PUBLIC_SERVER_URL + "/chat", {
       withCredentials: true,
     });
     setSocket(newSocket);

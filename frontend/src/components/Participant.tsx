@@ -51,7 +51,7 @@ export const Participant: React.FC<ParticipantProps> = ({
     setLoading(true);
     try {
       const res = await axios.post(
-        "http://localhost:4000/sendPlaydRequest",
+        process.env.NEXT_PUBLIC_SERVER_URL + "/sendPlaydRequest",
         { friendId: id },
         {
           withCredentials: true,

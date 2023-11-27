@@ -30,7 +30,7 @@ export default function Page() {
     try {
       if (room) {
         const res = await axios.post(
-          "http://localhost:4000/chat/createRoom",
+          process.env.NEXT_PUBLIC_SERVER_URL + "/chat/createRoom",
           room,
           {
             withCredentials: true,

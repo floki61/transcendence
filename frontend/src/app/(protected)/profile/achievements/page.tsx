@@ -22,7 +22,7 @@ export default function Page() {
       if (user.user) {
         try {
           const res = await axios.post(
-            "http://localhost:4000/getAchievements",
+            process.env.NEXT_PUBLIC_SERVER_URL + "/getAchievements",
             { id: user.user.id },
             {
               withCredentials: true,
@@ -38,8 +38,12 @@ export default function Page() {
   const award1 = trophy?.filter((award) => award.achivementName === "1 win");
   const award2 = trophy?.filter((award) => award.achivementName === "3 wins");
   const award3 = trophy?.filter((award) => award.achivementName === "5 wins");
-  const award4 = trophy?.filter((award) => award.achivementName === "Perfect win");
-  const award5 = trophy?.filter((award) => award.achivementName === "kho lbhaym");
+  const award4 = trophy?.filter(
+    (award) => award.achivementName === "Perfect win"
+  );
+  const award5 = trophy?.filter(
+    (award) => award.achivementName === "kho lbhaym"
+  );
   const award6 = trophy?.filter((award) => award.achivementName === "champ");
   const award7 = trophy?.filter((award) => award.achivementName === "3ankoub");
 

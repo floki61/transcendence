@@ -35,7 +35,7 @@ export const useStats = () => {
     if (userId) {
       try {
         const res = await axios.post(
-          "http://localhost:4000/getStats",
+          process.env.NEXT_PUBLIC_SERVER_URL + "/getStats",
           { id: userId },
           {
             withCredentials: true,
@@ -48,7 +48,7 @@ export const useStats = () => {
   const getStatsByMode = async (userId: string, mode: string, SetData: any) => {
     try {
       const res = await axios.post(
-        "http://localhost:4000/getStats",
+        process.env.NEXT_PUBLIC_SERVER_URL + "/getStats",
         { id: userId, mode },
         {
           withCredentials: true,

@@ -27,7 +27,7 @@ export default function Forgotps() {
     e.preventDefault();
     try {
       const response = await axios.post(
-        "http://localhost:4000/2fa/authenticate",
+        process.env.NEXT_PUBLIC_SERVER_URL + "/2fa/authenticate",
         { twoFactorAuthenticationCode: input },
         {
           withCredentials: true,

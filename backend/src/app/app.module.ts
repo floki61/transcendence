@@ -46,10 +46,6 @@ import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
       rootPath: '/backend/uploads/',
       renderPath: '/backend/uploads/',
     }),
-    ThrottlerModule.forRoot([{
-      ttl: 60000,
-      limit: 50,
-    }]),
 
   ],
   controllers: [AppController, AuthController, GameController, UsersController],

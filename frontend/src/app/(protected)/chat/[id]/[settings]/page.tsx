@@ -20,7 +20,7 @@ export default function Page({ params }: { params: any }) {
     const getParticipants = async () => {
       try {
         const res = await axios.post(
-          "http://localhost:4000/chat/getParticipants",
+          process.env.NEXT_PUBLIC_SERVER_URL + "chat/getParticipants",
           { rid: params.id },
           {
             withCredentials: true,
@@ -39,7 +39,7 @@ export default function Page({ params }: { params: any }) {
     const getBannedUsers = async () => {
       try {
         const res = await axios.post(
-          "http://localhost:4000/chat/getBannedUsers",
+          process.env.NEXT_PUBLIC_SERVER_URL + "/chat/getBannedUsers",
           { rid: params.id },
           {
             withCredentials: true,
@@ -56,7 +56,7 @@ export default function Page({ params }: { params: any }) {
     const getAllUsers = async () => {
       try {
         const res = await axios.post(
-          "http://localhost:4000/chat/participantNotInRoom",
+          process.env.NEXT_PUBLIC_SERVER_URL + "/chat/participantNotInRoom",
           { rid: params.id },
           {
             withCredentials: true,

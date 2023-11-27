@@ -49,9 +49,12 @@ export default function Layout({
   useEffect(() => {
     const getFriendRequest = async () => {
       try {
-        const res = await axios.get("http://localhost:4000/getFriendRequests", {
-          withCredentials: true,
-        });
+        const res = await axios.get(
+          process.env.NEXT_PUBLIC_SERVER_URL + "/getFriendRequests",
+          {
+            withCredentials: true,
+          }
+        );
         SetInvite(res.data);
       } catch (error) {}
     };
@@ -61,7 +64,7 @@ export default function Layout({
   const SendRequest = async () => {
     try {
       const res = axios.post(
-        "http://localhost:4000/sendFriendRequest",
+        process.env.NEXT_PUBLIC_SERVER_URL + "/sendFriendRequest",
         { friendId: params.id },
         {
           withCredentials: true,
@@ -74,7 +77,7 @@ export default function Layout({
   const CancelRequest = async () => {
     try {
       const res = axios.post(
-        "http://localhost:4000/cancelFriendRequest",
+        process.env.NEXT_PUBLIC_SERVER_URL + "/cancelFriendRequest",
         { friendId: params.id },
         {
           withCredentials: true,
@@ -87,7 +90,7 @@ export default function Layout({
   const DeclineRequest = async () => {
     try {
       const res = axios.post(
-        "http://localhost:4000/rejecte",
+        process.env.NEXT_PUBLIC_SERVER_URL + "/rejecte",
         { friendId: params.id },
         {
           withCredentials: true,
@@ -101,7 +104,7 @@ export default function Layout({
   const AcceptRequest = async () => {
     try {
       const res = axios.post(
-        "http://localhost:4000/acc",
+        process.env.NEXT_PUBLIC_SERVER_URL + "/acc",
         { friendId: params.id },
         {
           withCredentials: true,
@@ -115,7 +118,7 @@ export default function Layout({
   const Unfriend = async () => {
     try {
       const res = axios.post(
-        "http://localhost:4000/unfriend",
+        process.env.NEXT_PUBLIC_SERVER_URL + "/unfriend",
         { friendId: params.id },
         {
           withCredentials: true,
@@ -130,7 +133,7 @@ export default function Layout({
   const Block = async () => {
     try {
       const res = axios.post(
-        "http://localhost:4000/blockUser",
+        process.env.NEXT_PUBLIC_SERVER_URL + "/blockUser",
         { friendId: params.id },
         {
           withCredentials: true,
@@ -143,7 +146,7 @@ export default function Layout({
   const getFriend = async () => {
     try {
       const res = await axios.post(
-        "http://localhost:4000/getFriendProfile",
+        process.env.NEXT_PUBLIC_SERVER_URL + "/getFriendProfile",
         { id: params.id },
         {
           withCredentials: true,

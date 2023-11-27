@@ -20,7 +20,7 @@ export default function Page() {
   const updateUser = async () => {
     try {
       const res = await axios.post(
-        "http://localhost:4000/userSettings",
+        process.env.NEXT_PUBLIC_SERVER_URL + "/userSettings",
         user.user,
         {
           withCredentials: true,
@@ -73,12 +73,13 @@ export default function Page() {
       try {
         const formData = new FormData();
         formData.append("avatar", e.target.files[0]);
-        await axios.post("http://localhost:4000/upload", formData, {
-          withCredentials: true,
-          headers: {
-            "Content-Type": "multipart/form-data",
-          },
-        });
+        process.env.NEXT_PUBLIC_SERVER_URL +
+          (await axios.post("/upload", formData, {
+            withCredentials: true,
+            headers: {
+              "Content-Type": "multipart/form-data",
+            },
+          }));
         setImageUrl(URL.createObjectURL(e.target.files[0]));
         // user.user.picture = URL.createObjectURL(e.target.files[0]);
         toast.success("Image uploaded successfully");
@@ -97,13 +98,13 @@ export default function Page() {
   const handleDeleteAccount = async () => {
     try {
       const res = await axios.post(
-        "http://localhost:4000/deleteAccount",
+        process.env.NEXT_PUBLIC_SERVER_URL + "/deleteAccount",
         { id: user.user?.id },
         {
           withCredentials: true,
         }
       );
-      window.location.href = "http://localhost:3000/login";
+      window.location.href = process.env.NEXT_PUBLIC_CLIENT_URL + "/login";
     } catch (error) {}
   };
 
