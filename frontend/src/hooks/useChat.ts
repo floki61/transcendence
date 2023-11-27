@@ -84,7 +84,6 @@ export const useChat = (id: string) => {
           }
         );
         const data = res.data;
-        // console.log('dataaaa', data);
         // if (data.length > 0) {
         // updatedChat = data.map((item: any) => item);
         SetChat(data.map((item: any) => item));

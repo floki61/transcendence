@@ -34,32 +34,35 @@ export default function Page() {
     };
     getAwards();
   }, [user.user]);
-  console.log(trophy);
-  const award0 = trophy?.filter((award) => award.achivementName === "1 win");
-  const award1 = trophy?.filter((award) => award.achivementName === "3 wins");
-  const award2 = trophy?.filter((award) => award.achivementName === "5 wins");
+
+  const award1 = trophy?.filter((award) => award.achivementName === "1 win");
+  const award2 = trophy?.filter((award) => award.achivementName === "3 wins");
+  const award3 = trophy?.filter((award) => award.achivementName === "5 wins");
   const award4 = trophy?.filter((award) => award.achivementName === "Perfect win");
   const award5 = trophy?.filter((award) => award.achivementName === "kho lbhaym");
+  const award6 = trophy?.filter((award) => award.achivementName === "champ");
+  const award7 = trophy?.filter((award) => award.achivementName === "3ankoub");
+
   return (
     <div className="w-full h-full">
       <div className="flex items-center justify-around h-1/2 px-4">
         <Award
-          filled={award0[0]?.alreadyAchieved}
-          picture="/newcomer.png"
-          name={award0[0]?.achivementName}
-          date={award0[0]?.createdAt}
-        />
-        <Award
           filled={award1[0]?.alreadyAchieved}
-          picture="/3wins.png"
+          picture="/newcomer.png"
           name={award1[0]?.achivementName}
           date={award1[0]?.createdAt}
         />
         <Award
           filled={award2[0]?.alreadyAchieved}
-          picture="/cyborg.png"
+          picture="/3wins.png"
           name={award2[0]?.achivementName}
           date={award2[0]?.createdAt}
+        />
+        <Award
+          filled={award3[0]?.alreadyAchieved}
+          picture="/cyborg.png"
+          name={award3[0]?.achivementName}
+          date={award3[0]?.createdAt}
         />
         <Award
           filled={award4[0]?.alreadyAchieved}
@@ -76,16 +79,16 @@ export default function Page() {
           date={award5[0]?.createdAt}
         />
         <Award
-          filled={trophy[5]?.alreadyAchieved}
+          filled={award6[0]?.alreadyAchieved}
           picture="/champ.png"
-          name={trophy[5]?.achivementName}
-          date={trophy[5]?.createdAt}
+          name={award6[0]?.achivementName}
+          date={award6[0]?.createdAt}
         />
         <Award
-          filled={trophy[6]?.alreadyAchieved}
+          filled={award7[0]?.alreadyAchieved}
           picture="/spider.png"
-          name={trophy[6]?.achivementName}
-          date={trophy[6]?.createdAt}
+          name={award7[0]?.achivementName}
+          date={award7[0]?.createdAt}
         />
       </div>
     </div>

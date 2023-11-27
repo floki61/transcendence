@@ -245,12 +245,12 @@ export class GameService {
             //         }
             //     });
             // }
-            if (body.player2Score === 0) {
+            if ((body.player2Score === 0 && body.player1Score === 5) || (body.player1Score === 0 && body.player2Score === 5)) {
                 if (await this.checkAchievements(achivement, 'Perfect win')) {
                     await this.prisma.achivement.create({
                         data: {
                             achivementName: 'Perfect win',
-                            uid: id,
+                            uid: body.winnerId,
                             alreadyAchieved: true,
                         }
                     });
@@ -270,7 +270,6 @@ export class GameService {
                     });
 
                 }
-
             }
         }
     }

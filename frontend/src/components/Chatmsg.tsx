@@ -33,12 +33,9 @@ const Chatmsg: React.FC<MsgProps> = ({
   blockSender,
 }) => {
   const classes = `${className}`;
-  // console.log(text ," || ", id );
 
   const result = blockReceiver?.filter((block) => block.uid === id)
   const result2 = blockSender?.filter((block) => block.fid === id)
-  // console.log({result});
-  // console.log({result2});
 
   return (
     <div className="flex gap-2">
