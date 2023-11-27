@@ -230,7 +230,6 @@ export class UsersService {
 				],
 			}
 		})) {
-			console.log("hnaa-------------------------------------")
 			return { friendrequest };
 		}
 		const chatRoom = this.creatChatRoom(userId, friendId);
@@ -376,7 +375,6 @@ export class UsersService {
 					rid: chatroom.id,
 				}
 			});
-			console.log("hnaa-------------------------------------")
 			await this.prisma.chatRoom.delete({
 				where: {
 					id: chatroom.id,
@@ -566,7 +564,6 @@ export class UsersService {
 			},
 		});
 		if (!user) {
-			console.log("hnaa", userId)
 			throw new HttpException('User not found', 404);
 		}
 		const friendship = await this.prisma.friendShip.findFirst({
@@ -594,7 +591,6 @@ export class UsersService {
 			},
 		});
 		if (!user) {
-			console.log("machi hna")
 			throw new HttpException('User not found', 404);
 		}
 		const friendship = await this.prisma.friendShip.findFirst({

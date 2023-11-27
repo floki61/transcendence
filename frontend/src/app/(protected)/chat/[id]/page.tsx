@@ -85,7 +85,7 @@ const Convo = ({ params }: { params: any }) => {
       if (chatie.user?.uid !== user.user?.id) friendId = chatie.user?.uid;
     });
   }
-  console.log({ chat });
+
   if (dm) {
     return (
       <div className="h-full w-full flex">
