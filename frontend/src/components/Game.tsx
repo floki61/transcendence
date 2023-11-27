@@ -46,36 +46,36 @@ const GamePage = () => {
                 if (playersDiv)
                     playersDiv.style.width = `${p.width}px`;
             };
-            socket.on('userData', (data) => {
+            socket.off('userData').on('userData', (data) => {
                 setUsersData(data);
             })
-            socket.on('startBotGame', (data) => {
+            socket.off('startBotGame').on('startBotGame', (data) => {
                 setUsersData(data.userData);
                 setPlayerPos(data.pos);
                 updatePaddles(p, data.gameData);
                 updateBallData(p, data.gameData);
                 setBotGame(true);
             })
-            socket.on('startGame', (data) => {
+            socket.off('startGame').on('startGame', (data) => {
                 setUsersData(data.userData);
                 setPlayerPos(data.pos);
                 updatePaddles(p, data.gameData);
                 updateBallData(p, data.gameData);
                 setLiveGame(true);
             });
-            socket.on('paddlesUpdate', (data) => {
+            socket.off('paddlesUpdate').on('paddlesUpdate', (data) => {
                 updatePaddles(p, data);
             });
-            socket.on('updateBall', (data) => {
+            socket.off('updateBall').on('updateBall', (data) => {
                 updateBallData(p, data);
                 updateScore(data);
                 updatePaddles(p, data);
             });
-            socket.on('gameResult', (data) => {
+            socket.off('gameResult').on('gameResult', (data) => {
                 finishGame();
                 setGameResult(data);
             });
-            socket.on('alreadyConnected', (data) => {
+            socket.off('alreadyConnected').on('alreadyConnected', (data) => {
                 setClient(true);
             })
             p.draw = () => {
@@ -176,7 +176,7 @@ const GamePage = () => {
             const mp5 = new p5(sketch, test.current);
             return mp5.remove;
         }
-    }), [];
+    });
 
     return (
         <div className='flex flex-col items-center justify-center h-full'>

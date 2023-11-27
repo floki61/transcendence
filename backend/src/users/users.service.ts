@@ -152,14 +152,14 @@ export class UsersService {
 		});
 		if (user) {
 			const level = await this.getLevelP(user.level);
-			console.log(level);
+			// console.log(level);
 			return level.level_P;
 		}
 		return null;
 	}
 
 	async sendPlayRequest(userId: string, friendId: string) {
-		console.log({ userId, friendId });
+		// console.log({ userId, friendId });
 		const user = await this.prisma.user.findFirst({
 			where: {
 				id: userId,
@@ -180,7 +180,7 @@ export class UsersService {
 				id: userId,
 			}
 		});
-		console.log({ friendrequest, user });
+		// console.log({ friendrequest, user });
 		return { friendrequest, user };
 	}
 
@@ -230,6 +230,7 @@ export class UsersService {
 				],
 			}
 		})) {
+			// console.log("hnaa-------------------------------------")
 			return { friendrequest };
 		}
 		const chatRoom = this.creatChatRoom(userId, friendId);
@@ -375,6 +376,7 @@ export class UsersService {
 					rid: chatroom.id,
 				}
 			});
+			// console.log("hnaa-------------------------------------")
 			await this.prisma.chatRoom.delete({
 				where: {
 					id: chatroom.id,
@@ -564,6 +566,7 @@ export class UsersService {
 			},
 		});
 		if (!user) {
+			// console.log("hnaa", userId)
 			throw new HttpException('User not found', 404);
 		}
 		const friendship = await this.prisma.friendShip.findFirst({
@@ -591,6 +594,7 @@ export class UsersService {
 			},
 		});
 		if (!user) {
+			// console.log("machi hna")
 			throw new HttpException('User not found', 404);
 		}
 		const friendship = await this.prisma.friendShip.findFirst({
@@ -599,7 +603,7 @@ export class UsersService {
 				friendId: id,
 			},
 		});
-		console.log('isfriend:', friendship ? (friendship.status === 'ACCEPTED' ? 'friend' : 'cancel') : 'notfriend')
+		// console.log('isfriend:', friendship ? (friendship.status === 'ACCEPTED' ? 'friend' : 'cancel') : 'notfriend')
 		return { user, ...await this.getLevelP(user.level), isfriend: friendship ? (friendship.status === 'ACCEPTED' ? 'friend' : 'cancel') : 'notfriend', ifBlocked: await this.getIfBlocked(user.id, id) };
 	}
 

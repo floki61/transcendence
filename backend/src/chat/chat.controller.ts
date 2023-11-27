@@ -40,7 +40,7 @@ export class ChatController {
     @Post('banUser')
     async banUser(@Body() body: any, @Req() req: any) {
         const user = await this.userservice.banUser(body);
-        console.log(user);
+        // console.log(user);
         return user;
     }
 

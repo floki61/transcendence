@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Req, UseGuards, Res, ConsoleLogger } from '@nestjs/common';
+import { Controller, Get, Post, Body, Req, UseGuards, Res, UseFilters } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { FortyTwoGuard, GoogleGuard } from './tools/Guards';
 import { Request, Response} from 'express';
@@ -8,6 +8,7 @@ import { get } from 'http';
 import { ConfigService } from '@nestjs/config';
 import { clearConfigCache } from 'prettier';
 import { UsersService } from 'src/users/users.service';
+import { HttpExceptionFilter } from './exceptin';
 
 @Controller()
 export class AuthController {
@@ -38,6 +39,8 @@ export class AuthController {
 	@Get('login')
 	login() { }
 
+
+	@UseFilters(HttpExceptionFilter)
 	@UseGuards(FortyTwoGuard)
 	@Get('callback')
 	async authRedirect(@Req() req, @Res() res: Response) {
@@ -69,3 +72,8 @@ export class AuthController {
 		return this.authService.signin(data);
 	}
 }	
+
+// function UseFilters(arg0: any): (target: AuthController, propertyKey: "authRedirect", descriptor: TypedPropertyDescriptor<(req: any, res: Response) => Promise<void>>) => void | TypedPropertyDescriptor<...> {
+// 	throw new Error('Function not implemented.');
+// }
+

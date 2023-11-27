@@ -17,7 +17,7 @@ export class GameController {
 	@UseGuards(JwtAuthGuard)
 	@Post('sendPlaydRequest')
 	async sendPlayRequest(@Body() body: any, @Req() req) {
-		console.log(req.body);
+		// console.log(req.body);
 		if (req.user.id == body.friendId)
 			throw new HttpException('You can\'t send play request to yourself', HttpStatus.BAD_REQUEST);
 		// if (!await this.userservice.checkFriendship(req.user.id, body.friendId))
@@ -34,7 +34,7 @@ export class GameController {
 	@UseGuards(JwtAuthGuard)
 	@Post('acceptPlayRequest')
 	async acceptPlayRequest(@Body() body: any, @Req() req) {
-		console.log(req.body);
+		// console.log(req.body);
 		if (req.user.id == body.friendId)
 			throw new HttpException('You can\'t accept play request from yourself', HttpStatus.BAD_REQUEST);
 		// if (!await this.userservice.checkFriendship(req.user.id, body.friendId))

@@ -10,7 +10,8 @@ import { FortyTwoGuard } from 'src/auth/tools/Guards';
 import { JwtAuthGuard } from 'src/auth/jwt/jwt.guard';
 import { UsersService } from 'src/users/users.service';
 
-@WebSocketGateway({ namespace: 'game', cors: true, origin: ['http://localhost:3000/game'] })
+
+@WebSocketGateway({ namespace: 'game', cors: true, origin: [`http://${process.env.MY_IP}:3000/game`] })
 export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
     constructor(private readonly gameService: GameService,
         private jwt: JwtService,
@@ -19,6 +20,7 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
         private event: EventEmitter2,
         private userService: UsersService) {
         setInterval(() => this.matchPlayers(), 1000);
+
     }
 
     @WebSocketServer()
@@ -49,9 +51,9 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
                 return;
             }
             if (payload && payload.id) {
-                console.log(`Client connected: ${payload.id} Socket: ${client.id}`);
+                // console.log(`Client connected: ${payload.id} Socket: ${client.id}`);
                 if (this.connectedClients.has(payload.id)) {
-                    console.log('Client already connected: ' + payload.id);
+                    // console.log('Client already connected: ' + payload.id);
                     client.emit('alreadyConnected');
                 }
                 else {
@@ -89,7 +91,7 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
                 }
             );
             if (payload.id) {
-                console.log(`Client disconnected: ${payload.id} Socket: ${client.id}`);
+                // console.log(`Client disconnected: ${payload.id} Socket: ${client.id}`);
                 if (this.gameService.Queue.get(payload.id) && this.gameService.Queue.get(payload.id).gameType === 'Bot') {
                     this.gameService.Queue.get(payload.id).status = 'finished';
                 }
@@ -118,8 +120,6 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
                             id: this.gameService.Queue.get(payload.id).gameId,
                         },
                         data: {
-                            player1Score: 5,
-                            player2Score: 0,
                             winnerId: this.gameService.Queue.get(payload.id).playWith,
                             loserId: payload.id,
                         }
@@ -318,11 +318,11 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
         await this.gameService.updateBotPaddle(event, this.gameService.Queue.get(id).gameData, this.gameService.Queue.get(id).gameMode);
         if (this.gameService.Queue.get(id))
             this.gameService.Queue.get(id).Socket.emit('paddlesUpdate', this.gameService.Queue.get(id).gameData);
-        console.log('Bot paddle updated');
+        // console.log('Bot paddle updated');
     }
 
     private async startBotGame(id) {
-        console.log(id, this.gameService.Queue.get(id).status);
+        // console.log(id, this.gameService.Queue.get(id).status);
         if (this.gameService.Queue.get(id).status === 'waiting') {
             this.gameService.Queue.get(id).status = 'playing';
             const userData = {
@@ -403,9 +403,9 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
                 break;
             }
             this.matchmakingQueue = this.matchmakingQueue.filter(playerId => playerId !== player1 && playerId !== player2);
-            console.log(this.matchmakingQueue);
-            console.log('Matching players', player1, player2);
-            console.log(this.gameService.Queue.get(player1).gameMode);
+            // console.log(this.matchmakingQueue);
+            // console.log('Matching players', player1, player2);
+            // console.log(this.gameService.Queue.get(player1).gameMode);
             var game = await this.prisma.game.create({
                 data: {
                     mode: this.gameService.Queue.get(player1).gameMode,
