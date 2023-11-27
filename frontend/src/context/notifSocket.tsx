@@ -20,7 +20,7 @@ export const NotifProvider = ({ children }: { children: React.ReactNode }) => {
   const [socket, setSocket] = useState<Socket | null>(null);
 
   useEffect(() => {
-    const newSocket = io("http://localhost:4000/users", {
+    const newSocket = io(process.env.NEXT_PUBLIC_SERVER_URL + "/users", {
       withCredentials: true,
     });
     setSocket(newSocket);
@@ -54,7 +54,9 @@ export const NotifProvider = ({ children }: { children: React.ReactNode }) => {
       );
     });
     socket.off("PlayRequestAccepted").on("PlayRequestAccepted", (friendId) => {
-      window.location.href = `http://localhost:3000/game?type=Friend&mode=simple&playerId=${friendId}`;
+      window.location.href =
+        process.env.NEXT_PUBLIC_CLIENT_URL +
+        `/game?type=Friend&mode=simple&playerId=${friendId}`;
     });
     socket
       .off("PlayRequestRejected")

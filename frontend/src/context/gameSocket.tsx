@@ -21,7 +21,7 @@ export const GameProvider = ({ children }: { children: React.ReactNode }) => {
   const friendId = query.get("playerId") || "";
 
   useEffect(() => {
-    const newSocket = io("http://localhost:4000/game", {
+    const newSocket = io(process.env.NEXT_PUBLIC_SERVER_URL + "/game", {
       withCredentials: true,
     });
     setSocket(newSocket);

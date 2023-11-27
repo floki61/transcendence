@@ -35,9 +35,12 @@ export const UserProvider = ({ children }: any) => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const res = await axios.get("http://localhost:4000/getUser", {
-          withCredentials: true,
-        });
+        const res = await axios.get(
+          process.env.NEXT_PUBLIC_SERVER_URL + "/getUser",
+          {
+            withCredentials: true,
+          }
+        );
         setUser(res.data);
       } catch (error) {}
     };

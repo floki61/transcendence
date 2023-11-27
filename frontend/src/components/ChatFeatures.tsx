@@ -43,7 +43,7 @@ export const ChatFeatures: React.FC<ChatFeaturesProps> = ({
     const getRoom = async () => {
       try {
         const res = await axios.post(
-          "http://localhost:4000/chat/getRoomById",
+          process.env.NEXT_PUBLIC_SERVER_URL + "/chat/getRoomById",
           { rid },
           {
             withCredentials: true,
@@ -64,7 +64,7 @@ export const ChatFeatures: React.FC<ChatFeaturesProps> = ({
     if (mode === "add") {
       try {
         const res = await axios.post(
-          "http://localhost:4000/chat/addParticipant",
+          process.env.NEXT_PUBLIC_SERVER_URL + "/chat/addParticipant",
           { uids: selected, rid },
           {
             withCredentials: true,
@@ -75,7 +75,7 @@ export const ChatFeatures: React.FC<ChatFeaturesProps> = ({
     } else if (mode === "kick") {
       try {
         const res = await axios.post(
-          "http://localhost:4000/chat/kickUser",
+          process.env.NEXT_PUBLIC_SERVER_URL + "/chat/kickUser",
           { id: selected[0], rid },
           {
             withCredentials: true,
@@ -88,7 +88,7 @@ export const ChatFeatures: React.FC<ChatFeaturesProps> = ({
     } else if (mode === "mute") {
       try {
         const res = await axios.post(
-          "http://localhost:4000/chat/muteUser",
+          process.env.NEXT_PUBLIC_SERVER_URL + "/chat/muteUser",
           { duration: time, uid: selected[0], rid },
           {
             withCredentials: true,
@@ -99,7 +99,7 @@ export const ChatFeatures: React.FC<ChatFeaturesProps> = ({
     } else if (mode === "ban") {
       try {
         const res = await axios.post(
-          "http://localhost:4000/chat/banUser",
+          process.env.NEXT_PUBLIC_SERVER_URL + "/chat/banUser",
           { uid: selected[0], rid },
           {
             withCredentials: true,
@@ -110,7 +110,7 @@ export const ChatFeatures: React.FC<ChatFeaturesProps> = ({
     } else if (mode === "unban") {
       try {
         const res = await axios.post(
-          "http://localhost:4000/chat/unbanUser",
+          process.env.NEXT_PUBLIC_SERVER_URL + "/chat/unbanUser",
           { uid: selected[0], rid },
           {
             withCredentials: true,
@@ -121,7 +121,7 @@ export const ChatFeatures: React.FC<ChatFeaturesProps> = ({
     } else if (mode === "give") {
       try {
         const res = await axios.post(
-          "http://localhost:4000/chat/giveAdmin",
+          process.env.NEXT_PUBLIC_SERVER_URL + "/chat/giveAdmin",
           { uid: selected[0], rid },
           {
             withCredentials: true,
@@ -132,7 +132,7 @@ export const ChatFeatures: React.FC<ChatFeaturesProps> = ({
     } else if (mode === "delete") {
       try {
         const res = await axios.post(
-          "http://localhost:4000/chat/deleteRoom",
+          process.env.NEXT_PUBLIC_SERVER_URL + "/chat/deleteRoom",
           { uid: selected[0], rid },
           {
             withCredentials: true,
@@ -143,7 +143,7 @@ export const ChatFeatures: React.FC<ChatFeaturesProps> = ({
     } else if (mode === "leave") {
       try {
         const res = await axios.post(
-          "http://localhost:4000/chat/leaveRoom",
+          process.env.NEXT_PUBLIC_SERVER_URL + "/chat/leaveRoom",
           { uid: user.user?.id, rid },
           {
             withCredentials: true,
@@ -156,7 +156,7 @@ export const ChatFeatures: React.FC<ChatFeaturesProps> = ({
         try {
           const inputValue = name.current?.value;
           const res = await axios.post(
-            "http://localhost:4000/chat/changeRoomName",
+            process.env.NEXT_PUBLIC_SERVER_URL + "/chat/changeRoomName",
             { name: inputValue, rid },
             {
               withCredentials: true,
@@ -172,7 +172,7 @@ export const ChatFeatures: React.FC<ChatFeaturesProps> = ({
       }
       try {
         const res = await axios.post(
-          "http://localhost:4000/chat/changeVisibility",
+          process.env.NEXT_PUBLIC_SERVER_URL + "/chat/changeVisibility",
           { password: pass, visibility: visible, rid },
           {
             withCredentials: true,
@@ -187,7 +187,7 @@ export const ChatFeatures: React.FC<ChatFeaturesProps> = ({
       }
       try {
         const res = await axios.post(
-          "http://localhost:4000/chat/changePassword",
+          process.env.NEXT_PUBLIC_SERVER_URL + "/chat/changePassword",
           { password: pass, rid },
           {
             withCredentials: true,

@@ -75,7 +75,7 @@ export const useChat = (id: string) => {
     if (roomId) {
       try {
         const res = await axios.post(
-          "http://localhost:4000/chat/getMessages",
+          process.env.NEXT_PUBLIC_SERVER_URL + "/chat/getMessages",
           {
             rid: roomId,
           },
@@ -102,7 +102,7 @@ export const useChat = (id: string) => {
       });
       try {
         const res = await axios.post(
-          "http://localhost:4000/getUserNameWithId",
+          process.env.NEXT_PUBLIC_SERVER_URL + "/getUserNameWithId",
           { id },
           {
             withCredentials: true,
@@ -112,7 +112,7 @@ export const useChat = (id: string) => {
       } catch (error) {}
       try {
         const res = await axios.post(
-          "http://localhost:4000/getPictureWithId",
+          process.env.NEXT_PUBLIC_SERVER_URL + "/getPictureWithId",
           { id },
           {
             withCredentials: true,

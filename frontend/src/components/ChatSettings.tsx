@@ -19,7 +19,7 @@ export const ChatSettings: React.FC<ChatSettingsProps> = ({
   const Challenge = async () => {
     try {
       const res = await axios.post(
-        "http://localhost:4000/sendPlaydRequest",
+        process.env.NEXT_PUBLIC_SERVER_URL + "/sendPlaydRequest",
         { friendId },
         {
           withCredentials: true,
@@ -30,7 +30,7 @@ export const ChatSettings: React.FC<ChatSettingsProps> = ({
   const Block = async () => {
     try {
       const res = axios.post(
-        "http://localhost:4000/blockUser",
+        process.env.NEXT_PUBLIC_SERVER_URL + "/blockUser",
         { friendId },
         {
           withCredentials: true,

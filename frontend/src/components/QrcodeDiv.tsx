@@ -20,9 +20,12 @@ const QrcodeDiv: React.FC<QrcodeProps> = ({ state, twofactor, OnClick }) => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const res = await axios.get("http://localhost:4000/2fa/generate", {
-          withCredentials: true,
-        });
+        const res = await axios.get(
+          process.env.NEXT_PUBLIC_SERVER_URL + "/2fa/generate",
+          {
+            withCredentials: true,
+          }
+        );
         setQrCode(res.data);
       } catch (error) {}
     };
@@ -35,7 +38,7 @@ const QrcodeDiv: React.FC<QrcodeProps> = ({ state, twofactor, OnClick }) => {
       setLoading(true);
       try {
         await axios.post(
-          "http://localhost:4000/2fa/turn-on",
+          process.env.NEXT_PUBLIC_SERVER_URL + "/2fa/turn-on",
           { twoFactorAuthenticationCode: input },
           {
             withCredentials: true,

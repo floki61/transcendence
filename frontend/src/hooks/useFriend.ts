@@ -18,7 +18,7 @@ export const useFriend = (id: string) => {
     const getFriend = async () => {
       try {
         const res = await axios.post(
-          "http://localhost:4000/getFriendProfile",
+          process.env.NEXT_PUBLIC_SERVER_URL + "/getFriendProfile",
           { id },
           {
             withCredentials: true,

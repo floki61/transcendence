@@ -43,9 +43,12 @@ export default function Page(
   useEffect(() => {
     const getFollwers = async () => {
       try {
-        const res = await axios.get("http://localhost:4000/getFriends", {
-          withCredentials: true,
-        });
+        const res = await axios.get(
+          process.env.NEXT_PUBLIC_SERVER_URL + "/getFriends",
+          {
+            withCredentials: true,
+          }
+        );
         SetFollowers(res.data);
       } catch (error) {}
     };
@@ -55,9 +58,12 @@ export default function Page(
   useEffect(() => {
     const getBlockedList = async () => {
       try {
-        const res = await axios.get("http://localhost:4000/getBlockedList", {
-          withCredentials: true,
-        });
+        const res = await axios.get(
+          process.env.NEXT_PUBLIC_SERVER_URL + "/getBlockedList",
+          {
+            withCredentials: true,
+          }
+        );
         setBlocked(res.data);
       } catch (error) {}
     };
@@ -67,9 +73,12 @@ export default function Page(
   useEffect(() => {
     const getFriend = async () => {
       try {
-        const res = await axios.get("http://localhost:4000/profile", {
-          withCredentials: true,
-        });
+        const res = await axios.get(
+          process.env.NEXT_PUBLIC_SERVER_URL + "/profile",
+          {
+            withCredentials: true,
+          }
+        );
         SetUser(res.data);
       } catch (error) {}
     };
@@ -79,7 +88,7 @@ export default function Page(
   const UnblockFriend = async (friendId: string) => {
     try {
       const res = await axios.post(
-        "http://localhost:4000/unblockUser",
+        process.env.NEXT_PUBLIC_SERVER_URL + "/unblockUser",
         { friendId },
         {
           withCredentials: true,

@@ -35,7 +35,7 @@ const JoinRooms: React.FC<ConvoProps> = ({
     if (input && input.current) password = input.current.value;
     try {
       const res = await axios.post(
-        "http://localhost:4000/chat/joinRoom",
+        process.env.NEXT_PUBLIC_SERVER_URL + "/chat/joinRoom",
         {
           password,
           uid: user?.id,
