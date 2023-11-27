@@ -60,7 +60,7 @@ export default function Home() {
   useEffect(() => {
     const getFriendRequest = async () => {
       try {
-        const res = await axios.get("http://localhost:4000/getFriendRequests", {
+        const res = await axios.get(`${process.env.NEXT_PUBLIC_SERVER_URL}/getFriendRequests`, {
           withCredentials: true,
         });
         SetInvite(res.data);

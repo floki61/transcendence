@@ -102,6 +102,8 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
 	@SubscribeMessage('createChat')
 	async create(@MessageBody() createChatDto: CreateChatDto, client: Socket) {
 		const message = await this.chatService.create(createChatDto, client);
+		if (message === '')
+			return ;
 		this.server.to(createChatDto.rid).emit('message', message);
 		this.updateChatRooms({ uid: message.uid });
 		return message;

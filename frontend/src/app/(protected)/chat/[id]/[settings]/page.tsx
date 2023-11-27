@@ -20,7 +20,7 @@ export default function Page({ params }: { params: any }) {
     const getParticipants = async () => {
       try {
         const res = await axios.post(
-          process.env.NEXT_PUBLIC_SERVER_URL + "chat/getParticipants",
+          process.env.NEXT_PUBLIC_SERVER_URL + "/chat/getParticipants",
           { rid: params.id },
           {
             withCredentials: true,

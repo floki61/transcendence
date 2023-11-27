@@ -41,7 +41,8 @@ export class ChatService {
 			throw new NotFoundException('User not found in chat room');
 		}
 		if (participant.isBanned === true || participant.isMuted === true) {
-			throw new UnauthorizedException('User cannot send message');
+			// throw new UnauthorizedException('User cannot send message');
+			return '';
 		}
 		var mssg;
 		try {

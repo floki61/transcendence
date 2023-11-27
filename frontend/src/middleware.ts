@@ -58,10 +58,10 @@ export async function middleware(request: NextRequest) {
   if (
     request.nextUrl.pathname === "/" ||
     request.nextUrl.pathname === "/settings" ||
-    request.nextUrl.pathname === "/profile" ||
-    request.nextUrl.pathname === "/chat" ||
+    request.nextUrl.pathname.startsWith("/profile") ||
+    request.nextUrl.pathname.startsWith("/chat") ||
     request.nextUrl.pathname === "/leaderboard" || 
-    request.nextUrl.pathname.startsWith("/user/") ||
+    request.nextUrl.pathname.startsWith("/user") ||
     request.nextUrl.pathname === "/game"
   ) {
     if (jwt === undefined)

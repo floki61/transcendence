@@ -51,20 +51,13 @@ export class UsersController {
     @UseGuards(JwtAuthGuard)
     @Post('userSettings')
     userSettings(@Req() req, @Body() data) {
-<<<<<<< HEAD
         // console.log(data);
-=======
->>>>>>> b4479686e1308996e524f2d57f5df7a835b46323
         return this.userservice.updateUser(req, data);
     }
 
     @UseGuards(JwtAuthGuard)
     @Post('sendFriendRequest')
     async sendFriendRequest(@Body() body: any, @Req() req) {
-<<<<<<< HEAD
-        // console.log('------------------------------------', req.body)
-=======
->>>>>>> b4479686e1308996e524f2d57f5df7a835b46323
         if (req.user.id == req.body.friendId)
             throw new HttpException('You can\'t send friend request to yourself', HttpStatus.BAD_REQUEST);
         if (await this.userservice.checkFriendship(req.user.id, req.body.friendId))
