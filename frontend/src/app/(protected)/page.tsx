@@ -12,27 +12,32 @@ import { MdOutlineKeyboardDoubleArrowRight } from "react-icons/md";
 import { HiArchiveBox } from "react-icons/hi2";
 import { toast } from "react-toastify";
 
+
+import SSS1 from "/public/reverse.png"
+import SSS2 from "/public/livemode.png"
+import SSS3 from "/public/blackhole.png"
+
 export default function Home() {
   const [invites, SetInvite] = useState<InviteType[]>([]);
   const [anime, setAnime] = useState(true);
   const [slides, setSlides] = useState([
     {
       title: "REVERSE MODE",
-      image: "/reverse.png",
+      image: SSS1,
       text: "Bored of the default mode, why don't you try a game with different rules. Start a game to find out !!",
       link: "game?type=Live&mode=reverse",
       width: 180,
     },
     {
       title: "LIVE MODE",
-      image: "/livemode.png",
+      image: SSS2,
       text: "Face random players around the globe, and prove that you are the master of ping pong",
       link: "game?type=Live&mode=simple",
       width: 180,
     },
     {
       title: "HIDDEN MODE",
-      image: "/blackhole.png",
+      image: SSS3,
       text: "If you can't see it, this doesn't mean that it doesn't exist. Let's see if you can handle a mode that challenge your senses",
       link: "game?type=Live&mode=hidden",
       width: 180,
@@ -164,9 +169,8 @@ export default function Home() {
             <Image
               src={slides[0].image}
               alt="slide image"
-              width={slides[0].width}
-              height={slides[0].width}
-              className="aspect-square 2xl:w-[30%]"
+              className="w-[30%]"
+              priority
             />
             <div className="flex flex-col gap-2 2xl:gap-6 items-center justify-center w-1/2">
               <h2 className="text-xl text-quatrocl 2xl:text-3xl">
@@ -191,9 +195,8 @@ export default function Home() {
             <Image
               src={slides[1].image}
               alt="slide image"
-              width={slides[1].width}
-              height={slides[1].width}
-              className="aspect-square  2xl:w-[30%]"
+              className="w-[30%]"
+              priority
             />
             <div className="flex flex-col gap-2 2xl:gap-6 items-center justify-center w-1/2">
               <h2 className="text-xl text-quatrocl 2xl:text-3xl">
@@ -214,9 +217,8 @@ export default function Home() {
             <Image
               src={slides[2].image}
               alt="slide image"
-              width={slides[2].width}
-              height={slides[2].width}
-              className="aspect-square  2xl:w-[30%]"
+              className="w-[30%]"
+              priority
             />
             <div className="flex flex-col gap-2 2xl:gap-6 items-center justify-center w-1/2">
               <h2 className="text-xl text-quatrocl 2xl:text-2xl">

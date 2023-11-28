@@ -22,8 +22,8 @@ services:
     depends_on:
       - db
     volumes:
-      - /Users/abayar/Desktop/transcendence/backend/src:/backend/src
-      - /Users/abayar/Desktop/transcendence/backend/uploads:/backend/uploads
+      - /Users/sfarhan/Desktop/transcendence/backend/src:/backend/src
+      - /Users/sfarhan/Desktop/transcendence/backend/uploads:/backend/uploads
   frontend:
     container_name: frontend
     env_file:
@@ -35,7 +35,7 @@ services:
     depends_on:
       - backend
     volumes:
-      - /Users/abayar/Desktop/transcendence/frontend/src:/frontend/src
+      - /Users/sfarhan/Desktop/transcendence/frontend/src:/frontend/src
 
 volumes:
   vdb:

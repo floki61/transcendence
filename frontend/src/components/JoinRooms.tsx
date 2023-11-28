@@ -5,6 +5,7 @@ import { ChatType } from "@/hooks/useChat";
 import { userType } from "@/context/userContext";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+import { toast } from "react-toastify";
 
 export interface ConvoProps {
   picture: string;
@@ -48,6 +49,7 @@ const JoinRooms: React.FC<ConvoProps> = ({
       router.push("/chat");
     } catch (error) {
       setLoading(false);
+      toast.error('Password invalid')
     }
   };
 

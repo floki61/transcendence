@@ -2,6 +2,7 @@ import {
 	Injectable,
 	NotFoundException,
 	UnauthorizedException,
+	HttpException,
 } from '@nestjs/common';
 import { CreateChatDto } from './dto/create-chat.dto';
 import { UpdateChatDto } from './dto/update-chat.dto';
@@ -38,10 +39,11 @@ export class ChatService {
 		});
 
 		if (!participant) {
-			throw new NotFoundException('User not found in chat room');
+			// return ''; new NotFoundException('User not found in chat room');
+			return '';
 		}
-		if (participant.isBanned === true || participant.isMuted === true) {
-			// throw new UnauthorizedException('User cannot send message');
+		if (participant.isBanned === true || participant.isMuted === true || createChatDto.msg.length > 1000) {
+			// return ''; new UnauthorizedException('User cannot send message');
 			return '';
 		}
 		var mssg;
@@ -92,20 +94,20 @@ export class ChatService {
 			},
 		});
 		if (!room) {
-			throw new NotFoundException('Chat room not found');
+			return 'room not found'
 		}
-		if (room.is_DM === true) throw new NotFoundException('Chat room is DM');
+		if (room.is_DM === true) return 'chat room is DM';
 		if (room.visibility === 'PROTECTED') {
-			if (!payload.password) {
-				throw new NotFoundException('Password is required in protected room');
+			if (!payload.password || payload.password.length < 4) {
+				throw new HttpException('Password is invalide', 400);
 			}
 			const isMatch = await argon.verify(room.password, payload.password);
 			if (!isMatch) {
-				throw new UnauthorizedException('Wrong password');
+				throw new HttpException('Password is invalide', 400);
 			}
 		}
 		if (room.visibility === 'PRIVATE') {
-			throw new UnauthorizedException('Private room');
+			return ''; new UnauthorizedException('Private room');
 		}
 		const user = await this.prisma.user.findUnique({
 			where: {
@@ -113,7 +115,7 @@ export class ChatService {
 			},
 		});
 		if (!user) {
-			throw new NotFoundException('User not found');
+			return ''; new NotFoundException('User not found');
 		}
 		// console.log('payload', payload)
 		const participant = await this.prisma.participant.create({
@@ -137,7 +139,7 @@ export class ChatService {
 			},
 		});
 		if (!room) {
-			throw new NotFoundException('Chat room not found');
+			return ''; new NotFoundException('Chat room not found');
 		}
 		const participant = await this.prisma.participant.findUnique({
 			where: {
@@ -148,10 +150,10 @@ export class ChatService {
 			},
 		});
 		if (!participant) {
-			throw new NotFoundException('User not found in chat room');
+			return ''; new NotFoundException('User not found in chat room');
 		}
 		if (participant.role === 'OWNER') {
-			throw new UnauthorizedException('Cannot kick owner');
+			return ''; new UnauthorizedException('Cannot kick owner');
 		}
 		// console.log(payload);
 		await this.prisma.participant.delete({
@@ -179,10 +181,15 @@ export class ChatService {
 			},
 		});
 		if (!user) {
-			throw new NotFoundException('User not found');
+			return ''; new NotFoundException('User not found');
 		}
-		if (!payload.name) {
+		if (!/^[a-zA-Z0-9 -]{3,30}$/.test(payload.name)) {
 			throw new NotFoundException('name not found');
+		}
+		if (payload.visibility === 'PROTECTED') {
+			if (!payload.password || payload.password.length < 4) {
+				throw new HttpException('Password is required in protected room', 400);
+			}
 		}
 		var room = await this.prisma.chatRoom.create({
 			data: {
@@ -198,8 +205,8 @@ export class ChatService {
 			},
 		});
 		if (payload.visibility === 'PROTECTED') {
-			if (!payload.password) {
-				throw new NotFoundException('Password is required in protected room');
+			if (!payload.password || payload.password.length < 4) {
+				return ''; new NotFoundException('Password is required in protected room');
 			}
 			const hash = await argon.hash(payload.password);
 			room = await this.prisma.chatRoom.update({
@@ -239,10 +246,10 @@ export class ChatService {
 			},
 		});
 		if (!participant) {
-			throw new NotFoundException('User not found in chat room');
+			return ''; new NotFoundException('User not found in chat room');
 		}
 		if (participant.role === 'OWNER') {
-			throw new UnauthorizedException('Cannot ban owner');
+			return ''; new UnauthorizedException('Cannot ban owner');
 		}
 		let user = await this.prisma.participant.update({
 			where: {
@@ -271,7 +278,7 @@ export class ChatService {
 			},
 		});
 		if (!participant) {
-			throw new NotFoundException('User not found in chat room');
+			return ''; new NotFoundException('User not found in chat room');
 		}
 		await this.prisma.participant.update({
 			where: {
@@ -299,7 +306,7 @@ export class ChatService {
 			},
 		});
 		if (!room) {
-			throw new NotFoundException('Chat room not found');
+			return ''; new NotFoundException('Chat room not found');
 		}
 		const participant = await this.prisma.participant.findUnique({
 			where: {
@@ -310,7 +317,7 @@ export class ChatService {
 			},
 		});
 		if (!participant) {
-			throw new NotFoundException('User not found in chat room');
+			return ''; new NotFoundException('User not found in chat room');
 		}
 		await this.prisma.participant.delete({
 			where: {
@@ -335,10 +342,10 @@ export class ChatService {
 			},
 		});
 		if (!room) {
-			throw new NotFoundException('Chat room not found');
+			return ''; new NotFoundException('Chat room not found');
 		}
 		// if (room.participants.length > 1) {
-		// 	throw new UnauthorizedException(
+		// 	return ''; new UnauthorizedException(
 		// 		'Cannot delete room with more than 1 participant',
 		// 	);
 		// }
@@ -372,10 +379,10 @@ export class ChatService {
 			},
 		});
 		if (!participant) {
-			throw new NotFoundException('User not found in chat room');
+			return ''; new NotFoundException('User not found in chat room');
 		}
 		if (participant.role === 'OWNER') {
-			throw new UnauthorizedException('Cannot mute owner');
+			return ''; new UnauthorizedException('Cannot mute owner');
 		}
 		participant = await this.prisma.participant.update({
 			where: {
@@ -443,7 +450,7 @@ export class ChatService {
 			},
 		});
 		if (!participant) {
-			throw new NotFoundException('User not found in chat room');
+			return ''; new NotFoundException('User not found in chat room');
 		}
 		await this.prisma.participant.update({
 			where: {
@@ -554,7 +561,7 @@ export class ChatService {
 			},
 		});
 		if (!room) {
-			throw new NotFoundException('Chat room not found');
+			return ''; new NotFoundException('Chat room not found');
 		}
 		// console.log(room);
 		return room;
@@ -567,7 +574,7 @@ export class ChatService {
 			},
 		});
 		if (!user) {
-			throw new NotFoundException('User not found');
+			return ''; new NotFoundException('User not found');
 		}
 		const blocked = await this.prisma.block.findMany({
 			where: {
@@ -613,7 +620,7 @@ export class ChatService {
 			},
 		});
 		if (payload.id === null) {
-			throw new Error('ID must not be null');
+			return ''; new Error('ID must not be null');
 		}
 		for (let msg of message) {
 			if (msg.userId) {
@@ -665,21 +672,21 @@ export class ChatService {
 			},
 		});
 		if (!room) {
-			throw new NotFoundException('Chat room not found');
+			return ''; new NotFoundException('Chat room not found');
 		}
 		if (room.visibility === 'PROTECTED') {
 			if (!payload.password) {
-				throw new NotFoundException('Password is required in protected room');
+				return ''; new NotFoundException('Password is required in protected room');
 			}
 			const isMatch = await argon.verify(room.password, payload.password);
 			if (!isMatch) {
-				throw new UnauthorizedException('Wrong password');
+				return ''; new UnauthorizedException('Wrong password');
 			}
 		}
 		if (payload.visibility === 'PROTECTED') {
 			// console.log("salam");
-			if (!payload.password) {
-				throw new NotFoundException('Password is required in protected room');
+			if (!payload.password || payload.password.length < 4) {
+				throw new HttpException('Password is invalide', 400);
 			}
 			const hash = await argon.hash(payload.password);
 			await this.prisma.chatRoom.update({
@@ -705,13 +712,15 @@ export class ChatService {
 	}
 
 	async changeRoomName(payload: any) {
+		if (!/^[a-zA-Z0-9 -]{3,30}$/.test(payload.name))
+			throw new HttpException('Bad request', 400);
 		const room = await this.prisma.chatRoom.findUnique({
 			where: {
 				id: payload.rid,
 			},
 		});
 		if (!room) {
-			throw new NotFoundException('Chat room not found');
+			return ''; new NotFoundException('Chat room not found');
 		}
 		await this.prisma.chatRoom.update({
 			where: {
@@ -731,13 +740,14 @@ export class ChatService {
 			},
 		});
 		if (!room) {
-			throw new NotFoundException('Chat room not found');
+			return ''; new NotFoundException('Chat room not found');
 		}
 		if (room.visibility !== 'PROTECTED') {
-			throw new NotFoundException('Room is not protected');
+			
+			return ''; new NotFoundException('Room is not protected');
 		}
-		if (!payload.password) {
-			throw new NotFoundException('Password is required in protected room');
+		if (!payload.password || payload.password.length < 4) {
+			throw new HttpException('Password is invalide', 400);
 		}
 		const hash = await argon.hash(payload.password);
 		await this.prisma.chatRoom.update({
@@ -758,7 +768,7 @@ export class ChatService {
 			},
 		});
 		if (!room) {
-			throw new NotFoundException('Chat room not found');
+			return ''; new NotFoundException('Chat room not found');
 		}
 		const participant = await this.prisma.participant.findUnique({
 			where: {
@@ -769,13 +779,13 @@ export class ChatService {
 			},
 		});
 		if (!participant) {
-			throw new NotFoundException('User not found in chat room');
+			return ''; new NotFoundException('User not found in chat room');
 		}
 		if (participant.role === 'OWNER') {
-			throw new UnauthorizedException('Cannot give admin to owner');
+			return ''; new UnauthorizedException('Cannot give admin to owner');
 		}
 		if (room.is_DM === true) {
-			throw new UnauthorizedException('Cannot give admin to DM');
+			return ''; new UnauthorizedException('Cannot give admin to DM');
 		}
 		await this.prisma.participant.update({
 			where: {
@@ -798,7 +808,7 @@ export class ChatService {
 			},
 		});
 		if (!user) {
-			throw new NotFoundException('User not found');
+			return ''; new NotFoundException('User not found');
 		}
 		return await user.picture;
 	}
@@ -810,7 +820,7 @@ export class ChatService {
 			},
 		});
 		if (!room) {
-			throw new NotFoundException('Chat room not found');
+			return ''; new NotFoundException('Chat room not found');
 		}
 		for (let uid of payload.uids) {
 			const participant = await this.prisma.participant.findUnique({
@@ -822,7 +832,7 @@ export class ChatService {
 				},
 			});
 			if (participant) {
-				throw new UnauthorizedException('User already in chat room');
+				return ''; new UnauthorizedException('User already in chat room');
 			}
 			let newParticipant = await this.prisma.participant.create({
 				data: {
@@ -839,7 +849,7 @@ export class ChatService {
 		// 	},
 		// });
 		// if (!user) {
-		// 	throw new NotFoundException('User not found');
+		// 	return ''; new NotFoundException('User not found');
 		// }
 		// const participant = await this.prisma.participant.findUnique({
 		// 	where: {
@@ -850,7 +860,7 @@ export class ChatService {
 		// 	},
 		// });
 		// if (participant) {
-		// 	throw new UnauthorizedException('User already in chat room');
+		// 	return ''; new UnauthorizedException('User already in chat room');
 		// }
 		// const newParticipant = await this.prisma.participant.create({
 		// 	data: {
@@ -887,7 +897,7 @@ export class ChatService {
 			},
 		});
 		if (!room) {
-			throw new NotFoundException('Chat room not found');
+			return ''; new NotFoundException('Chat room not found');
 		}
 		return room;
 	}

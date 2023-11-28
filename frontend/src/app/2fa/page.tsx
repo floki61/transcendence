@@ -46,13 +46,16 @@ export default function Forgotps() {
 
   return (
     <div className="flex h-screen bg-white text-black">
-      <Image
-        src={"/forgot.jpeg"}
-        alt={"forgot"}
-        width={500}
-        height={400}
-        className="object-cover max-md:hidden"
-      />
+      <div className="h-screen w-[35%] relative">
+        <Image
+          src={"/forgot.jpeg"}
+          alt={"forgot"}
+          fill
+          sizes="100%"
+          className="object-cover max-md:hidden 2xl:w-[35%]"
+          priority
+        />
+      </div>
       <form
         className="flex flex-1 py-8 px-40 flex-col items-center gap-6 overflow-hidden max-xl:px-4 max-xl:gap-4"
         onSubmit={send2fa}
@@ -77,7 +80,6 @@ export default function Forgotps() {
             Please confirm your account by entering the authorization code sent
             to you.
           </p>
-          {/* <Loginput holder="Email" type="text" className="w-full"/> */}
           <input
             className="text-center py-3 w-full h-12 rounded-md bg-slate-100 outline-quatrocl"
             type="text"
@@ -90,16 +92,6 @@ export default function Forgotps() {
             text={loading ? "Sending..." : "Send"}
             className="bg-black text-white rounded-3xl w-3/4 max-xl:w-[70%]  h-14 cursor-pointer"
           />
-        </div>
-        <div className="text-xl">
-          <p>
-            Dont you have an account ?
-            <Link href={"signup"}>
-              <span className="underline font-semibold cursor-pointer">
-                Sign up
-              </span>
-            </Link>
-          </p>
         </div>
       </form>
     </div>

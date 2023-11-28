@@ -27,7 +27,6 @@ const GamePage = () => {
     const test = useRef<HTMLDivElement>(null);
     const [usersData, setUsersData] = useState<usersData>();
     const playersDiv = document.getElementById('players');
-    const [borderColor, setBorderColor] = useState('#213D46');
     const [playerPos, setPlayerPos] = useState(null);
     initResult();
     useEffect(() => {
@@ -37,7 +36,7 @@ const GamePage = () => {
             p.setup = () => {
                 canvas = p.createCanvas(p.windowWidth / 2, p.windowHeight / 2);
                 canvas.addClass("border-4 rounded-md bg-gray-800");
-                canvas.style('border-color', borderColor);
+                canvas.style('border-color', "#213D46");
                 if (playersDiv)
                     playersDiv.style.width = `${p.width}px`;
             };
@@ -176,7 +175,9 @@ const GamePage = () => {
             const mp5 = new p5(sketch, test.current);
             return mp5.remove;
         }
-    });
+
+
+    }, [socket, usersData, client, playerPos, playersDiv]);
 
     return (
         <div className='flex flex-col items-center justify-center h-full'>

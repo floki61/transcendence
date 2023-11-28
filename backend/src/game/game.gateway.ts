@@ -204,20 +204,20 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
                     if (this.gameService.Queue.get(id))
                         await this.determineGameResult(id);
                     this.gameService.Queue.get(id).status = 'finished';
-                    // if (this.gameService.checkAchievements(
-                    //     await this.prisma.achivement.findMany({
-                    //         where: {
-                    //             uid: id,
-                    //         }
-                    //     }), 'Bot')) {
-                    //     await this.prisma.achivement.create({
-                    //         data: {
-                    //             uid: id,
-                    //             achivementName: 'Bot',
-                    //             alreadyAchieved: true,
-                    //         }
-                    //     });
-                    // }
+                    if (this.gameService.checkAchievements(
+                        await this.prisma.achivement.findMany({
+                            where: {
+                                uid: id,
+                            }
+                        }), 'Cyborg')) {
+                        await this.prisma.achivement.create({
+                            data: {
+                                uid: id,
+                                achivementName: 'Cyborg',
+                                alreadyAchieved: true,
+                            }
+                        });
+                    }
                     break;
                 }
             }

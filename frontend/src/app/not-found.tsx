@@ -13,13 +13,16 @@ export default function Notfound() {
 					<Link href="/" className='px-8 my-8 h-8 border-2 bg-white rounded-xl flex justify-center items-center'>Go to Home</Link>
 				</div>
 			</div>
-			<Image
-				src="/404.jpeg"
-				alt="Not-found"
-				width={600}
-				height={400}
-				className='object-cover max-lg:hidden'
-			/>
+			<div className='relative h-screen w-[50%]'>
+				<Image
+					src="/404.jpeg"
+					alt="Not-found"
+					fill
+					sizes='100%'
+					className='object-cover max-lg:hidden'
+					priority
+				/>
+			</div>
 		</div>
 	);
 }

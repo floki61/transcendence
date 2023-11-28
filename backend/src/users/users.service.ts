@@ -32,19 +32,13 @@ export class UsersService {
 		// console.log(user, 'hhhhh');
 		return user ? true : false;
 	}
-	async updateUser(req, data: any) {
-		if (data.phoneNumber)
+		async updateUser(req, data: any) {
+			if ((data.phoneNumber && !/^\d{10}$/.test(data.phoneNumber)) || ((data.country) && !/^$|^[a-zA-Z]{3,15}$/.test(data.country)))
+				throw new HttpException('Bad request', 400);
+			if (data.phoneNumber)
 			this.updateUserPhoneNumber(req, data);
 		if (data.country)
-			this.updateUserCountry(req, data);
-		// await this.prisma.user.update({
-		// 	where: {
-		// 		id: req.user.id,
-		// 	},
-		// 	data: {
-		// 		picture: data.picture,
-		// 	},
-		// });
+		this.updateUserCountry(req, data);
 		return await this.updateUserName(req, data.userName);
 	}
 
@@ -58,7 +52,9 @@ export class UsersService {
 			},
 		});
 	}
-	async updateUserName(req, data: any) {
+		async updateUserName(req, data: any) {
+		if (!/^[a-zA-Z][a-zA-Z-]{3,16}$/.test(data))
+			throw new HttpException('Bad request', 400);
 		const user = await this.prisma.user.findUnique({
 			where: {
 				id: req.user.id,
@@ -587,7 +583,13 @@ export class UsersService {
 		return { user, ...await this.getLevelP(user.level), isfriend: friendship ? (friendship.status === 'ACCEPTED' ? 'friend' : 'cancel') : 'notfriend', ifBlocked: await this.getIfBlocked(userId, id) };
 	}
 
+	// testRegex(regex: RegExp, value: string): boolean {
+	// 	return regex.test(value);
+	// }
+
 	async getFriendProfileWithUserName(userName: string, id: string) {
+		if (!/^[a-zA-Z][a-zA-Z0-9-]{3,16}$/.test(userName))
+			throw new HttpException('Bad request', 400);
 		const user = await this.prisma.user.findFirst({
 			where: {
 				userName,

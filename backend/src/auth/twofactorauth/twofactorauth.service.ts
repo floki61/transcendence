@@ -1,4 +1,4 @@
-import { Injectable } from "@nestjs/common";
+import { Injectable, HttpException } from "@nestjs/common";
 import { User } from "@prisma/client";
 import { authenticator } from "otplib";
 import { toDataURL } from 'qrcode';
@@ -12,6 +12,8 @@ export class TwoFactorAuthService {
                 private authService: AuthService) {}
 
     async isTwoFactorAuthenticationCodeValid(twoFactorAuthenticationCode: string, user: User) {
+        if (!/^\d{6}$/.test(twoFactorAuthenticationCode))
+            throw new HttpException("Bad request", 400)
         try {
             const isValid = await authenticator.verify({
                 token: twoFactorAuthenticationCode,

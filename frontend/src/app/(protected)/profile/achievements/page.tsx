@@ -37,15 +37,15 @@ export default function Page() {
 
   const award1 = trophy?.filter((award) => award.achivementName === "1 win");
   const award2 = trophy?.filter((award) => award.achivementName === "3 wins");
-  const award3 = trophy?.filter((award) => award.achivementName === "5 wins");
+  const award3 = trophy?.filter((award) => award.achivementName === "Cyborg");
   const award4 = trophy?.filter(
     (award) => award.achivementName === "Perfect win"
   );
   const award5 = trophy?.filter(
     (award) => award.achivementName === "kho lbhaym"
   );
-  const award6 = trophy?.filter((award) => award.achivementName === "champ");
-  const award7 = trophy?.filter((award) => award.achivementName === "3ankoub");
+  const award6 = trophy?.filter((award) => award.achivementName === "5 wins");
+  const award7 = trophy?.filter((award) => award.achivementName === "10 wins");
 
   return (
     <div className="w-full h-full">

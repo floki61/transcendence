@@ -163,7 +163,9 @@ export const ChatFeatures: React.FC<ChatFeaturesProps> = ({
             }
           );
           router.push(`/chat/${rid}`);
-        } catch (error) {}
+        } catch (error) {
+          toast.error('name invalid');
+        }
       }
     } else if (mode === "changeVisible") {
       let pass;
@@ -179,7 +181,9 @@ export const ChatFeatures: React.FC<ChatFeaturesProps> = ({
           }
         );
         router.push(`/chat/${rid}`);
-      } catch (error) {}
+      } catch (error) {
+        toast.error('password invalid');
+      }
     } else if (mode === "changePasswd") {
       let pass;
       if (password) {
@@ -194,7 +198,9 @@ export const ChatFeatures: React.FC<ChatFeaturesProps> = ({
           }
         );
         router.push(`/chat/${rid}`);
-      } catch (error) {}
+      } catch (error) {
+        toast.error('password invalid');
+      }
     }
   };
 

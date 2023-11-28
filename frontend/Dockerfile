@@ -6,7 +6,7 @@ COPY . .
 
 RUN npm i
 
-# RUN chmod +x script.sh
-
 CMD ["npm", "run", "dev"]
-# CMD ["sh","script.sh" ]
+
+# RUN chmod +x script.sh
+# CMD ["sh","script.sh"]

@@ -4,15 +4,17 @@ import Link from "next/link";
 
 export default function Login() {
   return (
-    <div className="flex h-full overflow-hidden bg-white">
-      <Image
-        src={"/login.gif"}
-        alt={"loginpage"}
-        width={500}
-        height={400}
-        className="object-cover max-md:hidden 2xl:w-[35%]"
-        priority={true}
-      />
+    <div className="flex h-full w-full overflow-hidden bg-white">
+      <div className="h-screen w-[35%] relative">
+        <Image
+          src={"/login.gif"}
+          alt={"loginpage"}
+          fill
+          sizes="100%"
+          className="object-cover max-md:hidden 2xl:w-[35%]"
+          priority={true}
+        />
+      </div>
       <form className="flex py-12 max-md:py-3  max-md:px-3 flex-col flex-1 h-full items-center justify-around gap-5">
         <svg
           xmlns="http://www.w3.org/2000/svg"

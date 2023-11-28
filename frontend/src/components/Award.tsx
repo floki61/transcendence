@@ -22,6 +22,7 @@ export const Award: React.FC<AwardProps> = ({ picture, filled, name, date }) => 
               height={160}
               width={160}
               title={"Award earned after " + (name ? name : "???")}
+              priority
             />
             <p>{name}</p>
           </div>

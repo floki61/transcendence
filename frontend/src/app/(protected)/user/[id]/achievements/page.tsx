@@ -35,52 +35,64 @@ export default function Page({ params }: { params: any }) {
     getAwards();
   }, []);
 
+  const award1 = trophy?.filter((award) => award.achivementName === "1 win");
+  const award2 = trophy?.filter((award) => award.achivementName === "3 wins");
+  const award3 = trophy?.filter((award) => award.achivementName === "Cyborg");
+  const award4 = trophy?.filter(
+    (award) => award.achivementName === "Perfect win"
+  );
+  const award5 = trophy?.filter(
+    (award) => award.achivementName === "kho lbhaym"
+  );
+  const award6 = trophy?.filter((award) => award.achivementName === "5 wins");
+  const award7 = trophy?.filter((award) => award.achivementName === "10 wins");
+
   return (
     <div className="w-full h-full">
       <div className="flex items-center justify-around h-1/2 px-4">
         <Award
-          filled={trophy[0]?.alreadyAchieved}
+          filled={award1[0]?.alreadyAchieved}
           picture="/newcomer.png"
-          name={trophy[0]?.achivementName}
-          date={trophy[0]?.createdAt}
+          name={award1[0]?.achivementName}
+          date={award1[0]?.createdAt}
         />
         <Award
-          filled={trophy[1]?.alreadyAchieved}
+          filled={award2[0]?.alreadyAchieved}
           picture="/3wins.png"
-          name={trophy[1]?.achivementName}
-          date={trophy[1]?.createdAt}
+          name={award2[0]?.achivementName}
+          date={award2[0]?.createdAt}
         />
         <Award
-          filled={trophy[2]?.alreadyAchieved}
+          filled={award3[0]?.alreadyAchieved}
           picture="/cyborg.png"
-          name={trophy[2]?.achivementName}
-          date={trophy[2]?.createdAt}
+          name={award3[0]?.achivementName}
+          date={award3[0]?.createdAt}
         />
         <Award
-          filled={trophy[3]?.alreadyAchieved}
+          filled={award4[0]?.alreadyAchieved}
           picture="/octopus.png"
-          name={trophy[3]?.achivementName}
-          date={trophy[3]?.createdAt}
+          name={award4[0]?.achivementName}
+          date={award4[0]?.createdAt}
         />
       </div>
       <div className="flex items-center justify-around h-1/2 px-4">
         <Award
-          filled={trophy[4]?.alreadyAchieved}
+          filled={award5[0]?.alreadyAchieved}
           picture="/Ping_Pong-removebg-preview (1).png"
-          name={trophy[4]?.achivementName}
-          date={trophy[4]?.createdAt}
+          name={award5[0]?.achivementName}
+          date={award5[0]?.createdAt}
         />
         <Award
-          filled={trophy[5]?.alreadyAchieved}
+          filled={award6[0]?.alreadyAchieved}
           picture="/champ.png"
-          name={trophy[5]?.achivementName}
-          date={trophy[5]?.createdAt}
+          name={award6[0]?.achivementName}
+          date={award6[0]?.createdAt}
         />
         <Award
-          filled={trophy[6]?.alreadyAchieved}
+          filled={award7[0]?.alreadyAchieved}
           picture="/spider.png"
-          name={trophy[6]?.achivementName}
-          date={trophy[6]?.createdAt}
+          name={award7[0]?.achivementName}
+          date={award7[0]?.createdAt}
         />
       </div>
     </div>

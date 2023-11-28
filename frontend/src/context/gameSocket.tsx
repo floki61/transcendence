@@ -41,7 +41,7 @@ export const GameProvider = ({ children }: { children: React.ReactNode }) => {
     socket.on("connect", () => {
       socket.emit("gameMode", game);
     });
-    socket.on("redirect", (url) => {
+    socket.on("redirect", (url: string) => {
       window.location.href = url;
     });
     return () => {
