@@ -62,7 +62,6 @@ export class UsersGateway implements OnGatewayConnection, OnGatewayDisconnect {
 			client.disconnect();
 		}
 	}
-
 	findKeyByValue<K, V>(map: Map<K, V>, targetValue: V): K | undefined {
 		const entry = [...map.entries()].find(([key, value]) => value === targetValue);
 		return entry ? entry[0] : undefined;

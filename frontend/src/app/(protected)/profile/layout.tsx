@@ -12,6 +12,10 @@ import { userType } from "@/context/userContext";
 import { ProfileButton } from "@/components/ProfileButton";
 import { MdPeopleAlt } from "react-icons/md";
 
+// import Img1 from "/public/table.png"
+// import Img2 from "/public/paddle.png"
+// import Img3 from "/public/trophy.png"
+
 export interface ListType {
   friendRequests: {
     friendId: string;
@@ -94,7 +98,7 @@ export default function Page(
           withCredentials: true,
         }
       );
-      router.push("/profile");
+      router.push("/user/"+friendId);
     } catch (error) {}
   };
 
@@ -244,36 +248,36 @@ export default function Page(
             </div>
           </div>
           <div className="flex-1 flex flex-col items-center relative">
-            {pathName === "/profile" && (
+            {/* {pathName === "/profile" && (
               <Image
-                src="/paddle.png"
+                src={Img2}
                 alt="paddle"
-                width={170}
-                height={170}
                 className="absolute place-self-end"
                 priority
+                width={170}
+                height={170}
               />
             )}
             {pathName === "/profile/achievements" && (
               <Image
-                src="/trophy.png"
+                src={Img3}
                 alt="trophy"
-                width={170}
-                height={170}
                 className="absolute place-self-end z-10 animate-pulse"
                 priority
+                width={170}
+                height={170}
               />
             )}
             {pathName === "/profile/history" && (
               <Image
-                src="/table.png"
+                src={Img1}
                 alt="table"
                 width={170}
                 height={170}
-                className="absolute place-self-end opacity-70 aspect-square"
+                className="absolute place-self-end opacity-70"
                 priority
               />
-            )}
+            )} */}
             <div className="w-[60%] h-[12%] rounded-t-xl bg-primecl flex items-center">
               <Link
                 href="/profile"

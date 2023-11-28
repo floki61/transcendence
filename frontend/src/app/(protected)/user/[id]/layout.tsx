@@ -14,6 +14,10 @@ import { useFriend } from "@/hooks/useFriend";
 import axios from "axios";
 import { ProfileButton } from "@/components/ProfileButton";
 
+// import Img1 from "/public/table.png"
+// import Img2 from "/public/paddle.png"
+// import Img3 from "/public/trophy.png"
+
 export interface ProfileType {
   user: userType;
   level_P: number;
@@ -322,9 +326,9 @@ export default function Layout({
             </div>
           </div>
           <div className="flex-1 flex flex-col items-center relative">
-            {pathName === "/user/" + params.id && (
+            {/* {pathName === "/user/" + params.id && (
               <Image
-                src="/paddle.png"
+                src={Img2}
                 alt="paddle"
                 width={170}
                 height={170}
@@ -334,24 +338,24 @@ export default function Layout({
             )}
             {pathName === "/user/" + params.id + "/achievements" && (
               <Image
-                src="/trophy.png"
+                src={Img3}
                 alt="trophy"
-                width={170}
-                height={170}
                 className="absolute z-10 place-self-end"
                 priority
+                width={170}
+                height={170}
               />
             )}
             {pathName === "/user/" + params.id + "/history" && (
               <Image
-                src="/table.png"
+                src={Img1}
                 alt="table"
-                width={170}
-                height={170}
                 className="absolute place-self-end"
                 priority
+                width={170}
+                height={170}
               />
-            )}
+            )} */}
             <div className="w-[60%] h-[12%] rounded-t-xl bg-primecl flex items-center">
               <Link
                 href={`/user/${params.id}`}

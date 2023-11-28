@@ -43,9 +43,9 @@ export class AuthService {
 		const user = await this.userservice.getUser(req.user.id);
 		if (!user) {
 			if (await this.userservice.checkIfnameExists(req.user.login)) {
-				console.log("faild to login");
-				throw new ForbiddenException('Username already exists');
+				req.user.login = req.user.login + '-' 
 			}
+
 			await this.userservice.createUser(req);
 		}
 		else if (user && user.isDeleted)

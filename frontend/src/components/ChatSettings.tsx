@@ -1,7 +1,7 @@
-import React, { useState } from "react";
 import Link from "next/link";
 import axios from "axios";
-import { userType } from "@/context/userContext";
+import { useRouter } from "next/navigation"
+// import { userType } from "@/context/userContext";
 
 interface ChatSettingsProps {
   role: string;
@@ -16,6 +16,8 @@ export const ChatSettings: React.FC<ChatSettingsProps> = ({
   dm,
   friendId,
 }) => {
+  const router = useRouter()
+
   const Challenge = async () => {
     try {
       const res = await axios.post(
@@ -36,6 +38,7 @@ export const ChatSettings: React.FC<ChatSettingsProps> = ({
           withCredentials: true,
         }
       );
+      router.push("/")
     } catch (error) {}
   };
 
